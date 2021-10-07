@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.microblog_rn">
+  package="blog.micro.android">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -19,6 +19,7 @@
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
+            <data android:scheme="microblog" android:host="microblog" />
         </intent-filter>
       </activity>
     </application>

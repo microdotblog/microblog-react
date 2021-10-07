@@ -35,12 +35,12 @@ android_library(
 
 android_build_config(
     name = "build_config",
-    package = "com.microblog_rn",
+    package = "blog.micro.android",
 )
 
 android_resource(
     name = "res",
-    package = "com.microblog_rn",
+    package = "blog.micro.android",
     res = "src/main/res",
 )
 

@@ -1,4 +1,4 @@
-package com.microblog_rn;
+package blog.micro.android;
 
 import com.reactnativenavigation.NavigationActivity;
 
