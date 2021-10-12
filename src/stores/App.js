@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp } from '../screens';
+import { startApp, loginScreen } from '../screens';
 import Auth from './Auth';
 
 export default App = types.model('App', {
@@ -13,6 +13,9 @@ export default App = types.model('App', {
     Auth.hydrate().then(() => {
       startApp().then(() => {
         console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
+        if(!Auth.is_logged_in()){
+          loginScreen()
+        }
         App.set_is_loading(false)
       })
     })
