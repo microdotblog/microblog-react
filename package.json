@@ -10,9 +10,17 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.12.1",
+    "@react-native-community/netinfo": "^6.0.2",
+    "mobx": "^6.3.3",
+    "mobx-devtools-mst": "^0.9.30",
+    "mobx-react": "^7.2.0",
+    "mobx-state-tree": "^5.0.3",
     "react": "17.0.2",
     "react-native": "0.66.0",
-    "react-native-navigation": "^7.22.3"
+    "react-native-fast-image": "^8.5.11",
+    "react-native-navigation": "^7.22.3",
+    "react-native-sensitive-info": "^5.5.8"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
