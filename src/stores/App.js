@@ -1,7 +1,8 @@
 import { types, flow } from 'mobx-state-tree';
 import { startApp } from '../screens';
+import Auth from './Auth';
 
-const App = types.model('App', {
+export default App = types.model('App', {
   is_loading: types.optional(types.boolean, false)
 })
 .actions(self => ({
@@ -9,6 +10,7 @@ const App = types.model('App', {
   hydrate: flow(function* () {
     console.log("App:hydrate")
     self.is_loading = true
+    Auth.hydrate()
     startApp().then(() => {
       App.set_is_loading(false)
     })
@@ -21,5 +23,3 @@ const App = types.model('App', {
 
 }))
 .create();
-
-export default App;
