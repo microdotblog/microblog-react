@@ -12,7 +12,6 @@ export default Auth = types.model('Auth', {
     return self.is_logged_in()
   }),
 
-
 }))
 .views(self => ({
   
