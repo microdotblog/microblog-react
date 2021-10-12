@@ -10,10 +10,13 @@ export default App = types.model('App', {
   hydrate: flow(function* () {
     console.log("App:hydrate")
     self.is_loading = true
-    Auth.hydrate()
-    startApp().then(() => {
-      App.set_is_loading(false)
+    Auth.hydrate().then(() => {
+      startApp().then(() => {
+        console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
+        App.set_is_loading(false)
+      })
     })
+    
   }),
 
   set_is_loading: flow(function* (loading) {
