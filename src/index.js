@@ -1,4 +1,5 @@
 import './utils/navigation';
+import './utils/string_checker';
 import { Navigation } from "react-native-navigation";
 import App from './stores/App';
 
