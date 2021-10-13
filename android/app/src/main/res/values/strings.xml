@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Micro.blog</string>
+    <color name="splashBackground">#fff</color>
 </resources>
