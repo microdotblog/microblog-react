@@ -11,6 +11,11 @@ export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
 export const DISCOVER_SCREEN = 'microblog.DiscoverScreen';
 export const LOGIN_SCREEN = 'microblog.LoginScreen';
 
+// ICONS
+import TimelineIcon from './../assets/icons/tab_bar/timeline.png';
+import MentionsIcon from './../assets/icons/tab_bar/mentions.png';
+import DiscoverIcon from './../assets/icons/tab_bar/discover.png';
+
 // Set up screens
 export const Screens = new Map();
 Screens.set(TIMELINE_SCREEN, TimelineScreen);
@@ -37,7 +42,8 @@ export const startApp = () => {
         }],
         options: {
           bottomTab: {
-            text: 'Timeline'
+            text: 'Timeline',
+            icon: TimelineIcon
           },
         },
       },
@@ -59,7 +65,8 @@ export const startApp = () => {
         }],
         options: {
           bottomTab: {
-            text: 'Mentions'
+            text: 'Mentions',
+            icon: MentionsIcon
           },
         },
       },
@@ -81,21 +88,27 @@ export const startApp = () => {
         }],
         options: {
           bottomTab: {
-            text: 'Discover'
+            text: 'Discover',
+            icon: DiscoverIcon
           },
         },
       },
     }
   ]
 
-  Navigation.setDefaultOptions({});
+  Navigation.setDefaultOptions({
+    bottomTab: {
+      selectedIconColor: "#f80",
+      selectedTextColor: "#f80"
+    }
+  });
 
   return Navigation.setRoot({
     root: {
       bottomTabs: {
         id: 'ROOT',
         children: tabs,
-      },
+      }
     },
   });
   
