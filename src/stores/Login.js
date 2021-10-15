@@ -68,7 +68,7 @@ export default Login = types.model('Login', {
     console.log("LOGIN:trigger_login:login_with_token:login", login)
     if(login !== LOGIN_ERROR && login !== LOGIN_TOKEN_INVALID){
       console.log("LOGIN:trigger_login:login_with_token:login:SUCCESS")
-      Auth.handle_new_login(login)
+      yield Auth.handle_new_login(login)
     }
     else if(login === LOGIN_TOKEN_INVALID){
       self.show_error = true
