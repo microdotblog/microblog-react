@@ -43,6 +43,7 @@ export default Auth = types.model('Auth', {
     else{
       const new_user = User.create(data)
       self.users.push(new_user)
+      self.selected_user = new_user
     }
     console.log("Auth:create_and_select_new_user:users", self.users.length)
   }),

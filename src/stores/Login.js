@@ -3,6 +3,7 @@ import MicroBlogApi, { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_INCORRECT, LOGIN_TOKEN_
 import StringChecker from './../utils/string_checker';
 import { Alert } from 'react-native';
 import Auth from './Auth';
+import { Navigation } from 'react-native-navigation';
 
 export default Login = types.model('Login', {
   input_value: types.optional(types.string, ""),
@@ -68,7 +69,11 @@ export default Login = types.model('Login', {
     console.log("LOGIN:trigger_login:login_with_token:login", login)
     if(login !== LOGIN_ERROR && login !== LOGIN_TOKEN_INVALID){
       console.log("LOGIN:trigger_login:login_with_token:login:SUCCESS")
-      yield Auth.handle_new_login(login)
+      const result = yield Auth.handle_new_login(login)
+      if(result){
+        // THIS IS ALWAYS TRUE FOR NOW 😇
+        Navigation.dismissAllModals()
+      }
     }
     else if(login === LOGIN_TOKEN_INVALID){
       self.show_error = true
