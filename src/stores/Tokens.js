@@ -27,7 +27,15 @@ export default Tokens = types.model('Tokens', {
     const new_token = Token.create({token: token, username: username})
     self.tokens.push(new_token)
     return new_token
-  })
+  }),
+  
+  destroy_token: flow(function* (username) {
+    console.log("Tokens:destroy_token", username)
+    const existing_token = self.tokens.find(t => t.username === username)
+    if(existing_token != null){
+      destroy(existing_token)
+    }
+  }),
 
 }))
 .views(self => ({

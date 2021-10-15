@@ -1,4 +1,4 @@
-import { types, flow, applySnapshot } from 'mobx-state-tree';
+import { types, flow, applySnapshot, destroy } from 'mobx-state-tree';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import User from './models/User'
 import Tokens from './Tokens'
@@ -51,6 +51,16 @@ export default Auth = types.model('Auth', {
   select_user: flow(function* (user) {
     console.log("Auth:select_user", user)
     self.selected_user = user
+  }),
+  
+  logout_user: flow(function* (user) {
+    console.log("Auth:logout_user", user)
+    Tokens.destroy_token(user.username)
+    self.selected_user = null
+    destroy(user)
+    if(self.users.length){
+      self.selected_user = self.users[0]
+    }
   }),
 
 }))
