@@ -27,7 +27,7 @@ export default class LoginScreen extends React.Component{
           style={{ 
             backgroundColor: '#f2f2f2', 
             fontSize: 17,
-            borderColor: '#f80', 
+            borderColor: `${!Login.show_error ? "#f80" : "#ea053b"}`, 
             borderWidth: 1,
             textAlign: 'center',
             height: 50,
@@ -51,6 +51,13 @@ export default class LoginScreen extends React.Component{
             marginTop: 15
           }}
         />
+        {
+          Login.message !== null && Login.message !== "" ?
+          <View>
+            <Text>{Login.message}</Text>
+          </View>
+          : null
+        }
       </View>
     )
   }
