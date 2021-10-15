@@ -3,7 +3,6 @@ import Profile from './Profile';
 
 export default User = types.model('User', {
     username: types.identifier,
-    token: types.maybeNull(types.string),
     avatar_url: types.maybeNull(types.string),
     has_site: types.maybeNull(types.boolean, false),
     default_site: types.maybeNull(types.string),
@@ -21,4 +20,7 @@ export default User = types.model('User', {
     
   }))
   .views(self => ({
+    token(){
+      return null
+    }
   }))

@@ -11,6 +11,11 @@ export default Auth = types.model('Auth', {
     console.log("Auth:hydrate")
     return self.is_logged_in()
   }),
+  
+  handle_new_login: flow(function* (data) {
+    console.log("Auth:handle_new_login", data)
+    
+  }),
 
 }))
 .views(self => ({
