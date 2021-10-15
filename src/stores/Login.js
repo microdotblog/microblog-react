@@ -1,4 +1,4 @@
-import { flow, types } from 'mobx-state-tree';
+import { flow, types, applySnapshot } from 'mobx-state-tree';
 import MicroBlogApi, { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_INCORRECT, LOGIN_TOKEN_INVALID } from './../api/MicroBlogApi';
 import StringChecker from './../utils/string_checker';
 import { Alert } from 'react-native';
@@ -73,6 +73,12 @@ export default Login = types.model('Login', {
       if(result){
         // THIS IS ALWAYS TRUE FOR NOW 😇
         Navigation.dismissAllModals()
+        self.reset()
+      }
+      else{
+        self.show_error = true
+        self.error_message = "An error occured whilst trying to sign you in. Please try again."
+        Alert.alert("Ooops", self.error_message)
       }
     }
     else if(login === LOGIN_TOKEN_INVALID){
@@ -91,6 +97,11 @@ export default Login = types.model('Login', {
     console.log("LOGIN:reset_errors")
     self.show_error = false
     self.error_message = null
+  }),
+  
+  reset: flow(function* () {
+    console.log("LOGIN:reset_model")
+    applySnapshot(self, {})
   }),
   
 }))

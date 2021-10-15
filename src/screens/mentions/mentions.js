@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { View, Text } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from './../../components/info/login_message';
+import DevInfo from './../../components/dev/info';
 
 @observer
 export default class MentionsScreen extends React.Component{
@@ -16,6 +17,7 @@ export default class MentionsScreen extends React.Component{
           :
           <LoginMessage title="Mentions" />
         }
+        <DevInfo />
       </View>
     )
   }
