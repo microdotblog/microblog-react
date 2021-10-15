@@ -36,6 +36,7 @@ export default Login = types.model('Login', {
       }
       else if(self.is_valid_token()){
         console.log("LOGIN:trigger_login:token_login")
+        yield self.login_with_token()
       }
     }
     self.is_loading = false
@@ -52,12 +53,30 @@ export default Login = types.model('Login', {
     else if(login === LOGIN_INCORRECT){
       self.show_error = true
       self.error_message = "Your sign in details were incorrect. Please double check and try again."
-      Alert.alert(self.error_message)
+      Alert.alert("Wrong details", self.error_message)
     }
     else{
       self.show_error = true
-      self.error_message = "An error occured trying to sign you in. Please try again."
-      Alert.alert(self.error_message)
+      self.error_message = "An error occured whilst trying to sign you in. Please try again."
+      Alert.alert("Ooops", self.error_message)
+    }
+  }),
+  
+  login_with_token: flow(function* () {
+    const login = yield MicroBlogApi.login_with_token(self.input_value)
+    console.log("LOGIN:trigger_login:login_with_token:login", login)
+    if(login !== LOGIN_ERROR && login !== LOGIN_TOKEN_INVALID){
+      console.log("LOGIN:trigger_login:login_with_token:login:SUCCESS")
+    }
+    else if(login === LOGIN_TOKEN_INVALID){
+      self.show_error = true
+      self.error_message = "Your sign in details were incorrect. Please double check and try again."
+      Alert.alert("Invalid token", self.error_message)
+    }
+    else{
+      self.show_error = true
+      self.error_message = "An error occured whilst trying to sign you in. Please try again."
+      Alert.alert("Ooops", self.error_message)
     }
   }),
   
