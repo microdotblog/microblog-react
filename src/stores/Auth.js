@@ -47,6 +47,11 @@ export default Auth = types.model('Auth', {
     }
     console.log("Auth:create_and_select_new_user:users", self.users.length)
   }),
+  
+  select_user: flow(function* (user) {
+    console.log("Auth:select_user", user)
+    self.selected_user = user
+  }),
 
 }))
 .views(self => ({
