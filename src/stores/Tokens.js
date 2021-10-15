@@ -1,4 +1,4 @@
-import { types, flow, applySnapshot } from 'mobx-state-tree';
+import { types, flow, applySnapshot, destroy } from 'mobx-state-tree';
 import Token from './models/Token'
 import SFInfo from 'react-native-sensitive-info'
 
@@ -18,6 +18,14 @@ export default Tokens = types.model('Tokens', {
   
   add_new_token: flow(function* (username, token) {
     console.log("Tokens:add_new_token", username, token)
+    const existing_token = self.tokens.find(t => t.username === username)
+    if(existing_token != null){
+      // There might be an existing token for a given user, but the token changed.
+      // Destroying it so we can create a new one as the identifier is tied to the token.
+      destroy(existing_token)
+    }
+    const new_token = Token.create({token: token, username: username})
+    self.tokens.push(new_token)
   })
 
 }))
