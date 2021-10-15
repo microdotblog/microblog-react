@@ -8,10 +8,10 @@ import Auth from './../../stores/Auth';
 export default class DevInfo extends React.Component{
   
   render() {
-    if(__DEV__){
+    if(__DEV__ && Auth.selected_user != null){
       return(
         <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
-          <Text>{Auth.selected_user.username}</Text>
+          <Text>{Auth.selected_user?.username}</Text>
           <TouchableOpacity onPress={loginScreen}>
             <Text style={{ color: "orange" }}>Trigger login modal</Text>
           </TouchableOpacity>
