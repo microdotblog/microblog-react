@@ -4,7 +4,7 @@ import Tokens from './../Tokens';
 
 export default User = types.model('User', {
     username: types.identifier,
-    avatar_url: types.maybeNull(types.string),
+    avatar: types.maybeNull(types.string),
     has_site: types.maybeNull(types.boolean, false),
     default_site: types.maybeNull(types.string),
     profile: types.maybeNull(Profile),
