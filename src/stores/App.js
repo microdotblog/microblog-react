@@ -1,6 +1,8 @@
 import { types, flow } from 'mobx-state-tree';
 import { startApp, loginScreen } from '../screens';
 import Auth from './Auth';
+import Login from './Login';
+import { Linking } from 'react-native'
 
 export default App = types.model('App', {
   is_loading: types.optional(types.boolean, false)
@@ -17,15 +19,31 @@ export default App = types.model('App', {
           loginScreen()
         }
         App.set_is_loading(false)
+        App.set_up_url_listener()
       })
     })
-    
   }),
 
   set_is_loading: flow(function* (loading) {
     console.log("App:set_is_loading", loading)
     self.is_loading = loading
-  })
+  }),
+  
+  set_up_url_listener: flow(function* () {
+    console.log("Auth:set_up_url_listener")
+    Linking.addEventListener('url', (event) => {
+      console.log("Auth:set_up_url_listener:event", event)
+      if (event?.url && event?.url.indexOf('/signin/') > -1) {
+        Login.trigger_login_from_url(event.url)
+      }
+    })
+    Linking.getInitialURL().then((value) => {
+      console.log("Auth:set_up_url_listener:getInitialURL", value)
+      if (value?.indexOf('/signin/') > -1) {
+        Login.trigger_login_from_url(value)
+      }
+    })
+  }),
 
 }))
 .create();

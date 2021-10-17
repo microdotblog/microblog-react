@@ -62,7 +62,7 @@ export default Auth = types.model('Auth', {
       self.selected_user = self.users[0]
     }
   }),
-
+  
 }))
 .views(self => ({
   

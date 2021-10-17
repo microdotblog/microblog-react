@@ -115,7 +115,7 @@ export const startApp = () => {
 }
 
 export const loginScreen = (can_dismiss = false) => {
-  Navigation.showModal({
+  return Navigation.showModal({
     stack: {
       id: 'LOGIN_SCREEN',
       children: [ {

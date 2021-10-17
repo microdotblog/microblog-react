@@ -10,7 +10,8 @@ export default Login = types.model('Login', {
   is_loading: types.optional(types.boolean, false),
   message: types.maybeNull(types.string),
   show_error: types.optional(types.boolean, false),
-  error_message: types.maybeNull(types.string)
+  error_message: types.maybeNull(types.string),
+  did_trigger_login_from_url: types.optional(types.boolean, false)
 })
 .actions(self => ({
   
@@ -22,7 +23,18 @@ export default Login = types.model('Login', {
     }
   }),
   
-  trigger_login: flow(function* () {
+  trigger_login_from_url: flow(function* (url) {
+    console.log("LOGIN:trigger_login_from_url", url)
+    const token = url.split('/signin/')[1]
+    if(token){
+      console.log("LOGIN:trigger_login_from_url:token", token)
+      self.did_trigger_login_from_url = true
+      self.input_value = token
+      self.trigger_login(token)
+    }
+  }),
+  
+  trigger_login: flow(function* (token = null) {
     console.log("LOGIN:trigger_login", self)
     self.is_loading = true
     self.message = null
