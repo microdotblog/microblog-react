@@ -11,6 +11,11 @@ export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
 export const DISCOVER_SCREEN = 'microblog.DiscoverScreen';
 export const LOGIN_SCREEN = 'microblog.LoginScreen';
 
+// COMPONENTS
+import ProfileImage from './../components/header/profile_image';
+
+export const PROFILE_IMAGE = 'microblog.component.ProfileImage'
+
 // ICONS
 import TimelineIcon from './../assets/icons/tab_bar/timeline.png';
 import MentionsIcon from './../assets/icons/tab_bar/mentions.png';
@@ -22,6 +27,9 @@ Screens.set(TIMELINE_SCREEN, TimelineScreen);
 Screens.set(MENTIONS_SCREEN, MentionsScreen);
 Screens.set(DISCOVER_SCREEN, DiscoverScreen);
 Screens.set(LOGIN_SCREEN, LoginScreen);
+
+// SET UP COMPONENTS
+Screens.set(PROFILE_IMAGE, ProfileImage)
 
 export const startApp = () => {
   const tabs = [
@@ -36,6 +44,15 @@ export const startApp = () => {
                 title: {
                   text: 'Timeline',
                 },
+                rightButtons: [
+                  {
+                    id: 'profileButton',
+                    text: 'profile',
+                    component: {
+                      name: PROFILE_IMAGE
+                    }
+                  },
+                ],
               }
             }
           },
@@ -59,6 +76,15 @@ export const startApp = () => {
                 title: {
                   text: 'Mentions',
                 },
+                rightButtons: [
+                  {
+                    id: 'profileButton',
+                    text: 'profile',
+                    component: {
+                      name: PROFILE_IMAGE
+                    }
+                  },
+                ],
               }
             }
           },
