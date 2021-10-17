@@ -29,11 +29,11 @@ export default class LoginScreen extends React.Component{
             fontSize: 17,
             borderColor: `${!Login.show_error ? "#f80" : "#ea053b"}`, 
             borderWidth: 1,
-            textAlign: 'center',
             height: 50,
             width: "95%",
             borderRadius: 5,
-            marginVertical: 15
+            marginVertical: 15,
+            paddingHorizontal: 15
           }}
           onChangeText={(text) => Login.set_input_value(text)}
           onSubmitEditing={Login.trigger_login}
@@ -53,7 +53,15 @@ export default class LoginScreen extends React.Component{
         />
         {
           Login.message !== null && Login.message !== "" ?
-          <View>
+          <View 
+            style={{
+              backgroundColor: '#E5E7EB',
+              padding: 8,
+              borderRadius: 4,
+              elevation: 5,
+              position: 'absolute',
+              bottom: 15
+            }}>
             <Text>{Login.message}</Text>
           </View>
           : null

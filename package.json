@@ -22,9 +22,7 @@
     "react-native": "0.66.0",
     "react-native-fast-image": "^8.5.11",
     "react-native-navigation": "^7.22.3",
-    "react-native-paper": "^4.9.2",
-    "react-native-sensitive-info": "^5.5.8",
-    "react-native-vector-icons": "^8.1.0"
+    "react-native-sensitive-info": "^5.5.8"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
