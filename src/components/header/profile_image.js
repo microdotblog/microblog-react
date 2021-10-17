@@ -10,7 +10,7 @@ export default class ProfileImage extends React.Component{
   render() {
     if(Auth.selected_user != null){
       return(
-        <TouchableOpacity style={{ width: 40, height: 30, paddingRight: 5 }}>
+        <TouchableOpacity style={{ width: 40, height: 30 }}>
           <FastImage
             source={{
               uri: Auth.selected_user.avatar,
@@ -18,7 +18,7 @@ export default class ProfileImage extends React.Component{
               cache: FastImage.cacheControl.web
             }}
             resizeMode={FastImage.resizeMode.contain}
-            style={{ width: 30, height: 30, borderRadius: 50, paddingRight: 2 }}
+            style={{ width: 30, height: 30, borderRadius: 50 }}
           />
         </TouchableOpacity>
       )
