@@ -14,8 +14,7 @@ export default class ProfileImage extends React.Component{
           <FastImage
             source={{
               uri: Auth.selected_user.avatar,
-              priority: FastImage.priority.normal,
-              cache: FastImage.cacheControl.web
+              priority: FastImage.priority.normal
             }}
             resizeMode={FastImage.resizeMode.contain}
             style={{ width: 30, height: 30, borderRadius: 50 }}

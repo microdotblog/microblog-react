@@ -1,6 +1,7 @@
 import { types, flow } from 'mobx-state-tree';
 import Profile from './Profile';
 import Tokens from './../Tokens';
+import FastImage from 'react-native-fast-image';
 
 export default User = types.model('User', {
     username: types.identifier,
@@ -14,6 +15,9 @@ export default User = types.model('User', {
 
     hydrate: flow(function* () {
       console.log("HYDRATING USER", self.username)
+      if(self.avatar){
+        FastImage.preload([{uri: self.avatar}])
+      }
     }),
     
     afterCreate: flow(function* () {
