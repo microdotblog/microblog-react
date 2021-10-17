@@ -8,7 +8,7 @@ export default class LoginScreen extends React.Component{
   
   render() {
     return(
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 5 }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 15 }}>
         <Text style={{fontWeight: "700"}}>Enter your email address to sign in to Micro.blog:</Text>
         <TextInput
           placeholderTextColor="lightgrey"
@@ -30,7 +30,7 @@ export default class LoginScreen extends React.Component{
             borderColor: `${!Login.show_error ? "#f80" : "#ea053b"}`, 
             borderWidth: 1,
             height: 50,
-            width: "95%",
+            width: "100%",
             borderRadius: 5,
             marginVertical: 15,
             paddingHorizontal: 15
@@ -55,14 +55,15 @@ export default class LoginScreen extends React.Component{
           Login.message !== null && Login.message !== "" ?
           <View 
             style={{
-              backgroundColor: '#E5E7EB',
+              backgroundColor: '#6EE7B7',
               padding: 8,
-              borderRadius: 4,
-              elevation: 5,
+              paddingHorizontal: 12,
+              borderRadius: 5,
+              elevation: 2,
               position: 'absolute',
-              bottom: 15
+              bottom: 25
             }}>
-            <Text>{Login.message}</Text>
+            <Text style={{color: "#064E3B", fontWeight: "600"}}>{Login.message}</Text>
           </View>
           : null
         }
