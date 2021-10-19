@@ -163,7 +163,6 @@ export default class SheetMenu extends React.Component{
         >
           {this._render_current_user()}
           {this.state.menu_open ? this._render_account_switcher() : null}
-          <DevInfo />
         </View>
       )
     }
