@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Button } from 'react-native';
 import Auth from './../../stores/Auth';
 import DevInfo from './../dev/info';
 import FastImage from 'react-native-fast-image';
@@ -9,6 +9,7 @@ import { loginScreen } from './../../screens/';
 import FaceImage from './../../assets/icons/face.png';
 import GroupImage from './../../assets/icons/group.png';
 import AccountAddImage from './../../assets/icons/account_add.png';
+import AddAccountImage from './../../assets/icons/add_account.png';
 
 @observer
 export default class SheetMenu extends React.Component{
@@ -88,8 +89,7 @@ export default class SheetMenu extends React.Component{
         {
           Auth.all_users_except_current().map((user) => {
             return(
-              <TouchableOpacity
-                onPress={() => Auth.select_user(user)}
+              <View
                 key={user.username}
                 style={{
                   flexDirection: 'row',
@@ -119,12 +119,36 @@ export default class SheetMenu extends React.Component{
                     <Text style={{fontStyle: 'italic'}}>@{user.username}</Text>
                   </View>
                 </View>
-                <Text style={{color: '#337ab7'}}>Select</Text>
-              </TouchableOpacity>
+                <Button onPress={() => Auth.select_user(user)} color="#337ab7" title="Switch" />
+              </View>
             )
           })
         }
+        {this._render_add_account_button()}
       </View>
+    )
+  }
+  
+  _render_add_account_button = () => {
+    return(
+      <TouchableOpacity
+        onPress={loginScreen}
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          width: '100%',
+          justifyContent: 'space-between',
+          marginTop: 10,
+          borderTopWidth: 1,
+          borderColor: '#D1D5DB',
+          paddingTop: 5
+        }}
+      >
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Image style={{width: 40, height: 40, marginRight: 15}} source={AddAccountImage} />
+          <Text style={{fontStyle: 'italic'}}>Add account...</Text>
+        </View>
+      </TouchableOpacity>
     )
   }
   
@@ -140,7 +164,7 @@ export default class SheetMenu extends React.Component{
           }}
         >
           {this._render_current_user()}
-          {this.state.menu_open ? this._render_account_switcher() : null}
+          {this.state.menu_open && Auth.users.length > 1 ? this._render_account_switcher() : null}
           <DevInfo />
         </View>
       )
