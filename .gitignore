@@ -59,3 +59,5 @@ buck-out/
 /ios/Pods/
 .nova
 /android/app/release
+/android/java_pid46681.hprof
+*.hprof
