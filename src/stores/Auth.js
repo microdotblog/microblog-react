@@ -68,6 +68,10 @@ export default Auth = types.model('Auth', {
   
   is_logged_in(){
     return self.users.length && self.selected_user != null && self.selected_user.token() != null
+  },
+  
+  all_users_except_current(){
+    return self.users.filter(u => u.username !== self.selected_user.username)
   }
   
 }))
