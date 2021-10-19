@@ -6,7 +6,6 @@ import DevInfo from './../dev/info';
 import FastImage from 'react-native-fast-image';
 import { loginScreen } from './../../screens/';
 // IMAGES
-import FaceImage from './../../assets/icons/face.png';
 import GroupImage from './../../assets/icons/group.png';
 import AccountAddImage from './../../assets/icons/account_add.png';
 import AddAccountImage from './../../assets/icons/add_account.png';
@@ -59,14 +58,13 @@ export default class SheetMenu extends React.Component{
           </View>
         </View>
         <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-          <Image source={FaceImage} />
           {
             Auth.users.length > 1 ?
             <TouchableOpacity onPress={() => this.setState({menu_open: !this.state.menu_open})} style={{padding: 5, marginLeft: 8}}>
               <Image source={GroupImage} />
             </TouchableOpacity>
             :
-            <TouchableOpacity onPress={loginScreen} style={{padding: 5, marginLeft: 8}}>
+            <TouchableOpacity onPress={() => this.setState({menu_open: !this.state.menu_open})} style={{padding: 5, marginLeft: 8}}>
               <Image source={AccountAddImage} />
             </TouchableOpacity>
           }
@@ -138,10 +136,10 @@ export default class SheetMenu extends React.Component{
           alignItems: 'center',
           width: '100%',
           justifyContent: 'space-between',
-          marginTop: 10,
-          borderTopWidth: 1,
+          marginTop: Auth.users.length > 1 ? 10 : 0,
+          borderTopWidth: Auth.users.length > 1 ? .5 : 0,
           borderColor: '#D1D5DB',
-          paddingTop: 5
+          paddingTop: Auth.users.length > 1 ? 5 : 0
         }}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -164,7 +162,7 @@ export default class SheetMenu extends React.Component{
           }}
         >
           {this._render_current_user()}
-          {this.state.menu_open && Auth.users.length > 1 ? this._render_account_switcher() : null}
+          {this.state.menu_open ? this._render_account_switcher() : null}
           <DevInfo />
         </View>
       )

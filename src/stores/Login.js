@@ -4,6 +4,7 @@ import StringChecker from './../utils/string_checker';
 import { Alert } from 'react-native';
 import Auth from './Auth';
 import { Navigation } from 'react-native-navigation';
+import { menuBottomSheet } from './../screens/'
 
 export default Login = types.model('Login', {
   input_value: types.optional(types.string, ""),
@@ -30,11 +31,11 @@ export default Login = types.model('Login', {
       console.log("LOGIN:trigger_login_from_url:token", token)
       self.did_trigger_login_from_url = true
       self.input_value = token
-      self.trigger_login(token)
+      self.trigger_login()
     }
   }),
   
-  trigger_login: flow(function* (token = null) {
+  trigger_login: flow(function* () {
     console.log("LOGIN:trigger_login", self)
     self.is_loading = true
     self.message = null
@@ -84,6 +85,7 @@ export default Login = types.model('Login', {
       const result = yield Auth.handle_new_login(login)
       if(result){
         // THIS IS ALWAYS TRUE FOR NOW 😇
+        menuBottomSheet(true)
         Navigation.dismissAllModals()
         self.reset()
       }

@@ -1,3 +1,4 @@
+import './utils/dev';
 import './utils/navigation';
 import './utils/string_checker';
 import './utils/snapshots';
