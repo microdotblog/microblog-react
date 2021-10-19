@@ -63,6 +63,15 @@ export default Auth = types.model('Auth', {
     }
   }),
   
+  logout_all_user: flow(function* () {
+    console.log("Auth:logout_all_users")
+    self.users.forEach((user) => {
+      Tokens.destroy_token(user.username)
+      self.selected_user = null
+      destroy(user)
+    })
+  }),
+  
 }))
 .views(self => ({
   

@@ -35,6 +35,9 @@ export default class DevInfo extends React.Component{
           <TouchableOpacity onPress={() => Auth.logout_user(Auth.selected_user)}>
             <Text style={{ color: "red" }}>Logout current user</Text>
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => Auth.logout_all_user()}>
+            <Text style={{ color: "pink" }}>Logout ALL</Text>
+          </TouchableOpacity>
         </View>
       )
     }
