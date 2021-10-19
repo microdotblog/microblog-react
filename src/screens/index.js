@@ -181,11 +181,14 @@ export const loginScreen = (can_dismiss = false) => {
   });
 }
 
-export const menuBottomSheet = () => {
-  RNNBottomSheet.openBottomSheet({
-    renderContent: () => <SheetMenu />,
-    snapPoints: [0, '20%', '40%', '70%'],
-    initialSnapIndex: 2,
-    borderRadius: 16,
-  })
+export const menuBottomSheet = (close = false) => {
+  if(!close){
+    return RNNBottomSheet.openBottomSheet({
+      renderContent: () => <SheetMenu />,
+      snapPoints: [0, '20%', '40%', '70%'],
+      initialSnapIndex: 2,
+      borderRadius: 16,
+    })
+  }
+  RNNBottomSheet.closeBottomSheet()
 }

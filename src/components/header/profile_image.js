@@ -12,7 +12,7 @@ export default class ProfileImage extends React.Component{
     if(Auth.selected_user != null){
       return(
         <TouchableOpacity style={{ width: 40, height: 30 }}
-          onPress={menuBottomSheet}
+          onPress={() => menuBottomSheet()}
         >
           <FastImage
             source={{
