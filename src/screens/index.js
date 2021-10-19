@@ -108,6 +108,15 @@ export const startApp = () => {
                 title: {
                   text: 'Discover',
                 },
+                rightButtons: [
+                  {
+                    id: 'profileButton',
+                    text: 'profile',
+                    component: {
+                      name: PROFILE_IMAGE
+                    }
+                  },
+                ],
               }
             }
           },
@@ -155,6 +164,9 @@ export const loginScreen = (can_dismiss = false) => {
               title: {
                 text: 'Sign in',
               },
+            },
+            layout: {
+              backgroundColor: "#fff"
             }
           }
         },
