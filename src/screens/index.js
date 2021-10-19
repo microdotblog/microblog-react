@@ -1,4 +1,6 @@
 import { Navigation } from "react-native-navigation";
+import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
+import * as React from 'react';
 
 // SCREENS
 import TimelineScreen from './timeline/timeline';
@@ -13,6 +15,7 @@ export const LOGIN_SCREEN = 'microblog.LoginScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
+import SheetMenu from './../components/sheets/menu';
 
 export const PROFILE_IMAGE = 'microblog.component.ProfileImage'
 
@@ -30,6 +33,9 @@ Screens.set(LOGIN_SCREEN, LoginScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
+
+// INIT BOTTOMSHEET
+RNNBottomSheet.init()
 
 export const startApp = () => {
   const tabs = [
@@ -173,4 +179,13 @@ export const loginScreen = (can_dismiss = false) => {
       }],
     }
   });
+}
+
+export const menuBottomSheet = () => {
+  RNNBottomSheet.openBottomSheet({
+    renderContent: () => <SheetMenu />,
+    snapPoints: [0, '20%', '40%', '70%'],
+    initialSnapIndex: 2,
+    borderRadius: 16,
+  })
 }
