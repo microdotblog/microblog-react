@@ -2,7 +2,6 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity, Image, Button } from 'react-native';
 import Auth from './../../stores/Auth';
-import DevInfo from './../dev/info';
 import FastImage from 'react-native-fast-image';
 import { loginScreen } from './../../screens/';
 // IMAGES
