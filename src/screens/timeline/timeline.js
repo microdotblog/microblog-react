@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { View } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from './../../components/info/login_message';
-import { WebView } from 'react-native-webview';
+import WebViewModule from '../../components/web/webview_module'
 
 @observer
 export default class TimelineScreen extends React.Component{
@@ -13,13 +13,7 @@ export default class TimelineScreen extends React.Component{
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         {
           Auth.is_logged_in() && !Auth.is_selecting_user ?
-          <WebView
-            source={{ uri: `https://micro.blog/hybrid/posts`, headers: {
-              'Authorization' : `Bearer ${Auth.selected_user.token()}`
-            }}}
-            containerStyle={{ flex: 1, width: '100%', height: '100%' }}
-            startInLoadingState={true}
-          />
+          <WebViewModule endpoint="hybrid/posts" />
           :
           <LoginMessage title="Timeline" />
         }
