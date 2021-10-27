@@ -14,8 +14,9 @@ export default class MentionsScreen extends React.Component{
         {
           Auth.is_logged_in() ?
           <WebView
-            source={{ uri: `https://micro.blog/hybrid/mentions` }}
+            source={{ uri: `https://micro.blog/hybrid/signin?token=${Auth.selected_user.token()}&redirect_to=/hybrid/mentions`}}
             containerStyle={{ flex: 1, width: '100%', height: '100%' }}
+            startInLoadingState={true}
           />
           :
           <LoginMessage title="Mentions" />

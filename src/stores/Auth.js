@@ -2,6 +2,7 @@ import { types, flow, applySnapshot, destroy } from 'mobx-state-tree';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import User from './models/User'
 import Tokens from './Tokens'
+import CookieManager from '@react-native-cookies/cookies';
 
 export default Auth = types.model('Auth', {
   users: types.optional(types.array(User), []),
@@ -15,6 +16,7 @@ export default Auth = types.model('Auth', {
     const data = yield AsyncStorage.getItem('Auth')
     if (data) {
       applySnapshot(self, JSON.parse(data))
+      yield Auth.clear_cookies()
       console.log("Auth:hydrate:with_data", data)
     }
     return self.is_logged_in()
@@ -45,11 +47,13 @@ export default Auth = types.model('Auth', {
       self.users.push(new_user)
       self.selected_user = new_user
     }
+    yield Auth.clear_cookies()
     console.log("Auth:create_and_select_new_user:users", self.users.length)
   }),
   
   select_user: flow(function* (user) {
     console.log("Auth:select_user", user)
+    yield Auth.clear_cookies()
     self.selected_user = user
   }),
   
@@ -58,18 +62,26 @@ export default Auth = types.model('Auth', {
     Tokens.destroy_token(user.username)
     self.selected_user = null
     destroy(user)
+    yield Auth.clear_cookies()
     if(self.users.length){
       self.selected_user = self.users[0]
+      self.set_cookie_for_selected_user()
     }
   }),
   
   logout_all_user: flow(function* () {
     console.log("Auth:logout_all_users")
+    yield Auth.clear_cookies()
     self.users.forEach((user) => {
       Tokens.destroy_token(user.username)
       self.selected_user = null
       destroy(user)
     })
+  }),
+  
+  clear_cookies: flow(function* () {
+    console.log("Auth:clear_cookies")
+    CookieManager.clearAll()
   }),
   
 }))
