@@ -23,6 +23,7 @@ export const PROFILE_IMAGE = 'microblog.component.ProfileImage'
 import TimelineIcon from './../assets/icons/tab_bar/timeline.png';
 import MentionsIcon from './../assets/icons/tab_bar/mentions.png';
 import DiscoverIcon from './../assets/icons/tab_bar/discover.png';
+import PostAddIcon from './../assets/icons/post_add.png';
 
 // Set up screens
 export const Screens = new Map();
@@ -52,12 +53,17 @@ export const startApp = () => {
                 },
                 rightButtons: [
                   {
-                    id: 'profileButton',
+                    id: 'post_button',
+                    text: 'New',
+                    icon: PostAddIcon
+                  },
+                  {
+                    id: 'profile_button',
                     text: 'profile',
                     component: {
                       name: PROFILE_IMAGE
                     }
-                  },
+                  }
                 ],
               }
             }
@@ -84,7 +90,12 @@ export const startApp = () => {
                 },
                 rightButtons: [
                   {
-                    id: 'profileButton',
+                    id: 'post_button',
+                    text: 'New',
+                    icon: PostAddIcon
+                  },
+                  {
+                    id: 'profile_button',
                     text: 'profile',
                     component: {
                       name: PROFILE_IMAGE
@@ -116,7 +127,12 @@ export const startApp = () => {
                 },
                 rightButtons: [
                   {
-                    id: 'profileButton',
+                    id: 'post_button',
+                    text: 'New',
+                    icon: PostAddIcon
+                  },
+                  {
+                    id: 'profile_button',
                     text: 'profile',
                     component: {
                       name: PROFILE_IMAGE
@@ -138,6 +154,14 @@ export const startApp = () => {
   ]
 
   Navigation.setDefaultOptions({
+    animations: {
+      setRoot: {
+        waitForRender: true,
+      },
+      setStackRoot: {
+        waitForRender: true,
+      },
+    },
     bottomTab: {
       selectedIconColor: "#f80",
       selectedTextColor: "#f80"
