@@ -13,6 +13,7 @@
     "@babel/plugin-proposal-decorators": "^7.15.8",
     "@react-native-async-storage/async-storage": "react-native-async-storage/async-storage",
     "@react-native-community/netinfo": "^6.0.2",
+    "@react-native-cookies/cookies": "^6.0.11",
     "axios": "^0.22.0",
     "mobx": "^6.3.3",
     "mobx-devtools-mst": "^0.9.30",
