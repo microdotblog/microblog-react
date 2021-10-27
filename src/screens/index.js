@@ -237,7 +237,21 @@ export const profileScreen = (username, component_id) => {
 				topBar: {
 					title: {
             text: `@${username}`
-					}
+          },
+          rightButtons: [
+            {
+              id: 'post_button',
+              text: 'New',
+              icon: PostAddIcon
+            },
+            {
+              id: 'profile_button',
+              text: 'profile',
+              component: {
+                name: PROFILE_IMAGE
+              }
+            },
+          ],
 				}
 			}
 		}
@@ -259,7 +273,21 @@ export const conversationScreen = (conversation_id, component_id) => {
 				topBar: {
 					title: {
             text: "Conversation"
-					}
+          },
+          rightButtons: [
+            {
+              id: 'post_button',
+              text: 'New',
+              icon: PostAddIcon
+            },
+            {
+              id: 'profile_button',
+              text: 'profile',
+              component: {
+                name: PROFILE_IMAGE
+              }
+            },
+          ],
 				}
 			}
 		}
