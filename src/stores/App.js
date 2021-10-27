@@ -5,7 +5,8 @@ import Login from './Login';
 import { Linking } from 'react-native'
 
 export default App = types.model('App', {
-  is_loading: types.optional(types.boolean, false)
+  is_loading: types.optional(types.boolean, false),
+  current_screen_name: types.maybeNull(types.string)
 })
 .actions(self => ({
 
@@ -43,6 +44,11 @@ export default App = types.model('App', {
         Login.trigger_login_from_url(value)
       }
     })
+  }),
+
+  set_current_screen_name: flow(function* (screen_name) {
+    console.log("Auth:set_current_screen_name", screen_name)
+    self.current_screen_name = screen_name
   }),
 
 }))
