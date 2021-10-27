@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from './../../components/info/login_message';
+import { WebView } from 'react-native-webview';
 
 @observer
 export default class TimelineScreen extends React.Component{
@@ -12,7 +13,10 @@ export default class TimelineScreen extends React.Component{
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         {
           Auth.is_logged_in() ?
-          <Text>Timeline</Text>
+          <WebView
+            source={{ uri: `https://micro.blog/hybrid/posts` }}
+            containerStyle={{ flex: 1, width: '100%', height: '100%' }}
+          />
           :
           <LoginMessage title="Timeline" />
         }
