@@ -12,9 +12,11 @@ export default class TimelineScreen extends React.Component{
     return(
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         {
-          Auth.is_logged_in() ?
+          Auth.is_logged_in() && !Auth.is_selecting_user ?
           <WebView
-            source={{ uri: `https://micro.blog/hybrid/signin?token=${Auth.selected_user.token()}&redirect_to=/hybrid/posts`}}
+            source={{ uri: `https://micro.blog/hybrid/posts`, headers: {
+              'Authorization' : `Bearer ${Auth.selected_user.token()}`
+            }}}
             containerStyle={{ flex: 1, width: '100%', height: '100%' }}
             startInLoadingState={true}
           />
