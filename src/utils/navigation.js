@@ -9,12 +9,14 @@ Navigation.registerComponent(key, () => (props) => (
 )
 ));
 
-Navigation.events().registerComponentDidAppearListener(({ componentName }) => {
+Navigation.events().registerComponentDidAppearListener(({ componentName, componentId }) => {
   switch (componentName) {
     case PROFILE_IMAGE:
       return
+    case "__initBottomSheet__":
+      return
     default:
-      App.set_current_screen_name(componentName)
+      App.set_current_screen_name_and_id(componentName, componentId)
       break;
   }
 });

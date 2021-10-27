@@ -221,8 +221,8 @@ export const menuBottomSheet = (close = false) => {
   RNNBottomSheet.closeBottomSheet()
 }
 
-export const profileScreen = (username, component_id = null) => {
-  console.log(username, component_id);
+export const profileScreen = (username, component_id) => {
+  console.log("Screens:profileScreen", username, component_id);
   const options = {
     component: {
       id: 'PROFILE_SCREEN',
@@ -240,5 +240,5 @@ export const profileScreen = (username, component_id = null) => {
 		}
 	};
 
-  return Navigation.push(App.current_screen_name, options);
+  return Navigation.push(component_id, options);
 }
