@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import { Linking } from 'react-native'
@@ -84,6 +84,8 @@ export default App = types.model('App', {
     switch (action) {
       case "user":
         return profileScreen(action_data, self.current_screen_id)
+      case "open":
+        return conversationScreen(action_data, self.current_screen_id)
     }
   })
 

@@ -9,12 +9,14 @@ import MentionsScreen from './mentions/mentions';
 import DiscoverScreen from './discover/discover';
 import LoginScreen from './login/login';
 import ProfileScreen from './profile/profile';
+import ConversationScreen from "./conversation/conversation";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
 export const DISCOVER_SCREEN = 'microblog.DiscoverScreen';
 export const LOGIN_SCREEN = 'microblog.LoginScreen';
 export const PROFILE_SCREEN = 'microblog.ProfileScreen';
+export const CONVERSATION_SCREEN = 'microblog.ConversationScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -35,6 +37,7 @@ Screens.set(MENTIONS_SCREEN, MentionsScreen);
 Screens.set(DISCOVER_SCREEN, DiscoverScreen);
 Screens.set(LOGIN_SCREEN, LoginScreen);
 Screens.set(PROFILE_SCREEN, ProfileScreen);
+Screens.set(CONVERSATION_SCREEN, ConversationScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
@@ -234,6 +237,28 @@ export const profileScreen = (username, component_id) => {
 				topBar: {
 					title: {
             text: `@${username}`
+					}
+				}
+			}
+		}
+	};
+
+  return Navigation.push(component_id, options);
+}
+
+export const conversationScreen = (conversation_id, component_id) => {
+  console.log("Screens:conversationScreen", conversation_id, component_id);
+  const options = {
+    component: {
+      id: 'CONVERSATION_SCREEN',
+			name: CONVERSATION_SCREEN,
+			passProps: {
+        conversation_id: conversation_id
+			},
+			options: {
+				topBar: {
+					title: {
+            text: "Conversation"
 					}
 				}
 			}

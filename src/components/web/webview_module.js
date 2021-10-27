@@ -7,6 +7,7 @@ import WebView from 'react-native-webview'
 export default class WebViewModule extends React.Component{
   
   render() {
+    console.log("WebViewModule:props", this.props)
     return (
       <WebView
         source={{ uri: `https://micro.blog/${this.props.endpoint}`, headers: {
