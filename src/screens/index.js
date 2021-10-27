@@ -49,9 +49,9 @@ export const startApp = () => {
   const tabs = [
     {
       stack: {
-        id: 'TIMELINE_SCREEN',
         children: [{
           component: {
+            id: 'TIMELINE_SCREEN',
             name: TIMELINE_SCREEN,
             options: {
               topBar: {
@@ -86,9 +86,9 @@ export const startApp = () => {
     },
     {
       stack: {
-        id: 'MENTIONS_SCREEN',
         children: [{
           component: {
+            id: 'MENTIONS_SCREEN',
             name: MENTIONS_SCREEN,
             options: {
               topBar: {
@@ -123,9 +123,9 @@ export const startApp = () => {
     },
     {
       stack: {
-        id: 'DISCOVER_SCREEN',
         children: [{
           component: {
+            id: 'DISCOVER_SCREEN',
             name: DISCOVER_SCREEN,
             options: {
               topBar: {
