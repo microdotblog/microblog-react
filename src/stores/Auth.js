@@ -7,7 +7,8 @@ import CookieManager from '@react-native-cookies/cookies';
 export default Auth = types.model('Auth', {
   users: types.optional(types.array(User), []),
   selected_user: types.maybeNull(types.reference(User)),
-  is_selecting_user: types.optional(types.boolean, true)
+  is_selecting_user: types.optional(types.boolean, true),
+  did_load_one_or_more_webviews: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -89,7 +90,13 @@ export default Auth = types.model('Auth', {
   clear_cookies: flow(function* () {
     console.log("Auth:clear_cookies")
     self.is_selecting_user = true
+    self.did_load_one_or_more_webviews = false
     CookieManager.clearAll()
+  }),
+
+  set_did_load_one_or_more_webviews: flow(function* () {
+    console.log("Auth:set_did_load_one_or_more_webviews")
+    self.did_load_one_or_more_webviews = true
   }),
   
 }))
