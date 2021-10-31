@@ -3,7 +3,8 @@ import { observer } from 'mobx-react';
 import { View } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from './../../components/info/login_message';
-import WebViewModule from '../../components/web/webview_module'
+import WebViewModule from '../../components/web/webview_module';
+import ImageModalModule from '../../components/images/image_modal';
 
 @observer
 export default class TimelineScreen extends React.Component{
@@ -17,6 +18,7 @@ export default class TimelineScreen extends React.Component{
           :
           <LoginMessage title="Timeline" />
         }
+        <ImageModalModule />
       </View>
     )
   }

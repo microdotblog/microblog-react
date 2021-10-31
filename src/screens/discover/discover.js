@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from './../../components/info/login_message';
 import WebViewModule from '../../components/web/webview_module'
+import ImageModalModule from '../../components/images/image_modal'
 
 @observer
 export default class DiscoverScreen extends React.Component{
@@ -17,6 +18,7 @@ export default class DiscoverScreen extends React.Component{
           :
           <LoginMessage title="Discover" />
         }
+        <ImageModalModule />
       </View>
     )
   }

@@ -16,7 +16,6 @@ export default class WebViewModule extends React.Component{
   }
   
   render() {
-    console.log("WebViewModule:props", this.props)
     return (
       <WebView
         ref={this.ref}

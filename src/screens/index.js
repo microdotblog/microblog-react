@@ -1,7 +1,6 @@
 import { Navigation } from "react-native-navigation";
 import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import * as React from 'react';
-import App from './../stores/App';
 
 // SCREENS
 import TimelineScreen from './timeline/timeline';

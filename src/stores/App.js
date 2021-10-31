@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, imageScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import { Linking } from 'react-native'
@@ -8,6 +8,8 @@ export default App = types.model('App', {
   is_loading: types.optional(types.boolean, false),
   current_screen_name: types.maybeNull(types.string),
   current_screen_id: types.maybeNull(types.string),
+  image_modal_is_open: types.optional(types.boolean, false),
+  current_image_url: types.maybeNull(types.string)
 })
 .actions(self => ({
 
@@ -86,7 +88,19 @@ export default App = types.model('App', {
         return profileScreen(action_data, self.current_screen_id)
       case "open":
         return conversationScreen(action_data, self.current_screen_id)
+      case "photo":
+        App.set_image_modal_data_and_activate(action_data)
     }
+  }),
+
+  set_image_modal_data_and_activate: flow(function* (url) {
+    self.current_image_url = url
+    self.image_modal_is_open = true
+  }),
+
+  reset_image_modal: flow(function* () {
+    self.image_modal_is_open = false
+    self.current_image_url = null
   })
 
 }))

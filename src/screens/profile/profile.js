@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import Auth from './../../stores/Auth';
 import WebViewModule from '../../components/web/webview_module'
 import LoginMessage from '../../components/info/login_message'
+import ImageModalModule from '../../components/images/image_modal'
 
 @observer
 export default class ProfileScreen extends React.Component{
@@ -17,6 +18,7 @@ export default class ProfileScreen extends React.Component{
           :
           <LoginMessage title="User posts" />
         }
+        <ImageModalModule />
       </View>
     )
   }
