@@ -129,7 +129,29 @@ export default class AccountSwitcher extends React.Component{
         </View>
       </TouchableOpacity>
     )
-  }
+	}
+	
+	_render_account_logout_button = () => {
+		return(
+      <TouchableOpacity
+        onPress={() => Auth.logout_user()}
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          width: '100%',
+          justifyContent: 'space-between',
+          marginTop: Auth.users.length > 1 ? 10 : 0,
+          borderTopWidth: Auth.users.length > 1 ? .5 : 0,
+          borderColor: '#D1D5DB',
+          paddingTop: Auth.users.length > 1 ? 5 : 0
+        }}
+      >
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={{fontStyle: 'italic'}}>Logout</Text>
+        </View>
+      </TouchableOpacity>
+    )
+	}
   
   render() {
     if(Auth.selected_user != null){
@@ -140,7 +162,8 @@ export default class AccountSwitcher extends React.Component{
           }}
         >
           {this._render_current_user()}
-          {this._render_account_switcher()}
+					{this._render_account_switcher()}
+					{this._render_account_logout_button()}
         </View>
       )
     }

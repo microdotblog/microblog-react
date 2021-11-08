@@ -65,8 +65,11 @@ export default Auth = types.model('Auth', {
     self.is_selecting_user = false
   }),
   
-  logout_user: flow(function* (user) {
+  logout_user: flow(function* (user = null) {
     console.log("Auth:logout_user", user)
+    if (user == null) {
+      user = self.selected_user
+    }
     Tokens.destroy_token(user.username)
     self.selected_user = null
     destroy(user)
