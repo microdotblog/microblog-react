@@ -9,7 +9,11 @@ export default class LoginMessage extends React.Component{
   render() {
     return(
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>{this.props.title}</Text>
+        {
+          this.props.title ?
+            <Text>{this.props.title}</Text>
+          : null
+        }
         <TouchableOpacity onPress={loginScreen}>
           <Text style={{fontWeight: "700", color: "orange"}}>Please sign in to continue</Text>
         </TouchableOpacity>

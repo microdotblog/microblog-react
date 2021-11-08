@@ -166,8 +166,8 @@ export default class AccountSwitcher extends React.Component{
 					{this._render_account_logout_button()}
         </View>
       )
-    }
-    return null
+		}
+		return null
   }
   
 }
