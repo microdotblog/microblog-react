@@ -103,7 +103,8 @@ export default class AccountSwitcher extends React.Component{
             )
           })
         }
-        {this._render_add_account_button()}
+				{this._render_add_account_button()}
+				{this._render_account_logout_button()}
       </View>
     )
   }
@@ -132,24 +133,25 @@ export default class AccountSwitcher extends React.Component{
 	}
 	
 	_render_account_logout_button = () => {
-		return(
-      <TouchableOpacity
-        onPress={() => Auth.logout_user()}
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          width: '100%',
-          justifyContent: 'space-between',
-          marginTop: Auth.users.length > 1 ? 10 : 0,
-          borderTopWidth: Auth.users.length > 1 ? .5 : 0,
-          borderColor: '#D1D5DB',
-          paddingTop: Auth.users.length > 1 ? 5 : 0
-        }}
-      >
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text style={{fontStyle: 'italic'}}>Logout</Text>
-        </View>
-      </TouchableOpacity>
+		return (
+			<TouchableOpacity
+				onPress={() => Auth.logout_user()}
+				style={{
+					flexDirection: 'row',
+					alignItems: 'center',
+					width: '100%',
+					justifyContent: 'space-between',
+					borderTopWidth: .5,
+					borderColor: '#D1D5DB',
+					paddingTop: 8,
+					paddingBottom: 5,
+					marginTop: 10
+				}}
+			>
+				<View style={{ flexDirection: 'row', alignItems: 'center', width: "100%", justifyContent: 'center' }}>
+					<Text style={{fontStyle: 'italic', color: 'red'}}>Sign out</Text>
+				</View>
+			</TouchableOpacity>
     )
 	}
   
@@ -163,7 +165,6 @@ export default class AccountSwitcher extends React.Component{
         >
           {this._render_current_user()}
 					{this._render_account_switcher()}
-					{this._render_account_logout_button()}
         </View>
       )
 		}
