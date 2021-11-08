@@ -1,4 +1,5 @@
 import { types, flow, applySnapshot, destroy } from 'mobx-state-tree';
+import { Keyboard } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import User from './models/User'
 import Tokens from './Tokens'
@@ -34,6 +35,7 @@ export default Auth = types.model('Auth', {
       console.log("Auth:handle_new_login:token", token)
       if(token && token.username === data?.username){
         yield self.create_and_select_new_user(data)
+        Keyboard.dismiss()
         return true
       }
     }
