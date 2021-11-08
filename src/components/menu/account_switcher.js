@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, Image, Button } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import Auth from './../../stores/Auth';
+import App from './../../stores/App';
 import FastImage from 'react-native-fast-image';
-import { loginScreen } from './../../screens/';
+import { loginScreen, profileScreen } from './../../screens/';
 // IMAGES
 import GroupImage from './../../assets/icons/group.png';
 import AddAccountImage from './../../assets/icons/add_account.png';
@@ -13,7 +14,8 @@ export default class AccountSwitcher extends React.Component{
   
   _render_current_user = () => {
     return(
-      <TouchableOpacity
+			<TouchableOpacity
+				onPress={() => profileScreen(Auth.selected_user.username, App.current_screen_id)}
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
