@@ -68,7 +68,8 @@ export default class AccountSwitcher extends React.Component{
         {
           Auth.all_users_except_current().map((user) => {
             return(
-              <View
+							<TouchableOpacity
+								onPress={() => Auth.select_user(user)}
                 key={user.username}
                 style={{
                   flexDirection: 'row',
@@ -98,8 +99,7 @@ export default class AccountSwitcher extends React.Component{
                     <Text style={{fontStyle: 'italic'}}>@{user.username}</Text>
                   </View>
                 </View>
-                <Button onPress={() => Auth.select_user(user)} color="#337ab7" title="Switch" />
-              </View>
+              </TouchableOpacity>
             )
           })
         }
