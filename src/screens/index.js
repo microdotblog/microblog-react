@@ -227,7 +227,7 @@ export const profileScreen = (username, component_id) => {
   console.log("Screens:profileScreen", username, component_id);
   const options = {
     component: {
-      id: 'PROFILE_SCREEN',
+      id: `PROFILE_SCREEN_${username}`,
 			name: PROFILE_SCREEN,
 			passProps: {
         username: username
