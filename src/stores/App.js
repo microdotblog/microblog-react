@@ -106,20 +106,31 @@ export default App = types.model('App', {
     }
     else{
       let tab_index = 0
+      let should_pop = false
       switch (screen) {
         case "Timeline":
           tab_index = 0;
+          should_pop = self.current_screen_id !== "TIMELINE_SCREEN"
+          if(should_pop){
+            Navigation.popToRoot("TIMELINE_SCREEN")
+          }
           break;
         case "Mentions":
           tab_index = 1;
+          should_pop = self.current_screen_id !== "MENTIONS_SCREEN"
+          if(should_pop){
+            Navigation.popToRoot("MENTIONS_SCREEN")
+          }
           break;
         case "Discover":
           tab_index = 2;
+          should_pop = self.current_screen_id !== "DISCOVER_SCREEN"
+          if(should_pop){
+            Navigation.popToRoot("DISCOVER_SCREEN")
+          }
           break;
-        default:
-          tab_index = 0
       }
-      console.log("App:navigate_to_screen_from_menu:index", screen, tab_index)
+      console.log("App:navigate_to_screen_from_menu:index", screen, tab_index, self.current_screen_id, should_pop)
       Navigation.mergeOptions('ROOT', {
         bottomTabs: {
           currentTabIndex: tab_index
