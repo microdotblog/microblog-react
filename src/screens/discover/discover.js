@@ -8,13 +8,13 @@ import ImageModalModule from '../../components/images/image_modal'
 
 @observer
 export default class DiscoverScreen extends React.Component{
-  
+
   render() {
     return(
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         {
           Auth.is_logged_in() && !Auth.is_selecting_user ?
-          <WebViewModule endpoint="hybrid/discover" />
+          <WebViewModule endpoint="hybrid/discover" component_id={this.props.componentId} />
           :
           <LoginMessage title="Discover" />
         }
@@ -22,5 +22,5 @@ export default class DiscoverScreen extends React.Component{
       </View>
     )
   }
-  
+
 }
