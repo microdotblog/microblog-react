@@ -38,6 +38,10 @@ export default class WebViewModule extends React.Component{
         startInLoadingState={true}
         onLoadEnd={Auth.set_did_load_one_or_more_webviews}
         onScroll={() => App.set_is_scrolling(this.ref.current.startUrl)}
+        onShouldStartLoadWithRequest={(event) => {
+          console.log(event.url, event.url.indexOf(this.props.endpoint))
+          return event.url.indexOf(this.props.endpoint) > -1
+        }}
       />
     )
   }
