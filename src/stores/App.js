@@ -3,6 +3,7 @@ import { startApp, loginScreen, profileScreen, conversationScreen } from '../scr
 import Auth from './Auth';
 import Login from './Login';
 import { Linking } from 'react-native'
+import { Navigation } from "react-native-navigation";
 
 let SCROLLING_TIMEOUT = null
 
@@ -98,6 +99,35 @@ export default App = types.model('App', {
     }
   }),
 
+  navigate_to_screen_from_menu: flow(function* (screen) {
+    console.log("App:navigate_to_screen_from_menu", screen)
+    if(screen === "Bookmarks"){
+      // TODO: Add bookmarks screen
+    }
+    else{
+      let tab_index = 0
+      switch (screen) {
+        case "Timeline":
+          tab_index = 0;
+          break;
+        case "Mentions":
+          tab_index = 1;
+          break;
+        case "Discover":
+          tab_index = 2;
+          break;
+        default:
+          tab_index = 0
+      }
+      console.log("App:navigate_to_screen_from_menu:index", screen, tab_index)
+      Navigation.mergeOptions('ROOT', {
+        bottomTabs: {
+          currentTabIndex: tab_index
+        }
+      });
+    }
+  }),
+
   set_image_modal_data_and_activate: flow(function* (url) {
     self.current_image_url = url
     self.image_modal_is_open = true
@@ -128,7 +158,7 @@ export default App = types.model('App', {
       const after_mb_link = url.replace('https://micro.blog/', '').replace('http://micro.blog/', '');
       const parts = after_mb_link.split("/")
       console.log("App:handle_url_from_webview:parts", after_mb_link, parts)
-      
+
       if(parts.length === 2){
         // This is probably a convo
         // Now we also want to check if it contains anything but a number

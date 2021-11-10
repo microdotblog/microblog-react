@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import Auth from './../../stores/Auth';
 import { loginScreen } from './../../screens/';
 import AccountSwitcher from '../menu/account_switcher'
+import MenuNavigation from '../menu/nav'
 
 @observer
 export default class SheetMenu extends React.Component{
@@ -18,6 +19,7 @@ export default class SheetMenu extends React.Component{
           borderRadius: 16
         }}
       >
+        <MenuNavigation />
         {
           Auth.selected_user != null ?
             <AccountSwitcher />
@@ -34,6 +36,7 @@ export default class SheetMenu extends React.Component{
               <Text style={{ fontWeight: "700", color: "orange" }}>Please sign in to continue</Text>
             </TouchableOpacity>
         }
+        
       </View>
     )
   }

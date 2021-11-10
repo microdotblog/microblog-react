@@ -182,7 +182,7 @@ export const startApp = () => {
       }
     },
   });
-  
+
 }
 
 export const loginScreen = (can_dismiss = false) => {
