@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import { Linking } from 'react-native'
@@ -102,7 +102,7 @@ export default App = types.model('App', {
   navigate_to_screen_from_menu: flow(function* (screen) {
     console.log("App:navigate_to_screen_from_menu", screen)
     if(screen === "Bookmarks"){
-      // TODO: Add bookmarks screen
+      return bookmarksScreen(self.current_screen_id)
     }
     else{
       let tab_index = 0
