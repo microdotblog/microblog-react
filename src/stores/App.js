@@ -1,15 +1,18 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, imageScreen } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import { Linking } from 'react-native'
+
+let SCROLLING_TIMEOUT = null
 
 export default App = types.model('App', {
   is_loading: types.optional(types.boolean, false),
   current_screen_name: types.maybeNull(types.string),
   current_screen_id: types.maybeNull(types.string),
   image_modal_is_open: types.optional(types.boolean, false),
-  current_image_url: types.maybeNull(types.string)
+  current_image_url: types.maybeNull(types.string),
+  is_scrolling: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -32,7 +35,7 @@ export default App = types.model('App', {
     console.log("App:set_is_loading", loading)
     self.is_loading = loading
   }),
-  
+
   set_up_url_listener: flow(function* () {
     console.log("Auth:set_up_url_listener")
     Linking.addEventListener('url', (event) => {
@@ -72,7 +75,7 @@ export default App = types.model('App', {
           action_data = url.split("://photo/")[ 1 ]
         }
         console.log("Auth:handle_url:action", action, action_data)
-        
+
         if (action != null && action_data != null) {
           if (action === "user" || action === "photo" || action === "open") {
             self.navigate_to_screen(action, action_data)
@@ -83,13 +86,15 @@ export default App = types.model('App', {
   }),
 
   navigate_to_screen: flow(function* (action, action_data) {
-    switch (action) {
-      case "user":
-        return profileScreen(action_data, self.current_screen_id)
-      case "open":
-        return conversationScreen(action_data, self.current_screen_id)
-      case "photo":
-        App.set_image_modal_data_and_activate(action_data)
+    if(!self.is_scrolling){
+      switch (action) {
+          case "user":
+            return profileScreen(action_data, self.current_screen_id)
+          case "open":
+            return conversationScreen(action_data, self.current_screen_id)
+          case "photo":
+            App.set_image_modal_data_and_activate(action_data)
+        }
     }
   }),
 
@@ -101,6 +106,18 @@ export default App = types.model('App', {
   reset_image_modal: flow(function* () {
     self.image_modal_is_open = false
     self.current_image_url = null
+  }),
+
+  set_is_scrolling: flow(function* () {
+    self.is_scrolling = true
+    clearTimeout(SCROLLING_TIMEOUT)
+    SCROLLING_TIMEOUT = setTimeout(() => {
+      App.reset_is_scrolling()
+    }, 200)
+  }),
+
+  reset_is_scrolling: flow(function* () {
+    self.is_scrolling = false
   })
 
 }))
