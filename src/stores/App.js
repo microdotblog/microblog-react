@@ -122,7 +122,60 @@ export default App = types.model('App', {
 
   handle_url_from_webview: flow(function* (url) {
     console.log("App:handle_url_from_webview", url)
+
+    // This is going to be messy. Don't judge.
+    if (url.indexOf('https://micro.blog/') > -1 || url.indexOf('http://micro.blog/') > -1) {
+      const after_mb_link = url.replace('https://micro.blog/', '').replace('http://micro.blog/', '');
+      const parts = after_mb_link.split("/")
+      console.log("App:handle_url_from_webview:parts", after_mb_link, parts)
+      
+      if(parts.length === 2){
+        // This is probably a convo
+        // Now we also want to check if it contains anything but a number
+        const number = parts[1].match(/\d+/);
+        if (number === null) {
+          // Now check for discover links
+          if (parts[0] === 'discover' && parts[1] !== null) {
+            if (parts[1].indexOf('search') > -1) {
+              // This going to be a user search, but for now we just link it
+              App.open_url(url)
+            }
+            else {
+              // TODO: Load Discover More
+              App.open_url(url)
+            }
+          }
+          else {
+            App.open_url(url)
+          }
+
+        }
+        else {
+          App.navigate_to_screen("open", number[0])
+        }
+      }
+      else {
+        const username = url.replace('https://micro.blog/', '').replace('http://micro.blog/', '')
+        App.navigate_to_screen("user", username)
+      }
+    }
+    else{
+      // It's just a normal URL
+      App.open_url(url)
+    }
+
   }),
+
+  open_url: flow(function* (url) {
+    Linking.canOpenURL(url).then(supported => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        console.log("App:handle_url_from_webview:error_handling_url:", url);
+        alert("Something went wrong with that link...")
+      }
+    });
+  })
 
 }))
 .create();
