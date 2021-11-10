@@ -37,9 +37,9 @@ export default App = types.model('App', {
   }),
 
   set_up_url_listener: flow(function* () {
-    console.log("Auth:set_up_url_listener")
+    console.log("App:set_up_url_listener")
     Linking.addEventListener('url', (event) => {
-      console.log("Auth:set_up_url_listener:event", event)
+      console.log("App:set_up_url_listener:event", event)
       if (event?.url && event?.url.indexOf('/signin/') > -1) {
         Login.trigger_login_from_url(event.url)
       }
@@ -48,7 +48,7 @@ export default App = types.model('App', {
       }
     })
     Linking.getInitialURL().then((value) => {
-      console.log("Auth:set_up_url_listener:getInitialURL", value)
+      console.log("App:set_up_url_listener:getInitialURL", value)
       if (value?.indexOf('/signin/') > -1) {
         Login.trigger_login_from_url(value)
       }
@@ -56,17 +56,17 @@ export default App = types.model('App', {
   }),
 
   set_current_screen_name_and_id: flow(function* (screen_name, screen_id) {
-    console.log("Auth:set_current_screen_name_and_id", screen_name, screen_id)
+    console.log("App:set_current_screen_name_and_id", screen_name, screen_id)
     self.current_screen_name = screen_name
     self.current_screen_id = screen_id
   }),
 
   handle_url: flow(function* (url) {
-    console.log("Auth:handle_url", url)
+    console.log("App:handle_url", url)
     const url_parts = url.split("://")
     if (url_parts.length > 1) {
       const action_parts = url_parts[ 1 ].split("/")
-      console.log("Auth:handle_url:action_parts", action_parts)
+      console.log("App:handle_url:action_parts", action_parts)
 
       if (action_parts.length > 1) {
         const action = action_parts[ 0 ]
@@ -74,7 +74,7 @@ export default App = types.model('App', {
         if (action === "photo") {
           action_data = url.split("://photo/")[ 1 ]
         }
-        console.log("Auth:handle_url:action", action, action_data)
+        console.log("App:handle_url:action", action, action_data)
 
         if (action != null && action_data != null) {
           if (action === "user" || action === "photo" || action === "open") {
@@ -88,13 +88,13 @@ export default App = types.model('App', {
   navigate_to_screen: flow(function* (action, action_data) {
     if(!self.is_scrolling){
       switch (action) {
-          case "user":
-            return profileScreen(action_data, self.current_screen_id)
-          case "open":
-            return conversationScreen(action_data, self.current_screen_id)
-          case "photo":
-            App.set_image_modal_data_and_activate(action_data)
-        }
+        case "user":
+          return profileScreen(action_data, self.current_screen_id)
+        case "open":
+          return conversationScreen(action_data, self.current_screen_id)
+        case "photo":
+          App.set_image_modal_data_and_activate(action_data)
+      }
     }
   }),
 
@@ -118,7 +118,11 @@ export default App = types.model('App', {
 
   reset_is_scrolling: flow(function* () {
     self.is_scrolling = false
-  })
+  }),
+
+  handle_url_from_webview: flow(function* (url) {
+    console.log("App:handle_url_from_webview", url)
+  }),
 
 }))
 .create();
