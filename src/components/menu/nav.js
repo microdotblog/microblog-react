@@ -21,7 +21,13 @@ export default class MenuNavigation extends React.Component{
   _render_menu_items = () => {
     return this.menu.map(item => {
       return(
-        <TouchableOpacity onPress={() => App.navigate_to_screen_from_menu(item)} key={item}><Text>{item}</Text></TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => App.navigate_to_screen_from_menu(item)}
+          key={item}
+          style={{ width: '100%', padding: 8, paddingHorizontal: 16, borderRadius: 5, backgroundColor: "#F9FAFB", marginBottom: 5 }}
+        >
+          <Text>{item}</Text>
+        </TouchableOpacity>
       )
     })
   }
@@ -32,6 +38,10 @@ export default class MenuNavigation extends React.Component{
         <View
           style={{
             width: '100%',
+            marginBottom: 15,
+            paddingBottom: 10,
+            borderColor: '#E5E7EB',
+            borderBottomWidth: 1
           }}
         >
           {this._render_menu_items()}
