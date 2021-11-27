@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { View, Text, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
 import MicroBlogApi, { API_ERROR } from './../../api/MicroBlogApi';
 import App from './../../stores/App';
+import Hyperlink from 'react-native-hyperlink'
 
 @observer
 export default class ProfileHeader extends React.Component{
@@ -11,7 +12,8 @@ export default class ProfileHeader extends React.Component{
     super(props)
     this.state = {
       loading: true,
-      profile: null
+      profile: null,
+      more_expanded: false
     }
   }
   
@@ -30,6 +32,8 @@ export default class ProfileHeader extends React.Component{
   
   _render_profile = () => {
     const { profile } = this.state;
+    const long_bio = profile._microblog.bio ? profile._microblog.bio.trim().replace(/\n/g, " ") : null
+    const short_bio = long_bio ? long_bio.slice(0, 108) : null
     return(
       <View style={{ padding: 8, backgroundColor: "#E5E7EB", width: '100%' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -46,6 +50,16 @@ export default class ProfileHeader extends React.Component{
             }
           </View>
         </View>
+        {
+          profile._microblog.bio && this.state.more_expanded ?
+          <Hyperlink linkDefault={ true } linkStyle={{ textDecorationLine: 'underline' }}>
+            <Text>{profile._microblog.bio}</Text>
+          </Hyperlink>
+          :
+          profile._microblog.bio && !this.state.more_expanded ?
+          <Text>{short_bio}{ long_bio.length > short_bio.length ? "..." : "" }</Text>
+          : null
+        }
       </View>
     )
   }
