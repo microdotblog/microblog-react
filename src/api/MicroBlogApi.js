@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Auth from './../stores/Auth';
 
 export const API_URL = 'https://micro.blog';
 export const APP_NAME = 'Micro.blog for Android';
@@ -7,6 +8,7 @@ export const LOGIN_INCORRECT = 1;
 export const LOGIN_ERROR = 2;
 export const LOGIN_SUCCESS = 3;
 export const LOGIN_TOKEN_INVALID = 4;
+export const API_ERROR = 5;
 
 axios.defaults.baseURL = API_URL;
 
@@ -55,6 +57,24 @@ class MicroBlogApi {
       .catch(error => {
         console.log(error)
         return LOGIN_ERROR
+      });
+    return login
+  }
+  
+  async get_profile(username) {
+    console.log('MicroBlogApi:get_profile', username);
+    const login = axios
+      .get(`/posts/${username}`, {
+        headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+        params: { count: 0 }
+      })
+      .then(response => {
+        console.log("MicroBlogApi:get_profile:response", response.data)
+        return response.data
+      })
+      .catch(error => {
+        console.log(error)
+        return API_ERROR
       });
     return login
   }
