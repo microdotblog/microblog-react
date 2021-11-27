@@ -36,11 +36,11 @@ export default class ProfileHeader extends React.Component{
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Image source={{ uri: profile.author.avatar }} style={{ width: 50, height: 50, borderRadius: 50 }} />
           <View style={{ marginLeft: 15 }}>
-            <Text style={{ fontWeight: '700', fontSize: 18 }}>{profile.author.name}</Text>
+            <Text style={{ fontWeight: '700', fontSize: 18, marginBottom: 2 }}>{profile.author.name}</Text>
             <Text style={{ fontWeight: '300' }}>@{profile._microblog.username}</Text>
             {
               profile.author.url != null ?
-              <TouchableOpacity onPress={() => App.open_url(profile.author.url)}>
+              <TouchableOpacity style={{ marginTop: 2 }} onPress={() => App.open_url(profile.author.url)}>
                 <Text style={{ color: "#f80", fontWeight: '600' }}>{profile.author.url.replace("https://", "").replace("http://", "")}</Text>
               </TouchableOpacity>
               : null
