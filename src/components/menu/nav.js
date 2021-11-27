@@ -51,7 +51,7 @@ export default class MenuNavigation extends React.Component{
             paddingHorizontal: 16,
             borderRadius: 5,
             backgroundColor: "#F9FAFB",
-            marginBottom: 5,
+            marginBottom: 8,
             flexDirection: 'row',
             alignItems: 'center'
           }}
