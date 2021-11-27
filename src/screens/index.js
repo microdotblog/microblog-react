@@ -22,14 +22,15 @@ export const BOOKMARKS_SCREEN = 'microblog.BookmarksScreen';
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
 import SheetMenu from './../components/sheets/menu';
+import NewPostButton from './../components/header/new_post';
 
 export const PROFILE_IMAGE = 'microblog.component.ProfileImage'
+export const NEW_POST_BUTTON = 'microblog.component.NewPostButton'
 
 // ICONS
 import TimelineIcon from './../assets/icons/tab_bar/timeline.png';
 import MentionsIcon from './../assets/icons/tab_bar/mentions.png';
 import DiscoverIcon from './../assets/icons/tab_bar/discover.png';
-import PostAddIcon from './../assets/icons/post_add.png';
 
 // Set up screens
 export const Screens = new Map();
@@ -43,6 +44,7 @@ Screens.set(BOOKMARKS_SCREEN, BookmarksScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
+Screens.set(NEW_POST_BUTTON, NewPostButton)
 
 // INIT BOTTOMSHEET
 RNNBottomSheet.init()
@@ -64,7 +66,9 @@ export const startApp = () => {
                   {
                     id: 'post_button',
                     text: 'New',
-                    icon: PostAddIcon
+                    component: {
+                      name: NEW_POST_BUTTON
+                    }
                   },
                   {
                     id: 'profile_button',
@@ -101,7 +105,9 @@ export const startApp = () => {
                   {
                     id: 'post_button',
                     text: 'New',
-                    icon: PostAddIcon
+                    component: {
+                      name: NEW_POST_BUTTON
+                    }
                   },
                   {
                     id: 'profile_button',
@@ -138,7 +144,9 @@ export const startApp = () => {
                   {
                     id: 'post_button',
                     text: 'New',
-                    icon: PostAddIcon
+                    component: {
+                      name: NEW_POST_BUTTON
+                    }
                   },
                   {
                     id: 'profile_button',
@@ -244,7 +252,9 @@ export const profileScreen = (username, component_id) => {
             {
               id: 'post_button',
               text: 'New',
-              icon: PostAddIcon
+              component: {
+                name: NEW_POST_BUTTON
+              }
             },
             {
               id: 'profile_button',
@@ -280,7 +290,9 @@ export const conversationScreen = (conversation_id, component_id) => {
             {
               id: 'post_button',
               text: 'New',
-              icon: PostAddIcon
+              component: {
+                name: NEW_POST_BUTTON
+              }
             },
             {
               id: 'profile_button',
@@ -313,7 +325,9 @@ export const bookmarksScreen = (component_id) => {
               {
                 id: 'post_button',
                 text: 'New',
-                icon: PostAddIcon
+                component: {
+                  name: NEW_POST_BUTTON
+                }
               },
               {
                 id: 'profile_button',
