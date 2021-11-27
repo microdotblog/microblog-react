@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
+import { View, Text, ActivityIndicator, Image, TouchableOpacity, ScrollView } from 'react-native';
 import MicroBlogApi, { API_ERROR } from './../../api/MicroBlogApi';
 import App from './../../stores/App';
 import Hyperlink from 'react-native-hyperlink'
@@ -31,9 +31,10 @@ export default class ProfileHeader extends React.Component{
   }
   
   _render_profile = () => {
-    const { profile } = this.state;
+    const { profile, more_expanded } = this.state;
     const long_bio = profile._microblog.bio ? profile._microblog.bio.trim().replace(/\n/g, " ") : null
-    const short_bio = long_bio ? long_bio.slice(0, 108) : null
+    const short_bio = long_bio ? long_bio.slice(0, 90) : null
+    const show_expand_option = long_bio?.length > short_bio?.length
     return(
       <View style={{ padding: 8, backgroundColor: "#E5E7EB", width: '100%' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -50,15 +51,36 @@ export default class ProfileHeader extends React.Component{
             }
           </View>
         </View>
+        <ScrollView style={{marginTop: 5, marginBottom: 5, maxHeight: more_expanded ? 205 : 'auto', position: 'relative'}}>
         {
-          profile._microblog.bio && this.state.more_expanded ?
+          profile._microblog.bio && more_expanded ?
           <Hyperlink linkDefault={ true } linkStyle={{ textDecorationLine: 'underline' }}>
-            <Text>{profile._microblog.bio}</Text>
+            <Text style={{ paddingBottom: 20 }}>{profile._microblog.bio}</Text>
           </Hyperlink>
           :
-          profile._microblog.bio && !this.state.more_expanded ?
-          <Text>{short_bio}{ long_bio.length > short_bio.length ? "..." : "" }</Text>
+          profile._microblog.bio && !more_expanded ?
+          <Hyperlink linkDefault={ true } linkStyle={{ textDecorationLine: 'underline' }}>
+            <Text style={{ position: 'relative' }}>
+              {short_bio}{ long_bio.length > short_bio.length ? "..." : "" }
+            </Text>
+          </Hyperlink>
           : null
+        }
+        </ScrollView>
+        {
+          show_expand_option ?
+          <TouchableOpacity
+            onPress={() => this.setState({ more_expanded: !this.state.more_expanded })}
+            style={{ 
+              position: 'absolute',
+              right: 8,
+              bottom: 10
+            }}
+          >
+            <Text style={{ fontWeight: '500', color: '#f80' }}>{more_expanded ? "Show less" : "Show more"}</Text>
+          </TouchableOpacity>
+          :
+          null
         }
       </View>
     )
