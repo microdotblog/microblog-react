@@ -16,7 +16,6 @@ export default class ProfileHeader extends React.Component{
   }
   
   componentDidMount = async () => {
-    console.log("Profile header mounted for:", this.props.username)
     const profile = await MicroBlogApi.get_profile(this.props.username)
     if(profile && profile !== API_ERROR){
       this.setState({

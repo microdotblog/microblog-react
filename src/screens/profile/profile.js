@@ -14,7 +14,7 @@ export default class ProfileScreen extends React.Component{
     return(
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         {
-          Auth.is_logged_in() ? 
+          Auth.is_logged_in() && !Auth.is_selecting_user ? 
           <ProfileHeader username={this.props.username} />
           : null
         }
