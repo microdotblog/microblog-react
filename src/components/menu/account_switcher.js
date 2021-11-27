@@ -123,11 +123,11 @@ export default class AccountSwitcher extends React.Component{
           marginTop: Auth.users.length > 1 ? 10 : 0,
           borderTopWidth: Auth.users.length > 1 ? .5 : 0,
           borderColor: '#D1D5DB',
-          paddingTop: Auth.users.length > 1 ? 5 : 0
+          paddingTop: Auth.users.length > 1 ? 8 : 0
         }}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image style={{width: 40, height: 40, marginRight: 15}} source={AddAccountImage} />
+          <Image style={{width: 30, height: 30, marginRight: 18, marginLeft: 6}} source={AddAccountImage} />
           <Text style={{fontStyle: 'italic'}}>Add account...</Text>
         </View>
       </TouchableOpacity>
