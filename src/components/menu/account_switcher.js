@@ -135,6 +135,7 @@ export default class AccountSwitcher extends React.Component{
 	}
 	
 	_render_account_logout_button = () => {
+    const sign_out_wording = Auth.users?.length > 1 ? "Sign out current account" : "Sign out"
 		return (
 			<TouchableOpacity
 				onPress={() => Auth.logout_user()}
@@ -151,7 +152,7 @@ export default class AccountSwitcher extends React.Component{
 				}}
 			>
 				<View style={{ flexDirection: 'row', alignItems: 'center', width: "100%", justifyContent: 'center' }}>
-					<Text style={{fontStyle: 'italic', color: 'red'}}>Sign out</Text>
+					<Text style={{fontStyle: 'italic', color: 'red'}}>{sign_out_wording}</Text>
 				</View>
 			</TouchableOpacity>
     )
