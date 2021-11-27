@@ -154,7 +154,7 @@ export default App = types.model('App', {
     clearTimeout(SCROLLING_TIMEOUT)
     SCROLLING_TIMEOUT = setTimeout(() => {
       App.reset_is_scrolling()
-    }, 200)
+    }, 300)
   }),
 
   reset_is_scrolling: flow(function* () {

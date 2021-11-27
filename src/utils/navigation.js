@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Navigation } from "react-native-navigation"
 import App from '../stores/App'
-import { PROFILE_IMAGE, Screens } from './../screens';
+import { Screens } from './../screens';
 
 Screens.forEach((ScreenComponent, key) => 
 Navigation.registerComponent(key, () => (props) => (
