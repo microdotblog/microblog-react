@@ -11,7 +11,7 @@ Navigation.registerComponent(key, () => (props) => (
 
 Navigation.events().registerComponentDidAppearListener(({ componentName, componentId }) => {
   switch (componentName) {
-    case PROFILE_IMAGE:
+    case componentName.includes("microblog.component"):
       return
     case "__initBottomSheet__":
       return
