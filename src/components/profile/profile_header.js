@@ -116,7 +116,7 @@ export default class ProfileHeader extends React.Component{
             flexDirection: 'row'
           }}>
           <TouchableOpacity onPress={() => followingScreen(this.props.username, App.current_screen_id)}>
-            <Text style={{ fontStyle: 'italic', fontWeight: '500' }}>{`Following ${profile._microblog.following_count} users`}</Text>
+            <Text style={{ fontStyle: 'italic', fontWeight: '500' }}>{profile._microblog.is_you ? `Following ${profile._microblog.following_count} users` : `Following ${profile._microblog.discover_count} users you're not following`}</Text>
           </TouchableOpacity>
           {
             !profile._microblog.is_you ?
