@@ -58,6 +58,9 @@ export default App = types.model('App', {
 
   set_current_screen_name_and_id: flow(function* (screen_name, screen_id) {
     console.log("App:set_current_screen_name_and_id", screen_name, screen_id)
+    if(screen_name.includes("microblog.component")){
+      return
+    }
     self.current_screen_name = screen_name
     self.current_screen_id = screen_id
   }),
