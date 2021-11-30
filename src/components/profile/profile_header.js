@@ -51,7 +51,9 @@ export default class ProfileHeader extends React.Component{
             }
           </View>
         </View>
-        <ScrollView style={{marginTop: 5, marginBottom: 5, maxHeight: more_expanded ? 205 : 'auto', position: 'relative'}}>
+        
+        <View style={{position: 'relative'}}>
+        <ScrollView style={{marginTop: 5, marginBottom: 5, maxHeight: more_expanded ? 205 : 'auto'}}>
         {
           profile._microblog.bio && more_expanded ?
           <Hyperlink linkDefault={ true } linkStyle={{ textDecorationLine: 'underline' }}>
@@ -74,7 +76,10 @@ export default class ProfileHeader extends React.Component{
             style={{ 
               position: 'absolute',
               right: 8,
-              bottom: 10
+              bottom: 5,
+              backgroundColor: '#E5E7EB',
+              paddingHorizontal: 5,
+              borderRadius: 5
             }}
           >
             <Text style={{ fontWeight: '500', color: '#f80' }}>{more_expanded ? "Show less" : "Show more"}</Text>
@@ -82,6 +87,12 @@ export default class ProfileHeader extends React.Component{
           :
           null
         }
+        </View>
+        <View style={{ borderTopWidth: .5, borderColor: '#D1D5DB', paddingTop: 3, marginTop: 3 }}>
+          <TouchableOpacity>
+            <Text style={{ fontStyle: 'italic', fontWeight: '500' }}>{`Following ${profile._microblog.following_count} users`}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     )
   }
