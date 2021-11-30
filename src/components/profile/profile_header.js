@@ -14,20 +14,31 @@ export default class ProfileHeader extends React.Component{
     this.state = {
       loading: true,
       profile: null,
-      more_expanded: false
+      more_expanded: false,
+      is_toggling_follow: false
     }
   }
   
   componentDidMount = async () => {
+    this._load_profile()
+  }
+  
+  _toggle_follow = async () => {
+    this.setState({ is_toggling_follow: true })
+    this._load_profile()
+  }
+  
+  _load_profile = async () => {
     const profile = await MicroBlogApi.get_profile(this.props.username)
     if(profile && profile !== API_ERROR){
       this.setState({
         loading: false,
-        profile: profile
+        profile: profile,
+        is_toggling_follow: false
       })
     }
     else if(profile === API_ERROR){
-      this.setState({ loading: false })
+      this.setState({ loading: false, is_toggling_follow: false })
     }
   }
   
@@ -76,23 +87,42 @@ export default class ProfileHeader extends React.Component{
             onPress={() => this.setState({ more_expanded: !this.state.more_expanded })}
             style={{ 
               position: 'absolute',
-              right: 8,
+              right: 0,
               bottom: 5,
               backgroundColor: '#E5E7EB',
               paddingHorizontal: 5,
               borderRadius: 5
             }}
           >
-            <Text style={{ fontWeight: '500', color: '#f80' }}>{more_expanded ? "Show less" : "Show more"}</Text>
+            <Text style={{ fontWeight: '400', color: '#f80' }}>{more_expanded ? "Show less" : "Show more"}</Text>
           </TouchableOpacity>
           :
           null
         }
         </View>
-        <View style={{ borderTopWidth: .5, borderColor: '#D1D5DB', paddingTop: 3, marginTop: 3 }}>
+        <View 
+          style={{ 
+            borderTopWidth: .5,
+            borderColor: '#D1D5DB', 
+            paddingTop: 3, 
+            marginTop: 3, 
+            justifyContent: 'space-between', 
+            flexDirection: 'row'
+          }}>
           <TouchableOpacity onPress={() => followingScreen(this.props.username, App.current_screen_id)}>
             <Text style={{ fontStyle: 'italic', fontWeight: '500' }}>{`Following ${profile._microblog.following_count} users`}</Text>
           </TouchableOpacity>
+          {
+            !profile._microblog.is_you ?
+            <TouchableOpacity onPress={this._toggle_follow} style={{marginRight: 5}}>
+              { this.state.is_toggling_follow ? 
+                <ActivityIndicator color="#f80" />
+                :
+                <Text style={{ fontWeight: '500', color: '#337ab7' }}>{profile._microblog.is_following ? 'Unfollow' : 'Follow'}</Text>
+              }
+            </TouchableOpacity>
+            : null
+          }
         </View>
       </View>
     )
