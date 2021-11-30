@@ -75,7 +75,8 @@ export default class MenuNavigation extends React.Component{
           style={{
             width: '100%',
             marginBottom: 15,
-            paddingBottom: 10,
+            paddingBottom: 20,
+            paddingTop: 10,
             borderColor: '#E5E7EB',
             borderBottomWidth: 1,
             justifyContent: 'space-between',

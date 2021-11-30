@@ -164,6 +164,7 @@ export default class AccountSwitcher extends React.Component{
         <View
           style={{
             width: '100%',
+            paddingTop: 15
           }}
         >
           {this._render_current_user()}
