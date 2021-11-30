@@ -25,7 +25,13 @@ export default class ProfileHeader extends React.Component{
   
   _toggle_follow = async () => {
     this.setState({ is_toggling_follow: true })
-    this._load_profile()
+    const follow_status = this.state.profile._microblog.is_following ? await MicroBlogApi.unfollow_user(this.props.username) : await MicroBlogApi.follow_user(this.props.username)
+    if(follow_status !== API_ERROR){
+      this._load_profile()
+    }
+    else{
+      this.setState({ is_toggling_follow: false })
+    }
   }
   
   _load_profile = async () => {

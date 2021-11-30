@@ -78,6 +78,40 @@ class MicroBlogApi {
       });
     return login
   }
+  
+  async follow_user(username) {
+		console.log('MicroBlogApi: follow_user', username);
+		const follow = axios
+			.post(`/users/follow`, '', {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+				params: { username: username }
+			})
+			.then(() => {
+				return true;
+			})
+			.catch(error => {
+				console.log(error);	
+				return API_ERROR;
+			});
+		return follow;
+	}
+  
+  async unfollow_user(username) {
+		console.log('MicroBlogApi: unfollow_user', username);
+		const unfollow = axios
+			.post(`/users/unfollow`, '', {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+				params: { username: username }
+			})
+			.then(() => {
+				return true;
+			})
+			.catch(error => {
+				console.log(error);
+				return FETCH_ERROR;
+			});
+		return unfollow;
+	}
 }
 
 export default new MicroBlogApi()
