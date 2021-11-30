@@ -46,14 +46,15 @@ export default class MenuNavigation extends React.Component{
           onPress={() => App.navigate_to_screen_from_menu(item)}
           key={item}
           style={{ 
-            width: '100%',
+            width: '49%',
             padding: 8,
             paddingHorizontal: 16,
-            borderRadius: 5,
+            borderRadius: 20,
             backgroundColor: "#F9FAFB",
             marginBottom: 8,
             flexDirection: 'row',
-            alignItems: 'center'
+            alignItems: 'center',
+            //justifyContent: 'center'
           }}
         >
           {
@@ -61,7 +62,7 @@ export default class MenuNavigation extends React.Component{
             <Image source={image} style={{ marginRight: 8, height: 20, width: 20, marginTop: 2 }} />
             : null
           }
-          <Text style={{ fontSize: 20, fontWeight: '400' }}>{item}</Text>
+          <Text style={{ fontSize: 16, fontWeight: '500', color: '#1F2937' }}>{item}</Text>
         </TouchableOpacity>
       )
     })
@@ -76,7 +77,10 @@ export default class MenuNavigation extends React.Component{
             marginBottom: 15,
             paddingBottom: 10,
             borderColor: '#E5E7EB',
-            borderBottomWidth: 1
+            borderBottomWidth: 1,
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            flexDirection: 'row'
           }}
         >
           {this._render_menu_items()}
