@@ -10,6 +10,7 @@ import LoginScreen from './login/login';
 import ProfileScreen from './profile/profile';
 import ConversationScreen from "./conversation/conversation";
 import BookmarksScreen from "./bookmarks/bookmarks";
+import FollowingScreen from "./following/following";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -18,6 +19,7 @@ export const LOGIN_SCREEN = 'microblog.LoginScreen';
 export const PROFILE_SCREEN = 'microblog.ProfileScreen';
 export const CONVERSATION_SCREEN = 'microblog.ConversationScreen';
 export const BOOKMARKS_SCREEN = 'microblog.BookmarksScreen';
+export const FOLLOWING_SCREEN = 'microblog.FollowingScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -41,6 +43,7 @@ Screens.set(LOGIN_SCREEN, LoginScreen);
 Screens.set(PROFILE_SCREEN, ProfileScreen);
 Screens.set(CONVERSATION_SCREEN, ConversationScreen);
 Screens.set(BOOKMARKS_SCREEN, BookmarksScreen);
+Screens.set(FOLLOWING_SCREEN, FollowingScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
@@ -310,36 +313,73 @@ export const conversationScreen = (conversation_id, component_id) => {
 }
 
 export const bookmarksScreen = (component_id) => {
-    console.log("Screens:bookmarksScreen", component_id);
-    const options = {
-      component: {
-        id: 'BOOKMARKS_SCREEN',
-        name: BOOKMARKS_SCREEN,
-        options: {
-          topBar: {
-            title: {
-              text: "Bookmarks"
+  console.log("Screens:bookmarksScreen", component_id);
+  const options = {
+    component: {
+      id: 'BOOKMARKS_SCREEN',
+      name: BOOKMARKS_SCREEN,
+      options: {
+        topBar: {
+          title: {
+            text: "Bookmarks"
+          },
+          rightButtons: [
+            {
+              id: 'post_button',
+              text: 'New',
+              component: {
+                name: NEW_POST_BUTTON
+              }
             },
-            rightButtons: [
-              {
-                id: 'post_button',
-                text: 'New',
-                component: {
-                  name: NEW_POST_BUTTON
-                }
-              },
-              {
-                id: 'profile_button',
-                text: 'profile',
-                component: {
-                  name: PROFILE_IMAGE
-                }
-              },
-            ],
-          }
+            {
+              id: 'profile_button',
+              text: 'profile',
+              component: {
+                name: PROFILE_IMAGE
+              }
+            },
+          ],
         }
       }
-    };
+    }
+  };
 
-    return Navigation.push(component_id, options);
-  }
+  return Navigation.push(component_id, options);
+}
+
+export const followingScreen = (username, component_id) => {
+  console.log("Screens:followingScreen", username, component_id);
+  const options = {
+    component: {
+			name: FOLLOWING_SCREEN,
+			passProps: {
+        username: username
+			},
+			options: {
+				topBar: {
+					title: {
+            text: `Following`
+          },
+          rightButtons: [
+            {
+              id: 'post_button',
+              text: 'New',
+              component: {
+                name: NEW_POST_BUTTON
+              }
+            },
+            {
+              id: 'profile_button',
+              text: 'profile',
+              component: {
+                name: PROFILE_IMAGE
+              }
+            },
+          ],
+				}
+			}
+		}
+	};
+
+  return Navigation.push(component_id, options);
+}

@@ -4,6 +4,7 @@ import { View, Text, ActivityIndicator, Image, TouchableOpacity, ScrollView } fr
 import MicroBlogApi, { API_ERROR } from './../../api/MicroBlogApi';
 import App from './../../stores/App';
 import Hyperlink from 'react-native-hyperlink'
+import { followingScreen } from './../../screens/'
 
 @observer
 export default class ProfileHeader extends React.Component{
@@ -89,7 +90,7 @@ export default class ProfileHeader extends React.Component{
         }
         </View>
         <View style={{ borderTopWidth: .5, borderColor: '#D1D5DB', paddingTop: 3, marginTop: 3 }}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => followingScreen(this.props.username, App.current_screen_id)}>
             <Text style={{ fontStyle: 'italic', fontWeight: '500' }}>{`Following ${profile._microblog.following_count} users`}</Text>
           </TouchableOpacity>
         </View>
