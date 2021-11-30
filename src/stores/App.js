@@ -4,6 +4,7 @@ import Auth from './Auth';
 import Login from './Login';
 import { Linking } from 'react-native'
 import { Navigation } from "react-native-navigation";
+import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 
 let SCROLLING_TIMEOUT = null
 
@@ -103,7 +104,8 @@ export default App = types.model('App', {
   }),
 
   navigate_to_screen_from_menu: flow(function* (screen) {
-    console.log("App:navigate_to_screen_from_menu", screen)
+    console.log("App:navigate_to_screen_from_menu", screen, RNNBottomSheet.getComponentName())
+    RNNBottomSheet.closeBottomSheet()
     if(screen === "Bookmarks"){
       return bookmarksScreen(self.current_screen_id)
     }
