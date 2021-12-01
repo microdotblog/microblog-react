@@ -1,6 +1,6 @@
 import { types, flow } from 'mobx-state-tree';
-import Profile from './Profile';
 import Tokens from './../Tokens';
+import Posting from './Posting';
 import FastImage from 'react-native-fast-image';
 
 export default User = types.model('User', {
@@ -8,8 +8,8 @@ export default User = types.model('User', {
     avatar: types.maybeNull(types.string),
     has_site: types.maybeNull(types.boolean, false),
     default_site: types.maybeNull(types.string),
-    profile: types.maybeNull(Profile),
-    full_name: types.maybeNull(types.string)
+    full_name: types.maybeNull(types.string),
+    posting: types.maybeNull(Posting)
   })
   .actions(self => ({
 
