@@ -69,7 +69,7 @@ export default App = types.model('App', {
   handle_url: flow(function* (url) {
     console.log("App:handle_url", url)
     const url_parts = url.split("://")
-    if (url_parts.length > 1) {
+    if (url_parts.length > 1 && !self.is_scrolling) {
       const action_parts = url_parts[ 1 ].split("/")
       console.log("App:handle_url:action_parts", action_parts)
 

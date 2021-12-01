@@ -57,7 +57,6 @@ export default class WebViewModule extends React.Component{
           containerStyle={{ flex: 1 }}
           startInLoadingState={true}
           onLoadEnd={Auth.set_did_load_one_or_more_webviews}
-          onScroll={() => App.set_is_scrolling(this.ref.current.startUrl)}
           onShouldStartLoadWithRequest={(event) => {
             if(event.url.indexOf(this.props.endpoint) <= -1){
               App.handle_url_from_webview(event.url)
@@ -65,9 +64,12 @@ export default class WebViewModule extends React.Component{
             }
             return true
           }}
-          onScroll={(e) =>
-            this.setState({ is_pull_to_refresh_enabled: typeof this.on_refresh === 'function' && e.nativeEvent.contentOffset.y <= 0.15 })
-          }
+          onScroll={(e) =>{
+            this.setState({
+              is_pull_to_refresh_enabled: typeof this.on_refresh === 'function' && e.nativeEvent.contentOffset.y <= 0.15
+            })
+            App.set_is_scrolling()
+          }}
           style={{flex: 1, height: scroll_view_height }}
         />
       </ScrollView>
