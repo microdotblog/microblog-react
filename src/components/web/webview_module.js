@@ -33,7 +33,12 @@ export default class WebViewModule extends React.Component{
     this.bottom_tab_selected_listener.remove()
   }
   
-  on_refresh = () => this.ref.current.reload()
+  on_refresh = () => {
+    this.setState({
+      scroll_view_height: 0
+    })
+    this.ref.current.reload()
+  }
 
   render() {
     const { is_pull_to_refresh_enabled, scroll_view_height } = this.state
