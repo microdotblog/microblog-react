@@ -196,6 +196,9 @@ export default App = types.model('App', {
           }
 
         }
+        else if(parts[0] === "books"){
+          App.open_url(url)
+        }
         else {
           App.navigate_to_screen("open", number[0])
         }
