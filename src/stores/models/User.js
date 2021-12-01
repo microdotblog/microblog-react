@@ -18,6 +18,9 @@ export default User = types.model('User', {
       if(self.avatar){
         FastImage.preload([{uri: self.avatar}])
       }
+      if(self.posting == null){
+        self.posting = Posting.create({username: self.username})
+      }
     }),
     
     afterCreate: flow(function* () {
