@@ -11,6 +11,7 @@ import ProfileScreen from './profile/profile';
 import ConversationScreen from "./conversation/conversation";
 import BookmarksScreen from "./bookmarks/bookmarks";
 import FollowingScreen from "./following/following";
+import PostingScreen from "./posting/posting";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -20,6 +21,7 @@ export const PROFILE_SCREEN = 'microblog.ProfileScreen';
 export const CONVERSATION_SCREEN = 'microblog.ConversationScreen';
 export const BOOKMARKS_SCREEN = 'microblog.BookmarksScreen';
 export const FOLLOWING_SCREEN = 'microblog.FollowingScreen';
+export const POSTING_SCREEN = 'microblog.PostingScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -44,6 +46,7 @@ Screens.set(PROFILE_SCREEN, ProfileScreen);
 Screens.set(CONVERSATION_SCREEN, ConversationScreen);
 Screens.set(BOOKMARKS_SCREEN, BookmarksScreen);
 Screens.set(FOLLOWING_SCREEN, FollowingScreen);
+Screens.set(POSTING_SCREEN, PostingScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
@@ -382,4 +385,39 @@ export const followingScreen = (username, component_id) => {
 	};
 
   return Navigation.push(component_id, options);
+}
+
+export const postingScreen = () => {
+  return Navigation.showModal({
+    stack: {
+      id: 'POSTING_SCREEN',
+      children: [ {
+        component: {
+          name: POSTING_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                text: 'New Post',
+              },
+              leftButtons: [
+                {
+                  id: 'back_button',
+                  text: 'Back',
+                },
+              ],
+              rightButtons: [
+						    {
+							    id: 'post_button',
+							    text: 'Post'
+						    }
+					    ]
+            },
+            layout: {
+              backgroundColor: "#fff"
+            }
+          }
+        },
+      }],
+    }
+  });
 }
