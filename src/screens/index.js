@@ -35,6 +35,7 @@ export const NEW_POST_BUTTON = 'microblog.component.NewPostButton'
 import TimelineIcon from './../assets/icons/tab_bar/timeline.png';
 import MentionsIcon from './../assets/icons/tab_bar/mentions.png';
 import DiscoverIcon from './../assets/icons/tab_bar/discover.png';
+import ArrowBackIcon from './../assets/icons/arrow_back.png';
 
 // Set up screens
 export const Screens = new Map();
@@ -403,12 +404,14 @@ export const postingScreen = () => {
                 {
                   id: 'back_button',
                   text: 'Back',
+                  icon: ArrowBackIcon
                 },
               ],
               rightButtons: [
 						    {
 							    id: 'post_button',
-							    text: 'Post'
+							    text: 'Post',
+                  color: '#f80'
 						    }
 					    ]
             },
