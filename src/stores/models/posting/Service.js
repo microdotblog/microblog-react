@@ -1,5 +1,6 @@
 import { types, flow } from 'mobx-state-tree';
-import Tokens from './../Tokens'
+import Tokens from './../../Tokens';
+import MicroPubApi from './../../../api/MicroPubApi';
 
 export default Service = types.model('Service', {
   id: types.identifier,
@@ -13,6 +14,10 @@ export default Service = types.model('Service', {
 
   hydrate: flow(function* () {
     console.log("Endpoint:hydrate", self.id)
+    if(self.is_microblog){
+      const config = yield MicroPubApi.get_config(self.service_object())
+      console.log("Endpoint:hydrate:config", config)
+    }
   }),
   
   afterCreate: flow(function* () {
@@ -24,6 +29,15 @@ export default Service = types.model('Service', {
   
   credentials(){
     return self.name != null && self.name === "Micro.blog" && self.username != null && self.is_microblog ? Tokens.token_for_username(self.username) : null
+  },
+  
+  service_object(){
+    return {
+      endpoint: self.url,
+      username: self.username,
+      token: this.credentials()?.token,
+      
+    }
   }
   
 }))

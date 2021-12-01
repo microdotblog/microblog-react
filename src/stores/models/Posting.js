@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import Service from './Service';
+import Service from './posting/Service';
 import { blog_services } from './../enums/blog_services';
 
 export default Posting = types.model('Posting', {
