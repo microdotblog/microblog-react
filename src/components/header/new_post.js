@@ -9,7 +9,7 @@ import PostAddIcon from './../../assets/icons/post_add.png';
 export default class NewPostButton extends React.Component{
   
   render() {
-    if(Auth.selected_user != null){
+    if(Auth.selected_user != null && Auth.selected_user.posting?.posting_enabled()){
       return(
         <TouchableOpacity style={{ width: 40, height: 30, justifyContent: 'center', alignItems: 'center' }}
           onPress={() => postingScreen()}
