@@ -41,3 +41,10 @@ export default Posting = types.model('Posting', {
   }),
 
 }))
+.views(self => ({
+  
+  posting_enabled(){
+    return self.username != null && self.services != null && self.selected_service && self.selected_service.credentials()?.token != null
+  }
+  
+}))
