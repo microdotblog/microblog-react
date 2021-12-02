@@ -1,6 +1,7 @@
 import { types, flow } from 'mobx-state-tree';
 import Tokens from './../../Tokens';
 import MicroPubApi from './../../../api/MicroPubApi';
+import Config from './Config';
 
 export default Service = types.model('Service', {
   id: types.identifier,
@@ -8,7 +9,8 @@ export default Service = types.model('Service', {
   url: types.maybeNull(types.string),
   type: types.maybeNull(types.string),
   username: types.maybeNull(types.string),
-  is_microblog: types.optional(types.boolean, false)
+  is_microblog: types.optional(types.boolean, false),
+  config: types.maybeNull(Config)
 })
 .actions(self => ({
 
@@ -17,6 +19,9 @@ export default Service = types.model('Service', {
     if(self.is_microblog){
       const config = yield MicroPubApi.get_config(self.service_object())
       console.log("Endpoint:hydrate:config", config)
+      if(config){
+        self.config = config
+      }
     }
   }),
   
