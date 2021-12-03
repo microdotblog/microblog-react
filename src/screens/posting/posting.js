@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, Keyboard, ActivityIndicator } from 'react-native';
+import { View, TextInput, Keyboard, ActivityIndicator, Text } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Auth from '../../stores/Auth';
 
@@ -42,7 +42,7 @@ export default class PostingScreen extends React.Component{
             justifyContent: 'flex-start',
 						alignItems: 'flex-start',
             marginBottom: 38,
-            padding: 8
+            padding: 8,
           }}
           editable={!posting.is_sending_post}
           multiline={true}
@@ -66,10 +66,21 @@ export default class PostingScreen extends React.Component{
             right: 0,
             left: 0,
             padding: 5,
-            minHeight: 40
+            minHeight: 40,
+            flexDirection: 'row',
+            alignItems: 'center'
           }}
         >
-          
+          <Text
+            style={{
+              fontWeight: '200',
+              position: 'absolute',
+              right: 8,
+              bottom: 9,
+              padding: 2,
+              backgroundColor: 'rgba(255,255,255,.6)'
+            }}
+          ><Text style={{ color: posting.post_text_length() > 280 ? '#a94442' : 'black' }}>{posting.post_text_length()}</Text>/280</Text>
         </View>
         {
           posting.is_sending_post ?

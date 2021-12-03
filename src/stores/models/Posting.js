@@ -80,6 +80,10 @@ export default Posting = types.model('Posting', {
   
   posting_enabled(){
     return self.username != null && self.services != null && self.selected_service && self.selected_service.credentials()?.token != null
+  },
+  
+  post_text_length(){
+    return self.post_text.length
   }
   
 }))
