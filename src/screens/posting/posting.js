@@ -113,6 +113,13 @@ export default class PostingScreen extends React.Component{
           <TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("[]", this._text_selection)}>
             <Text style={{ fontSize: 20, fontWeight: '600', textAlign: 'center', padding: 2 }}>{"[ ]"}</Text>
           </TouchableOpacity>
+          {/* {
+            posting.selected_service.config.has_multiple_destinations() ?
+            <TouchableOpacity style={{ marginLeft: 10 }}>
+              <Text style={{ fontSize: 16, fontWeight: '400', textAlign: 'center', padding: 2 }}>{posting.selected_service.config.active_destination().name}</Text>
+            </TouchableOpacity>
+            : null
+          } */}
           <Text
             style={{
               fontWeight: '200',

@@ -9,6 +9,10 @@ export default Config = types.model('Config', {
   
   active_destination(){
     return self.destination != null && self.destination.length > 0 ? self.destination.find(destination => destination['microblog-default']) : null
-  }
+  },
+  
+  has_multiple_destinations(){
+    return self.destination != null && self.destination.length > 1
+  },
   
 }))
