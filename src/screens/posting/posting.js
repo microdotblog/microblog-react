@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, Keyboard } from 'react-native';
+import { View, TextInput, Keyboard, ActivityIndicator } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Auth from '../../stores/Auth';
 
@@ -54,6 +54,11 @@ export default class PostingScreen extends React.Component{
           value={posting.post_text}
           onChangeText={(text) => posting.set_post_text(text)}
         />
+        {
+          posting.is_sending_post ?
+          <ActivityIndicator color="#f80" size={'large'} style={{ position: 'absolute', right: 5, bottom: 5 }}  />
+          : null
+        }
       </View>
     )
   }
