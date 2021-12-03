@@ -79,6 +79,12 @@ export default Posting = types.model('Posting', {
     }
     return false
   }),
+  
+  handle_text_action: flow(function* (action, current_selection) {
+		console.log("Posting:handle_text_action", action, current_selection)
+    const is_link = action === "[]"
+    self.post_text = self.post_text.InsertTextStyle(action, current_selection, is_link)
+  }),
 
 }))
 .views(self => ({

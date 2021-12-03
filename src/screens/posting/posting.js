@@ -8,8 +8,9 @@ import Auth from '../../stores/Auth';
 export default class PostingScreen extends React.Component{
   
   constructor(props) {
-		super(props);
+		super(props)
 		Navigation.events().bindComponent(this);
+    this._text_selection = { start: 0, end: 0 }
 	}
   
   navigationButtonPressed = async ({ buttonId }) => {
@@ -85,6 +86,9 @@ export default class PostingScreen extends React.Component{
 					underlineColorAndroid={'transparent'}
           value={posting.post_text}
           onChangeText={(text) => !posting.is_sending_post ? posting.set_post_text(text) : null}
+          onSelectionChange={({ nativeEvent: { selection } }) => {
+            this._text_selection = selection
+          }}
         />
         <View
           style={{
@@ -100,13 +104,13 @@ export default class PostingScreen extends React.Component{
             alignItems: 'center'
           }}
         >
-          <TouchableOpacity style={{minWidth: 35}} onPress={() => console.log("Pressed: **")}>
+          <TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("**", this._text_selection)}>
             <Text style={{ fontSize: 20, fontWeight: '700', textAlign: 'center', padding: 2 }}>{"**"}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{minWidth: 35}} onPress={() => console.log("Pressed: _")}>
+          <TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("_", this._text_selection)}>
             <Text style={{ fontSize: 20, fontWeight: '800', textAlign: 'center', padding: 2 }}>{"_"}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{minWidth: 35}} onPress={() => console.log("Pressed: []")}>
+          <TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("[]", this._text_selection)}>
             <Text style={{ fontSize: 20, fontWeight: '600', textAlign: 'center', padding: 2 }}>{"[ ]"}</Text>
           </TouchableOpacity>
           <Text

@@ -23,7 +23,7 @@ export default Auth = types.model('Auth', {
       if(self.selected_user){
         self.is_selecting_user = false
       }
-      console.log("Auth:hydrate:with_data", data)
+      console.log("Auth:hydrate:with_data")
     }
     return self.is_logged_in()
   }),
