@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, Keyboard, ActivityIndicator, Text } from 'react-native';
+import { View, TextInput, Keyboard, ActivityIndicator, Text, TouchableOpacity } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Auth from '../../stores/Auth';
 
@@ -71,6 +71,15 @@ export default class PostingScreen extends React.Component{
             alignItems: 'center'
           }}
         >
+          <TouchableOpacity style={{minWidth: 35}} onPress={() => console.log("Pressed: **")}>
+            <Text style={{ fontSize: 20, fontWeight: '700', textAlign: 'center', padding: 2 }}>{"**"}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{minWidth: 35}} onPress={() => console.log("Pressed: _")}>
+            <Text style={{ fontSize: 20, fontWeight: '800', textAlign: 'center', padding: 2 }}>{"_"}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{minWidth: 35}} onPress={() => console.log("Pressed: []")}>
+            <Text style={{ fontSize: 20, fontWeight: '600', textAlign: 'center', padding: 2 }}>{"[ ]"}</Text>
+          </TouchableOpacity>
           <Text
             style={{
               fontWeight: '200',
