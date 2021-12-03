@@ -42,6 +42,7 @@ export default class PostingScreen extends React.Component{
             justifyContent: 'flex-start',
 						alignItems: 'flex-start'
           }}
+          editable={!posting.is_sending_post}
           multiline={true}
           scrollEnabled={true}
           returnKeyType={'default'}
@@ -52,13 +53,27 @@ export default class PostingScreen extends React.Component{
 					enablesReturnKeyAutomatically={true}
 					underlineColorAndroid={'transparent'}
           value={posting.post_text}
-          onChangeText={(text) => posting.set_post_text(text)}
+          onChangeText={(text) => !posting.is_sending_post ? posting.set_post_text(text) : null}
         />
         {
           posting.is_sending_post ?
-          <ActivityIndicator color="#f80" size={'large'} style={{ position: 'absolute', right: 5, bottom: 5 }}  />
+          <View 
+            style={{ 
+              position: 'absolute',
+              top: 0,
+              bottom:0,
+              width: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(255,255,255,0.6)',
+              zIndex: 10
+            }} 
+          >
+            <ActivityIndicator color="#f80" size={'large'} />
+          </View>
           : null
         }
+        
       </View>
     )
   }
