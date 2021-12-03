@@ -33,14 +33,16 @@ export default class PostingScreen extends React.Component{
   render() {
     const { posting } = Auth.selected_user
     return(
-      <View style={{ flex: 1, padding: 8 }}>
+      <View style={{ flex: 1 }}>
         <TextInput
           placeholderTextColor="lightgrey"
           style={{
             padding: 5,
             fontSize: 18,
             justifyContent: 'flex-start',
-						alignItems: 'flex-start'
+						alignItems: 'flex-start',
+            marginBottom: 38,
+            padding: 8
           }}
           editable={!posting.is_sending_post}
           multiline={true}
@@ -55,6 +57,20 @@ export default class PostingScreen extends React.Component{
           value={posting.post_text}
           onChangeText={(text) => !posting.is_sending_post ? posting.set_post_text(text) : null}
         />
+        <View
+          style={{
+            width: '100%',
+            backgroundColor: '#E5E7EB',
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+            left: 0,
+            padding: 5,
+            minHeight: 40
+          }}
+        >
+          
+        </View>
         {
           posting.is_sending_post ?
           <View 
