@@ -34,14 +34,43 @@ export default class PostingScreen extends React.Component{
     const { posting } = Auth.selected_user
     return(
       <View style={{ flex: 1 }}>
+        {
+          posting.post_text_length() > 280 || posting.post_title ?
+          <TextInput
+            placeholder="Optional post title"
+            placeholderTextColor="lightgrey"
+            style={{
+              fontSize: 18,
+              justifyContent: 'flex-start',
+						  alignItems: 'flex-start',
+              padding: 8,
+              marginBottom: -5,
+              fontWeight: '700',
+              borderColor: '#E5E7EB',
+              borderBottomWidth: .5
+            }}
+            editable={!posting.is_sending_post}
+            multiline={false}
+            scrollEnabled={false}
+            returnKeyType={'default'}
+					  keyboardType={'default'}
+					  autoFocus={false}
+					  autoCorrect={true}
+					  clearButtonMode={'while-editing'}
+					  enablesReturnKeyAutomatically={true}
+					  underlineColorAndroid={'transparent'}
+            value={posting.post_title}
+            onChangeText={(text) => !posting.is_sending_post ? posting.set_post_title(text) : null}
+          />
+          : null
+        }
         <TextInput
           placeholderTextColor="lightgrey"
           style={{
-            padding: 5,
             fontSize: 18,
             justifyContent: 'flex-start',
 						alignItems: 'flex-start',
-            marginBottom: 38,
+            marginBottom: posting.post_text_length() > 280 || posting.post_title ? 80 : 38,
             padding: 8,
           }}
           editable={!posting.is_sending_post}

@@ -49,6 +49,10 @@ export default Posting = types.model('Posting', {
 		self.post_text = value
   }),
   
+  set_post_title: flow(function* (value) {
+		self.post_title = value === "" ? null : value
+  }),
+  
   send_post: flow(function* () {
 		console.log("Posting:send_post", self.post_text)
     if(self.post_text === ""){
@@ -66,10 +70,11 @@ export default Posting = types.model('Posting', {
       return false
     }
     self.is_sending_post = true
-    const post_success = yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text)
+    const post_success = yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title)
     self.is_sending_post = false
     if(post_success !== POST_ERROR){
       self.post_text = ""
+      self.post_title = null
       return true
     }
     return false
