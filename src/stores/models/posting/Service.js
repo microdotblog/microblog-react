@@ -40,7 +40,8 @@ export default Service = types.model('Service', {
     return {
       endpoint: self.url,
       username: self.username,
-      token: this.credentials()?.token
+      token: this.credentials()?.token,
+      destination: self.config?.active_destination()?.uid
     }
   }
   

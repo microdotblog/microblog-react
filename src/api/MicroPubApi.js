@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { Alert } from 'react-native';
 import axios from 'axios';
 
@@ -55,9 +54,8 @@ class MicroPubApi {
 			})
 		}
 		params.append('mp-destination', service.destination)
-    
 		console.log("MicroBlogApi:send_post:FORM_DATA:PARAMS", params)
-    
+		
 		const post = axios
 			.post(service.endpoint, params ,{
 				headers: { Authorization: `Bearer ${service.token}` }

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, TextInput, Keyboard } from 'react-native';
 import { Navigation } from 'react-native-navigation';
+import Auth from '../../stores/Auth';
 
 @observer
 export default class PostingScreen extends React.Component{
@@ -11,9 +12,17 @@ export default class PostingScreen extends React.Component{
 		Navigation.events().bindComponent(this);
 	}
   
-  navigationButtonPressed = ({ buttonId }) => {
+  navigationButtonPressed = async ({ buttonId }) => {
     console.log("navigationButtonPressed::", buttonId)
-    this._dismiss()
+    if(buttonId === "post_button"){
+      const sent = await Auth.selected_user.posting.send_post()
+      if(sent){
+        this._dismiss()
+      }
+    }
+    else{
+      this._dismiss()
+    }
   }
   
   _dismiss = () => {
@@ -22,6 +31,7 @@ export default class PostingScreen extends React.Component{
 	}
   
   render() {
+    const { posting } = Auth.selected_user
     return(
       <View style={{ flex: 1, padding: 8 }}>
         <TextInput
@@ -41,6 +51,8 @@ export default class PostingScreen extends React.Component{
 					clearButtonMode={'while-editing'}
 					enablesReturnKeyAutomatically={true}
 					underlineColorAndroid={'transparent'}
+          value={posting.post_text}
+          onChangeText={(text) => posting.set_post_text(text)}
         />
       </View>
     )

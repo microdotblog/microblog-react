@@ -1,11 +1,16 @@
 import { types, flow } from 'mobx-state-tree';
 import Service from './posting/Service';
 import { blog_services } from './../enums/blog_services';
+import { Alert } from 'react-native';
+import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
 
 export default Posting = types.model('Posting', {
   username: types.identifier,
   services: types.optional(types.array(Service), []),
-  selected_service: types.maybeNull(types.reference(Service))
+  selected_service: types.maybeNull(types.reference(Service)),
+  post_text: types.optional(types.string, ""),
+  post_title: types.maybeNull(types.string),
+  is_sending_post: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -38,6 +43,36 @@ export default Posting = types.model('Posting', {
   
   afterCreate: flow(function* () {
     self.hydrate()
+  }),
+  
+  set_post_text: flow(function* (value) {
+		self.post_text = value
+  }),
+  
+  send_post: flow(function* () {
+		console.log("Posting:send_post", self.post_text)
+    if(self.post_text === ""){
+      Alert.alert(
+        "Whoops...",
+        "There is nothing to post... type something to get started."
+      )
+      return false
+    }
+    if(self.is_sending_post){
+      Alert.alert(
+        "Whoops...",
+        "We're already sending another message, please wait and try again."
+      )
+      return false
+    }
+    self.is_sending_post = true
+    const post_success = yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text)
+    self.is_sending_post = false
+    if(post_success !== POST_ERROR){
+      self.post_text = ""
+      return true
+    }
+    return false
   }),
 
 }))
