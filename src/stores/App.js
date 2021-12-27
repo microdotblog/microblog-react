@@ -5,6 +5,7 @@ import Login from './Login';
 import { Linking } from 'react-native'
 import { Navigation } from "react-native-navigation";
 import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
+import Discover from './Discover'
 
 let SCROLLING_TIMEOUT = null
 
@@ -26,6 +27,9 @@ export default App = types.model('App', {
         console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
         if(!Auth.is_logged_in()){
           loginScreen()
+        }
+        else {
+          Discover.init()
         }
         App.set_is_loading(false)
         App.set_up_url_listener()

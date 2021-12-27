@@ -111,7 +111,25 @@ class MicroBlogApi {
 				return FETCH_ERROR;
 			});
 		return unfollow;
-	}
+  }
+  
+  async get_discover_timeline() {
+    console.log('MicroBlogApi:get_discover_timeline');
+    const discover = axios
+      .get(`/posts/discover`, {
+        headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+        params: { count: 0 }
+      })
+      .then(response => {
+        console.log("MicroBlogApi:get_discover_timeline:response", response.data)
+        return response.data?._microblog?.tagmoji
+      })
+      .catch(error => {
+        console.log(error)
+        return API_ERROR
+      });
+    return discover
+  }
 }
 
 export default new MicroBlogApi()
