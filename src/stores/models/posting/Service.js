@@ -21,7 +21,21 @@ export default Service = types.model('Service', {
       console.log("Endpoint:hydrate:config", config)
       if(config){
         self.config = config
+        self.check_for_categories()
       }
+    }
+  }),
+
+  check_for_categories: flow(function* () { 
+    if(self.config?.destination != null && self.config.destination.length > 0){
+      self.config.destination.forEach(async (destination) => {
+        console.log("Endpoint:check_for_categories", destination.uid)
+        const data = await MicroPubApi.get_categories(self.service_object(), destination.uid)
+        console.log("Endpoint:check_for_categories:categories", data)
+        if(data?.categories != null && data.categories.length > 0){
+          destination.set_categories(data.categories)
+        }
+      })
     }
   }),
   

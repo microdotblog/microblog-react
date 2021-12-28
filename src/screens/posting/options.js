@@ -5,6 +5,12 @@ import Auth from '../../stores/Auth';
 
 @observer
 export default class PostingOptionsScreen extends React.Component{
+
+	componentDidMount() {
+    if (Auth.selected_user.posting.selected_service != null) {
+      Auth.selected_user.posting.selected_service.check_for_categories()
+    }
+  }
   
   render() {
     const { posting } = Auth.selected_user

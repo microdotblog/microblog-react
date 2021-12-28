@@ -14,7 +14,13 @@ export default class PostingScreen extends React.Component{
 		super(props)
 		Navigation.events().bindComponent(this);
     this._text_selection = { start: 0, end: 0 }
-	}
+  }
+  
+  componentDidMount() {
+    if (Auth.selected_user.posting.selected_service != null) {
+      Auth.selected_user.posting.selected_service.check_for_categories()
+    }
+  }
   
   navigationButtonPressed = async ({ buttonId }) => {
     console.log("navigationButtonPressed::", buttonId)
