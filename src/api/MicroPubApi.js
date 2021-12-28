@@ -111,7 +111,7 @@ class MicroPubApi {
 			uri: file.uri
 		})
 		data.append("mp-destination", service.destination)
-		console.log('MicroPubApi:upload_image', data);
+		console.log('MicroPubApi:upload_image', service, file, data);
 		
 		const upload = axios
 			.post(service.media_endpoint, data, {

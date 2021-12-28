@@ -120,7 +120,6 @@ class MicroBlogApi {
         params: { count: 0 }
       })
       .then(response => {
-        console.log("MicroBlogApi:get_discover_timeline:response", response.data)
         return response.data?._microblog?.tagmoji
       })
       .catch(error => {

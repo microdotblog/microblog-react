@@ -4,6 +4,7 @@ import { blog_services } from './../enums/blog_services';
 import { Alert } from 'react-native';
 import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
 import { launchImageLibrary } from 'react-native-image-picker';
+import Image from './posting/Image'
 
 export default Posting = types.model('Posting', {
   username: types.identifier,
@@ -11,7 +12,8 @@ export default Posting = types.model('Posting', {
   selected_service: types.maybeNull(types.reference(Service)),
   post_text: types.optional(types.string, ""),
   post_title: types.maybeNull(types.string),
-  is_sending_post: types.optional(types.boolean, false)
+  is_sending_post: types.optional(types.boolean, false),
+  post_images: types.optional(types.array(types.reference(Image)), []),
 })
 .actions(self => ({
 
@@ -71,11 +73,13 @@ export default Posting = types.model('Posting', {
       return false
     }
     self.is_sending_post = true
+    // TODO: Upload images
     const post_success = yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title)
     self.is_sending_post = false
     if(post_success !== POST_ERROR){
       self.post_text = ""
       self.post_title = null
+      self.post_images = []
       return true
     }
     return false
@@ -104,6 +108,14 @@ export default Posting = types.model('Posting', {
         "There was an error with selecting your image, please try again."
       )
       return
+    }
+    if (result.assets) {
+      result.assets.forEach((asset) => {
+        console.log("Posting:handle_image_action:asset", asset)
+        const image = Image.create(asset)
+        self.post_images.push(image)
+        image.upload(self.selected_service.service_object())
+      })
     }
   })
     

@@ -41,7 +41,8 @@ export default Service = types.model('Service', {
       endpoint: self.url,
       username: self.username,
       token: this.credentials()?.token,
-      destination: self.config?.active_destination()?.uid
+      destination: self.config?.active_destination()?.uid,
+      media_endpoint: self.config?.media_endpoint()
     }
   }
   

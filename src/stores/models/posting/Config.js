@@ -14,5 +14,9 @@ export default Config = types.model('Config', {
   has_multiple_destinations(){
     return self.destination != null && self.destination.length > 1
   },
+
+  media_endpoint(){
+    return self["media-endpoint"] != null ? self["media-endpoint"] : null
+  },
   
 }))
