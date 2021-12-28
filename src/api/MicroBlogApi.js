@@ -117,7 +117,6 @@ class MicroBlogApi {
     console.log('MicroBlogApi:get_discover_timeline');
     const discover = axios
       .get(`/posts/discover`, {
-        headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
         params: { count: 0 }
       })
       .then(response => {

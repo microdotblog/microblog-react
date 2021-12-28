@@ -7,7 +7,8 @@ export default Discover = types.model('Discover', {
 		title: types.maybeNull(types.string),
 		emoji: types.maybeNull(types.string),
 		is_featured: types.maybeNull(types.boolean)
-	})), [])
+	})), []),
+	random_tagmoji: types.optional(types.array(types.string), [])
 })
 .actions(self => ({
 
@@ -17,8 +18,33 @@ export default Discover = types.model('Discover', {
 		if (tagmoji !== API_ERROR && tagmoji != null && tagmoji.length > 0) {
 			console.log("Discover:init:tagmoji", tagmoji)
 			self.tagmoji = tagmoji
+			self.random_tagmoji = self.random_emojis()
 		}
+	}),
+
+	shuffle_random_emoji: flow(function* () { 
+		if (self.tagmoji.length === 0) {
+			yield self.init()
+		}
+		self.random_tagmoji = self.random_emojis()
 	})
+
+}))
+.views(self => ({
+	
+	random_emojis() {
+		const emoji_list = self.tagmoji.map(tagmoji => tagmoji.emoji)
+		const emoji_list_length = emoji_list.length
+		const emoji_list_random_indexes = []
+		for (let i = 0; i < 3; i++) {
+			let random_index = Math.floor(Math.random() * emoji_list_length)
+			while (emoji_list_random_indexes.includes(random_index)) {
+				random_index = Math.floor(Math.random() * emoji_list_length)
+			}
+			emoji_list_random_indexes.push(random_index)
+		}
+		return emoji_list.filter((emoji, index) => emoji_list_random_indexes.includes(index))
+	}
 
 }))
 .create()
