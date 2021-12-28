@@ -13,7 +13,7 @@ export default Posting = types.model('Posting', {
   post_text: types.optional(types.string, ""),
   post_title: types.maybeNull(types.string),
   is_sending_post: types.optional(types.boolean, false),
-  post_images: types.optional(types.array(types.reference(Image)), []),
+  post_images: types.optional(types.array(Image), []),
 })
 .actions(self => ({
 
@@ -42,6 +42,8 @@ export default Posting = types.model('Posting', {
       // We want to select one default endpoint
       self.selected_service = self.services[0]
     }
+    self.post_images = []
+    self.is_sending_post = false
   }),
   
   afterCreate: flow(function* () {
@@ -58,7 +60,7 @@ export default Posting = types.model('Posting', {
   
   send_post: flow(function* () {
 		console.log("Posting:send_post", self.post_text)
-    if(self.post_text === ""){
+    if(self.post_text === "" && self.post_images.length === 0){
       Alert.alert(
         "Whoops...",
         "There is nothing to post... type something to get started."
@@ -73,8 +75,7 @@ export default Posting = types.model('Posting', {
       return false
     }
     self.is_sending_post = true
-    // TODO: Upload images
-    const post_success = yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title)
+    const post_success = yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_images)
     self.is_sending_post = false
     if(post_success !== POST_ERROR){
       self.post_text = ""

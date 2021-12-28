@@ -35,7 +35,7 @@ class MicroPubApi {
 			params.append('name', title)
 		}
 		if (images.length) {
-			const images_with_url = images.filter(image => image.remote_url !== null && image.did_upload && !image.is_inline)
+			const images_with_url = images.filter(image => image.remote_url !== null && image.did_upload)
 			if (images_with_url) {
 				// Now that we have images, we can append them to our params
 				if (images_with_url.length === 1) {
