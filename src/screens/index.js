@@ -27,6 +27,7 @@ export const POSTING_SCREEN = 'microblog.PostingScreen';
 import ProfileImage from './../components/header/profile_image';
 import SheetMenu from './../components/sheets/menu';
 import NewPostButton from './../components/header/new_post';
+import TagmojiMenu from "../components/sheets/tagmoji";
 
 export const PROFILE_IMAGE = 'microblog.component.ProfileImage'
 export const NEW_POST_BUTTON = 'microblog.component.NewPostButton'
@@ -423,4 +424,16 @@ export const postingScreen = () => {
       }],
     }
   });
+}
+
+export const tagmojiBottomSheet = (close = false) => {
+  if(!close){
+    return RNNBottomSheet.openBottomSheet({
+      renderContent: () => <TagmojiMenu />,
+      snapPoints: [0, '20%', '40%', '70%'],
+      initialSnapIndex: 2,
+      borderRadius: 16,
+    })
+  }
+  RNNBottomSheet.closeBottomSheet()
 }
