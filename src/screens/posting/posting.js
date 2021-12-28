@@ -91,6 +91,26 @@ export default class PostingScreen extends React.Component{
             this._text_selection = selection
           }}
         />
+        {
+          posting.post_images.length > 0 ?
+            <View
+              style={{
+                position: 'absolute',
+                bottom: 40,
+                flexDirection: 'row',
+                padding: 8
+              }}
+            >
+              {
+                posting.post_images.map((image) => (
+                  <View key={image.uri} style={{ marginRight: 4 }}>
+                    <Image source={{uri: image.uri}} style={{ width: 50, height: 50, borderRadius: 5 }} />
+                  </View>
+                ))
+              }
+            </View>
+          : null
+        }
         <View
           style={{
             width: '100%',
