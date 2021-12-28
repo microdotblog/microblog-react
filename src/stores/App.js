@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import { Linking } from 'react-native'
@@ -103,6 +103,8 @@ export default App = types.model('App', {
           return conversationScreen(action_data, self.current_screen_id)
         case "photo":
           App.set_image_modal_data_and_activate(action_data)
+        case "discover/topic":
+          return discoverTopicScreen(action_data, self.current_screen_id)
       }
     }
   }),

@@ -12,6 +12,7 @@ import ConversationScreen from "./conversation/conversation";
 import BookmarksScreen from "./bookmarks/bookmarks";
 import FollowingScreen from "./following/following";
 import PostingScreen from "./posting/posting";
+import DiscoverTopicScreen from "./discover/topic";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -22,6 +23,7 @@ export const CONVERSATION_SCREEN = 'microblog.ConversationScreen';
 export const BOOKMARKS_SCREEN = 'microblog.BookmarksScreen';
 export const FOLLOWING_SCREEN = 'microblog.FollowingScreen';
 export const POSTING_SCREEN = 'microblog.PostingScreen';
+export const DISCOVER_TOPIC_SCREEN = 'microblog.DiscoverTopicScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -49,6 +51,7 @@ Screens.set(CONVERSATION_SCREEN, ConversationScreen);
 Screens.set(BOOKMARKS_SCREEN, BookmarksScreen);
 Screens.set(FOLLOWING_SCREEN, FollowingScreen);
 Screens.set(POSTING_SCREEN, PostingScreen);
+Screens.set(DISCOVER_TOPIC_SCREEN, DiscoverTopicScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
@@ -436,4 +439,42 @@ export const tagmojiBottomSheet = (close = false) => {
     })
   }
   RNNBottomSheet.closeBottomSheet()
+}
+
+export const discoverTopicScreen = (topic, component_id) => {
+  console.log("Screens:discoverTopicScreen", topic, component_id);
+  const options = {
+    component: {
+      id: 'DISCOVER_TOPIC_SCREEN',
+			name: DISCOVER_TOPIC_SCREEN,
+			passProps: {
+        topic_name: topic.name
+			},
+			options: {
+				topBar: {
+					title: {
+            text: `${topic.emoji} ${topic.title}`
+          },
+          rightButtons: [
+            {
+              id: 'post_button',
+              text: 'New',
+              component: {
+                name: NEW_POST_BUTTON
+              }
+            },
+            {
+              id: 'profile_button',
+              text: 'profile',
+              component: {
+                name: PROFILE_IMAGE
+              }
+            },
+          ],
+				}
+			}
+		}
+	};
+
+  return Navigation.push(component_id, options);
 }
