@@ -430,7 +430,7 @@ export const tagmojiBottomSheet = (close = false) => {
   if(!close){
     return RNNBottomSheet.openBottomSheet({
       renderContent: () => <TagmojiMenu />,
-      snapPoints: [0, '20%', '40%', '70%'],
+      snapPoints: [0, '20%', '40%', '90%'],
       initialSnapIndex: 2,
       borderRadius: 16,
     })
