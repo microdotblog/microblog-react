@@ -118,8 +118,35 @@ export default Posting = types.model('Posting', {
         image.upload(self.selected_service.service_object())
       })
     }
-  })
-    
+  }),
+
+  image_action: flow(function* (image, index) {
+    console.log("Posting:image_action", image)
+    const existing_index = self.post_images.findIndex(file => file.uri === image.uri)
+    if (existing_index > -1) {
+      Alert.alert(
+        "Remove image",
+        "Are you sure you want to remove this image from this post?",
+        [
+          {
+            text: "Cancel",
+            style: 'cancel',
+          },
+          {
+            text: "Remove",
+            onPress: () => self.remove_image(index),
+            style: 'destructive'
+          },
+        ],
+        {cancelable: false},
+      );
+    }
+  }),
+  
+  remove_image: flow(function* (image_index) {
+    console.log("Posting:remove_image:index", image_index)
+    self.post_images.splice(image_index, 1)
+  }),
 
 }))
 .views(self => ({

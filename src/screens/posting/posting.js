@@ -72,7 +72,7 @@ export default class PostingScreen extends React.Component{
             fontSize: 18,
             justifyContent: 'flex-start',
 						alignItems: 'flex-start',
-            marginBottom: posting.post_text_length() > 280 || posting.post_title ? 80 : 38,
+            marginBottom: posting.post_text_length() > 280 || posting.post_title ? posting.post_images.length > 0 ? 135 : 80 : posting.post_images.length > 0 ? 93 : 38,
             padding: 8,
           }}
           editable={!posting.is_sending_post}
@@ -102,15 +102,25 @@ export default class PostingScreen extends React.Component{
               }}
             >
               {
-                posting.post_images.map((image) => (
-                  <View key={image.uri} style={{ marginRight: 4, position: 'relative', justifyContent: 'center', alignItems: 'center', width: 50, height: 50 }}>
+                posting.post_images.map((image, index) => (
+                  <TouchableOpacity
+                    onPress={() => posting.image_action(image, index)}
+                    key={image.uri}
+                    style={{
+                      marginRight: 4,
+                      position: 'relative',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: 50,
+                      height: 50
+                    }}>
                     <Image source={{ uri: image.remote_url ? image.remote_url : image.uri }} style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
                     {
                       image.is_uploading ?
                         <ActivityIndicator color="#f80" style={{position: 'absolute'}} />
                       : null
                     }
-                  </View>
+                  </TouchableOpacity>
                 ))
               }
             </View>
