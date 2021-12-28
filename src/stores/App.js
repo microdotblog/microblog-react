@@ -102,7 +102,7 @@ export default App = types.model('App', {
         case "open":
           return conversationScreen(action_data, self.current_screen_id)
         case "photo":
-          App.set_image_modal_data_and_activate(action_data)
+          return App.set_image_modal_data_and_activate(action_data)
         case "discover/topic":
           return discoverTopicScreen(action_data, self.current_screen_id)
       }
