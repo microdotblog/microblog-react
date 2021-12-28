@@ -13,6 +13,7 @@ export default class ImageModalModule extends React.Component{
 					images={[ { uri: App.current_image_url }]}
 					visible={App.image_modal_is_open}
 					onRequestClose={App.reset_image_modal}
+					swipeToCloseEnabled={false}
 				/>
 			)
 		}
