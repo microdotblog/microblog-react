@@ -4,6 +4,8 @@ import { View, TextInput, Keyboard, ActivityIndicator, Text, TouchableOpacity, I
 import { Navigation } from 'react-native-navigation';
 import Auth from '../../stores/Auth';
 import PhotoLibrary from '../../assets/icons/toolbar/photo_library.png';
+import SettingsIcon from '../../assets/icons/toolbar/settings.png';
+import { postingOptionsScreen } from '..';
 
 @observer
 export default class PostingScreen extends React.Component{
@@ -159,16 +161,31 @@ export default class PostingScreen extends React.Component{
             </TouchableOpacity>
             : null
           } */}
-          <Text
+          <View
             style={{
-              fontWeight: '200',
               position: 'absolute',
               right: 8,
               bottom: 9,
-              padding: 2,
-              backgroundColor: 'rgba(255,255,255,.6)'
+              flexDirection: 'row',
+              alignItems: 'center'
             }}
-          ><Text style={{ color: posting.post_text_length() > 280 ? '#a94442' : 'black' }}>{posting.post_text_length()}</Text>/280</Text>
+          >
+            <TouchableOpacity
+              onPress={() => postingOptionsScreen(this.props.componentId)}
+              style={{
+                marginRight: 8,
+              }}
+            >
+              <Image source={SettingsIcon} style={{width: 24, height: 24}} />
+            </TouchableOpacity>
+            <Text
+              style={{
+                fontWeight: '200',
+                padding: 2,
+                backgroundColor: 'rgba(255,255,255,.6)'
+              }}
+            ><Text style={{ color: posting.post_text_length() > 280 ? '#a94442' : 'black' }}>{posting.post_text_length()}</Text>/280</Text>
+          </View>
         </View>
         {
           posting.is_sending_post ?

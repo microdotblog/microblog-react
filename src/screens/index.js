@@ -13,6 +13,7 @@ import BookmarksScreen from "./bookmarks/bookmarks";
 import FollowingScreen from "./following/following";
 import PostingScreen from "./posting/posting";
 import DiscoverTopicScreen from "./discover/topic";
+import PostingOptionsScreen from "./posting/options";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -24,6 +25,7 @@ export const BOOKMARKS_SCREEN = 'microblog.BookmarksScreen';
 export const FOLLOWING_SCREEN = 'microblog.FollowingScreen';
 export const POSTING_SCREEN = 'microblog.PostingScreen';
 export const DISCOVER_TOPIC_SCREEN = 'microblog.DiscoverTopicScreen';
+export const POSTING_OPTIONS_SCREEN = 'microblog.PostingOptionsScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -52,6 +54,7 @@ Screens.set(BOOKMARKS_SCREEN, BookmarksScreen);
 Screens.set(FOLLOWING_SCREEN, FollowingScreen);
 Screens.set(POSTING_SCREEN, PostingScreen);
 Screens.set(DISCOVER_TOPIC_SCREEN, DiscoverTopicScreen);
+Screens.set(POSTING_OPTIONS_SCREEN, PostingOptionsScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
@@ -471,6 +474,25 @@ export const discoverTopicScreen = (topic, component_id) => {
               }
             },
           ],
+				}
+			}
+		}
+	};
+
+  return Navigation.push(component_id, options);
+}
+
+export const postingOptionsScreen = (component_id) => {
+  console.log("Screens:discoverTopicScreen", component_id);
+  const options = {
+    component: {
+      id: 'POSTING_OPTIONS_SCREEN',
+			name: POSTING_OPTIONS_SCREEN,
+			options: {
+				topBar: {
+					title: {
+            text: "Posting options & blogs"
+          },
 				}
 			}
 		}
