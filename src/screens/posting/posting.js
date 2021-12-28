@@ -104,7 +104,7 @@ export default class PostingScreen extends React.Component{
               {
                 posting.post_images.map((image) => (
                   <View key={image.uri} style={{ marginRight: 4, position: 'relative', justifyContent: 'center', alignItems: 'center', width: 50, height: 50 }}>
-                    <Image source={{ uri: image.remote_url ? image.remote_url : image.uri }} style={{ width: 50, height: 50, borderRadius: 5 }} />
+                    <Image source={{ uri: image.remote_url ? image.remote_url : image.uri }} style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
                     {
                       image.is_uploading ?
                         <ActivityIndicator color="#f80" style={{position: 'absolute'}} />
