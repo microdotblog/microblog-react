@@ -24,6 +24,7 @@
     "react-native-fast-image": "^8.5.11",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-hyperlink": "^0.0.19",
+    "react-native-image-picker": "^4.6.0",
     "react-native-image-viewing": "^0.2.1",
     "react-native-navigation": "^7.22.3",
     "react-native-navigation-bottom-sheet": "^1.3.0",
