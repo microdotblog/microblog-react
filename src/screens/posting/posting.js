@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, Keyboard, ActivityIndicator, Text, TouchableOpacity } from 'react-native';
+import { View, TextInput, Keyboard, ActivityIndicator, Text, TouchableOpacity, Image } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Auth from '../../stores/Auth';
+import PhotoLibrary from '../../assets/icons/toolbar/photo_library.png';
 
 @observer
 export default class PostingScreen extends React.Component{
@@ -112,6 +113,9 @@ export default class PostingScreen extends React.Component{
           </TouchableOpacity>
           <TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("[]", this._text_selection)}>
             <Text style={{ fontSize: 20, fontWeight: '600', textAlign: 'center', padding: 2 }}>{"[ ]"}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{minWidth: 35, marginLeft: 8, marginRight: 8}} onPress={posting.handle_image_action}>
+            <Image source={PhotoLibrary} style={{width: 24, height: 24}} />
           </TouchableOpacity>
           {/* {
             posting.selected_service.config.has_multiple_destinations() ?

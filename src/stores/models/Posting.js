@@ -3,6 +3,7 @@ import Service from './posting/Service';
 import { blog_services } from './../enums/blog_services';
 import { Alert } from 'react-native';
 import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 export default Posting = types.model('Posting', {
   username: types.identifier,
@@ -85,6 +86,27 @@ export default Posting = types.model('Posting', {
     const is_link = action === "[]"
     self.post_text = self.post_text.InsertTextStyle(action, current_selection, is_link)
   }),
+
+  handle_image_action: flow(function* () {
+    console.log("Posting:handle_image_action")
+    const options = {
+      title: 'Select an image',
+      mediaType: 'photo',
+    };
+    const result = yield launchImageLibrary(options)
+    console.log("Posting:handle_image_action:result", result)
+    if(result.didCancel){
+      return
+    }
+    if(result.errorCode){
+      Alert.alert(
+        "Whoops...",
+        "There was an error with selecting your image, please try again."
+      )
+      return
+    }
+  })
+    
 
 }))
 .views(self => ({
