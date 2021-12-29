@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 import Auth from '../../stores/Auth';
+import CheckmarkIcon from '../../assets/icons/checkmark.png';
 
 @observer
 export default class PostingOptionsScreen extends React.Component{
@@ -29,13 +30,15 @@ export default class PostingOptionsScreen extends React.Component{
 										key={category}
 										style={{
 											padding: 8,
-											marginBottom: 5
+											marginBottom: 5,
+											flexDirection: 'row',
+											alignItems: 'center',
 										}}
 										onPress={() => {
 											posting.handle_post_category_select(category)
 										}}
 									>
-										<Text style={ is_selected ? { fontWeight: '500' } : null}>{category}{ is_selected ? " (selected)" : "" }</Text>
+										<Text style={ is_selected ? { fontWeight: '500' } : null}>{category} { is_selected ? <Image source={CheckmarkIcon} style={{ width: 15, height: 15 }} /> : null }</Text>
 									</TouchableOpacity>
 								)
 							})
@@ -66,7 +69,7 @@ export default class PostingOptionsScreen extends React.Component{
 										{destination.name}
 										{
 											is_selected_blog ?
-												<Text> (default)</Text>
+												<Text> (default) <Image source={CheckmarkIcon} style={{ width: 15, height: 15 }} /></Text>
 											: null
 										}
 									</Text>
