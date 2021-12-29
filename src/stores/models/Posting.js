@@ -14,6 +14,7 @@ export default Posting = types.model('Posting', {
   post_title: types.maybeNull(types.string),
   is_sending_post: types.optional(types.boolean, false),
   post_images: types.optional(types.array(Image), []),
+  post_categories: types.optional(types.array(types.string), []),
 })
 .actions(self => ({
 
@@ -146,6 +147,20 @@ export default Posting = types.model('Posting', {
   remove_image: flow(function* (image_index) {
     console.log("Posting:remove_image:index", image_index)
     self.post_images.splice(image_index, 1)
+  }),
+
+  remove_post_categories: flow(function* () {
+    console.log("Posting:remove_post_categories")
+    self.post_categories = []
+  }),
+
+  handle_post_category_select: flow(function* (category) {
+    console.log("Posting:handle_post_category_select")
+    if (self.post_categories.includes(category)) {
+      self.post_categories = self.post_categories.filter(c => c !== category)
+    } else {
+      self.post_categories.push(category)
+    }
   }),
 
 }))

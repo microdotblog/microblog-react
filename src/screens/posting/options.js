@@ -23,15 +23,19 @@ export default class PostingOptionsScreen extends React.Component{
 					{
 						posting.selected_service.config.active_destination().categories.length ?
 							posting.selected_service.config.active_destination().categories.map((category) => {
+								const is_selected = posting.post_categories.indexOf(category) > -1
 								return(
 									<TouchableOpacity
 										key={category}
 										style={{
 											padding: 8,
-											marginBottom: 5,
+											marginBottom: 5
+										}}
+										onPress={() => {
+											posting.handle_post_category_select(category)
 										}}
 									>
-										<Text>{category}</Text>
+										<Text style={ is_selected ? { fontWeight: '500' } : null}>{category}{ is_selected ? " (selected)" : "" }</Text>
 									</TouchableOpacity>
 								)
 							})
@@ -50,7 +54,8 @@ export default class PostingOptionsScreen extends React.Component{
 								<TouchableOpacity
 									key={destination.uid}
 									onPress={() => {
-										posting.selected_service.config.set_default_destination(destination)
+										posting.selected_service.config.set_default_destination(destination);
+										posting.remove_post_categories()
 									}}
 									style={{
 										padding: 8,
