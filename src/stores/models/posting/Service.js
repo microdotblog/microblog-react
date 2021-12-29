@@ -46,7 +46,7 @@ export default Service = types.model('Service', {
 }))
 .views(self => ({
   
-  credentials(){
+  credentials() {
     return self.name != null && self.name === "Micro.blog" && self.username != null && self.is_microblog ? Tokens.token_for_username(self.username) : null
   },
   

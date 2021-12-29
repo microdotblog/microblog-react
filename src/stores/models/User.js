@@ -21,6 +21,9 @@ export default User = types.model('User', {
       if(self.posting == null){
         self.posting = Posting.create({username: self.username})
       }
+      else {
+        self.posting.hydrate()
+      }
     }),
     
     afterCreate: flow(function* () {
