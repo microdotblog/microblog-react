@@ -50,7 +50,7 @@ export default class ProfileHeader extends React.Component{
   
   _render_profile = () => {
     const { profile, more_expanded } = this.state;
-    const long_bio = profile._microblog.bio ? profile._microblog.bio.trim().replace(/\n/g, " ") : null
+    const long_bio = profile._microblog.bio ? profile._microblog.bio.trim().replace(/\n/g, " ").replace(/&amp;/g, "&") : null
     const short_bio = long_bio ? long_bio.slice(0, 90) : null
     const show_expand_option = long_bio?.length > short_bio?.length
     return(
