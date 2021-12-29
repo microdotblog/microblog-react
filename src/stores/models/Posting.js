@@ -76,12 +76,13 @@ export default Posting = types.model('Posting', {
       return false
     }
     self.is_sending_post = true
-    const post_success = yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_images)
+    const post_success = yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_images, self.post_categories)
     self.is_sending_post = false
     if(post_success !== POST_ERROR){
       self.post_text = ""
       self.post_title = null
       self.post_images = []
+      self.post_categories = []
       return true
     }
     return false
