@@ -15,14 +15,62 @@ export default class PostingOptionsScreen extends React.Component{
   render() {
     const { posting } = Auth.selected_user
     return(
-			<ScrollView style={{ flex: 1, padding: 8 }}>
+			<ScrollView style={{ flex: 1, padding: 15 }}>
 				{/* Categories */}
-				<View>
-					<Text>Select categories for this post:</Text>
+				<View style={{ marginBottom: 25 }}>
+					<Text style={{ fontSize: 16, fontWeight: '500' }}>Select categories for this post:</Text>
+					<View style={{ backgroundColor: '#F8F8F8', padding: 8, borderRadius: 8, marginTop: 8 }}>
+					{
+						posting.selected_service.config.active_destination().categories.length ?
+							posting.selected_service.config.active_destination().categories.map((category) => {
+								return(
+									<TouchableOpacity
+										key={category}
+										style={{
+											padding: 8,
+											marginBottom: 5,
+										}}
+									>
+										<Text>{category}</Text>
+									</TouchableOpacity>
+								)
+							})
+						: <Text>No categories to display</Text>
+					}
+					</View>
 				</View>
 				{/* Blogs */}
-				<View>
-					<Text>Choose a default microblog to post to:</Text>
+				<View style={{ marginBottom: 25 }}>
+					<Text style={{ fontSize: 16, fontWeight: '500', marginBottom: 5 }}>Choose a default microblog to post to:</Text>
+					<View style={{ backgroundColor: '#F8F8F8', padding: 8, borderRadius: 8, marginTop: 8 }}>
+					{
+						posting.selected_service.config.destination.map((destination) => {
+							const is_selected_blog = posting.selected_service.config.active_destination() === destination
+							return(
+								<TouchableOpacity
+									key={destination.uid}
+									onPress={() => {
+										posting.selected_service.config.set_default_destination(destination)
+									}}
+									style={{
+										padding: 8,
+										marginBottom: 5,
+									}}
+								>
+									<Text style={ is_selected_blog ? { fontWeight: '500' } : null}>
+										{destination.name}
+										{
+											is_selected_blog ?
+												<Text> (default)</Text>
+											: null
+										}
+									</Text>
+								</TouchableOpacity>
+							)
+						}
+						)
+					}
+					</View>
 				</View>
       </ScrollView>
     )

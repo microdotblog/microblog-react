@@ -12,6 +12,10 @@ export default Destination = types.model('Destination', {
 
 	set_categories(categories) {
 		self.categories = categories;
+	},
+
+	set_default(is_default) {
+		self[ "microblog-default" ] = is_default
 	}
 
 }))

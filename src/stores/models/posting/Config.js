@@ -5,6 +5,16 @@ export default Config = types.model('Config', {
   "media-endpoint": types.maybeNull(types.string),
   destination: types.optional(types.array(Destination), [])
 })
+  .actions(self => ({
+
+    set_default_destination(destination) {
+      self.destination.forEach(destination => {
+        destination.set_default(false);
+      });
+      destination.set_default(true);
+    }
+    
+  }))
 .views(self => ({
   
   active_destination(){
