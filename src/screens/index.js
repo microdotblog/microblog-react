@@ -41,6 +41,7 @@ import TimelineIcon from './../assets/icons/tab_bar/timeline.png';
 import MentionsIcon from './../assets/icons/tab_bar/mentions.png';
 import DiscoverIcon from './../assets/icons/tab_bar/discover.png';
 import ArrowBackIcon from './../assets/icons/arrow_back.png';
+import ReplyIcon from './../assets/icons/reply.png';
 
 // Set up screens
 export const Screens = new Map();
@@ -302,7 +303,8 @@ export const conversationScreen = (conversation_id, component_id) => {
           rightButtons: [
             {
               id: 'reply_button',
-              text: 'Reply'
+              text: 'Reply',
+              icon: ReplyIcon
             },
             {
               id: 'profile_button',
