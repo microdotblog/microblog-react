@@ -14,8 +14,7 @@ export default App = types.model('App', {
   current_screen_id: types.maybeNull(types.string),
   image_modal_is_open: types.optional(types.boolean, false),
   current_image_url: types.maybeNull(types.string),
-  is_scrolling: types.optional(types.boolean, false),
-  current_conversatin_id: types.maybeNull(types.string),
+  is_scrolling: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -101,7 +100,6 @@ export default App = types.model('App', {
         case "user":
           return profileScreen(action_data, self.current_screen_id)
         case "open":
-          self.current_conversatin_id = action_data
           return conversationScreen(action_data, self.current_screen_id)
         case "photo":
           return App.set_image_modal_data_and_activate(action_data)

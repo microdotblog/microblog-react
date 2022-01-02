@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Navigation } from "react-native-navigation"
 import App from '../stores/App'
+import Reply from '../stores/Reply'
 import { replyScreen, Screens } from './../screens';
 
 Screens.forEach((ScreenComponent, key) => 
@@ -23,7 +24,7 @@ Navigation.events().registerComponentDidAppearListener(({ componentName, compone
 
 Navigation.events().registerNavigationButtonPressedListener(({ buttonId }) => {
   console.log('registerNavigationButtonPressedListener:buttonId', buttonId, App.current_screen_id, App.current_conversatin_id)
-  if (App.current_screen_id === "CONVERSATION_SCREEN" && buttonId === "reply_button" && App.current_conversatin_id) {
+  if (App.current_screen_id === "CONVERSATION_SCREEN" && buttonId === "reply_button" && Reply.conversation_id) {
     replyScreen()
   }
 });
