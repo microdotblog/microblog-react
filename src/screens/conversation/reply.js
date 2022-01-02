@@ -2,7 +2,6 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, TextInput, Keyboard, ActivityIndicator, Text, TouchableOpacity } from 'react-native';
 import { Navigation } from 'react-native-navigation';
-import Auth from '../../stores/Auth';
 import Reply from '../../stores/Reply'
 
 @observer
@@ -15,17 +14,16 @@ export default class ReplyScreen extends React.Component{
 	}
   
   navigationButtonPressed = async ({ buttonId }) => {
-		console.log("navigationButtonPressed::", buttonId)
-		this._dismiss()
-    // if(buttonId === "post_button"){
-    //   const sent = await Auth.selected_user.posting.send_post()
-    //   if(sent){
-    //     this._dismiss()
-    //   }
-    // }
-    // else{
-    //   this._dismiss()
-    // }
+		console.log("ReplyScreen:navigationButtonPressed::", buttonId)
+    if(buttonId === "post_button"){
+      const sent = await Reply.send_reply()
+      if(sent){
+        this._dismiss()
+      }
+    }
+    else{
+      this._dismiss()
+    }
   }
   
   _dismiss = () => {
