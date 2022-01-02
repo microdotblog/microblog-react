@@ -1,5 +1,6 @@
 import { types, flow } from 'mobx-state-tree';
-import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi'
+import { Alert } from 'react-native'
+import MicroBlogApi, { API_ERROR, POST_ERROR } from '../api/MicroBlogApi'
 import Auth from './Auth'
 
 export default Reply = types.model('Reply', {
@@ -37,6 +38,17 @@ export default Reply = types.model('Reply', {
   send_reply: flow(function* () {
 		console.log("Reply:send_reply", self.reply_text)
 		self.is_sending_reply = true
+		const data = yield MicroBlogApi.send_reply(self.conversation_id, self.reply_text)
+		console.log("Reply:send_reply:data", data)
+		if (data !== POST_ERROR) {
+			self.reply_text = ""
+			self.is_sending_reply = false
+			return true
+		}
+		else {
+			Alert.alert("Whoops", "Could not send reply. Please try again.")
+		}
+		self.is_sending_reply = false
     return false
   }),
   

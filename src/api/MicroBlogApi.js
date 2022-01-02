@@ -147,8 +147,8 @@ class MicroBlogApi {
 		return conversation;
   }
   
-  async post_reply(id, content) {
-		console.log('MicroBlogApi:post_reply', id, content);
+  async send_reply(id, content) {
+		console.log('MicroBlogApi:send_reply', id, content);
 		const reply = axios
 			.post(`/posts/reply`, "" ,{
 				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
