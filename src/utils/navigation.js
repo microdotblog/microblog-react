@@ -20,3 +20,10 @@ Navigation.events().registerComponentDidAppearListener(({ componentName, compone
       break;
   }
 });
+
+Navigation.events().registerNavigationButtonPressedListener(({ buttonId }) => {
+  console.log('registerNavigationButtonPressedListener:buttonId', buttonId, App.current_screen_id, App.current_conversatin_id)
+  if (App.current_screen_id === "CONVERSATION_SCREEN" && buttonId === "reply_button" && App.current_conversatin_id) {
+    // TODO: Open reply screen
+  }
+});

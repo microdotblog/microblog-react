@@ -301,11 +301,8 @@ export const conversationScreen = (conversation_id, component_id) => {
           },
           rightButtons: [
             {
-              id: 'post_button',
-              text: 'New',
-              component: {
-                name: NEW_POST_BUTTON
-              }
+              id: 'reply_button',
+              text: 'Reply'
             },
             {
               id: 'profile_button',
