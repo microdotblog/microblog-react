@@ -305,7 +305,7 @@ export const conversationScreen = (conversation_id, component_id) => {
 					title: {
             text: "Conversation"
           },
-          rightButtons: [
+          rightButtons: Reply.replying_enabled() ? [
             {
               id: 'reply_button',
               text: 'Reply',
@@ -318,6 +318,14 @@ export const conversationScreen = (conversation_id, component_id) => {
                 name: PROFILE_IMAGE
               }
             },
+          ] : [
+            {
+              id: 'profile_button',
+              text: 'profile',
+              component: {
+                name: PROFILE_IMAGE
+              }
+            }
           ],
 				}
 			}

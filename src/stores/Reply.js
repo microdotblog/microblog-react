@@ -27,6 +27,7 @@ export default Reply = types.model('Reply', {
 				}
 			}
 		}
+		self.is_sending_reply = false
   }),
   
   set_reply_text: flow(function* (value) {
@@ -35,6 +36,7 @@ export default Reply = types.model('Reply', {
   
   send_reply: flow(function* () {
 		console.log("Reply:send_reply", self.reply_text)
+		self.is_sending_reply = true
     return false
   }),
   
