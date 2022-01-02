@@ -128,6 +128,23 @@ class MicroBlogApi {
       });
     return discover
   }
+
+  async get_conversation(id) {
+		console.log('MicroBlogApi:get_conversation', id);
+		const conversation = axios
+			.get(`/posts/conversation`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+				params: { id: id }
+			})
+			.then(response => {
+				return response.data;
+			})
+			.catch(error => {
+				console.log(error);
+				return API_ERROR;
+			});
+		return conversation;
+	}
 }
 
 export default new MicroBlogApi()

@@ -14,6 +14,7 @@ import FollowingScreen from "./following/following";
 import PostingScreen from "./posting/posting";
 import DiscoverTopicScreen from "./discover/topic";
 import PostingOptionsScreen from "./posting/options";
+import ReplyScreen from "./conversation/reply";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -26,6 +27,7 @@ export const FOLLOWING_SCREEN = 'microblog.FollowingScreen';
 export const POSTING_SCREEN = 'microblog.PostingScreen';
 export const DISCOVER_TOPIC_SCREEN = 'microblog.DiscoverTopicScreen';
 export const POSTING_OPTIONS_SCREEN = 'microblog.PostingOptionsScreen';
+export const REPLY_SCREEN = 'microblog.ReplyScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -42,6 +44,7 @@ import MentionsIcon from './../assets/icons/tab_bar/mentions.png';
 import DiscoverIcon from './../assets/icons/tab_bar/discover.png';
 import ArrowBackIcon from './../assets/icons/arrow_back.png';
 import ReplyIcon from './../assets/icons/reply.png';
+import Reply from "../stores/Reply"
 
 // Set up screens
 export const Screens = new Map();
@@ -56,6 +59,7 @@ Screens.set(FOLLOWING_SCREEN, FollowingScreen);
 Screens.set(POSTING_SCREEN, PostingScreen);
 Screens.set(DISCOVER_TOPIC_SCREEN, DiscoverTopicScreen);
 Screens.set(POSTING_OPTIONS_SCREEN, PostingOptionsScreen);
+Screens.set(REPLY_SCREEN, ReplyScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
@@ -288,6 +292,7 @@ export const profileScreen = (username, component_id) => {
 
 export const conversationScreen = (conversation_id, component_id) => {
   console.log("Screens:conversationScreen", conversation_id, component_id);
+  Reply.hydrate(conversation_id)
   const options = {
     component: {
       id: 'CONVERSATION_SCREEN',
@@ -505,4 +510,48 @@ export const postingOptionsScreen = (component_id) => {
 	};
 
   return Navigation.push(component_id, options);
+}
+
+export const replyScreen = () => {
+  return Navigation.showModal({
+    stack: {
+      id: 'REPLY_SCREEN',
+      children: [ {
+        component: {
+          name: REPLY_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                text: 'New Reply',
+              },
+              leftButtons: [
+                {
+                  id: 'back_button',
+                  text: 'Back',
+                  icon: ArrowBackIcon
+                },
+              ],
+              rightButtons: [
+						    {
+							    id: 'post_button',
+							    text: 'Post',
+                  color: '#f80'
+                },
+                {
+                  id: 'profile_button',
+                  text: 'profile',
+                  component: {
+                    name: PROFILE_IMAGE
+                  }
+                }
+					    ]
+            },
+            layout: {
+              backgroundColor: "#fff"
+            }
+          }
+        },
+      }],
+    }
+  });
 }
