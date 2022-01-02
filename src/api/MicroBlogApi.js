@@ -9,6 +9,7 @@ export const LOGIN_ERROR = 2;
 export const LOGIN_SUCCESS = 3;
 export const LOGIN_TOKEN_INVALID = 4;
 export const API_ERROR = 5;
+export const POST_ERROR = 6;
 
 axios.defaults.baseURL = API_URL;
 
@@ -144,7 +145,28 @@ class MicroBlogApi {
 				return API_ERROR;
 			});
 		return conversation;
-	}
+  }
+  
+  async post_reply(id, content) {
+		console.log('MicroBlogApi:post_reply', id, content);
+		const reply = axios
+			.post(`/posts/reply`, "" ,{
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+				params: {
+					id: id,
+					content: content
+				}
+			})
+			.then(() => {
+				return true;
+			})
+			.catch(error => {
+				console.log(error);
+				return POST_ERROR;
+			});
+		return reply;
+  }
+  
 }
 
 export default new MicroBlogApi()
