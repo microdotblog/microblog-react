@@ -29,7 +29,7 @@ export default class ConversationScreen extends React.Component{
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 				{
 					Auth.is_logged_in() && !Auth.is_selecting_user && !Reply.is_sending_reply ?
-					<WebViewModule endpoint={`hybrid/conversation/${this.props.conversation_id}#post_${this.props.conversation_id}`} />
+					<WebViewModule endpoint={`hybrid/conversation/${this.props.conversation_id}?show_actions=true#post_${this.props.conversation_id}`} />
           :
           <LoginMessage title="Conversation" />
         }
