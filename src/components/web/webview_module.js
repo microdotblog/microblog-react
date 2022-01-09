@@ -58,7 +58,7 @@ export default class WebViewModule extends React.Component{
       >
         <WebView
           ref={this.ref}
-          source={{ uri: `https://micro.blog/${Auth.did_load_one_or_more_webviews ? this.props.endpoint : this.state.signin_endpoint}`}}
+          source={{ uri: `https://micro.blog/${Auth.did_load_one_or_more_webviews ? this.props.endpoint : this.state.signin_endpoint}?show_actions=true` }}
           containerStyle={{ flex: 1 }}
           startInLoadingState={true}
           onLoadEnd={Auth.set_did_load_one_or_more_webviews}
