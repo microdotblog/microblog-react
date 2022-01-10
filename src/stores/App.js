@@ -1,7 +1,8 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
+import Reply from './Reply';
 import { Linking } from 'react-native'
 import { Navigation } from "react-native-navigation";
 import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
@@ -86,7 +87,7 @@ export default App = types.model('App', {
         console.log("App:handle_url:action", action, action_data)
 
         if (action != null && action_data != null) {
-          if (action === "user" || action === "photo" || action === "open") {
+          if (action === "user" || action === "photo" || action === "open" || action === "reply") {
             self.navigate_to_screen(action, action_data)
           }
         }
@@ -105,6 +106,9 @@ export default App = types.model('App', {
           return App.set_image_modal_data_and_activate(action_data)
         case "discover/topic":
           return discoverTopicScreen(action_data, self.current_screen_id)
+        case "reply":
+          Reply.hydrate(action_data)
+          return replyScreen(action_data, self.current_screen_id)
       }
     }
   }),
