@@ -11,7 +11,8 @@ export default Reply = types.model('Reply', {
 .actions(self => ({
 
   hydrate: flow(function* (conversation_id = null) {
-    console.log("Reply:hydrate", conversation_id)
+		console.log("Reply:hydrate", conversation_id)
+		self.reply_text = ""
 		const data = yield MicroBlogApi.get_conversation(conversation_id)
 		if (data !== API_ERROR && data.items) {
 			self.conversation_id = conversation_id
