@@ -12,20 +12,22 @@ export default Reply = types.model('Reply', {
 
   hydrate: flow(function* (conversation_id = null) {
 		console.log("Reply:hydrate", conversation_id)
-		self.reply_text = ""
-		const data = yield MicroBlogApi.get_conversation(conversation_id)
-		if (data !== API_ERROR && data.items) {
-			self.conversation_id = conversation_id
-			const conversation = data.items.find(post => post.id === conversation_id)
-			console.log("Reply:hydrate:conversation", conversation)
-			if(conversation && conversation.author?._microblog?.username != null){
-				self.reply_text = `@${conversation.author._microblog.username} `
-			}
-			else {
-				// Load the first post in the conversation, which is at the end of the array
-				const first_post = data.items[ data.items.length - 1 ]
-				if (first_post && first_post.author?._microblog?.username != null) {
-					self.reply_text = `@${first_post.author._microblog.username} `
+		if (conversation_id !== self.conversation_id) {
+			self.reply_text = ""
+			const data = yield MicroBlogApi.get_conversation(conversation_id)
+			if (data !== API_ERROR && data.items) {
+				self.conversation_id = conversation_id
+				const conversation = data.items.find(post => post.id === conversation_id)
+				console.log("Reply:hydrate:conversation", conversation)
+				if(conversation && conversation.author?._microblog?.username != null){
+					self.reply_text = `@${conversation.author._microblog.username} `
+				}
+				else {
+					// Load the first post in the conversation, which is at the end of the array
+					const first_post = data.items[ data.items.length - 1 ]
+					if (first_post && first_post.author?._microblog?.username != null) {
+						self.reply_text = `@${first_post.author._microblog.username} `
+					}
 				}
 			}
 		}
