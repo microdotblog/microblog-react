@@ -6,6 +6,7 @@ import Reply from './Reply';
 import { Linking } from 'react-native'
 import { Navigation } from "react-native-navigation";
 import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
+import MicroBlogApi, { BOOKMARK_ERROR } from '../api/MicroBlogApi'
 
 let SCROLLING_TIMEOUT = null
 
@@ -89,6 +90,12 @@ export default App = types.model('App', {
         if (action != null && action_data != null) {
           if (action === "user" || action === "photo" || action === "open" || action === "reply") {
             self.navigate_to_screen(action, action_data)
+          }
+          else if (action === "bookmark") {
+            self.add_bookmark(action_data)
+          }
+          else if (action === "unbookmark") {
+            self.remove_bookmark(action_data)
           }
         }
       }
@@ -234,7 +241,25 @@ export default App = types.model('App', {
         alert("Something went wrong with that link...")
       }
     });
-  })
+  }),
+
+  add_bookmark: flow(function* (id) {
+    console.log("App:set_bookmark", id)
+    const data = yield MicroBlogApi.add_bookmark(id)
+    if (data && data !== BOOKMARK_ERROR) {
+      // TODO: Show confirmation that bookmark is set.
+      console.log("App:set_bookmark:success")
+    }
+  }),
+
+  remove_bookmark: flow(function* (id) {
+    console.log("App:remove_bookmark", id)
+    const data = yield MicroBlogApi.remove_bookmark(id)
+    if (data && data !== BOOKMARK_ERROR) {
+      // TODO: Show confirmation that bookmark is removed.
+      console.log("App:remove_bookmark:success")
+    }
+  }),
 
 }))
 .create();
