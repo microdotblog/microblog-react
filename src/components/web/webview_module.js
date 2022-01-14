@@ -19,6 +19,11 @@ export default class WebViewModule extends React.Component{
       is_pull_to_refresh_enabled: true,
       scroll_view_height: 0,
     }
+    Navigation.events().bindComponent(this, this.props.component_id)
+  }
+
+  componentDidAppear = () => {
+    console.log("WebViewModule:componentDidAppear::", this.props.endpoint)
   }
 
   componentDidMount = () => {

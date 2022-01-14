@@ -20,7 +20,7 @@ export default class ProfileScreen extends React.Component{
         }
 				{
 					Auth.is_logged_in() && !Auth.is_selecting_user ?
-          <WebViewModule endpoint={`hybrid/posts/${this.props.username}`} />
+          <WebViewModule endpoint={`hybrid/posts/${this.props.username}`} component_id={this.props.componentId} />
           :
           <LoginMessage title="User posts" />
         }
