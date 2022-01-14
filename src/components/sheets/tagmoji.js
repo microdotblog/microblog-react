@@ -29,8 +29,8 @@ export default class TagmojiMenu extends React.Component{
 								}}
 								onPress={() => { tagmojiBottomSheet(true); App.navigate_to_screen("discover/topic", tagmoji) }}
 							>
-								<Text style={{ marginRight: 5 }}>{tagmoji.emoji}</Text>
-								<Text>{tagmoji.name}</Text>
+								<Text style={{ marginRight: 5, fontSize: 17 }}>{tagmoji.emoji}</Text>
+								<Text style={{ fontSize: 17 }}>{tagmoji.name}</Text>
 							</TouchableOpacity>
 						)
 					}
