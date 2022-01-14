@@ -9,6 +9,7 @@ import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import MicroBlogApi, { BOOKMARK_ERROR } from '../api/MicroBlogApi'
 
 let SCROLLING_TIMEOUT = null
+let CURRENT_WEB_VIEW_REF = null
 
 export default App = types.model('App', {
   is_loading: types.optional(types.boolean, false),
@@ -249,6 +250,13 @@ export default App = types.model('App', {
     if (data && data !== BOOKMARK_ERROR) {
       // TODO: Show confirmation that bookmark is set.
       console.log("App:set_bookmark:success")
+      if (CURRENT_WEB_VIEW_REF) {
+        try {
+          CURRENT_WEB_VIEW_REF.injectJavaScript(`window.location.reload()`)
+        } catch (error) {
+          console.log("App:set_bookmark:error", error)
+        }
+      }
     }
   }),
 
@@ -258,7 +266,19 @@ export default App = types.model('App', {
     if (data && data !== BOOKMARK_ERROR) {
       // TODO: Show confirmation that bookmark is removed.
       console.log("App:remove_bookmark:success")
+      if (CURRENT_WEB_VIEW_REF) {
+        try {
+          CURRENT_WEB_VIEW_REF.injectJavaScript(`window.location.reload()`)
+        } catch (error) {
+          console.log("App:set_bookmark:error", error)
+        }
+      }
     }
+  }),
+
+  set_current_web_view_ref: flow(function* (current_ref) {
+    console.log("App:set_current_web_view_ref")
+    CURRENT_WEB_VIEW_REF = current_ref
   }),
 
 }))

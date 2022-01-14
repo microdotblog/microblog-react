@@ -24,6 +24,7 @@ export default class WebViewModule extends React.Component{
 
   componentDidAppear = () => {
     console.log("WebViewModule:componentDidAppear::", this.props.endpoint)
+    App.set_current_web_view_ref(this.ref.current)
   }
 
   componentDidMount = () => {
