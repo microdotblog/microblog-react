@@ -30,7 +30,7 @@ export default class WebViewModule extends React.Component{
   componentDidMount = () => {
     this.bottom_tab_selected_listener = Navigation.events().registerBottomTabSelectedListener(({ selectedTabIndex, unselectedTabIndex }) => {
       if (selectedTabIndex === unselectedTabIndex && App.current_screen_id === this.props.component_id) {
-        this.ref.current?.postMessage('scroll_to_top')
+        this.ref.current?.injectJavaScript(`window.scrollTo({ top: 0, behavior: 'smooth' })`)
       }
     });
   }
