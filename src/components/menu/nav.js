@@ -59,7 +59,7 @@ export default class MenuNavigation extends React.Component{
         >
           {
             image != null ?
-            <Image source={image} style={{ marginRight: 8, height: 20, width: 20, marginTop: 2 }} />
+            <Image source={image} style={{ marginRight: 8, height: 22, width: 22, marginTop: 1 }} />
             : null
           }
           <Text style={{ fontSize: 16, fontWeight: '500', color: '#1F2937' }}>{item}</Text>
