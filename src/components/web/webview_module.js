@@ -81,6 +81,9 @@ export default class WebViewModule extends React.Component{
             })
             App.set_is_scrolling()
           }}
+          onMessage={(event) => {
+            App.handle_web_view_message(event.nativeEvent.data)
+          }}
           style={{flex: 1, height: scroll_view_height }}
         />
       </ScrollView>

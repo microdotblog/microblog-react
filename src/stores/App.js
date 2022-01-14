@@ -281,5 +281,9 @@ export default App = types.model('App', {
     CURRENT_WEB_VIEW_REF = current_ref
   }),
 
+  handle_web_view_message: flow(function* (message) {
+    console.log("App:handle_web_view_message", message)
+  }),
+
 }))
 .create();
