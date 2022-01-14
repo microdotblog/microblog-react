@@ -33,7 +33,8 @@ export default class LoginScreen extends React.Component{
             width: "100%",
             borderRadius: 5,
             marginVertical: 15,
-            paddingHorizontal: 15
+            paddingHorizontal: 15,
+            color: 'black'
           }}
           onChangeText={(text) => Login.set_input_value(text)}
           onSubmitEditing={Login.trigger_login}

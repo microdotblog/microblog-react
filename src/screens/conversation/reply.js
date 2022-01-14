@@ -42,6 +42,7 @@ export default class ReplyScreen extends React.Component{
 						alignItems: 'flex-start',
             marginBottom: 38,
             padding: 8,
+            color: 'black'
           }}
           editable={!Reply.is_sending_reply}
           multiline={true}

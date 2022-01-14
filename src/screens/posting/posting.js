@@ -57,7 +57,8 @@ export default class PostingScreen extends React.Component{
               marginBottom: -5,
               fontWeight: '700',
               borderColor: '#E5E7EB',
-              borderBottomWidth: .5
+              borderBottomWidth: .5,
+              color: 'black'
             }}
             editable={!posting.is_sending_post}
             multiline={false}
@@ -82,6 +83,7 @@ export default class PostingScreen extends React.Component{
 						alignItems: 'flex-start',
             marginBottom: posting.post_text_length() > 280 || posting.post_title ? posting.post_images.length > 0 ? 135 : 80 : posting.post_images.length > 0 ? 93 : 38,
             padding: 8,
+            color: 'black'
           }}
           editable={!posting.is_sending_post}
           multiline={true}
