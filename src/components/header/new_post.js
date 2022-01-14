@@ -14,7 +14,7 @@ export default class NewPostButton extends React.Component{
         <TouchableOpacity style={{ width: 40, height: 30, justifyContent: 'center', alignItems: 'center' }}
           onPress={() => postingScreen()}
         >
-          <Image source={PostAddIcon} style={{ width: 25, height: 25 }} />
+          <Image source={PostAddIcon} style={{ width: 30, height: 30 }} />
         </TouchableOpacity>
       )
     }
