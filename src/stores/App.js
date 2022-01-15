@@ -92,12 +92,6 @@ export default App = types.model('App', {
           if (action === "user" || action === "photo" || action === "open" || action === "reply") {
             self.navigate_to_screen(action, action_data)
           }
-          else if (action === "bookmark") {
-            self.add_bookmark(action_data)
-          }
-          else if (action === "unbookmark") {
-            self.remove_bookmark(action_data)
-          }
         }
       }
     }
@@ -244,38 +238,6 @@ export default App = types.model('App', {
     });
   }),
 
-  add_bookmark: flow(function* (id) {
-    console.log("App:set_bookmark", id)
-    const data = yield MicroBlogApi.add_bookmark(id)
-    if (data && data !== BOOKMARK_ERROR) {
-      // TODO: Show confirmation that bookmark is set.
-      console.log("App:set_bookmark:success")
-      if (CURRENT_WEB_VIEW_REF) {
-        try {
-          CURRENT_WEB_VIEW_REF.injectJavaScript(`window.location.reload()`)
-        } catch (error) {
-          console.log("App:set_bookmark:error", error)
-        }
-      }
-    }
-  }),
-
-  remove_bookmark: flow(function* (id) {
-    console.log("App:remove_bookmark", id)
-    const data = yield MicroBlogApi.remove_bookmark(id)
-    if (data && data !== BOOKMARK_ERROR) {
-      // TODO: Show confirmation that bookmark is removed.
-      console.log("App:remove_bookmark:success")
-      if (CURRENT_WEB_VIEW_REF) {
-        try {
-          CURRENT_WEB_VIEW_REF.injectJavaScript(`window.location.reload()`)
-        } catch (error) {
-          console.log("App:set_bookmark:error", error)
-        }
-      }
-    }
-  }),
-
   set_current_web_view_ref: flow(function* (current_ref) {
     console.log("App:set_current_web_view_ref")
     CURRENT_WEB_VIEW_REF = current_ref
@@ -283,6 +245,16 @@ export default App = types.model('App', {
 
   handle_web_view_message: flow(function* (message) {
     console.log("App:handle_web_view_message", message)
+    if (message === "bookmark_removed" && App.current_screen_id === "BOOKMARKS_SCREEN") {
+      if (CURRENT_WEB_VIEW_REF) {
+        try {
+          CURRENT_WEB_VIEW_REF.injectJavaScript(`window.scrollTo({ top: 0 })`)
+          CURRENT_WEB_VIEW_REF.reload()
+        } catch (error) {
+          console.log("App:handle_web_view_message:bookmark_added:error", error)
+        }
+      }
+    }
   }),
 
 }))

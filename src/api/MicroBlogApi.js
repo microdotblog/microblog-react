@@ -167,39 +167,6 @@ class MicroBlogApi {
 			});
 		return reply;
   }
-
-  async add_bookmark(id) {
-		console.log('MicroBlogApi:add_bookmark', id);
-		const bookmark = axios
-			.post(`/posts/favorites`, '', {
-				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
-				params: { id: id }
-			})
-			.then(() => {
-				return true;
-			})
-			.catch(error => {
-				console.log(error);
-				return BOOKMARK_ERROR;
-			});
-		return bookmark;
-	}
-
-	async remove_bookmark(id) {
-		console.log('MicroBlogApi:remove_bookmark', id);
-		const bookmark = axios
-			.delete(`/posts/favorites/${id}`, {
-				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` }
-			})
-			.then(() => {
-				return true;
-			})
-			.catch(error => {
-				console.log(error);
-				return BOOKMARK_ERROR;
-			});
-		return bookmark;
-	}
   
 }
 
