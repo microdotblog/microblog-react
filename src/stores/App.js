@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen, bookmarkScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
@@ -111,6 +111,8 @@ export default App = types.model('App', {
         case "reply":
           Reply.hydrate(action_data)
           return replyScreen(action_data, self.current_screen_id)
+        case "bookmark":
+          return bookmarkScreen(action_data, self.current_screen_id)
       }
     }
   }),
@@ -210,6 +212,9 @@ export default App = types.model('App', {
         }
         else if(parts[0] === "books"){
           App.open_url(url)
+        }
+        else if (parts[ 0 ] === "bookmarks") {
+          App.navigate_to_screen("bookmark", number[0])
         }
         else {
           App.navigate_to_screen("open", number[0])

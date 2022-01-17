@@ -15,6 +15,7 @@ import PostingScreen from "./posting/posting";
 import DiscoverTopicScreen from "./discover/topic";
 import PostingOptionsScreen from "./posting/options";
 import ReplyScreen from "./conversation/reply";
+import BookmarkScreen from "./bookmarks/bookmark";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -28,6 +29,7 @@ export const POSTING_SCREEN = 'microblog.PostingScreen';
 export const DISCOVER_TOPIC_SCREEN = 'microblog.DiscoverTopicScreen';
 export const POSTING_OPTIONS_SCREEN = 'microblog.PostingOptionsScreen';
 export const REPLY_SCREEN = 'microblog.ReplyScreen';
+export const BOOKMARK_SCREEN = 'microblog.BookmarkScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -60,6 +62,7 @@ Screens.set(POSTING_SCREEN, PostingScreen);
 Screens.set(DISCOVER_TOPIC_SCREEN, DiscoverTopicScreen);
 Screens.set(POSTING_OPTIONS_SCREEN, PostingOptionsScreen);
 Screens.set(REPLY_SCREEN, ReplyScreen);
+Screens.set(BOOKMARK_SCREEN, BookmarkScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
@@ -345,6 +348,44 @@ export const bookmarksScreen = (component_id) => {
         topBar: {
           title: {
             text: "Bookmarks"
+          },
+          rightButtons: [
+            {
+              id: 'post_button',
+              text: 'New',
+              component: {
+                name: NEW_POST_BUTTON
+              }
+            },
+            {
+              id: 'profile_button',
+              text: 'profile',
+              component: {
+                name: PROFILE_IMAGE
+              }
+            },
+          ],
+        }
+      }
+    }
+  };
+
+  return Navigation.push(component_id, options);
+}
+
+export const bookmarkScreen = (bookmark_id, component_id) => {
+  console.log("Screens:bookmarkScreen", bookmark_id, component_id);
+  const options = {
+    component: {
+      id: 'BOOKMARK_SCREEN',
+      name: BOOKMARK_SCREEN,
+      passProps: {
+        bookmark_id: bookmark_id
+			},
+      options: {
+        topBar: {
+          title: {
+            text: "Bookmark"
           },
           rightButtons: [
             {
