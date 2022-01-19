@@ -3,7 +3,7 @@ import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScre
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
-import { Linking } from 'react-native'
+import { Linking, ToastAndroid } from 'react-native'
 import { Navigation } from "react-native-navigation";
 import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import MicroBlogApi, { BOOKMARK_ERROR } from '../api/MicroBlogApi'
@@ -250,6 +250,12 @@ export default App = types.model('App', {
 
   handle_web_view_message: flow(function* (message) {
     console.log("App:handle_web_view_message", message)
+    if (message === "bookmark_added") {
+      ToastAndroid.showWithGravity("Bookmark added!", ToastAndroid.SHORT, ToastAndroid.CENTER)
+    }
+    else if (message === "bookmark_removed") {
+      ToastAndroid.showWithGravity("Bookmark removed!", ToastAndroid.SHORT, ToastAndroid.CENTER)
+    }
     if (message === "bookmark_removed" && App.current_screen_id === "BOOKMARKS_SCREEN") {
       if (CURRENT_WEB_VIEW_REF) {
         try {
