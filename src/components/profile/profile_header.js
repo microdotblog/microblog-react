@@ -4,7 +4,8 @@ import { View, Text, ActivityIndicator, Image, TouchableOpacity, ScrollView } fr
 import MicroBlogApi, { API_ERROR } from './../../api/MicroBlogApi';
 import App from './../../stores/App';
 import Hyperlink from 'react-native-hyperlink'
-import { followingScreen } from './../../screens/'
+import { followingScreen, profileMoreBottomSheet } from './../../screens/'
+import MoreIcon from './../../assets/icons/more.png'
 
 @observer
 export default class ProfileHeader extends React.Component{
@@ -32,6 +33,10 @@ export default class ProfileHeader extends React.Component{
     else{
       this.setState({ is_toggling_follow: false })
     }
+  }
+
+  _toggle_more = () => {
+    profileMoreBottomSheet(this.props.username)
   }
   
   _load_profile = async () => {
@@ -68,6 +73,23 @@ export default class ProfileHeader extends React.Component{
               : null
             }
           </View>
+          {
+            !profile._microblog.is_you ?
+              <TouchableOpacity
+                onPress={this._toggle_more}
+                style={{
+                  position: 'absolute',
+                  right: 0,
+                  top: 2,
+                  padding: 2,
+                  backgroundColor: 'lightgray',
+                  borderRadius: 50,
+                }}
+              >
+                <Image source={MoreIcon} style={{ width: 24, height: 24 }} />
+              </TouchableOpacity>
+            : null
+          }
         </View>
         
         <View style={{position: 'relative'}}>
