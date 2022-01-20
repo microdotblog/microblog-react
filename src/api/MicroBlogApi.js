@@ -12,6 +12,7 @@ export const API_ERROR = 5;
 export const POST_ERROR = 6;
 export const BOOKMARK_ERROR = 7;
 export const REPORTING_ERROR = 8;
+export const MUTING_ERROR = 9;
 
 axios.defaults.baseURL = API_URL;
 
@@ -184,7 +185,56 @@ class MicroBlogApi {
 				return REPORTING_ERROR;
 			});
 		return report;
-	}
+  }
+  
+  async get_muted_users(token) {
+		console.log('MicroBlogApi:get_muted_users');
+		const muted_users = axios
+			.get(`/users/muting`, {
+				headers: { Authorization: `Bearer ${token}` }
+			})
+			.then(response => {
+				return response.data;
+			})
+			.catch(error => {
+				console.log(error);
+				return API_ERROR;
+			});
+		return muted_users;
+  }
+
+  async mute_user(username, token) {
+		console.log('MicroBlogApi: mute_user', username);
+		const mute = axios
+			.post(`/users/mute`, '', {
+				headers: { Authorization: `Bearer ${token}` },
+				params: { username: username }
+			})
+			.then((response) => {
+				return response.data;
+			})
+			.catch(error => {
+				console.log(error);	
+				return MUTING_ERROR;
+			});
+		return mute;
+  }
+
+  async unmute_user(id, token) {
+		console.log('MicroBlogApi:unmute_user');
+		const unmute = axios
+			.delete(`/users/muting/${id}`, {
+				headers: { Authorization: `Bearer ${token}` }
+			})
+			.then(response => {
+				return true;
+			})
+			.catch(error => {
+				console.log(error);
+				return API_ERROR;
+			});
+		return unmute;
+  }
   
 }
 

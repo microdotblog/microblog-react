@@ -3,13 +3,16 @@ import { Alert, ToastAndroid } from 'react-native';
 import MicroBlogApi, { API_ERROR, REPORTING_ERROR } from '../api/MicroBlogApi'
 
 export default Reporting = types.model('Reporting', {
-	is_sending_report: types.optional(types.boolean, false),
+	is_sending_report: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
 	init: flow(function* () {
 		console.log("Reporting:init")
-		
+		const muted_users = yield MicroBlogApi.get_muted_users();
+		if (muted_users && muted_users !== API_ERROR) {
+			self.muted_users = muted_users;
+		}
 	}),
 
 	report_user: flow(function* (username) { 
@@ -43,14 +46,6 @@ export default Reporting = types.model('Reporting', {
 			alert("Something went wrong. Please try again.")
 		}
 		self.is_sending_report = false;
-	}),
-
-	mute_user: flow(function* (username) { 
-		console.log("Reporting:mute_user", username)
-	}),
-
-	unmute_user: flow(function* (username) { 
-		console.log("Reporting:unmute_user", username)
 	})
 
 }))
