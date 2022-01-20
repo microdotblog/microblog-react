@@ -6,6 +6,7 @@ import WebViewModule from '../../components/web/webview_module'
 import LoginMessage from '../../components/info/login_message'
 import ImageModalModule from '../../components/images/image_modal'
 import ProfileHeader from '../../components/profile/profile_header'
+import MutedMessage from '../../components/info/muted_message'
 
 @observer
 export default class ProfileScreen extends React.Component{
@@ -19,8 +20,11 @@ export default class ProfileScreen extends React.Component{
           : null
         }
 				{
-					Auth.is_logged_in() && !Auth.is_selecting_user ?
-          <WebViewModule endpoint={`hybrid/posts/${this.props.username}`} component_id={this.props.componentId} />
+          Auth.is_logged_in() && !Auth.is_selecting_user ?
+            Auth.selected_user.muting?.is_muted(this.props.username) ?
+              <MutedMessage title={`@${this.props.username} is muted`} username={this.props.username} />
+              :
+              <WebViewModule endpoint={`hybrid/posts/${this.props.username}`} component_id={this.props.componentId} />
           :
           <LoginMessage title="User posts" />
         }
