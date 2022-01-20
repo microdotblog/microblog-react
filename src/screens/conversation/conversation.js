@@ -28,7 +28,7 @@ export default class ConversationScreen extends React.Component{
     return(
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 				{
-					Auth.is_logged_in() && !Auth.is_selecting_user && !Reply.is_sending_reply ?
+					Auth.is_logged_in() && !Auth.is_selecting_user && !Reply.is_sending_reply && !Auth.selected_user.muting?.is_sending_mute && !Auth.selected_user.muting?.is_sending_unmute ?
 					<WebViewModule endpoint={`hybrid/conversation/${this.props.conversation_id}?show_actions=true#post_${this.props.conversation_id}`} component_id={this.props.componentId} />
           :
           <LoginMessage title="Conversation" />

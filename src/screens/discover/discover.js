@@ -19,7 +19,7 @@ export default class DiscoverScreen extends React.Component{
     return(
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         {
-          Auth.is_logged_in() && !Auth.is_selecting_user ?
+          Auth.is_logged_in() && !Auth.is_selecting_user && !Auth.selected_user.muting?.is_sending_mute && !Auth.selected_user.muting?.is_sending_unmute ?
           <>
             <TagmojiBar />
             <WebViewModule endpoint="hybrid/discover" component_id={this.props.componentId} />

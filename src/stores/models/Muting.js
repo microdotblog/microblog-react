@@ -27,6 +27,8 @@ export default Muting = types.model('Muting', {
 		if (muted_users && muted_users !== API_ERROR) {
 			self.muted_users = muted_users;
 		}
+		self.is_sending_mute = false;
+		self.is_sending_unmute = false;
 	}),
 
 	mute_user: flow(function* (username) { 
