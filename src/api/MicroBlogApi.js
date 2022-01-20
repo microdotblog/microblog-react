@@ -11,6 +11,7 @@ export const LOGIN_TOKEN_INVALID = 4;
 export const API_ERROR = 5;
 export const POST_ERROR = 6;
 export const BOOKMARK_ERROR = 7;
+export const REPORTING_ERROR = 8;
 
 axios.defaults.baseURL = API_URL;
 
@@ -167,6 +168,23 @@ class MicroBlogApi {
 			});
 		return reply;
   }
+
+  async report_user(username) {
+		console.log('MicroBlogApi: report_user', username);
+		const report = axios
+			.post(`/users/report`, '', {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+				params: { username: username }
+			})
+			.then(() => {
+				return true;
+			})
+			.catch(error => {
+				console.log(error);	
+				return REPORTING_ERROR;
+			});
+		return report;
+	}
   
 }
 

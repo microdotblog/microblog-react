@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import BlockIcon from './../../assets/icons/block.png';
 import ReportIcon from './../../assets/icons/report.png';
 import Reporting from '../../stores/Reporting'
@@ -18,7 +18,7 @@ export default class ProfileMoreMenu extends React.Component{
           borderRadius: 16
         }}
       >
-        <Text style={{ fontWeight: '800', marginBottom: 25 }}>More</Text>
+        <Text style={{ fontWeight: '800', marginBottom: 25 }}>More...</Text>
         <TouchableOpacity
           onPress={() => Reporting.mute_user(this.props.username)}
           style={{ 
@@ -36,6 +36,7 @@ export default class ProfileMoreMenu extends React.Component{
           <Text style={{ fontSize: 16, fontWeight: '500', color: '#1F2937' }}>Mute @{ this.props.username }</Text>
         </TouchableOpacity>
         <TouchableOpacity
+          disabled={Reporting.is_sending_report}
           onPress={() => Reporting.report_user(this.props.username)}
           style={{ 
             padding: 8,
@@ -49,7 +50,12 @@ export default class ProfileMoreMenu extends React.Component{
           }}
         >
           <Image source={ReportIcon} style={{ marginRight: 8, height: 24, width: 24 }} />
-          <Text style={{ fontSize: 16, fontWeight: '500', color: 'white' }}>Report @{ this.props.username }</Text>
+          {
+            Reporting.is_sending_report ?
+              <ActivityIndicator size="small" color="#fff" />
+              :
+              <Text style={{ fontSize: 16, fontWeight: '500', color: 'white' }}>Report @{ this.props.username }</Text>
+          }
         </TouchableOpacity>
       </View>
     )
