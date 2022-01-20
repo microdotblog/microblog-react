@@ -610,7 +610,7 @@ export const profileMoreBottomSheet = (username, close = false) => {
   if(!close){
     return RNNBottomSheet.openBottomSheet({
       renderContent: () => <ProfileMoreMenu username={username} />,
-      snapPoints: [0, '20%', '40%'],
+      snapPoints: [0, '30%', '40%'],
       initialSnapIndex: 1,
       borderRadius: 16,
     })
