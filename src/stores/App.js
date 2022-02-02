@@ -236,9 +236,15 @@ export default App = types.model('App', {
     Linking.canOpenURL(url).then(supported => {
       if (supported) {
         Linking.openURL(url);
-      } else {
-        console.log("App:handle_url_from_webview:error_handling_url:", url);
-        alert("Something went wrong with that link...")
+      }
+      else {
+        try {
+          Linking.openURL(url)
+        }
+        catch (error) {
+          console.log("App:open_url:error", error)
+          alert("Something went wrong with that link...")
+        }
       }
     });
   }),
