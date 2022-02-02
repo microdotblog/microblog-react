@@ -12,7 +12,7 @@ export default Tokens = types.model('Tokens', {
     const data = yield SFInfo.getItem('Tokens', {})
     if (data) {
       applySnapshot(self, JSON.parse(data))
-      console.log("Tokens:hydrate:with_data", data)
+      console.log("Tokens:hydrate:with_data")
     }
   }),
   
