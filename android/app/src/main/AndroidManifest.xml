@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="blog.micro.android">
 
+    <permission android:name="blog.micro.android.permission.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+    <uses-permission android:name="blog.micro.android.permission.permission.C2D_MESSAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -12,6 +14,28 @@
       android:roundIcon="@mipmap/ic_launcher"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
+
+        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_foreground" android:value="true"/>
+<!--        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_push_icon" />-->
+        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_color" android:resource="@color/notification"/>
+        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" />
+        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
+        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
       <activity
         android:name=".SplashActivity"
         android:theme="@style/SplashTheme"
@@ -34,5 +58,7 @@
               <data android:scheme="microblog" />
           </intent-filter>
       </activity>
+        <meta-data android:name="com.dieam.reactnativepushnotification.notification_channel_name" android:value="Notifications"/>
+        <meta-data android:name="com.dieam.reactnativepushnotification.notification_channel_description" android:value="Enables notifications from Mentions"/>
     </application>
 </manifest>

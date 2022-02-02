@@ -6,7 +6,7 @@ import Reply from './Reply';
 import { Linking, ToastAndroid } from 'react-native'
 import { Navigation } from "react-native-navigation";
 import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
-import MicroBlogApi, { BOOKMARK_ERROR } from '../api/MicroBlogApi'
+import Push from './Push'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -26,6 +26,7 @@ export default App = types.model('App', {
     self.is_loading = true
     Auth.hydrate().then(() => {
       startApp().then(() => {
+        Push.hydrate()
         console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
         if(!Auth.is_logged_in()){
           loginScreen()
