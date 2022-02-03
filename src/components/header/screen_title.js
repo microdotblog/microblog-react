@@ -12,7 +12,7 @@ export default class ScreenTitle extends React.Component{
 				<View
 					style={{
 						flexDirection: 'row',
-						alignItems: 'center',
+						alignItems: 'center'
 					}}
 				>
 					<ProfileImage />

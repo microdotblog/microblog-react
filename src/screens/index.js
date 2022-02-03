@@ -268,12 +268,6 @@ export const profileScreen = (username, component_id) => {
 			options: {
 				topBar: {
           title: {
-            component: {
-              name: SCREEN_TITLE,
-              passProps: {
-                title: `@${username}`
-              },
-            },
             text: `@${username}`
           },
           rightButtons: [
@@ -282,6 +276,13 @@ export const profileScreen = (username, component_id) => {
               text: 'New',
               component: {
                 name: NEW_POST_BUTTON
+              }
+            },
+            {
+              id: 'profile_button',
+              text: 'profile',
+              component: {
+                name: PROFILE_IMAGE
               }
             }
           ],
@@ -306,12 +307,6 @@ export const conversationScreen = (conversation_id, component_id) => {
 			options: {
 				topBar: {
           title: {
-            component: {
-              name: SCREEN_TITLE,
-              passProps: {
-                title: "Conversation"
-              },
-            },
             text: "Conversation"
           },
           rightButtons: Reply.replying_enabled() ? [
@@ -319,8 +314,23 @@ export const conversationScreen = (conversation_id, component_id) => {
               id: 'reply_button',
               text: 'Reply',
               icon: ReplyIcon
+            },
+            {
+              id: 'profile_button',
+              text: 'profile',
+              component: {
+                name: PROFILE_IMAGE
+              }
             }
-          ] : [],
+          ] : [
+            {
+              id: 'profile_button',
+              text: 'profile',
+              component: {
+                name: PROFILE_IMAGE
+              }
+            }
+          ],
 				}
 			}
 		}
@@ -338,12 +348,6 @@ export const bookmarksScreen = (component_id) => {
       options: {
         topBar: {
           title: {
-            component: {
-              name: SCREEN_TITLE,
-              passProps: {
-                title: "Bookmarks"
-              },
-            },
             text: "Bookmarks"
           },
           rightButtons: [
@@ -352,6 +356,13 @@ export const bookmarksScreen = (component_id) => {
               text: 'New',
               component: {
                 name: NEW_POST_BUTTON
+              }
+            },
+            {
+              id: 'profile_button',
+              text: 'profile',
+              component: {
+                name: PROFILE_IMAGE
               }
             }
           ],
@@ -375,12 +386,6 @@ export const bookmarkScreen = (bookmark_id, component_id) => {
       options: {
         topBar: {
           title: {
-            component: {
-              name: SCREEN_TITLE,
-              passProps: {
-                title: "Bookmark"
-              },
-            },
             text: "Bookmark"
           },
           rightButtons: [
@@ -389,6 +394,13 @@ export const bookmarkScreen = (bookmark_id, component_id) => {
               text: 'New',
               component: {
                 name: NEW_POST_BUTTON
+              }
+            },
+            {
+              id: 'profile_button',
+              text: 'profile',
+              component: {
+                name: PROFILE_IMAGE
               }
             }
           ],
@@ -411,12 +423,6 @@ export const followingScreen = (username, component_id) => {
 			options: {
 				topBar: {
           title: {
-            component: {
-              name: SCREEN_TITLE,
-              passProps: {
-                title: "Following"
-              },
-            },
             text: `Following`
           },
           rightButtons: [
@@ -425,6 +431,13 @@ export const followingScreen = (username, component_id) => {
               text: 'New',
               component: {
                 name: NEW_POST_BUTTON
+              }
+            },
+            {
+              id: 'profile_button',
+              text: 'profile',
+              component: {
+                name: PROFILE_IMAGE
               }
             }
           ],
@@ -446,12 +459,6 @@ export const postingScreen = () => {
           options: {
             topBar: {
               title: {
-                component: {
-                  name: SCREEN_TITLE,
-                  passProps: {
-                    title: "New Post"
-                  },
-                },
                 text: 'New Post',
               },
               leftButtons: [
@@ -466,6 +473,13 @@ export const postingScreen = () => {
 							    id: 'post_button',
 							    text: 'Post',
                   color: '#f80'
+                },
+                {
+                  id: 'profile_button',
+                  text: 'profile',
+                  component: {
+                    name: PROFILE_IMAGE
+                  }
                 }
 					    ]
             },
@@ -503,12 +517,6 @@ export const discoverTopicScreen = (topic, component_id) => {
 			options: {
 				topBar: {
           title: {
-            component: {
-              name: SCREEN_TITLE,
-              passProps: {
-                title: `${topic.emoji} ${topic.title}`
-              },
-            },
             text: `${topic.emoji} ${topic.title}`
           },
           rightButtons: [
@@ -517,6 +525,13 @@ export const discoverTopicScreen = (topic, component_id) => {
               text: 'New',
               component: {
                 name: NEW_POST_BUTTON
+              }
+            },
+            {
+              id: 'profile_button',
+              text: 'profile',
+              component: {
+                name: PROFILE_IMAGE
               }
             }
           ],
@@ -557,12 +572,6 @@ export const replyScreen = () => {
           options: {
             topBar: {
               title: {
-                component: {
-                  name: SCREEN_TITLE,
-                  passProps: {
-                    title: 'New Reply'
-                  },
-                },
                 text: 'New Reply',
               },
               leftButtons: [
@@ -577,6 +586,13 @@ export const replyScreen = () => {
 							    id: 'post_button',
 							    text: 'Post',
                   color: '#f80'
+                },
+                {
+                  id: 'profile_button',
+                  text: 'profile',
+                  component: {
+                    name: PROFILE_IMAGE
+                  }
                 }
 					    ]
             },
