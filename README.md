@@ -11,3 +11,7 @@ Note that you need to have a working installation of Android Studio and an enabl
 Once your packages have been installed using the above command, you can open up the project in Android Studio. Once Gradle has finished doing what it needs to, "Run" the app in your emulator and/or real device.
 
 Alternatively you can run `yarn android` which will do all the steps above without having to open Android Studio.
+
+## Android Push Notifications
+
+Push notifications on Android require the `google-services.json` file to be present in the root of `android/app`. There might be build errors if it isn't present. Note that this file has been excluded/ignored from source control. Check the Firebase dashboard to download it.
