@@ -24,9 +24,9 @@ export default App = types.model('App', {
   hydrate: flow(function* () {
     console.log("App:hydrate")
     self.is_loading = true
+    Push.hydrate()
     Auth.hydrate().then(() => {
       startApp().then(() => {
-        Push.hydrate()
         console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
         if(!Auth.is_logged_in()){
           loginScreen()

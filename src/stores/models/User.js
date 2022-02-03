@@ -3,6 +3,7 @@ import Tokens from './../Tokens';
 import Posting from './Posting';
 import FastImage from 'react-native-fast-image';
 import Muting from './Muting'
+import Push from '../Push'
 
 export default User = types.model('User', {
     username: types.identifier,
@@ -12,6 +13,7 @@ export default User = types.model('User', {
     full_name: types.maybeNull(types.string),
     posting: types.maybeNull(Posting),
     muting: types.maybeNull(Muting),
+    push_enabled: types.optional(types.boolean, false)
   })
   .actions(self => ({
 
@@ -31,6 +33,9 @@ export default User = types.model('User', {
       }
       else {
         self.muting.hydrate()
+      }
+      if (!self.push_enabled) {
+        self.push_enabled = yield Push.register_token(self.token())
       }
     }),
     
