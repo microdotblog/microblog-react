@@ -46,7 +46,7 @@ export default class AccountSwitcher extends React.Component{
           </View>
           <View>
             <Text style={{fontWeight: '600'}}>{Auth.selected_user.full_name}</Text>
-            <Text style={{fontStyle: 'italic'}}>@{Auth.selected_user.username}</Text>
+            <Text>@{Auth.selected_user.username}</Text>
           </View>
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
@@ -98,7 +98,7 @@ export default class AccountSwitcher extends React.Component{
                   </View>
                   <View>
                     <Text style={{fontWeight: '600'}}>{user.full_name}</Text>
-                    <Text style={{fontStyle: 'italic'}}>@{user.username}</Text>
+                    <Text>@{user.username}</Text>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -128,7 +128,7 @@ export default class AccountSwitcher extends React.Component{
       >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Image style={{width: 30, height: 30, marginRight: 18, marginLeft: 6}} source={AddAccountImage} />
-          <Text style={{fontStyle: 'italic'}}>Add account...</Text>
+          <Text>Add account...</Text>
         </View>
       </TouchableOpacity>
     )
@@ -152,7 +152,7 @@ export default class AccountSwitcher extends React.Component{
 				}}
 			>
 				<View style={{ flexDirection: 'row', alignItems: 'center', width: "100%", justifyContent: 'center' }}>
-					<Text style={{fontStyle: 'italic', color: 'red'}}>{sign_out_wording}</Text>
+					<Text style={{color: 'red'}}>{sign_out_wording}</Text>
 				</View>
 			</TouchableOpacity>
     )
