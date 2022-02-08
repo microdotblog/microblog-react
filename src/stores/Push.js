@@ -29,6 +29,10 @@ export default Push = types.model('Push', {
 			popInitialNotification: true,
 			requestPermissions: true
 		});
+
+		PushNotification.popInitialNotification((notification) => {
+			console.log('Push:popInitialNotification', notification);
+		});
 	}),
 	
 	set_token: flow(function* (token) {
@@ -46,6 +50,11 @@ export default Push = types.model('Push', {
 			}
 		}
 		return false
+	}),
+
+	clear_notifications: flow(function* () {
+		console.log("Push::clear_notifications")
+		PushNotification.cancelAllLocalNotifications()
 	}),
 
 }))

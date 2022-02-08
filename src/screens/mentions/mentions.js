@@ -5,9 +5,20 @@ import Auth from './../../stores/Auth';
 import LoginMessage from './../../components/info/login_message';
 import WebViewModule from '../../components/web/webview_module'
 import ImageModalModule from '../../components/images/image_modal'
+import { Navigation } from 'react-native-navigation';
+import Push from '../../stores/Push'
 
 @observer
 export default class MentionsScreen extends React.Component{
+
+  constructor (props) {
+		super(props)
+		Navigation.events().bindComponent(this)
+  }
+
+  componentDidAppear = async () => {
+    Push.clear_notifications()
+  }
 
   render() {
     return(
