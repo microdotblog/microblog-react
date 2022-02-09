@@ -273,6 +273,17 @@ export default App = types.model('App', {
         }
       }
     }
+    else if (message === "bookmark_added_from_app") {
+      ToastAndroid.showWithGravity("Bookmark added!", ToastAndroid.SHORT, ToastAndroid.CENTER)
+      if (CURRENT_WEB_VIEW_REF) {
+        try {
+          CURRENT_WEB_VIEW_REF.injectJavaScript(`window.scrollTo({ top: 0 })`)
+          CURRENT_WEB_VIEW_REF.reload()
+        } catch (error) {
+          console.log("App:handle_web_view_message:bookmark_added:error", error)
+        }
+      }
+    }
   }),
 
 }))

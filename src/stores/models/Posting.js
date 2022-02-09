@@ -5,6 +5,7 @@ import { Alert } from 'react-native';
 import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Image from './posting/Image'
+import App from '../App'
 
 export default Posting = types.model('Posting', {
   username: types.identifier,
@@ -15,6 +16,7 @@ export default Posting = types.model('Posting', {
   is_sending_post: types.optional(types.boolean, false),
   post_images: types.optional(types.array(Image), []),
   post_categories: types.optional(types.array(types.string), []),
+  is_adding_bookmark: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -45,6 +47,7 @@ export default Posting = types.model('Posting', {
     }
     self.post_images = []
     self.is_sending_post = false
+    self.is_adding_bookmark = false
   }),
   
   afterCreate: flow(function* () {
@@ -162,6 +165,18 @@ export default Posting = types.model('Posting', {
     } else {
       self.post_categories.push(category)
     }
+  }),
+
+  add_bookmark: flow(function* (url) {
+    console.log("Posting:add_bookmark", url)
+    self.is_adding_bookmark = true
+    const post_success = yield MicroPubApi.send_entry(self.selected_service.service_object(), url, "bookmark-of")
+    self.is_adding_bookmark = false
+    if (post_success !== POST_ERROR) {
+      App.handle_web_view_message("bookmark_added_from_app")
+      return true
+    }
+    return false
   }),
 
 }))

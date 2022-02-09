@@ -9,6 +9,10 @@ export default class AddBookmarkScreen extends React.Component{
 	constructor (props) {
 		super(props)
 		Navigation.events().bindComponent(this)
+		this.state = {
+			url: ""
+		}
+		this._input_ref = React.createRef()
   }
 
   navigationButtonPressed = async ({ buttonId }) => {
@@ -22,14 +26,26 @@ export default class AddBookmarkScreen extends React.Component{
     Keyboard.dismiss()
 		Navigation.dismissModal(this.props.componentId)
 	}
+
+	_add_bookmark = async () => {
+		const bookmark = await Auth.selected_user.posting.add_bookmark(this.state.url)
+		console.log("AddBookmarkScreen:_add_bookmark", bookmark)
+		if (bookmark) {
+			this.setState({ url: "" })
+			this._input_ref.current.clear()
+			this._dismiss()
+		}
+	}
   
-  render() {
+	render() {
+		const { posting } = Auth.selected_user
     return(
       <KeyboardAvoidingView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 15 }}>
 				<Text style={{ fontWeight: "500", fontSize: 16 }}>
 					For Micro.blog Premium subscribers, bookmarked web pages are also archived so you can read them later and make highlights.
 				</Text>
-        <TextInput
+				<TextInput
+					ref={this._input_ref}
           placeholderTextColor="lightgrey"
           textContentType={'URL'}
           placeholder={"URL"}
@@ -54,14 +70,17 @@ export default class AddBookmarkScreen extends React.Component{
             marginVertical: 15,
             paddingHorizontal: 15,
             color: 'black'
-          }}
+					}}
+          onChangeText={(text) => !posting.is_adding_bookmark ? this.setState({url: text}) : null}
         />
         <Button
           title="Save Bookmark"
-          color="#f80"          
+					color="#f80"
+					onPress={this._add_bookmark}
+          disabled={posting.is_adding_bookmark}
         />
         <ActivityIndicator 
-          animating={false}
+          animating={posting.is_adding_bookmark}
           style={{
             marginTop: 15
           }}

@@ -128,6 +128,40 @@ class MicroPubApi {
 		return upload;
 	}
 
+	async send_entry(service, entry, entry_type) {
+		console.log('MicroBlogApi:send_post', service, entry, entry_type);
+		const params = new FormData()
+		params.append('h', 'entry')
+		params.append(entry_type, entry)
+		params.append('mp-destination', service.destination)
+		console.log("MicroBlogApi:send_entry:FORM_DATA:PARAMS", params)
+		
+		const post = axios
+			.post(service.endpoint, params ,{
+				headers: { Authorization: `Bearer ${service.token}` }
+			})
+			.then(() => {
+				return true;
+			})
+			.catch(error => {
+				console.log("MicroBlogApi:send_entry:ERROR", error.response.status, error.response.data);
+				if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
+					Alert.alert(
+						"Something went wrong.",
+						`${error.response.data.error_description}`,
+					)
+				}
+				else {
+					Alert.alert(
+						"Something went wrong.",
+						`Please try again later.`,
+					)
+				}
+				return POST_ERROR;
+			});
+		return post;
+	}
+
 }
 
 export default new MicroPubApi()
