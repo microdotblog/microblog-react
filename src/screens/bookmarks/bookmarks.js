@@ -5,9 +5,23 @@ import Auth from './../../stores/Auth';
 import LoginMessage from './../../components/info/login_message';
 import WebViewModule from '../../components/web/webview_module'
 import ImageModalModule from '../../components/images/image_modal'
+import { Navigation } from 'react-native-navigation';
+import { addBoomarkScreen } from '..'
 
 @observer
 export default class BookmarksScreen extends React.Component{
+
+  constructor (props) {
+		super(props)
+		Navigation.events().bindComponent(this)
+  }
+
+  navigationButtonPressed = async ({ buttonId }) => {
+    console.log("navigationButtonPressed::", buttonId)
+    if(buttonId === "add_bookmark_button"){
+      addBoomarkScreen()
+    }
+  }
 
   render() {
     return(

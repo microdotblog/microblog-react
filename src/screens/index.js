@@ -1,6 +1,7 @@
 import { Navigation } from "react-native-navigation";
 import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import * as React from 'react';
+import Reply from '../stores/Reply';
 
 // SCREENS
 import TimelineScreen from './timeline/timeline';
@@ -16,6 +17,7 @@ import DiscoverTopicScreen from "./discover/topic";
 import PostingOptionsScreen from "./posting/options";
 import ReplyScreen from "./conversation/reply";
 import BookmarkScreen from "./bookmarks/bookmark";
+import AddBookmarkScreen from "./bookmarks/add_bookmark";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -30,6 +32,7 @@ export const DISCOVER_TOPIC_SCREEN = 'microblog.DiscoverTopicScreen';
 export const POSTING_OPTIONS_SCREEN = 'microblog.PostingOptionsScreen';
 export const REPLY_SCREEN = 'microblog.ReplyScreen';
 export const BOOKMARK_SCREEN = 'microblog.BookmarkScreen';
+export const ADD_BOOKMARK_SCREEN = 'microblog.AddBookmarkScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -49,7 +52,7 @@ import MentionsIcon from './../assets/icons/tab_bar/mentions.png';
 import DiscoverIcon from './../assets/icons/tab_bar/discover.png';
 import ArrowBackIcon from './../assets/icons/arrow_back.png';
 import ReplyIcon from './../assets/icons/reply.png';
-import Reply from "../stores/Reply"
+import AddIcon from './../assets/icons/add.png';
 
 // Set up screens
 export const Screens = new Map();
@@ -66,16 +69,18 @@ Screens.set(DISCOVER_TOPIC_SCREEN, DiscoverTopicScreen);
 Screens.set(POSTING_OPTIONS_SCREEN, PostingOptionsScreen);
 Screens.set(REPLY_SCREEN, ReplyScreen);
 Screens.set(BOOKMARK_SCREEN, BookmarkScreen);
+Screens.set(ADD_BOOKMARK_SCREEN, AddBookmarkScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
 Screens.set(NEW_POST_BUTTON, NewPostButton)
 Screens.set(SCREEN_TITLE, ScreenTitle)
 
-// INIT BOTTOMSHEET
-RNNBottomSheet.init()
-
 export const startApp = () => {
+  
+  // INIT BOTTOMSHEET
+  RNNBottomSheet.init()
+
   const tabs = [
     {
       stack: {
@@ -352,11 +357,9 @@ export const bookmarksScreen = (component_id) => {
           },
           rightButtons: [
             {
-              id: 'post_button',
-              text: 'New',
-              component: {
-                name: NEW_POST_BUTTON
-              }
+              id: 'add_bookmark_button',
+              text: 'Add bookmark',
+              icon: AddIcon
             },
             {
               id: 'profile_button',
@@ -616,4 +619,43 @@ export const profileMoreBottomSheet = (username, close = false) => {
     })
   }
   RNNBottomSheet.closeBottomSheet()
+}
+
+export const addBoomarkScreen = () => {
+  return Navigation.showModal({
+    stack: {
+      id: 'ADD_BOOKMARK_SCREEN',
+      children: [ {
+        component: {
+          name: ADD_BOOKMARK_SCREEN,          
+          options: {
+            topBar: {
+              title: {
+                text: 'Add bookmark',
+              },
+              leftButtons: [
+                {
+                  id: 'back_button',
+                  text: 'Back',
+                  icon: ArrowBackIcon
+                },
+              ],
+              rightButtons: [
+                {
+                  id: 'profile_button',
+                  text: 'profile',
+                  component: {
+                    name: PROFILE_IMAGE
+                  }
+                }
+					    ]
+            },
+            layout: {
+              backgroundColor: "#fff"
+            }
+          }
+        },
+      }],
+    }
+  });
 }
