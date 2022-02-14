@@ -52,6 +52,18 @@ export default Push = types.model('Push', {
 		return false
 	}),
 
+	unregister_user_from_push: flow(function* (user_token) {
+		console.log("Push:unregister_user_from_push")
+		if (self.token != null && user_token != null) {
+			const data = yield MicroBlogApi.unregister_push(self.token, user_token)
+			if (data !== API_ERROR) {
+				console.log("Push:register_token:OK")
+				return true
+			}
+		}
+		return false
+	}),
+
 	clear_notifications: flow(function* () {
 		console.log("Push::clear_notifications")
 		PushNotification.cancelAllLocalNotifications()

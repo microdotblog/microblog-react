@@ -257,6 +257,28 @@ class MicroBlogApi {
 			});
 		return push;
 	}
+
+	async unregister_push(push_token, user_token) {
+		console.log('MicroBlogApi: unregister_push', push_token);
+		const push = axios
+			.post(`/users/push/unregister`, "" ,{
+				headers: { Authorization: `Bearer ${user_token}` },
+				params: {
+					device_token: push_token,
+					push_env: "production",
+					app_name: APP_NAME
+				}
+			})
+			.then(response => {
+				console.log('MicroBlogApi:unregister_push:data', response.data);
+				return true;
+			})
+			.catch(error => {
+				console.log(error);
+				return API_ERROR;
+			});
+		return push;
+	}
   
 }
 

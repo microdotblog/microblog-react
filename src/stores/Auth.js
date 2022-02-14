@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import User from './models/User'
 import Tokens from './Tokens'
 import CookieManager from '@react-native-cookies/cookies';
+import Push from './Push'
 
 export default Auth = types.model('Auth', {
   users: types.optional(types.array(User), []),
@@ -75,6 +76,7 @@ export default Auth = types.model('Auth', {
     if (user == null) {
       user = self.selected_user
     }
+    Push.unregister_user_from_push(user.token())
     Tokens.destroy_token(user.username)
     self.selected_user = null
     destroy(user)
@@ -89,6 +91,7 @@ export default Auth = types.model('Auth', {
     console.log("Auth:logout_all_users")
     yield Auth.clear_cookies()
     self.users.forEach((user) => {
+      Push.unregister_user_from_push(user.token())
       Tokens.destroy_token(user.username)
       self.selected_user = null
       destroy(user)
