@@ -16,7 +16,7 @@
       android:theme="@style/AppTheme">
 
         <meta-data  android:name="com.dieam.reactnativepushnotification.notification_foreground" android:value="true"/>
-<!--        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_push_icon" />-->
+        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_microblog_white" />
         <meta-data  android:name="com.dieam.reactnativepushnotification.notification_color" android:resource="@color/notification"/>
         <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" />
         <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
