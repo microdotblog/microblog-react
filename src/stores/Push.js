@@ -64,7 +64,7 @@ export default Push = types.model('Push', {
 
 	clear_notifications: flow(function* () {
 		console.log("Push::clear_notifications")
-		//PushNotification.cancelAllLocalNotifications()
+		PushNotification.cancelAllLocalNotifications()
 	}),
 
 	remove_notification: flow(function* (id) {
@@ -79,6 +79,7 @@ export default Push = types.model('Push', {
 			if (notifications) {
 				notifications.forEach(notification => {
 					Push.remove_notification(notification.id)
+					destroy(notification)
 				})
 			}
 		}
@@ -102,5 +103,10 @@ export default Push = types.model('Push', {
 		self.notifications.push(Notification.create(nice_notification_object))
 	}),
 
+}))
+.views(self => ({
+	valid_notifications() {
+		return self.notifications.filter(n => n.can_show_notification())
+	}
 }))
 .create({})

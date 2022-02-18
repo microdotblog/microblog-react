@@ -1,4 +1,4 @@
-import { types, flow } from 'mobx-state-tree';
+import { types, flow, destroy } from 'mobx-state-tree';
 import MicroBlogApi from '../../api/MicroBlogApi'
 import App from '../App'
 import Auth from '../Auth'
@@ -36,6 +36,10 @@ export default Notification = types.model('Notification', {
 			}
 			App.navigate_to_screen("open", self.post_id)
 		}
+	}),
+
+	remove: flow(function* () {
+		destroy(self)
 	})
 	
 }))

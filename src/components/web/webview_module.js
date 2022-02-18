@@ -6,6 +6,7 @@ import App from '../../stores/App';
 import { ScrollView } from 'react-native-gesture-handler';
 import WebView from 'react-native-webview'
 import { Navigation } from "react-native-navigation";
+import PushNotifications from '../push/push_notifications'
 
 @observer
 export default class WebViewModule extends React.Component{
@@ -49,6 +50,7 @@ export default class WebViewModule extends React.Component{
   render() {
     const { is_pull_to_refresh_enabled, scroll_view_height } = this.state
     return (
+      <>
       <ScrollView
         overScrollMode={'always'}
         style={{ flex: 1, width: '100%', height: '100%' }}
@@ -87,6 +89,8 @@ export default class WebViewModule extends React.Component{
           style={{flex: 1, height: scroll_view_height }}
         />
       </ScrollView>
+      <PushNotifications />
+      </>
     )
   }
 
