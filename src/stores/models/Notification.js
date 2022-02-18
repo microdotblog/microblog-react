@@ -51,6 +51,13 @@ export default Notification = types.model('Notification', {
 
 	can_show_notification() {
 		return self.message && this.local_user() != null
+	},
+
+	trimmed_message() {
+		if (self.message.length > 255) {
+			return `${self.message.slice(0, 250)}...`
+		}
+		return self.message
 	}
 		
 }))

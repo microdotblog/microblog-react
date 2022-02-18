@@ -35,7 +35,7 @@ export default class PushNotifications extends React.Component{
                 }}
               />
             }
-            <Text style={{fontSize: 16, maxWidth: '90%'}}>{notification.message}</Text>
+            <Text style={{fontSize: 16, maxWidth: '90%'}}>{notification.trimmed_message()}</Text>
           </TouchableOpacity>
         </View>
       )
@@ -44,7 +44,7 @@ export default class PushNotifications extends React.Component{
 
   render() {
     return Push.valid_notifications() ?
-      <View style={{position: 'absolute', bottom: 0, width: '100%'}}>
+      <View style={{ position: 'absolute', bottom: 0, width: '100%' }}>
         {this._render_notifications()}
       </View>
       : null
