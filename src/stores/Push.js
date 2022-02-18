@@ -1,9 +1,11 @@
-import { types, flow } from 'mobx-state-tree';
+import { types, flow, destroy } from 'mobx-state-tree';
 import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi'
 import PushNotification from "react-native-push-notification";
+import Notification from './models/Notification'
 
 export default Push = types.model('Push', {
-  token: types.optional(types.string, "")
+	token: types.optional(types.string, ""),
+	notifications: types.optional(types.array(Notification), [])
 })
 .actions(self => ({
 
@@ -19,7 +21,7 @@ export default Push = types.model('Push', {
 				console.log("Push:hydrate:onRegistrationError:error", error);
 			},
 			onNotification: function(data) {
-				console.log("Push:onNotification", data)
+				Push.handle_notification(data)
 			},
 			permissions: {
 				alert: true,
@@ -28,10 +30,6 @@ export default Push = types.model('Push', {
 			},
 			popInitialNotification: true,
 			requestPermissions: true
-		});
-
-		PushNotification.popInitialNotification((notification) => {
-			console.log('Push:popInitialNotification', notification);
 		});
 	}),
 	
@@ -66,7 +64,42 @@ export default Push = types.model('Push', {
 
 	clear_notifications: flow(function* () {
 		console.log("Push::clear_notifications")
-		PushNotification.cancelAllLocalNotifications()
+		//PushNotification.cancelAllLocalNotifications()
+	}),
+
+	remove_notification: flow(function* (id) {
+		console.log("Push::remove_notification", id)
+		PushNotification.cancelLocalNotification(id)
+	}),
+
+	check_and_remove_notifications_with_post_id: flow(function* (post_id) {
+		console.log("Push::check_and_remove_notifications_with_post_id", post_id)
+		if (self.notifications) {
+			const notifications = self.notifications.filter(n => n.post_id === post_id)
+			if (notifications) {
+				notifications.forEach(notification => {
+					Push.remove_notification(notification.id)
+				})
+			}
+		}
+	}),
+
+	handle_notification: flow(function* (notification) {
+		console.log("Push::handle_notification", notification)
+		const nice_notification_object = {
+			id: notification.id,
+			message: notification.message,
+			post_id: notification.data?.post_id,
+			to_username: JSON.parse(notification.data?.to_user)?.username,
+			from_username: JSON.parse(notification.data?.from_user)?.username,
+		}
+		// Check if we have an existing notification in our array.
+		// This will never happen, except for DEV for sending through test messages.
+		const existing_notification = self.notifications.find(notification => notification.id === nice_notification_object.id)
+		if (existing_notification) {
+			destroy(existing_notification)
+		}
+		self.notifications.push(Notification.create(nice_notification_object))
 	}),
 
 }))

@@ -69,6 +69,7 @@ export default Auth = types.model('Auth', {
     if (self.selected_user.posting.selected_service != null) {
       user.posting.selected_service.hydrate()
     }
+    return
   }),
   
   logout_user: flow(function* (user = null) {

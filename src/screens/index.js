@@ -53,6 +53,7 @@ import DiscoverIcon from './../assets/icons/tab_bar/discover.png';
 import ArrowBackIcon from './../assets/icons/arrow_back.png';
 import ReplyIcon from './../assets/icons/reply.png';
 import AddIcon from './../assets/icons/add.png';
+import Push from "../stores/Push"
 
 // Set up screens
 export const Screens = new Map();
@@ -302,6 +303,7 @@ export const profileScreen = (username, component_id) => {
 export const conversationScreen = (conversation_id, component_id) => {
   console.log("Screens:conversationScreen", conversation_id, component_id);
   Reply.hydrate(conversation_id)
+  Push.check_and_remove_notifications_with_post_id(conversation_id)
   const options = {
     component: {
       id: 'CONVERSATION_SCREEN',
