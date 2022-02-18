@@ -18,7 +18,8 @@ export default class PushNotifications extends React.Component{
               borderTopWidth: 2,
               borderTopColor: '#ccc',
               flexDirection: 'row',
-              alignItems: 'center'
+              alignItems: 'center',
+              justifyContent: 'space-between'
             }}
             activeOpacity={.9}
           >
@@ -34,7 +35,7 @@ export default class PushNotifications extends React.Component{
                 }}
               />
             }
-            <Text style={{fontSize: 16}}>{notification.message}</Text>
+            <Text style={{fontSize: 16, maxWidth: '90%'}}>{notification.message}</Text>
           </TouchableOpacity>
         </View>
       )

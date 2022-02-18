@@ -1,5 +1,5 @@
 import { types, flow, applySnapshot, destroy } from 'mobx-state-tree';
-import { Keyboard } from 'react-native';
+import { Keyboard, ToastAndroid } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import User from './models/User'
 import Tokens from './Tokens'
@@ -69,6 +69,7 @@ export default Auth = types.model('Auth', {
     if (self.selected_user.posting.selected_service != null) {
       user.posting.selected_service.hydrate()
     }
+    ToastAndroid.showWithGravity(`You're now logged in as @${user.username}`, ToastAndroid.SHORT, ToastAndroid.CENTER)
     return
   }),
   
