@@ -15,3 +15,6 @@ Alternatively you can run `yarn android` which will do all the steps above witho
 ## Android Push Notifications
 
 Push notifications on Android require the `google-services.json` file to be present in the root of `android/app`. There might be build errors if it isn't present. Note that this file has been excluded/ignored from source control. Check the Firebase dashboard to download it.
+
+To test notifications, use the following "data" within the message:
+`{"from_user": "{"username":"gluon"}", "post_id": "12499040", "to_user": "{"username":"vincent"}"}`
