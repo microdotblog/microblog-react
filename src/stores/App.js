@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen, bookmarkScreen } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
@@ -123,6 +123,9 @@ export default App = types.model('App', {
     RNNBottomSheet.closeBottomSheet()
     if(screen === "Bookmarks"){
       return bookmarksScreen(self.current_screen_id)
+    }
+    else if (screen === "Help") {
+      return helpScreen()
     }
     else{
       let tab_index = 0

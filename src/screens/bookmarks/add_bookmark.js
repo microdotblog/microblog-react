@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TextInput, Button, ActivityIndicator, Keyboard, KeyboardAvoidingView } from 'react-native';
+import { Text, TextInput, Button, ActivityIndicator, Keyboard, KeyboardAvoidingView } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 
 @observer

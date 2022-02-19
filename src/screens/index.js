@@ -18,6 +18,7 @@ import PostingOptionsScreen from "./posting/options";
 import ReplyScreen from "./conversation/reply";
 import BookmarkScreen from "./bookmarks/bookmark";
 import AddBookmarkScreen from "./bookmarks/add_bookmark";
+import HelpScreen from "./help/help";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -33,6 +34,7 @@ export const POSTING_OPTIONS_SCREEN = 'microblog.PostingOptionsScreen';
 export const REPLY_SCREEN = 'microblog.ReplyScreen';
 export const BOOKMARK_SCREEN = 'microblog.BookmarkScreen';
 export const ADD_BOOKMARK_SCREEN = 'microblog.AddBookmarkScreen';
+export const HELP_SCREEN = 'microblog.HelpScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -71,6 +73,7 @@ Screens.set(POSTING_OPTIONS_SCREEN, PostingOptionsScreen);
 Screens.set(REPLY_SCREEN, ReplyScreen);
 Screens.set(BOOKMARK_SCREEN, BookmarkScreen);
 Screens.set(ADD_BOOKMARK_SCREEN, AddBookmarkScreen);
+Screens.set(HELP_SCREEN, HelpScreen)
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
@@ -651,6 +654,36 @@ export const addBoomarkScreen = () => {
                   }
                 }
 					    ]
+            },
+            layout: {
+              backgroundColor: "#fff"
+            }
+          }
+        },
+      }],
+    }
+  });
+}
+
+export const helpScreen = () => {
+  return Navigation.showModal({
+    stack: {
+      id: 'HELP_SCREEN',
+      children: [ {
+        component: {
+          name: HELP_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                text: 'Help',
+              },
+              leftButtons: [
+                {
+                  id: 'back_button',
+                  text: 'Back',
+                  icon: ArrowBackIcon
+                },
+              ],
             },
             layout: {
               backgroundColor: "#fff"

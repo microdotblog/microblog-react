@@ -9,6 +9,7 @@ import Bookmarks from './../../assets/icons/nav/bookmarks.png';
 import Timeline from './../../assets/icons/nav/timeline.png';
 import Discover from './../../assets/icons/nav/discover.png';
 import Mentions from './../../assets/icons/nav/mentions.png';
+import Help from './../../assets/icons/nav/help.png';
 
 @observer
 export default class MenuNavigation extends React.Component{
@@ -21,6 +22,10 @@ export default class MenuNavigation extends React.Component{
       "Mentions",
       "Bookmarks",
       "Discover"
+    ]
+
+    this.secondary_menu = [
+      "Help"
     ]
   }
 
@@ -68,6 +73,41 @@ export default class MenuNavigation extends React.Component{
     })
   }
 
+  _render_secondary_menu_items = () => {
+    return this.secondary_menu.map(item => {
+      let image = null
+      switch(item.toLowerCase()){
+        case "help":
+        image = Help
+        break;
+      }
+      return(
+        <TouchableOpacity
+          onPress={() => App.navigate_to_screen_from_menu(item)}
+          key={item}
+          style={{ 
+            width: '49%',
+            padding: 8,
+            paddingHorizontal: 16,
+            borderRadius: 20,
+            backgroundColor: "#F9FAFB",
+            marginBottom: 8,
+            flexDirection: 'row',
+            alignItems: 'center',
+            //justifyContent: 'center'
+          }}
+        >
+          {
+            image != null ?
+            <Image source={image} style={{ marginRight: 8, height: 22, width: 22, marginTop: 1 }} />
+            : null
+          }
+          <Text style={{ fontSize: 16, fontWeight: '500', color: '#1F2937' }}>{item}</Text>
+        </TouchableOpacity>
+      )
+    })
+  }
+
   render() {
     if(Auth.selected_user != null){
       return(
@@ -75,7 +115,7 @@ export default class MenuNavigation extends React.Component{
           style={{
             width: '100%',
             marginBottom: 15,
-            paddingBottom: 20,
+            paddingBottom: 5,
             paddingTop: 10,
             borderColor: '#E5E7EB',
             borderBottomWidth: 1,
@@ -85,6 +125,9 @@ export default class MenuNavigation extends React.Component{
           }}
         >
           {this._render_menu_items()}
+          <View style={{paddingTop: 10, marginTop: 5, borderColor: '#F9FAFB', borderTopWidth: 1, width: '100%'}}>
+            {this._render_secondary_menu_items()}
+          </View>
         </View>
       )
     }
