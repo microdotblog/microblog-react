@@ -44,7 +44,7 @@ export default class HelpScreen extends React.Component{
 					}}
 					onPress={() => App.handle_url_from_webview(`https://micro.blog/${member.handle}`)}
 				>
-					<Image source={{ uri: member.avatar }} style={{ width: 60, height: 60, borderRadius: 50 }} />
+					<Image source={{ uri: member.avatar }} style={{ width: 60, height: 60, borderRadius: 50, marginBottom: 5 }} />
 					<Text>{member.name}</Text>
 					<Text style={{ color: '#337ab7' }}>@{member.handle}</Text>
 				</TouchableOpacity>
