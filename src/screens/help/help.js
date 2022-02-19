@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import App from '../../stores/App'
+import { getVersion } from 'react-native-device-info';
 
 @observer
 export default class HelpScreen extends React.Component{
@@ -100,6 +101,9 @@ export default class HelpScreen extends React.Component{
 						}}>
 						{this._render_team()}
 					</View>
+				</View>
+				<View style={{ marginTop: 15, paddingTop: 15, borderColor: '#E5E7EB', borderTopWidth: 1 }}>
+					<Text>Version { getVersion() }</Text>
 				</View>
       </ScrollView>
     )
