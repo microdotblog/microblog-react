@@ -22,7 +22,7 @@ export default class PostingOptionsScreen extends React.Component{
 					<Text style={{ fontSize: 16, fontWeight: '500' }}>Select categories for this post:</Text>
 					<View style={{ backgroundColor: '#F8F8F8', padding: 8, borderRadius: 8, marginTop: 8 }}>
 					{
-						posting.selected_service.config.active_destination().categories.length ?
+						posting.selected_service.config?.active_destination()?.categories.length ?
 							posting.selected_service.config.active_destination().categories.map((category) => {
 								const is_selected = posting.post_categories.indexOf(category) > -1
 								return(
