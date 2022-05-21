@@ -18,6 +18,9 @@ export default class ProfileHeader extends React.Component{
       more_expanded: false,
       is_toggling_follow: false
     }
+    let now = new Date()
+    now.setHours(0, 0, 0, 0)
+    this.now = now
   }
   
   componentDidMount = async () => {
@@ -61,7 +64,7 @@ export default class ProfileHeader extends React.Component{
     return(
       <View style={{ padding: 8, backgroundColor: "#E5E7EB", width: '100%' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image source={{ uri: profile.author.avatar }} style={{ width: 50, height: 50, borderRadius: 50 }} />
+          <Image source={{ uri: `${profile.author.avatar}?v=${this.now}` }} style={{ width: 50, height: 50, borderRadius: 50 }} />
           <View style={{ marginLeft: 15 }}>
             <Text style={{ fontWeight: '700', fontSize: 18, marginBottom: 2 }}>{profile.author.name}</Text>
             <Text style={{ fontWeight: '300' }}>@{profile._microblog.username}</Text>

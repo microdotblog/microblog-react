@@ -11,6 +11,13 @@ import AddAccountImage from './../../assets/icons/add_account.png';
 
 @observer
 export default class AccountSwitcher extends React.Component{
+
+  constructor (props) {
+    super(props)
+    let now = new Date()
+    now.setHours(0, 0, 0, 0)
+    this.now = now
+  }
   
   _render_current_user = () => {
     return(
@@ -37,8 +44,9 @@ export default class AccountSwitcher extends React.Component{
           <View style={{marginRight: 15}}>
             <FastImage
               source={{
-                uri: Auth.selected_user.avatar,
-                priority: FastImage.priority.normal
+                uri: `${Auth.selected_user.avatar}?v=${this.now}`,
+                priority: FastImage.priority.normal,
+                cache: FastImage.cacheControl.web
               }}
               resizeMode={FastImage.resizeMode.contain}
               style={{ width: 40, height: 40, borderRadius: 50 }}
@@ -89,8 +97,9 @@ export default class AccountSwitcher extends React.Component{
                   <View style={{marginRight: 15}}>
                     <FastImage
                       source={{
-                        uri: user.avatar,
-                        priority: FastImage.priority.normal
+                        uri: `${user.avatar}?v=${this.now}`,
+                        priority: FastImage.priority.normal,
+                        cache: FastImage.cacheControl.web
                       }}
                       resizeMode={FastImage.resizeMode.contain}
                       style={{ width: 40, height: 40, borderRadius: 50 }}
