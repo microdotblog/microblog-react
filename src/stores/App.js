@@ -163,7 +163,7 @@ export default App = types.model('App', {
   }),
 
   set_image_modal_data_and_activate: flow(function* (url) {
-    self.current_image_url = url
+    self.current_image_url = decodeURI(url)
     self.image_modal_is_open = true
   }),
 
