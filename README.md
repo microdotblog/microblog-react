@@ -23,10 +23,10 @@ To test notifications, use the following "data" within the message:
 
 A by product of loving the Ruby language so much, I started adopting snake_case in JavaScript years ago as it provided better readability for me. This might be confusing at first. I don't mind if camelCase will be used for anything, just be aware that I'll continue to adopt my approach in future (unless I change my mind).
 
-## Connection issues to Metro in the si, or device, when running in develop mode
+## Connection issues to Metro in the sim, or device, when running in develop mode
 
 Sometimes the Android simulator won't connect to the Meto Bundler locally. In order to get it to work, use the following command in the terminal after the sim or device is connected/running.
 
 `adb reverse tcp:8081 tcp:8081`
 
-This basically adds a reverse proxy to the bundler. You can do this multiple times with different port numbers as needed. For example you might want to use a different port number when loading a local web view, web app or service.
+This basically adds a reverse proxy to the bundler. You can do this multiple times with different port numbers as needed. For example you might want to use a different port number when loading a local web view, web app or service that you want to access on the device.
