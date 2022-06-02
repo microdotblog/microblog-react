@@ -100,7 +100,6 @@ export default Posting = types.model('Posting', {
   
   handle_text_action: flow(function* (action) {
     console.log("Posting:handle_text_action", action)
-    const current_selection = self.text_selection
     const is_link = action === "[]"
     if (is_link) {
       action = "[]()"
@@ -124,14 +123,14 @@ export default Posting = types.model('Posting', {
         }
         action = `[](${ url })`
         console.log("TEXT OPTION", action)
-        self.post_text = self.post_text.InsertTextStyle(action, current_selection, true, url)
+        self.post_text = self.post_text.InsertTextStyle(action, self.text_selection, true, url)
       }
       else {
-        self.post_text = self.post_text.InsertTextStyle(action, current_selection, true)
+        self.post_text = self.post_text.InsertTextStyle(action, self.text_selection, true)
       }
     }
     else {
-      self.post_text = self.post_text.InsertTextStyle(action, current_selection, is_link)
+      self.post_text = self.post_text.InsertTextStyle(action, self.text_selection, is_link)
     }
     
   }),
