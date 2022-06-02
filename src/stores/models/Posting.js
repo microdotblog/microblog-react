@@ -17,7 +17,13 @@ export default Posting = types.model('Posting', {
   is_sending_post: types.optional(types.boolean, false),
   post_images: types.optional(types.array(Image), []),
   post_categories: types.optional(types.array(types.string), []),
-  is_adding_bookmark: types.optional(types.boolean, false)
+  is_adding_bookmark: types.optional(types.boolean, false),
+  text_selection: types.optional(
+    types.model('Selection', {
+      start: types.optional(types.number, 0),
+      end: types.optional(types.number, 0),
+    }), {start: 0, end: 0}
+  ),
 })
 .actions(self => ({
 
@@ -92,8 +98,9 @@ export default Posting = types.model('Posting', {
     return false
   }),
   
-  handle_text_action: flow(function* (action, current_selection) {
-		console.log("Posting:handle_text_action", action, current_selection)
+  handle_text_action: flow(function* (action) {
+    console.log("Posting:handle_text_action", action)
+    const current_selection = self.text_selection
     const is_link = action === "[]"
     if (is_link) {
       action = "[]()"
@@ -209,6 +216,10 @@ export default Posting = types.model('Posting', {
       return true
     }
     return false
+  }),
+
+  set_text_selection: flow(function* (selection) {
+    self.text_selection = selection
   }),
 
 }))

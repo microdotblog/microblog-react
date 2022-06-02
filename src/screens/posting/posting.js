@@ -1,11 +1,9 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, Keyboard, ActivityIndicator, Text, TouchableOpacity, Image } from 'react-native';
+import { View, TextInput, Keyboard, ActivityIndicator, TouchableOpacity, Image, InputAccessoryView, Platform } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Auth from '../../stores/Auth';
-import PhotoLibrary from '../../assets/icons/toolbar/photo_library.png';
-import SettingsIcon from '../../assets/icons/toolbar/settings.png';
-import { postingOptionsScreen } from '..';
+import PostToolbar from '../../components/keyboard/post_toolbar'
 
 @observer
 export default class PostingScreen extends React.Component{
@@ -13,7 +11,7 @@ export default class PostingScreen extends React.Component{
   constructor(props) {
 		super(props)
 		Navigation.events().bindComponent(this);
-    this._text_selection = { start: 0, end: 0 }
+    this.input_accessory_view_id = "input_toolbar";
   }
   
   componentDidMount() {
@@ -72,6 +70,7 @@ export default class PostingScreen extends React.Component{
 					  underlineColorAndroid={'transparent'}
             value={posting.post_title}
             onChangeText={(text) => !posting.is_sending_post ? posting.set_post_title(text) : null}
+            inputAccessoryViewID={this.input_accessory_view_id}
           />
           : null
         }
@@ -98,8 +97,9 @@ export default class PostingScreen extends React.Component{
           value={posting.post_text}
           onChangeText={(text) => !posting.is_sending_post ? posting.set_post_text(text) : null}
           onSelectionChange={({ nativeEvent: { selection } }) => {
-            this._text_selection = selection
+            posting.set_text_selection(selection)
           }}
+          inputAccessoryViewID={this.input_accessory_view_id}
         />
         {
           posting.post_images.length > 0 ?
@@ -136,65 +136,13 @@ export default class PostingScreen extends React.Component{
             </View>
           : null
         }
-        <View
-          style={{
-            width: '100%',
-            backgroundColor: '#E5E7EB',
-            position: 'absolute',
-            bottom: 0,
-            right: 0,
-            left: 0,
-            padding: 5,
-            minHeight: 40,
-            flexDirection: 'row',
-            alignItems: 'center'
-          }}
-        >
-          <TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("**", this._text_selection)}>
-            <Text style={{ fontSize: 20, fontWeight: '700', textAlign: 'center', padding: 2 }}>{"**"}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("_", this._text_selection)}>
-            <Text style={{ fontSize: 20, fontWeight: '800', textAlign: 'center', padding: 2 }}>{"_"}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("[]", this._text_selection)}>
-            <Text style={{ fontSize: 20, fontWeight: '600', textAlign: 'center', padding: 2 }}>{"[ ]"}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={{minWidth: 35, marginLeft: 8, marginRight: 8}} onPress={posting.handle_image_action}>
-            <Image source={PhotoLibrary} style={{width: 24, height: 24}} />
-          </TouchableOpacity>
-          {/* {
-            posting.selected_service.config.has_multiple_destinations() ?
-            <TouchableOpacity style={{ marginLeft: 10 }}>
-              <Text style={{ fontSize: 16, fontWeight: '400', textAlign: 'center', padding: 2 }}>{posting.selected_service.config.active_destination().name}</Text>
-            </TouchableOpacity>
-            : null
-          } */}
-          <View
-            style={{
-              position: 'absolute',
-              right: 8,
-              bottom: 9,
-              flexDirection: 'row',
-              alignItems: 'center'
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => postingOptionsScreen(this.props.componentId)}
-              style={{
-                marginRight: 8,
-              }}
-            >
-              <Image source={SettingsIcon} style={{width: 24, height: 24}} />
-            </TouchableOpacity>
-            <Text
-              style={{
-                fontWeight: '200',
-                padding: 2,
-                backgroundColor: 'rgba(255,255,255,.6)'
-              }}
-            ><Text style={{ color: posting.post_text_length() > 280 ? '#a94442' : 'black' }}>{posting.post_text_length()}</Text>/280</Text>
-          </View>
-        </View>
+        {
+          Platform.OS === 'ios' ?
+            <InputAccessoryView nativeID={this.input_accessory_view_id}>
+              <PostToolbar />
+            </InputAccessoryView>
+          :  <PostToolbar />
+        }
         {
           posting.is_sending_post ?
           <View 
