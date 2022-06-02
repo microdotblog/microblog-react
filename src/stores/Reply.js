@@ -2,6 +2,7 @@ import { types, flow } from 'mobx-state-tree';
 import { Alert } from 'react-native'
 import MicroBlogApi, { API_ERROR, POST_ERROR } from '../api/MicroBlogApi'
 import Auth from './Auth'
+import Clipboard from '@react-native-clipboard/clipboard';
 
 export default Reply = types.model('Reply', {
   reply_text: types.optional(types.string, ""),
@@ -65,9 +66,36 @@ export default Reply = types.model('Reply', {
 		console.log("Reply:handle_text_action", action)
 		const is_link = action === "[]"
 		if (is_link) {
-			action = "[]()"
-		}
-    self.reply_text = self.reply_text.InsertTextStyle(action, self.text_selection, is_link)
+      action = "[]()"
+      let has_web_url = null
+      let url = null
+      if (Platform.OS === "ios") {
+        has_web_url = yield Clipboard.hasWebURL()
+      }
+      else {
+        url = yield Clipboard.getString()
+        has_web_url = yield Linking.canOpenURL(url)
+        // I'm using this as a fallback, as Android sometimes doesn't know that it can open a URL.
+        if (!has_web_url) {
+          has_web_url = url.startsWith("http://") || url.startsWith("https://")
+        }
+      }
+      console.log("HAS WEB URL", url, has_web_url)
+      if (has_web_url) {
+        if (url === null) {
+          url = yield Clipboard.getString()
+        }
+        action = `[](${ url })`
+        console.log("TEXT OPTION", action)
+        self.reply_text = self.reply_text.InsertTextStyle(action, self.text_selection, true, url)
+      }
+      else {
+        self.reply_text = self.reply_text.InsertTextStyle(action, self.text_selection, true)
+      }
+    }
+    else {
+      self.reply_text = self.reply_text.InsertTextStyle(action, self.text_selection, is_link)
+    }
 	}),
 	
 	set_text_selection: flow(function* (selection) {
