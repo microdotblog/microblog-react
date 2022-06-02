@@ -1,6 +1,7 @@
 import { Navigation } from "react-native-navigation";
 import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import * as React from 'react';
+import { Platform } from 'react-native';
 import Reply from '../stores/Reply';
 
 // SCREENS
@@ -112,6 +113,19 @@ export const startApp = () => {
                     }
                   }
                 ],
+                ...Platform.select({
+                  ios: {
+                    leftButtons: [
+                    {
+                      id: 'profile_button',
+                      text: 'Profile',
+                      component: {
+                        name: PROFILE_IMAGE
+                      }
+                    }
+                  ],
+                  }
+                })
               }
             }
           },
@@ -150,6 +164,19 @@ export const startApp = () => {
                     }
                   }
                 ],
+                ...Platform.select({
+                  ios: {
+                    leftButtons: [
+                    {
+                      id: 'profile_button',
+                      text: 'Profile',
+                      component: {
+                        name: PROFILE_IMAGE
+                      }
+                    }
+                  ],
+                  }
+                })
               }
             }
           },
@@ -188,6 +215,19 @@ export const startApp = () => {
                     }
                   }
                 ],
+                ...Platform.select({
+                  ios: {
+                    leftButtons: [
+                    {
+                      id: 'profile_button',
+                      text: 'Profile',
+                      component: {
+                        name: PROFILE_IMAGE
+                      }
+                    }
+                  ],
+                  }
+                })
               }
             }
           },
