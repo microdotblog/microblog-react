@@ -96,6 +96,7 @@ export default Posting = types.model('Posting', {
 		console.log("Posting:handle_text_action", action, current_selection)
     const is_link = action === "[]"
     if (is_link) {
+      action = "[]()"
       let has_web_url = null
       let url = null
       if (Platform.OS === "ios") {
