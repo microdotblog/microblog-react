@@ -7,6 +7,12 @@ export default Reply = types.model('Reply', {
   reply_text: types.optional(types.string, ""),
 	is_sending_reply: types.optional(types.boolean, false),
 	conversation_id: types.maybeNull(types.string),
+	text_selection: types.optional(
+    types.model('Selection', {
+      start: types.optional(types.number, 0),
+      end: types.optional(types.number, 0),
+    }), {start: 0, end: 0}
+  ),
 })
 .actions(self => ({
 
@@ -55,10 +61,17 @@ export default Reply = types.model('Reply', {
     return false
   }),
   
-  handle_text_action: flow(function* (action, current_selection) {
-		console.log("Reply:handle_text_action", action, current_selection)
-    const is_link = action === "[]"
-    self.reply_text = self.reply_text.InsertTextStyle(action, current_selection, is_link)
+  handle_text_action: flow(function* (action) {
+		console.log("Reply:handle_text_action", action)
+		const is_link = action === "[]"
+		if (is_link) {
+			action = "[]()"
+		}
+    self.reply_text = self.reply_text.InsertTextStyle(action, self.text_selection, is_link)
+	}),
+	
+	set_text_selection: flow(function* (selection) {
+    self.text_selection = selection
   }),
 
 }))
