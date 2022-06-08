@@ -20,6 +20,7 @@ export default App = types.model('App', {
   current_image_url: types.maybeNull(types.string),
   is_scrolling: types.optional(types.boolean, false),
   theme: types.optional(types.string, 'light'),
+  is_switching_theme: types.optional(types.boolean, false),
 })
 .actions(self => ({
 
@@ -308,8 +309,10 @@ export default App = types.model('App', {
 
   change_current_theme: flow(function* (color) {
     console.log("App:change_current_theme", color)
+    self.is_switching_theme = true
     self.theme = color
-    App.update_navigation_screens()
+    yield App.update_navigation_screens()
+    self.is_switching_theme = false
   }),
 
   update_navigation_screens: flow(function* () {
