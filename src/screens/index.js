@@ -57,6 +57,7 @@ import ArrowBackIcon from './../assets/icons/arrow_back.png';
 import ReplyIcon from './../assets/icons/reply.png';
 import AddIcon from './../assets/icons/add.png';
 import Push from "../stores/Push"
+import { theme_options } from "../utils/navigation"
 
 // Set up screens
 export const Screens = new Map();
@@ -91,7 +92,7 @@ export const startApp = () => {
       stack: {
         children: [{
           component: {
-            id: 'TIMELINE_SCREEN',
+            id: TIMELINE_SCREEN,
             name: TIMELINE_SCREEN,
             options: {
               topBar: {
@@ -142,7 +143,7 @@ export const startApp = () => {
       stack: {
         children: [{
           component: {
-            id: 'MENTIONS_SCREEN',
+            id: MENTIONS_SCREEN,
             name: MENTIONS_SCREEN,
             options: {
               topBar: {
@@ -193,7 +194,7 @@ export const startApp = () => {
       stack: {
         children: [{
           component: {
-            id: 'DISCOVER_SCREEN',
+            id: DISCOVER_SCREEN,
             name: DISCOVER_SCREEN,
             options: {
               topBar: {
@@ -242,20 +243,7 @@ export const startApp = () => {
     }
   ]
 
-  Navigation.setDefaultOptions({
-    animations: {
-      setRoot: {
-        waitForRender: true,
-      },
-      setStackRoot: {
-        waitForRender: true,
-      },
-    },
-    bottomTab: {
-      selectedIconColor: "#f80",
-      selectedTextColor: "#f80"
-    }
-  });
+  Navigation.setDefaultOptions(theme_options({}));
 
   return Navigation.setRoot({
     root: {

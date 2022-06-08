@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
@@ -7,6 +7,7 @@ import { Linking, ToastAndroid, Appearance } from 'react-native'
 import { Navigation } from "react-native-navigation";
 import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import Push from './Push'
+import { theme_options } from '../utils/navigation'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -25,7 +26,7 @@ export default App = types.model('App', {
   hydrate: flow(function* () {
     console.log("App:hydrate")
     self.is_loading = true
-    App.set_current_initial_theme()
+    yield App.set_current_initial_theme()
     Push.hydrate()
     Auth.hydrate().then(() => {
       startApp().then(() => {
@@ -308,7 +309,35 @@ export default App = types.model('App', {
   change_current_theme: flow(function* (color) {
     console.log("App:change_current_theme", color)
     self.theme = color
+    App.update_navigation_screens()
   }),
 
+  update_navigation_screens: flow(function* () {
+    console.log("App:update_navigation_screens")
+    const options = theme_options({})
+    // We set default options here so that any new screen, that might not be in the stack, will pick them up.
+    Navigation.setDefaultOptions(options)
+    Screens.forEach((_screen, key) => {
+      if (key != null &&
+        !key.includes("microblog.component") &&
+        key !== "__initBottomSheet__")
+      {
+        console.log("App:update_navigation_screens:screen", key)
+        Navigation.mergeOptions(key, options)
+      }
+    })
+  }),
+
+}))
+.views(self => ({
+  theme_background_color() {
+    return self.theme === "dark" ? "#000" : "#fff"
+  },
+  theme_navigation_icon_color() {
+    return self.theme === "dark" ? "#9CA3AF" : "#000"
+  },
+  theme_text_color() {
+    return self.theme === "dark" ? "#fff" : "#000"
+  },
 }))
 .create();

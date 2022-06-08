@@ -19,4 +19,36 @@ Navigation.events().registerComponentDidAppearListener(({ componentName, compone
       App.set_current_screen_name_and_id(componentName, componentId)
       break;
   }
-});
+})
+
+export const theme_options = (settings) => {
+
+  return {
+    ...settings,
+    bottomTabs: {
+      backgroundColor: App.theme_background_color(),
+    },
+    layout: {
+      backgroundColor: App.theme_background_color(),
+    },
+    animations: {
+      setRoot: {
+        waitForRender: true,
+      },
+      setStackRoot: {
+        waitForRender: true,
+      },
+    },
+    bottomTab: {
+      selectedIconColor: "#f80",
+      selectedTextColor: "#f80",
+      iconColor: App.theme_navigation_icon_color(),
+      textColor: App.theme_navigation_icon_color(),
+    },
+    topBar: {
+      background: {
+        color: App.theme_background_color()
+      },
+    }
+  }
+};
