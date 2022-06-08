@@ -58,6 +58,7 @@ import ReplyIcon from './../assets/icons/reply.png';
 import AddIcon from './../assets/icons/add.png';
 import Push from "../stores/Push"
 import { theme_options } from "../utils/navigation"
+import App from "../stores/App"
 
 // Set up screens
 export const Screens = new Map();
@@ -289,6 +290,7 @@ export const menuBottomSheet = (close = false) => {
       snapPoints: [0, '20%', '40%', '70%'],
       initialSnapIndex: 2,
       borderRadius: 16,
+      backgroundColor: App.theme_background_color()
     })
   }
   RNNBottomSheet.closeBottomSheet()

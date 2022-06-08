@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, Platform } from 'react-native';
 import ProfileImage from './profile_image';
+import App from '../../stores/App'
 
 @observer
 export default class ScreenTitle extends React.Component{
@@ -16,7 +17,7 @@ export default class ScreenTitle extends React.Component{
 					}}
 				>
 					{ Platform.OS === 'android' && <ProfileImage /> }
-					<Text style={{ color: 'black', fontSize: 18, minWidth: 100, fontWeight:  Platform.OS === 'ios' ? '600' : '400' , textAlign: Platform.OS === 'ios' ? 'center' : 'auto' }}>{this.props.title}</Text>
+					<Text style={{ color: App.theme_text_color(), fontSize: 18, minWidth: 100, fontWeight:  Platform.OS === 'ios' ? '600' : '400' , textAlign: Platform.OS === 'ios' ? 'center' : 'auto' }}>{this.props.title}</Text>
 				</View>
 			)
 		}

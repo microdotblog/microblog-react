@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import Discover from '../../stores/Discover'
 import { TouchableOpacity, View, Text } from 'react-native';
 import { tagmojiBottomSheet } from '../../screens'
+import App from '../../stores/App'
 
 @observer
 export default class TagmojiBar extends React.Component{
@@ -19,7 +20,7 @@ export default class TagmojiBar extends React.Component{
             paddingVertical: 10,
             width: '100%'
           }}>
-          <Text>Some recent posts from the community</Text>
+          <Text style={{color: App.theme_text_color()}}>Some recent posts from the community</Text>
           <TouchableOpacity
             style={{
               borderColor: 'lightgray',
