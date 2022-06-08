@@ -49,6 +49,10 @@ export const theme_options = (settings) => {
       background: {
         color: App.theme_background_color()
       },
+      leftButtonColor: App.theme_text_color(),
+      backButton: {
+        color: App.theme_text_color(),
+      }
     }
   }
 };
