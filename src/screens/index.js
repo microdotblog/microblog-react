@@ -290,7 +290,7 @@ export const menuBottomSheet = (close = false) => {
       snapPoints: [0, '20%', '40%', '70%'],
       initialSnapIndex: 2,
       borderRadius: 16,
-      backgroundColor: App.theme_background_color()
+      backgroundColor: App.theme_background_color_secondary()
     })
   }
   RNNBottomSheet.closeBottomSheet()
@@ -538,6 +538,7 @@ export const tagmojiBottomSheet = (close = false) => {
       snapPoints: [0, '20%', '40%', '90%'],
       initialSnapIndex: 2,
       borderRadius: 16,
+      backgroundColor: App.theme_background_color_secondary()
     })
   }
   RNNBottomSheet.closeBottomSheet()
@@ -651,6 +652,7 @@ export const profileMoreBottomSheet = (username, close = false) => {
       snapPoints: [0, '30%', '40%'],
       initialSnapIndex: 1,
       borderRadius: 16,
+      backgroundColor: App.theme_background_color_secondary()
     })
   }
   RNNBottomSheet.closeBottomSheet()

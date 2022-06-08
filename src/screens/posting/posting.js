@@ -4,6 +4,7 @@ import { View, TextInput, Keyboard, ActivityIndicator, TouchableOpacity, Image, 
 import { Navigation } from 'react-native-navigation';
 import Auth from '../../stores/Auth';
 import PostToolbar from '../../components/keyboard/post_toolbar'
+import App from '../../stores/App'
 
 @observer
 export default class PostingScreen extends React.Component{
@@ -41,7 +42,7 @@ export default class PostingScreen extends React.Component{
   render() {
     const { posting } = Auth.selected_user
     return(
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
         {
           posting.post_text_length() > 280 || posting.post_title ?
           <TextInput
@@ -56,7 +57,7 @@ export default class PostingScreen extends React.Component{
               fontWeight: '700',
               borderColor: '#E5E7EB',
               borderBottomWidth: .5,
-              color: 'black'
+              color: App.theme_text_color()
             }}
             editable={!posting.is_sending_post}
             multiline={false}
@@ -82,7 +83,7 @@ export default class PostingScreen extends React.Component{
 						alignItems: 'flex-start',
             marginBottom: posting.post_text_length() > 280 || posting.post_title ? posting.post_images.length > 0 ? 135 : 80 : posting.post_images.length > 0 ? 93 : 38,
             padding: 8,
-            color: 'black'
+            color: App.theme_text_color()
           }}
           editable={!posting.is_sending_post}
           multiline={true}

@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 import Auth from '../../stores/Auth';
 import CheckmarkIcon from '../../assets/icons/checkmark.png';
+import App from '../../stores/App'
 
 @observer
 export default class PostingOptionsScreen extends React.Component{
@@ -19,7 +20,7 @@ export default class PostingOptionsScreen extends React.Component{
 			<ScrollView style={{ flex: 1, padding: 15 }}>
 				{/* Categories */}
 				<View style={{ marginBottom: 25 }}>
-					<Text style={{ fontSize: 16, fontWeight: '500' }}>Select categories for this post:</Text>
+					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>Select categories for this post:</Text>
 					<View style={{ backgroundColor: '#F8F8F8', padding: 8, borderRadius: 8, marginTop: 8 }}>
 					{
 						posting.selected_service.config?.active_destination()?.categories.length ?
@@ -48,7 +49,7 @@ export default class PostingOptionsScreen extends React.Component{
 				</View>
 				{/* Blogs */}
 				<View style={{ marginBottom: 25 }}>
-					<Text style={{ fontSize: 16, fontWeight: '500', marginBottom: 5 }}>Choose a default microblog to post to:</Text>
+					<Text style={{ fontSize: 16, fontWeight: '500', marginBottom: 5, color: App.theme_text_color() }}>Choose a default microblog to post to:</Text>
 					<View style={{ backgroundColor: '#F8F8F8', padding: 8, borderRadius: 8, marginTop: 8 }}>
 					{
 						posting.selected_service.config.destination.map((destination) => {

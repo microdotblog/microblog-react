@@ -4,6 +4,7 @@ import { View, TextInput, Keyboard, ActivityIndicator, InputAccessoryView, Platf
 import { Navigation } from 'react-native-navigation';
 import Reply from '../../stores/Reply'
 import ReplyToolbar from '../../components/keyboard/reply_toolbar'
+import App from '../../stores/App'
 
 @observer
 export default class ReplyScreen extends React.Component{
@@ -34,7 +35,7 @@ export default class ReplyScreen extends React.Component{
   
   render() {
     return(
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
         <TextInput
           placeholderTextColor="lightgrey"
           style={{
@@ -43,7 +44,7 @@ export default class ReplyScreen extends React.Component{
 						alignItems: 'flex-start',
             marginBottom: 38,
             padding: 8,
-            color: 'black'
+            color: App.theme_text_color()
           }}
           editable={!Reply.is_sending_reply}
           multiline={true}
