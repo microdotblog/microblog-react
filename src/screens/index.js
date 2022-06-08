@@ -260,9 +260,10 @@ export const startApp = () => {
 export const loginScreen = (can_dismiss = false) => {
   return Navigation.showModal({
     stack: {
-      id: 'LOGIN_SCREEN',
+      id: LOGIN_SCREEN,
       children: [ {
         component: {
+          id: LOGIN_SCREEN,
           name: LOGIN_SCREEN,
           passProps: {
             can_dismiss: can_dismiss
