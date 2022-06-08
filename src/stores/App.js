@@ -3,7 +3,7 @@ import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScre
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
-import { Linking, ToastAndroid } from 'react-native'
+import { Linking, ToastAndroid, Appearance } from 'react-native'
 import { Navigation } from "react-native-navigation";
 import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import Push from './Push'
@@ -17,13 +17,15 @@ export default App = types.model('App', {
   current_screen_id: types.maybeNull(types.string),
   image_modal_is_open: types.optional(types.boolean, false),
   current_image_url: types.maybeNull(types.string),
-  is_scrolling: types.optional(types.boolean, false)
+  is_scrolling: types.optional(types.boolean, false),
+  theme: types.optional(types.string, 'light'),
 })
 .actions(self => ({
 
   hydrate: flow(function* () {
     console.log("App:hydrate")
     self.is_loading = true
+    App.set_current_initial_theme()
     Push.hydrate()
     Auth.hydrate().then(() => {
       startApp().then(() => {
@@ -287,6 +289,25 @@ export default App = types.model('App', {
         }
       }
     }
+  }),
+
+  set_current_initial_theme: flow(function* () {
+    console.log("App:set_current_theme", Appearance.getColorScheme())
+    self.theme = Appearance.getColorScheme()
+    App.set_up_appearance_listener()
+  }),
+
+  set_up_appearance_listener: flow(function* () {
+    console.log("App:set_up_appearance_listener")
+    Appearance.addChangeListener(({ colorScheme }) => {
+      console.log("App:set_up_appearance_listener:change", colorScheme)
+      App.change_current_theme(colorScheme)
+    })
+  }),
+
+  change_current_theme: flow(function* (color) {
+    console.log("App:change_current_theme", color)
+    self.theme = color
   }),
 
 }))
