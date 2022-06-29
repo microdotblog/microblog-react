@@ -2,6 +2,7 @@ import { types, flow, destroy } from 'mobx-state-tree';
 import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi'
 import PushNotification from "react-native-push-notification";
 import Notification from './models/Notification'
+import Auth from './Auth'
 
 export default Push = types.model('Push', {
 	token: types.optional(types.string, ""),
@@ -40,7 +41,7 @@ export default Push = types.model('Push', {
 
 	register_token: flow(function* (user_token) {
 		console.log("Push:register_token")
-		if (self.token != null && user_token != null) {
+		if (self.token != null && user_token != null && Auth.is_logged_in()) {
 			const data = yield MicroBlogApi.register_push(self.token, user_token)
 			if (data !== API_ERROR) {
 				console.log("Push:register_token:OK")
