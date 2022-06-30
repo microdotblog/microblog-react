@@ -26,7 +26,7 @@ export const theme_options = (settings) => {
   return {
     ...settings,
     bottomTabs: {
-      backgroundColor: App.theme_background_color(),
+      backgroundColor: App.theme_navbar_background_color(),
     },
     layout: {
       backgroundColor: App.theme_background_color(),
@@ -47,7 +47,7 @@ export const theme_options = (settings) => {
     },
     topBar: {
       background: {
-        color: App.theme_background_color()
+        color: App.theme_navbar_background_color()
       },
       leftButtonColor: App.theme_text_color(),
       rightButtonColor: App.theme_text_color(),

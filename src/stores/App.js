@@ -344,6 +344,13 @@ export default App = types.model('App', {
   },
   theme_background_color_secondary() {
     return self.theme === "dark" ? "#1F2937" : "#fff"
+  },
+  theme_navbar_background_color() {
+    return self.theme === "dark" ? "#212936" : "#fff"
+  },
+  should_reload_web_view() {
+    // When it returns true, this will trigger a reload of the webviews
+    return self.is_switching_theme
   }
 }))
 .create();
