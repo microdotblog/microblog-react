@@ -20,6 +20,7 @@ export default class WebViewModule extends React.Component{
       is_pull_to_refresh_enabled: true,
       scroll_view_height: 0,
     }
+    this.web_url = "https://micro.blog"
     Navigation.events().bindComponent(this, this.props.component_id)
   }
 
@@ -47,6 +48,20 @@ export default class WebViewModule extends React.Component{
     this.ref.current.reload()
   }
 
+  return_url_options = () => {
+    let url_options = this.props.endpoint.includes("#post_") ? "" : "show_actions=true"
+    if (url_options) {
+      url_options = `?${url_options}`
+    }
+    if (url_options && url_options != "" && App.theme === "dark") {
+      url_options = `${url_options}&theme=${App.theme}`
+    }
+    else if (App.theme === "dark") {
+      url_options = `?theme=${App.theme}`
+    }
+    return url_options
+  }
+
   render() {
     const { is_pull_to_refresh_enabled, scroll_view_height } = this.state
     return (
@@ -66,7 +81,7 @@ export default class WebViewModule extends React.Component{
       >
         <WebView
           ref={this.ref}
-          source={{ uri: `https://micro.blog/${Auth.did_load_one_or_more_webviews ? this.props.endpoint : this.state.signin_endpoint}${this.props.endpoint.includes("#post_") ? "" : "?show_actions=true"}` }}
+          source={{ uri: `${this.web_url}/${Auth.did_load_one_or_more_webviews ? this.props.endpoint : this.state.signin_endpoint}${this.return_url_options()}` }}
           containerStyle={{ flex: 1 }}
           startInLoadingState={true}
           pullToRefreshEnabled={false}
