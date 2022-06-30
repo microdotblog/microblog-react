@@ -334,7 +334,7 @@ export default App = types.model('App', {
 }))
 .views(self => ({
   theme_background_color() {
-    return self.theme === "dark" ? "#000" : "#fff"
+    return self.theme === "dark" ? "#1d2530" : "#fff"
   },
   theme_navigation_icon_color() {
     return self.theme === "dark" ? "#9CA3AF" : "#000"
@@ -347,6 +347,12 @@ export default App = types.model('App', {
   },
   theme_navbar_background_color() {
     return self.theme === "dark" ? "#212936" : "#fff"
+  },
+  theme_button_background_color() {
+    return self.theme === "dark" ? "#374151" : "#F9FAFB"
+  },
+  theme_button_text_color() {
+    return self.theme === "dark" ? "#E5E7EB" : "#1F2937"
   },
   should_reload_web_view() {
     // When it returns true, this will trigger a reload of the webviews

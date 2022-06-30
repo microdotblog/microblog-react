@@ -55,19 +55,19 @@ export default class MenuNavigation extends React.Component{
             padding: 8,
             paddingHorizontal: 16,
             borderRadius: 20,
-            backgroundColor: "#F9FAFB",
+            backgroundColor: App.theme_button_background_color(),
             marginBottom: 8,
             flexDirection: 'row',
             alignItems: 'center',
-            //justifyContent: 'center'
+            color: App.theme_text_color()
           }}
         >
           {
             image != null ?
-            <Image source={image} style={{ marginRight: 8, height: 22, width: 22, marginTop: 1 }} />
+            <Image source={image} style={{ marginRight: 8, height: 22, width: 22, marginTop: 1, tintColor: App.theme_button_text_color() }} />
             : null
           }
-          <Text style={{ fontSize: 16, fontWeight: '500', color: '#1F2937' }}>{item}</Text>
+          <Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_button_text_color() }}>{item}</Text>
         </TouchableOpacity>
       )
     })
@@ -90,19 +90,18 @@ export default class MenuNavigation extends React.Component{
             padding: 8,
             paddingHorizontal: 16,
             borderRadius: 20,
-            backgroundColor: "#F9FAFB",
+            backgroundColor: App.theme_button_background_color(),
             marginBottom: 8,
             flexDirection: 'row',
-            alignItems: 'center',
-            //justifyContent: 'center'
+            alignItems: 'center'
           }}
         >
           {
             image != null ?
-            <Image source={image} style={{ marginRight: 8, height: 22, width: 22, marginTop: 1 }} />
+            <Image source={image} style={{ marginRight: 8, height: 22, width: 22, marginTop: 1, tintColor: App.theme_button_text_color() }} />
             : null
           }
-          <Text style={{ fontSize: 16, fontWeight: '500', color: '#1F2937' }}>{item}</Text>
+          <Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_button_text_color() }}>{item}</Text>
         </TouchableOpacity>
       )
     })
