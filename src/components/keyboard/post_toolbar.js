@@ -5,6 +5,7 @@ import Auth from '../../stores/Auth';
 import PhotoLibrary from '../../assets/icons/toolbar/photo_library.png';
 import SettingsIcon from '../../assets/icons/toolbar/settings.png';
 import { postingOptionsScreen } from '../../screens';
+import App from '../../stores/App';
 
 @observer
 export default class PostToolbar extends React.Component{
@@ -15,7 +16,7 @@ export default class PostToolbar extends React.Component{
       <View
 				style={{
 					width: '100%',
-					backgroundColor: '#E5E7EB',
+					backgroundColor: App.theme_section_background_color(),
 					...Platform.select({
 						android: {
 							position: 'absolute',
@@ -31,16 +32,16 @@ export default class PostToolbar extends React.Component{
 				}}
 			>
 				<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("**")}>
-					<Text style={{ fontSize: 20, fontWeight: '700', textAlign: 'center', padding: 2 }}>{"**"}</Text>
+					<Text style={{ fontSize: 20, fontWeight: '700', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"**"}</Text>
 				</TouchableOpacity>
 				<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("_")}>
-					<Text style={{ fontSize: 20, fontWeight: '800', textAlign: 'center', padding: 2 }}>{"_"}</Text>
+					<Text style={{ fontSize: 20, fontWeight: '800', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"_"}</Text>
 				</TouchableOpacity>
 				<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("[]")}>
-					<Text style={{ fontSize: 20, fontWeight: '600', textAlign: 'center', padding: 2 }}>{"[ ]"}</Text>
+					<Text style={{ fontSize: 20, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"[ ]"}</Text>
 				</TouchableOpacity>
 				<TouchableOpacity style={{minWidth: 35, marginLeft: 8, marginRight: 8}} onPress={posting.handle_image_action}>
-					<Image source={PhotoLibrary} style={{width: 24, height: 24}} />
+					<Image source={PhotoLibrary} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
 				</TouchableOpacity>
 				<View
 					style={{
@@ -57,7 +58,7 @@ export default class PostToolbar extends React.Component{
 							marginRight: 8,
 						}}
 					>
-						<Image source={SettingsIcon} style={{width: 24, height: 24}} />
+						<Image source={SettingsIcon} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
 					</TouchableOpacity>
 					<Text
 						style={{
