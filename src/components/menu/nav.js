@@ -46,30 +46,7 @@ export default class MenuNavigation extends React.Component{
         image = Bookmarks
         break;
       }
-      return(
-        <TouchableOpacity
-          onPress={() => App.navigate_to_screen_from_menu(item)}
-          key={item}
-          style={{ 
-            width: '49%',
-            padding: 8,
-            paddingHorizontal: 16,
-            borderRadius: 20,
-            backgroundColor: App.theme_button_background_color(),
-            marginBottom: 8,
-            flexDirection: 'row',
-            alignItems: 'center',
-            color: App.theme_text_color()
-          }}
-        >
-          {
-            image != null ?
-            <Image source={image} style={{ marginRight: 8, height: 22, width: 22, marginTop: 1, tintColor: App.theme_button_text_color() }} />
-            : null
-          }
-          <Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_button_text_color() }}>{item}</Text>
-        </TouchableOpacity>
-      )
+      return this._return_nav_item(item, image)
     })
   }
 
@@ -81,30 +58,34 @@ export default class MenuNavigation extends React.Component{
         image = Help
         break;
       }
-      return(
-        <TouchableOpacity
-          onPress={() => App.navigate_to_screen_from_menu(item)}
-          key={item}
-          style={{ 
-            width: '49%',
-            padding: 8,
-            paddingHorizontal: 16,
-            borderRadius: 20,
-            backgroundColor: App.theme_button_background_color(),
-            marginBottom: 8,
-            flexDirection: 'row',
-            alignItems: 'center'
-          }}
-        >
-          {
-            image != null ?
-            <Image source={image} style={{ marginRight: 8, height: 22, width: 22, marginTop: 1, tintColor: App.theme_button_text_color() }} />
-            : null
-          }
-          <Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_button_text_color() }}>{item}</Text>
-        </TouchableOpacity>
-      )
+      return this._return_nav_item(item, image)
     })
+  }
+  
+  _return_nav_item = (item, image = null) => {
+    return(
+      <TouchableOpacity
+        onPress={() => App.navigate_to_screen_from_menu(item)}
+        key={item}
+        style={{ 
+          width: '49%',
+          padding: 8,
+          paddingHorizontal: 16,
+          borderRadius: 20,
+          backgroundColor: App.theme_button_background_color(),
+          marginBottom: 8,
+          flexDirection: 'row',
+          alignItems: 'center'
+        }}
+      >
+        {
+          image != null ?
+          <Image source={image} style={{ marginRight: 8, height: 22, width: 22, marginTop: 1, tintColor: App.theme_button_text_color() }} />
+          : null
+        }
+        <Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_button_text_color() }}>{item}</Text>
+      </TouchableOpacity>
+    )
   }
 
   render() {
