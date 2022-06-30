@@ -62,12 +62,12 @@ export default class ProfileHeader extends React.Component{
     const short_bio = long_bio ? long_bio.slice(0, 90) : null
     const show_expand_option = long_bio?.length > short_bio?.length
     return(
-      <View style={{ padding: 8, backgroundColor: "#E5E7EB", width: '100%' }}>
+      <View style={{ padding: 8, backgroundColor: App.theme_section_background_color(), width: '100%' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Image source={{ uri: `${profile.author.avatar}?v=${this.now}` }} style={{ width: 50, height: 50, borderRadius: 50 }} />
           <View style={{ marginLeft: 15 }}>
-            <Text style={{ fontWeight: '700', fontSize: 18, marginBottom: 2 }}>{profile.author.name}</Text>
-            <Text style={{ fontWeight: '300' }}>@{profile._microblog.username}</Text>
+            <Text style={{ fontWeight: '700', fontSize: 18, marginBottom: 2, color: App.theme_text_color() }}>{profile.author.name}</Text>
+            <Text style={{ fontWeight: '300', color: App.theme_text_color() }}>@{profile._microblog.username}</Text>
             {
               profile.author.url != null ?
               <TouchableOpacity style={{ marginTop: 2 }} onPress={() => App.open_url(profile.author.url)}>
@@ -100,12 +100,12 @@ export default class ProfileHeader extends React.Component{
         {
           profile._microblog.bio && more_expanded ?
           <Hyperlink linkDefault={ true } linkStyle={{ textDecorationLine: 'underline' }}>
-            <Text style={{ paddingBottom: 20 }}>{profile._microblog.bio}</Text>
+            <Text style={{ paddingBottom: 20, color: App.theme_text_color() }}>{profile._microblog.bio}</Text>
           </Hyperlink>
           :
           profile._microblog.bio && !more_expanded ?
           <Hyperlink linkDefault={ true } linkStyle={{ textDecorationLine: 'underline' }}>
-            <Text style={{ position: 'relative' }}>
+            <Text style={{ position: 'relative', color: App.theme_text_color() }}>
               {short_bio}{ long_bio.length > short_bio.length ? "..." : "" }
             </Text>
           </Hyperlink>
@@ -120,7 +120,7 @@ export default class ProfileHeader extends React.Component{
               position: 'absolute',
               right: 0,
               bottom: 5,
-              backgroundColor: '#E5E7EB',
+              backgroundColor: App.theme_section_background_color(),
               paddingHorizontal: 5,
               borderRadius: 5
             }}
@@ -143,7 +143,7 @@ export default class ProfileHeader extends React.Component{
             alignItems: 'center'
           }}>
           <TouchableOpacity onPress={() => followingScreen(this.props.username, App.current_screen_id)}>
-            <Text style={{ fontStyle: 'italic', fontWeight: '500', paddingVertical: 2 }}>{profile._microblog.is_you ? `Following ${profile._microblog.following_count} users` : `Following ${profile._microblog.discover_count} users you're not following`}</Text>
+            <Text style={{ fontStyle: 'italic', fontWeight: '500', paddingVertical: 2, color: App.theme_text_color() }}>{profile._microblog.is_you ? `Following ${profile._microblog.following_count} users` : `Following ${profile._microblog.discover_count} users you're not following`}</Text>
           </TouchableOpacity>
           {
             !profile._microblog.is_you ?
@@ -165,7 +165,7 @@ export default class ProfileHeader extends React.Component{
     const { loading, profile } = this.state
     if(loading){
       return(
-        <View style={{ backgroundColor: "#E5E7EB", padding: 8, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+        <View style={{ backgroundColor: App.theme_section_background_color(), padding: 8, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
           <ActivityIndicator color="#f80" />
         </View>
       )
