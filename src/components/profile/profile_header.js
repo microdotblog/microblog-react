@@ -174,8 +174,8 @@ export default class ProfileHeader extends React.Component{
       return this._render_profile()
     }
     return(
-      <View style={{ padding: 8, backgroundColor: "#E5E7EB", width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-        <Text>An error occured loading the user profile.</Text>
+      <View style={{ padding: 8, backgroundColor: App.theme_section_background_color(), width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{color: App.theme_text_color()}}>An error occured loading the user profile.</Text>
       </View>
     )
   }
