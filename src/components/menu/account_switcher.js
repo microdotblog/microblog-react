@@ -30,7 +30,7 @@ export default class AccountSwitcher extends React.Component{
           width: '100%',
           padding: 8,
           paddingHorizontal: 16,
-          backgroundColor: '#E5E7EB',
+          backgroundColor: App.theme_button_background_color(),
           borderRadius: 5,
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0
@@ -53,12 +53,12 @@ export default class AccountSwitcher extends React.Component{
             />
           </View>
           <View>
-            <Text style={{fontWeight: '600'}}>{Auth.selected_user.full_name}</Text>
-            <Text>@{Auth.selected_user.username}</Text>
+            <Text style={{fontWeight: '600', color: App.theme_button_text_color()}}>{Auth.selected_user.full_name}</Text>
+            <Text style={{ color: App.theme_button_text_color() }}>@{Auth.selected_user.username}</Text>
           </View>
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-          <Image source={GroupImage} />
+          <Image source={GroupImage} style={{ tintColor: App.theme_button_text_color()}} />
         </View>
       </TouchableOpacity>
     )
@@ -70,7 +70,7 @@ export default class AccountSwitcher extends React.Component{
         style={{ 
           padding: 8,
           paddingHorizontal: 15,
-          backgroundColor: "#F9FAFB",
+          backgroundColor: App.theme_button_background_color(),
           width: '100%',
           borderBottomLeftRadius: 5,
           borderBottomRightRadius: 5
@@ -136,8 +136,8 @@ export default class AccountSwitcher extends React.Component{
         }}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image style={{width: 30, height: 30, marginRight: 18, marginLeft: 6}} source={AddAccountImage} />
-          <Text>Add account...</Text>
+          <Image style={{width: 30, height: 30, marginRight: 18, marginLeft: 6, tintColor: App.theme_button_text_color()}} source={AddAccountImage} />
+          <Text style={{ color: App.theme_button_text_color() }}>Add account...</Text>
         </View>
       </TouchableOpacity>
     )
