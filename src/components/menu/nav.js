@@ -97,7 +97,7 @@ export default class MenuNavigation extends React.Component{
             marginBottom: 15,
             paddingBottom: 5,
             paddingTop: 10,
-            borderColor: '#E5E7EB',
+            borderColor: App.theme_border_color(),
             borderBottomWidth: 1,
             justifyContent: 'space-between',
             flexWrap: 'wrap',
@@ -105,7 +105,7 @@ export default class MenuNavigation extends React.Component{
           }}
         >
           {this._render_menu_items()}
-          <View style={{paddingTop: 10, marginTop: 5, borderColor: '#F9FAFB', borderTopWidth: 1, width: '100%'}}>
+          <View style={{paddingTop: 10, marginTop: 5, borderColor: App.theme_alt_border_color(), borderTopWidth: 1, width: '100%'}}>
             {this._render_secondary_menu_items()}
           </View>
         </View>

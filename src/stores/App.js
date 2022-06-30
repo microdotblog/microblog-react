@@ -354,8 +354,14 @@ export default App = types.model('App', {
   theme_button_text_color() {
     return self.theme === "dark" ? "#E5E7EB" : "#1F2937"
   },
-  theme_section_background_color(){
+  theme_section_background_color() {
     return self.theme === "dark" ? "#374151" : "#E5E7EB"
+  },
+  theme_border_color() {
+    return self.theme === "dark" ? "#374151" : "#E5E7EB"
+  },
+  theme_alt_border_color() {
+    return self.theme === "dark" ? "#374151" : "#F9FAFB"
   },
   should_reload_web_view() {
     // When it returns true, this will trigger a reload of the webviews
