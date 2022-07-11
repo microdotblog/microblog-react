@@ -50,13 +50,10 @@ export default class WebViewModule extends React.Component{
 
   return_url_options = () => {
     let url_options = this.props.endpoint.includes("#post_") ? "" : "show_actions=true"
-    if (url_options) {
-      url_options = `?${url_options}`
+    if (url_options && url_options !== "") {
+      url_options = `?${url_options}&theme=${App.theme}`
     }
-    if (url_options && url_options != "" && App.theme === "dark") {
-      url_options = `${url_options}&theme=${App.theme}`
-    }
-    else if (App.theme === "dark") {
+    else {
       url_options = `?theme=${App.theme}`
     }
     return url_options
@@ -69,7 +66,7 @@ export default class WebViewModule extends React.Component{
       <ScrollView
         overScrollMode={'always'}
         style={{ flex: 1, width: '100%', height: '100%' }}
-        contentContainerStyle={{ flex: 1 }}
+        contentContainerStyle={{ flex: 1 }}  
         onLayout={(e) => this.setState({scroll_view_height: e.nativeEvent.layout.height})}
         refreshControl={
           <RefreshControl
@@ -102,7 +99,7 @@ export default class WebViewModule extends React.Component{
           onMessage={(event) => {
             App.handle_web_view_message(event.nativeEvent.data)
           }}
-          style={{flex: 1, height: scroll_view_height }}
+          style={{flex: 1, height: scroll_view_height}}
         />
       </ScrollView>
       <PushNotifications />
