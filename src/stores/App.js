@@ -366,6 +366,11 @@ export default App = types.model('App', {
   should_reload_web_view() {
     // When it returns true, this will trigger a reload of the webviews
     return self.is_switching_theme
+  },
+  now() {
+    let now = new Date()
+    now.setHours(0, 0, 0, 0)
+    return now
   }
 }))
 .create();
