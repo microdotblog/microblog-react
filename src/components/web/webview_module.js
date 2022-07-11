@@ -7,6 +7,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import WebView from 'react-native-webview'
 import { Navigation } from "react-native-navigation";
 import PushNotifications from '../push/push_notifications'
+import WebLoadingViewModule from './loading_view'
 
 @observer
 export default class WebViewModule extends React.Component{
@@ -99,7 +100,8 @@ export default class WebViewModule extends React.Component{
           onMessage={(event) => {
             App.handle_web_view_message(event.nativeEvent.data)
           }}
-          style={{flex: 1, height: scroll_view_height}}
+          style={{ flex: 1, height: scroll_view_height }}
+          renderLoading={() => <WebLoadingViewModule />}  
         />
       </ScrollView>
       <PushNotifications />
