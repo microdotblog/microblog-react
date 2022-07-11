@@ -135,7 +135,7 @@ android {
         applicationId "blog.micro.android"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 26
+        versionCode 27
         versionName "1.1"
     }
     splits {
