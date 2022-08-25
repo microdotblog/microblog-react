@@ -137,23 +137,23 @@ export default App = types.model('App', {
       switch (screen) {
         case "Timeline":
           tab_index = 0;
-          should_pop = self.current_screen_id !== "TIMELINE_SCREEN"
+          should_pop = self.current_screen_id !== "microblog.TimelineScreen"
           if(should_pop){
-            Navigation.popToRoot("TIMELINE_SCREEN")
+            Navigation.popToRoot("microblog.TimelineScreen")
           }
           break;
         case "Mentions":
           tab_index = 1;
-          should_pop = self.current_screen_id !== "MENTIONS_SCREEN"
+          should_pop = self.current_screen_id !== "microblog.MentionsScreen"
           if(should_pop){
-            Navigation.popToRoot("MENTIONS_SCREEN")
+            Navigation.popToRoot("microblog.MentionsScreen")
           }
           break;
         case "Discover":
           tab_index = 2;
-          should_pop = self.current_screen_id !== "DISCOVER_SCREEN"
+          should_pop = self.current_screen_id !== "microblog.DiscoverScreen"
           if(should_pop){
-            Navigation.popToRoot("DISCOVER_SCREEN")
+            Navigation.popToRoot("microblog.DiscoverScreen")
           }
           break;
       }
