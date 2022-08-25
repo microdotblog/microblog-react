@@ -106,8 +106,8 @@ export default class AccountSwitcher extends React.Component{
                     />
                   </View>
                   <View>
-                    <Text style={{fontWeight: '600'}}>{user.full_name}</Text>
-                    <Text>@{user.username}</Text>
+                    <Text style={{fontWeight: '600', color: App.theme_button_text_color()}}>{user.full_name}</Text>
+                    <Text style={{color: App.theme_button_text_color()}}>@{user.username}</Text>
                   </View>
                 </View>
               </TouchableOpacity>
