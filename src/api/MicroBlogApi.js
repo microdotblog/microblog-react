@@ -47,8 +47,15 @@ class MicroBlogApi {
       .post('/account/signin', '', {
         params: {
 					email: email,
-					is_mobile: true,
-          redirect_url: REDIRECT_URL
+					redirect_url: REDIRECT_URL,
+					...Platform.select({
+						android: {
+							app_name: APP_NAME
+						},
+						ios: {
+							is_mobile: 1,
+						}
+					})
         }
       })
       .then(response => {
@@ -245,7 +252,11 @@ class MicroBlogApi {
 				params: {
 					device_token: push_token,
 					push_env: "production",
-					app_name: APP_NAME
+					...Platform.select({
+						android: {
+							app_name: APP_NAME
+						}
+					})
 				}
 			})
 			.then(response => {
@@ -267,7 +278,11 @@ class MicroBlogApi {
 				params: {
 					device_token: push_token,
 					push_env: "production",
-					app_name: APP_NAME
+					...Platform.select({
+						android: {
+							app_name: APP_NAME
+						}
+					})
 				}
 			})
 			.then(response => {
