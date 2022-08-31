@@ -290,6 +290,8 @@ PODS:
     - React-Core
   - react-native-sensitive-info (5.5.8):
     - React
+  - react-native-sfsymbols (1.2.1):
+    - React
   - react-native-webview (11.16.0):
     - React-Core
   - React-perflogger (0.66.0)
@@ -465,6 +467,7 @@ DEPENDENCIES:
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-sensitive-info (from `../node_modules/react-native-sensitive-info`)
+  - react-native-sfsymbols (from `../node_modules/react-native-sfsymbols`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -552,6 +555,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-sensitive-info:
     :path: "../node_modules/react-native-sensitive-info"
+  react-native-sfsymbols:
+    :path: "../node_modules/react-native-sfsymbols"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-perflogger:
@@ -634,6 +639,7 @@ SPEC CHECKSUMS:
   react-native-image-picker: 4b090b73077c3a71b91fddc739a594feebd00184
   react-native-netinfo: 3d3769f0d65de15c83a9bf1346f8be71de5a24bf
   react-native-sensitive-info: 400c6e3d27945e15c8cddb5b4b92233c85ee06f8
+  react-native-sfsymbols: bd3a0d3eab185e80b571bae60753dcf5a0d57967
   react-native-webview: 28a8636d97ee641f2ee8f20492d7a6c269c1d703
   React-perflogger: 1f554c2b684e2f484f9edcdfdaeedab039fbaca8
   React-RCTActionSheet: 610d5a5d71ab4808734782c8bca6a12ec3563672

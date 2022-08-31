@@ -5683,6 +5683,11 @@ react-native-sensitive-info@^5.5.8:
   resolved "https://registry.yarnpkg.com/react-native-sensitive-info/-/react-native-sensitive-info-5.5.8.tgz#6ebb67eed83d1c2867bd435630ef2c41eef204ed"
   integrity sha512-p99oaEW4QG1RdUNrkvd/c6Qdm856dQw/Rk81f9fA6Y3DlPs6ADNdU+jbPuTz3CcOUJwuKBDNenX6LR9KfmGFEg==
 
+react-native-sfsymbols@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-sfsymbols/-/react-native-sfsymbols-1.2.1.tgz#53422d432dca1e028cfd95a283d69a590d3e3f84"
+  integrity sha512-G8TLcTJwUsVhDQV/yatoltWF+BWrEyb5Grmrhzdrc0gH9TgXnjfoJ9QxaWwC/3D6QVuaugosnbmlL69EurgM/w==
+
 react-native-webview@^11.14.1:
   version "11.16.0"
   resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.16.0.tgz#51dce13480aa4f8f727307df05b8bfaf74ca3d14"

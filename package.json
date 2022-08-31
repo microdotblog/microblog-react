@@ -34,6 +34,7 @@
     "react-native-push-notification": "^8.1.1",
     "react-native-reanimated": "^2.2.3",
     "react-native-sensitive-info": "^5.5.8",
+    "react-native-sfsymbols": "^1.2.1",
     "react-native-webview": "^11.14.1"
   },
   "devDependencies": {

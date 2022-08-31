@@ -135,7 +135,7 @@ export const startApp = () => {
         options: {
           bottomTab: {
             text: 'Timeline',
-            icon: Platform.OS === 'android' ? TimelineIcon : { system: 'bubble.left.and.bubble.right'}
+            icon: Platform.OS === 'ios' ? { system: 'bubble.left.and.bubble.right'} : TimelineIcon
           },
         },
       },
@@ -186,7 +186,7 @@ export const startApp = () => {
         options: {
           bottomTab: {
             text: 'Mentions',
-            icon: Platform.OS === 'android' ? MentionsIcon : { system: 'at'}
+            icon: Platform.OS === 'ios' ? { system: 'at'} : MentionsIcon
           },
         },
       },
@@ -237,7 +237,7 @@ export const startApp = () => {
         options: {
           bottomTab: {
             text: 'Discover',
-            icon: Platform.OS === 'android' ? DiscoverIcon : { system: 'magnifyingglass'} 
+            icon: Platform.OS === 'ios' ? { system: 'magnifyingglass'} : DiscoverIcon
           },
         },
       },
