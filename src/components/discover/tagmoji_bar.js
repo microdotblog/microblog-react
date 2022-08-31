@@ -19,7 +19,7 @@ export default class TagmojiBar extends React.Component{
             paddingHorizontal: 15,
             paddingVertical: 10,
             width: '100%',
-            backgroundColor: App.theme_background_color(),
+            backgroundColor: App.theme_input_background_color(),
           }}>
           <Text style={{color: App.theme_text_color(), maxWidth: '80%'}}>Some recent posts from the community</Text>
           <TouchableOpacity
