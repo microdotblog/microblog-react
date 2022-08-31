@@ -62,12 +62,13 @@ export default class WebViewModule extends React.Component{
 
   _webview = () => {
     const { scroll_view_height } = this.state
-    return( <WebView
+    return (<WebView
       ref={this.ref}
       source={{ uri: `${ this.web_url }/${ Auth.did_load_one_or_more_webviews ? this.props.endpoint : this.state.signin_endpoint }${ this.return_url_options() }` }}
       containerStyle={{ flex: 1 }}
       startInLoadingState={true}
       pullToRefreshEnabled={Platform.OS === 'ios'}
+      decelerationRate="normal"
       onLoadEnd={Auth.set_did_load_one_or_more_webviews}
       onShouldStartLoadWithRequest={(event) => {
         if(event.url.indexOf(this.props.endpoint) <= -1){
@@ -87,7 +88,7 @@ export default class WebViewModule extends React.Component{
       onMessage={(event) => {
         App.handle_web_view_message(event.nativeEvent.data)
       }}
-      style={{ flex: 1, ...Platform.select({android: { height: scroll_view_height }}) }}
+      style={{ flex: 1, backgroundColor: App.theme_background_color(), ...Platform.select({android: { height: scroll_view_height }}) }}
       renderLoading={() => <WebLoadingViewModule />}
     />)
   }
