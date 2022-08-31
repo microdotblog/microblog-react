@@ -94,7 +94,7 @@ export default class WebViewModule extends React.Component{
   }
 
   render() {
-    const { is_pull_to_refresh_enabled, scroll_view_height } = this.state
+    const { is_pull_to_refresh_enabled } = this.state
     if (Platform.OS === "android") {
       return (
         <>
