@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { Platform } from 'react-native'
 import Auth from './../stores/Auth';
 
 export const API_URL = 'https://micro.blog';
-export const APP_NAME = 'Micro.blog for Android';
+export const APP_NAME = Platform.OS === 'ios' ? 'Micro.blog for iOS' : 'Micro.blog for Android';
 export const REDIRECT_URL = 'microblog://signin/';
 export const LOGIN_INCORRECT = 1;
 export const LOGIN_ERROR = 2;
@@ -45,8 +46,8 @@ class MicroBlogApi {
     const login = axios
       .post('/account/signin', '', {
         params: {
-          email: email,
-          app_name: APP_NAME,
+					email: email,
+					is_mobile: true,
           redirect_url: REDIRECT_URL
         }
       })
