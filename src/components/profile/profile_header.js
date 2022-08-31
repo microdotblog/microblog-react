@@ -58,8 +58,8 @@ export default class ProfileHeader extends React.Component{
   
   _render_profile = () => {
     const { profile, more_expanded } = this.state;
-    const long_bio = profile._microblog.bio ? profile._microblog.bio.trim().replace(/\n/g, " ").replace(/&amp;/g, "&") : null
-    const short_bio = long_bio ? long_bio.slice(0, 90) : null
+    const long_bio = profile._microblog.bio ? profile._microblog.bio.trim().replace(/&amp;/g, "&") : null
+    const short_bio = long_bio ? long_bio.slice(0, 90).replace(/\n/g, " ") : null
     const show_expand_option = long_bio?.length > short_bio?.length
     return(
       <View style={{ padding: 8, backgroundColor: App.theme_section_background_color(), width: '100%' }}>
@@ -98,12 +98,12 @@ export default class ProfileHeader extends React.Component{
         <View style={{position: 'relative'}}>
         <ScrollView style={{marginTop: 5, marginBottom: 5, maxHeight: more_expanded ? 205 : 'auto'}}>
         {
-          profile._microblog.bio && more_expanded ?
+          long_bio && more_expanded ?
           <Hyperlink linkDefault={ true } linkStyle={{ textDecorationLine: 'underline' }}>
-            <Text style={{ paddingBottom: 20, color: App.theme_text_color() }}>{profile._microblog.bio}</Text>
+            <Text style={{ paddingBottom: 20, color: App.theme_text_color() }}>{long_bio}</Text>
           </Hyperlink>
           :
-          profile._microblog.bio && !more_expanded ?
+          long_bio && !more_expanded ?
           <Hyperlink linkDefault={ true } linkStyle={{ textDecorationLine: 'underline' }}>
             <Text style={{ position: 'relative', color: App.theme_text_color() }}>
               {short_bio}{ long_bio.length > short_bio.length ? "..." : "" }
