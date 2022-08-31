@@ -10,9 +10,10 @@ export default class FollowingScreen extends React.Component{
     return (
       <GenericScreenComponent
         can_show_web_view={Auth.is_logged_in() && !Auth.is_selecting_user}
-        endpoint={`hybrid/following/${this.props.username}`}
+        endpoint={`hybrid/following/${ this.props.username }`}
         component_id={this.props.componentId}
         title="Users following"
+        loading_text="Loading followers..."
       />
     )
   }

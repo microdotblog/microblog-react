@@ -89,7 +89,7 @@ export default class WebViewModule extends React.Component{
         App.handle_web_view_message(event.nativeEvent.data)
       }}
       style={{ flex: 1, backgroundColor: App.theme_background_color(), ...Platform.select({android: { height: scroll_view_height }}) }}
-      renderLoading={() => <WebLoadingViewModule />}
+      renderLoading={() => <WebLoadingViewModule loading_text={this.props.loading_text} />}
     />)
   }
 
