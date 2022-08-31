@@ -3,7 +3,7 @@ import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScre
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
-import { Linking, ToastAndroid, Appearance } from 'react-native'
+import { Linking, ToastAndroid, Appearance, AppState } from 'react-native'
 import { Navigation } from "react-native-navigation";
 import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import Push from './Push'
@@ -190,6 +190,9 @@ export default App = types.model('App', {
 
   handle_url_from_webview: flow(function* (url) {
     console.log("App:handle_url_from_webview", url)
+    if (AppState.currentState === "background" || AppState.currentState === "inactive") {
+      return
+    }
 
     // This is going to be messy. Don't judge.
     if (url.indexOf('https://micro.blog/') > -1 || url.indexOf('http://micro.blog/') > -1) {
