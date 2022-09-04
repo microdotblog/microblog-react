@@ -2,14 +2,15 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, TextInput, Button, ActivityIndicator } from 'react-native';
 import Login from './../../stores/Login';
+import App from '../../stores/App'
 
 @observer
 export default class LoginScreen extends React.Component{
   
   render() {
     return(
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 15 }}>
-        <Text style={{fontWeight: "700"}}>Enter your email address to sign in to Micro.blog:</Text>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 15, backgroundColor: App.theme_background_color() }}>
+        <Text style={{fontWeight: "700", color: App.theme_text_color()}}>Enter your email address to sign in to Micro.blog:</Text>
         <TextInput
           placeholderTextColor="lightgrey"
           textContentType={'emailAddress'}
@@ -25,7 +26,7 @@ export default class LoginScreen extends React.Component{
           enablesReturnKeyAutomatically={true}
           underlineColorAndroid={'transparent'}
           style={{ 
-            backgroundColor: '#f2f2f2', 
+            backgroundColor: App.theme_input_background_color(), 
             fontSize: 17,
             borderColor: `${!Login.show_error ? "#f80" : "#ea053b"}`, 
             borderWidth: 1,
@@ -34,7 +35,7 @@ export default class LoginScreen extends React.Component{
             borderRadius: 5,
             marginVertical: 15,
             paddingHorizontal: 15,
-            color: 'black'
+            color: App.theme_text_color()
           }}
           onChangeText={(text) => Login.set_input_value(text)}
           onSubmitEditing={Login.trigger_login}

@@ -12,7 +12,9 @@
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.15.8",
     "@react-native-async-storage/async-storage": "react-native-async-storage/async-storage",
+    "@react-native-clipboard/clipboard": "^1.10.0",
     "@react-native-community/netinfo": "^6.0.2",
+    "@react-native-community/push-notification-ios": "^1.10.1",
     "@react-native-cookies/cookies": "^6.0.11",
     "axios": "^0.22.0",
     "mobx": "^6.3.3",
@@ -32,6 +34,7 @@
     "react-native-push-notification": "^8.1.1",
     "react-native-reanimated": "^2.2.3",
     "react-native-sensitive-info": "^5.5.8",
+    "react-native-sfsymbols": "^1.2.1",
     "react-native-webview": "^11.14.1"
   },
   "devDependencies": {

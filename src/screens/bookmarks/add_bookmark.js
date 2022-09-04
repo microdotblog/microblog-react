@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { Text, TextInput, Button, ActivityIndicator, Keyboard, KeyboardAvoidingView } from 'react-native';
 import { Navigation } from 'react-native-navigation';
+import App from '../../stores/App'
 
 @observer
 export default class AddBookmarkScreen extends React.Component{
@@ -40,8 +41,8 @@ export default class AddBookmarkScreen extends React.Component{
 	render() {
 		const { posting } = Auth.selected_user
     return(
-      <KeyboardAvoidingView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 15 }}>
-				<Text style={{ fontWeight: "500", fontSize: 16 }}>
+      <KeyboardAvoidingView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 15, backgroundColor: App.theme_background_color() }}>
+				<Text style={{ fontWeight: "500", fontSize: 16, color: App.theme_text_color() }}>
 					For Micro.blog Premium subscribers, bookmarked web pages are also archived so you can read them later and make highlights.
 				</Text>
 				<TextInput
@@ -60,7 +61,7 @@ export default class AddBookmarkScreen extends React.Component{
           enablesReturnKeyAutomatically={true}
           underlineColorAndroid={'transparent'}
           style={{ 
-            backgroundColor: '#f2f2f2', 
+            backgroundColor: App.theme_input_background_color(), 
             fontSize: 17,
             borderColor: '#f80', 
             borderWidth: 1,
@@ -69,7 +70,7 @@ export default class AddBookmarkScreen extends React.Component{
             borderRadius: 5,
             marginVertical: 15,
             paddingHorizontal: 15,
-            color: 'black'
+            color: App.theme_text_color()
 					}}
           onChangeText={(text) => !posting.is_adding_bookmark ? this.setState({url: text}) : null}
         />
