@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { RefreshControl, Platform, View } from "react-native"
+import { RefreshControl, Platform } from "react-native"
 import Auth from '../../stores/Auth';
 import App from '../../stores/App';
 import { ScrollView } from 'react-native-gesture-handler';
