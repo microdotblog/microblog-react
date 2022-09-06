@@ -16,7 +16,6 @@ export default Discover = types.model('Discover', {
 		console.log("Discover:init")
 		const tagmoji = yield MicroBlogApi.get_discover_timeline()
 		if (tagmoji !== API_ERROR && tagmoji != null && tagmoji.length > 0) {
-			console.log("Discover:init:tagmoji", tagmoji)
 			self.tagmoji = tagmoji
 			self.random_tagmoji = self.random_emojis()
 		}
