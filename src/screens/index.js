@@ -554,13 +554,6 @@ export const discoverTopicScreen = (topic, component_id) => {
               component: {
                 name: NEW_POST_BUTTON
               }
-            },
-            {
-              id: 'profile_button',
-              text: 'profile',
-              component: {
-                name: PROFILE_IMAGE
-              }
             }
           ],
 				}
