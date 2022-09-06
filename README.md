@@ -19,6 +19,24 @@ Push notifications on Android require the `google-services.json` file to be pres
 To test notifications, use the following "data" within the message:
 `{"from_user": "{"username":"gluon"}", "post_id": "12499040", "to_user": "{"username":"vincent"}"}`
 
+## iOS Push Notifications
+
+iOS requires correct signing & capabilities in order to allow push notifications. Please check relevant Apple documentation to enable this.
+
+To test notifications with the iOS simulator, you can use an app like [Sim Genie](https://simgenie.app). Here is an example payload:
+```
+{
+	"aps" : {
+		"alert" : {
+			"body" : "This should work…"
+		},
+	},
+	"from_user": {"username":"gluon"},
+	"post_id": "12499040", 
+	"to_user": {"username":"vincent"}
+}
+```
+
 ## A note on snake_case syntax
 
 A by product of loving the Ruby language so much, I started adopting snake_case in JavaScript years ago as it provided better readability for me. This might be confusing at first. I don't mind if camelCase will be used for anything, just be aware that I'll continue to adopt my approach in future (unless I change my mind).
