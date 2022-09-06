@@ -5,6 +5,7 @@ import User from './models/User'
 import Tokens from './Tokens'
 import CookieManager from '@react-native-cookies/cookies';
 import Push from './Push'
+import { menuBottomSheet } from '../screens'
 
 export default Auth = types.model('Auth', {
   users: types.optional(types.array(User), []),
@@ -68,6 +69,7 @@ export default Auth = types.model('Auth', {
     self.is_selecting_user = false
     if (self.selected_user.posting.selected_service != null) {
       user.posting.selected_service.hydrate()
+      menuBottomSheet(true)
     }
     ToastAndroid.showWithGravity(`You're now logged in as @${user.username}`, ToastAndroid.SHORT, ToastAndroid.CENTER)
     return
