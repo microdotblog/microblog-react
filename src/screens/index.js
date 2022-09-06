@@ -358,23 +358,8 @@ export const conversationScreen = (conversation_id, component_id) => {
               id: 'reply_button',
               text: 'Reply',
               icon: ReplyIcon
-            },
-            {
-              id: 'profile_button',
-              text: 'profile',
-              component: {
-                name: PROFILE_IMAGE
-              }
             }
-          ] : [
-            {
-              id: 'profile_button',
-              text: 'profile',
-              component: {
-                name: PROFILE_IMAGE
-              }
-            }
-          ],
+          ] : null,
 				}
 			}
 		}
