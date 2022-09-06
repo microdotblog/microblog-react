@@ -100,6 +100,7 @@ export default Push = types.model('Push', {
 			post_id: notification.data?.post_id,
 			to_username: Platform.OS === 'ios' ? notification.data?.to_user?.username : JSON.parse(notification.data?.to_user)?.username,
 			from_username: Platform.OS === 'ios' ? notification.data?.from_user?.username : JSON.parse(notification.data?.from_user)?.username,
+			should_open: Platform.OS === 'ios'  && notification.foreground === false
 		}
 		// Check if we have an existing notification in our array.
 		// This will never happen, except for DEV for sending through test messages.
