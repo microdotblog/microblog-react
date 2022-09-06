@@ -28,6 +28,7 @@ export default class ConversationScreen extends React.Component{
         endpoint={`hybrid/conversation/${ this.props.conversation_id }?show_actions=true&theme=${App.theme}#post_${ this.props.conversation_id }`}
         component_id={this.props.componentId}
         title="Conversation"
+        loading_text="Loading conversation..."
       />
     )
   }
