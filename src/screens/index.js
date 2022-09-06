@@ -297,8 +297,11 @@ export const menuBottomSheet = (close = false) => {
   RNNBottomSheet.closeBottomSheet()
 }
 
-export const profileScreen = (username, component_id) => {
+export const profileScreen = (username, component_id, close_bottom_sheet = true) => {
   console.log("Screens:profileScreen", username, component_id);
+  if (close_bottom_sheet) {
+    menuBottomSheet(true)
+  }
   const options = {
     component: {
 			name: PROFILE_SCREEN,
