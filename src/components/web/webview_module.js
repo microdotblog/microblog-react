@@ -17,7 +17,7 @@ export default class WebViewModule extends React.Component{
     this.ref = React.createRef()
     this.state = {
       endpoint: this.props.endpoint,
-      signin_endpoint: `hybrid/signin?token=${Auth.selected_user.token()}&redirect_to=${this.props.endpoint}&theme=${App.theme}`,
+      signin_endpoint: `hybrid/signin?token=${Auth.selected_user.token()}&redirect_to=${this.props.endpoint}&theme=${App.theme}&show_actions=true`,
       is_pull_to_refresh_enabled: true,
       scroll_view_height: 0,
     }
