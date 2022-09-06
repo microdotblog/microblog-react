@@ -3,6 +3,8 @@ import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi'
 import PushNotification from "react-native-push-notification";
 import Notification from './models/Notification'
 import Auth from './Auth'
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import { Platform } from 'react-native'
 
 export default Push = types.model('Push', {
 	token: types.optional(types.string, ""),
@@ -32,6 +34,10 @@ export default Push = types.model('Push', {
 			popInitialNotification: true,
 			requestPermissions: true
 		});
+
+		if (Platform.OS === 'ios') {
+			PushNotificationIOS.requestPermissions()
+		}
 	}),
 	
 	set_token: flow(function* (token) {
@@ -56,7 +62,7 @@ export default Push = types.model('Push', {
 		if (self.token != null && user_token != null) {
 			const data = yield MicroBlogApi.unregister_push(self.token, user_token)
 			if (data !== API_ERROR) {
-				console.log("Push:register_token:OK")
+				console.log("Push:unregister_user_from_push:OK")
 				return true
 			}
 		}
