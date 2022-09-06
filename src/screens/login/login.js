@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TextInput, Button, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, Button, ActivityIndicator, Platform, KeyboardAvoidingView } from 'react-native';
 import Login from './../../stores/Login';
 import App from '../../stores/App'
 
@@ -9,7 +9,7 @@ export default class LoginScreen extends React.Component{
   
   render() {
     return(
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 15, backgroundColor: App.theme_background_color() }}>
+      <KeyboardAvoidingView behavior={ Platform.OS === "ios" ? "padding" : "height" } style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 15, backgroundColor: App.theme_background_color() }}>
         <Text style={{fontWeight: "700", color: App.theme_text_color()}}>Enter your email address to sign in to Micro.blog:</Text>
         <TextInput
           placeholderTextColor="lightgrey"
@@ -69,7 +69,7 @@ export default class LoginScreen extends React.Component{
           </View>
           : null
         }
-      </View>
+      </KeyboardAvoidingView>
     )
   }
   
