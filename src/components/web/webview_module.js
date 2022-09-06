@@ -67,7 +67,7 @@ export default class WebViewModule extends React.Component{
       source={{ uri: `${ this.web_url }/${ Auth.did_load_one_or_more_webviews ? this.props.endpoint : this.state.signin_endpoint }${ this.return_url_options() }` }}
       containerStyle={{ flex: 1 }}
       startInLoadingState={true}
-      pullToRefreshEnabled={Platform.OS === 'ios'}
+      pullToRefreshEnabled={false}
       decelerationRate="normal"
       onLoadEnd={Auth.set_did_load_one_or_more_webviews}
       onShouldStartLoadWithRequest={(event) => {
@@ -78,11 +78,9 @@ export default class WebViewModule extends React.Component{
         return true
       }}
       onScroll={(e) => {
-        if (Platform.OS === 'android') {
-          this.setState({
-            is_pull_to_refresh_enabled: typeof this.on_refresh === 'function' && e.nativeEvent.contentOffset.y <= 0.15
-          })
-        }
+        this.setState({
+          is_pull_to_refresh_enabled: typeof this.on_refresh === 'function' && e.nativeEvent.contentOffset.y <= 0.15
+        })
         App.set_is_scrolling()
       }}
       onMessage={(event) => {
@@ -95,39 +93,26 @@ export default class WebViewModule extends React.Component{
 
   render() {
     const { is_pull_to_refresh_enabled } = this.state
-    if (Platform.OS === "android") {
-      return (
-        <>
-        <ScrollView
-          overScrollMode={'always'}
-          style={{ flex: 1, width: '100%', height: '100%' }}
-          contentContainerStyle={{ flex: 1 }}  
-          onLayout={(e) => this.setState({scroll_view_height: e.nativeEvent.layout.height})}
-          refreshControl={
-            <RefreshControl
-              onRefresh={this.on_refresh}
-              refreshing={false}
-              enabled={is_pull_to_refresh_enabled}
-            />
-          }
-        >
-          {this._webview()}
-        </ScrollView>
-        <PushNotifications />
-        </>
-      )
-    }
-    else {
-      return (
-        <View
-          style={{ flex: 1, width: '100%', height: '100%' }}
-          contentContainerStyle={{ flex: 1 }} 
-        >
-          {this._webview()}
-          <PushNotifications />
-        </View>
-      )
-    }
+    return (
+      <>
+      <ScrollView
+        overScrollMode={'always'}
+        style={{ flex: 1, width: '100%', height: '100%' }}
+        contentContainerStyle={{ flex: 1 }}  
+        onLayout={(e) => this.setState({scroll_view_height: e.nativeEvent.layout.height})}
+        refreshControl={
+          <RefreshControl
+            onRefresh={this.on_refresh}
+            refreshing={false}
+            enabled={is_pull_to_refresh_enabled}
+          />
+        }
+      >
+        {this._webview()}
+      </ScrollView>
+      <PushNotifications />
+      </>
+    )
   }
 
 }
