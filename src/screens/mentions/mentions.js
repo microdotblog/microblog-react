@@ -24,6 +24,7 @@ export default class MentionsScreen extends React.Component{
         endpoint="hybrid/mentions"
         component_id={this.props.componentId}
         title="Mentions"
+        loading_text="Loading mentions..."
       />
     )
   }
