@@ -30,7 +30,7 @@ export default class AccountSwitcher extends React.Component{
           padding: 8,
           paddingHorizontal: 16,
           backgroundColor: App.theme_button_background_color(),
-          borderRadius: 5,
+          borderRadius: 20,
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0
         }}
@@ -68,8 +68,8 @@ export default class AccountSwitcher extends React.Component{
           paddingHorizontal: 15,
           backgroundColor: App.theme_button_background_color(),
           width: '100%',
-          borderBottomLeftRadius: 5,
-          borderBottomRightRadius: 5
+          borderBottomLeftRadius: 20,
+          borderBottomRightRadius: 20
         }}>
         {
           Auth.all_users_except_current().map((user) => {
