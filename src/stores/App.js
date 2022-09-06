@@ -67,7 +67,7 @@ export default App = types.model('App', {
 
   set_current_screen_name_and_id: flow(function* (screen_name, screen_id) {
     console.log("App:set_current_screen_name_and_id", screen_name, screen_id)
-    if(screen_name.includes("microblog.component") || Platform.OS === 'ios' && (screen_name.includes("microblog.LoginScreen") || screen_name.includes("microblog.AddBookmarkScreen"))){
+    if(screen_name.includes("microblog.component") || Platform.OS === 'ios' && (screen_name.includes("microblog.LoginScreen") || screen_name.includes("microblog.AddBookmarkScreen") || screen_name.includes("microblog.HelpScreen"))){
       return
     }
     self.current_screen_name = screen_name
