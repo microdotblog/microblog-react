@@ -95,11 +95,11 @@ export default Push = types.model('Push', {
 	handle_notification: flow(function* (notification) {
 		console.log("Push::handle_notification", notification)
 		const nice_notification_object = {
-			id: notification.id,
+			id: Platform.OS === 'ios' ? notification.data?.notificationId : notification.id,
 			message: notification.message,
 			post_id: notification.data?.post_id,
-			to_username: JSON.parse(notification.data?.to_user)?.username,
-			from_username: JSON.parse(notification.data?.from_user)?.username,
+			to_username: Platform.OS === 'ios' ? notification.data?.to_user?.username : JSON.parse(notification.data?.to_user)?.username,
+			from_username: Platform.OS === 'ios' ? notification.data?.from_user?.username : JSON.parse(notification.data?.from_user)?.username,
 		}
 		// Check if we have an existing notification in our array.
 		// This will never happen, except for DEV for sending through test messages.
