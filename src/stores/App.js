@@ -3,7 +3,7 @@ import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScre
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
-import { Linking, ToastAndroid, Appearance, AppState } from 'react-native'
+import { Linking, ToastAndroid, Appearance, AppState, Platform } from 'react-native'
 import { Navigation } from "react-native-navigation";
 import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import Push from './Push'
@@ -67,7 +67,7 @@ export default App = types.model('App', {
 
   set_current_screen_name_and_id: flow(function* (screen_name, screen_id) {
     console.log("App:set_current_screen_name_and_id", screen_name, screen_id)
-    if(screen_name.includes("microblog.component")){
+    if(screen_name.includes("microblog.component") || Platform.OS === 'ios' && (screen_name.includes("microblog.LoginScreen") || screen_name.includes("microblog.AddBookmarkScreen"))){
       return
     }
     self.current_screen_name = screen_name
