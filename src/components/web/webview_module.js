@@ -96,7 +96,7 @@ export default class WebViewModule extends React.Component{
     return (
       <>
       <ScrollView
-        overScrollMode={'always'}
+        overScrollMode={Platform.OS === 'ios' ? 'auto' : 'always'}
         style={{ flex: 1, width: '100%', height: '100%', backgroundColor: App.theme_background_color() }}
         contentContainerStyle={{ flex: 1 }}  
         onLayout={(e) => this.setState({scroll_view_height: e.nativeEvent.layout.height})}
