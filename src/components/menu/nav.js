@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Platform } from 'react-native';
 import Auth from './../../stores/Auth';
 import App from './../../stores/App';
+import { SFSymbol } from "react-native-sfsymbols";
 
 // Nav icons
 import Bookmarks from './../../assets/icons/nav/bookmarks.png';
@@ -32,80 +33,68 @@ export default class MenuNavigation extends React.Component{
   _render_menu_items = () => {
     return this.menu.map(item => {
       let image = null
+      let symbol = null
       switch(item.toLowerCase()){
         case "timeline":
-        image = Timeline
+          Platform.OS === 'ios' ? symbol = "bubble.left.and.bubble.right" : image = Timeline
         break;
         case "mentions":
-        image = Mentions
+          Platform.OS === 'ios' ? symbol = "at" : image = Mentions
         break;
         case "discover":
-        image = Discover
+          Platform.OS === 'ios' ? symbol = "magnifyingglass" : image = Discover
         break;
         case "bookmarks":
-        image = Bookmarks
+          Platform.OS === 'ios' ? symbol = "star" : image = Bookmarks
         break;
       }
-      return(
-        <TouchableOpacity
-          onPress={() => App.navigate_to_screen_from_menu(item)}
-          key={item}
-          style={{ 
-            width: '49%',
-            padding: 8,
-            paddingHorizontal: 16,
-            borderRadius: 20,
-            backgroundColor: "#F9FAFB",
-            marginBottom: 8,
-            flexDirection: 'row',
-            alignItems: 'center',
-            //justifyContent: 'center'
-          }}
-        >
-          {
-            image != null ?
-            <Image source={image} style={{ marginRight: 8, height: 22, width: 22, marginTop: 1 }} />
-            : null
-          }
-          <Text style={{ fontSize: 16, fontWeight: '500', color: '#1F2937' }}>{item}</Text>
-        </TouchableOpacity>
-      )
+      return this._return_nav_item(item, image, symbol)
     })
   }
 
   _render_secondary_menu_items = () => {
     return this.secondary_menu.map(item => {
       let image = null
+      let symbol = null
       switch(item.toLowerCase()){
         case "help":
-        image = Help
+          Platform.OS === 'ios' ? symbol = "questionmark.circle" : image = Help
         break;
       }
-      return(
-        <TouchableOpacity
-          onPress={() => App.navigate_to_screen_from_menu(item)}
-          key={item}
-          style={{ 
-            width: '49%',
-            padding: 8,
-            paddingHorizontal: 16,
-            borderRadius: 20,
-            backgroundColor: "#F9FAFB",
-            marginBottom: 8,
-            flexDirection: 'row',
-            alignItems: 'center',
-            //justifyContent: 'center'
-          }}
-        >
-          {
-            image != null ?
-            <Image source={image} style={{ marginRight: 8, height: 22, width: 22, marginTop: 1 }} />
-            : null
-          }
-          <Text style={{ fontSize: 16, fontWeight: '500', color: '#1F2937' }}>{item}</Text>
-        </TouchableOpacity>
-      )
+      return this._return_nav_item(item, image, symbol)
     })
+  }
+  
+  _return_nav_item = (item, image = null, symbol = null) => {
+    return(
+      <TouchableOpacity
+        onPress={() => App.navigate_to_screen_from_menu(item)}
+        key={item}
+        style={{ 
+          width: '49%',
+          padding: 8,
+          paddingHorizontal: 16,
+          borderRadius: 20,
+          backgroundColor: App.theme_button_background_color(),
+          marginBottom: 8,
+          flexDirection: 'row',
+          alignItems: 'center'
+        }}
+      >
+        {
+          image != null ?
+            <Image source={image} style={{ marginRight: 8, height: 22, width: 22, marginTop: 1, tintColor: App.theme_button_text_color() }} />
+            : symbol != null ?
+              <SFSymbol
+                name={symbol}
+                color={App.theme_text_color()}
+                style={{ marginRight: 8, height: 22, width: 22, marginTop: 1 }}
+              />
+            : null
+        }
+        <Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_button_text_color() }}>{item}</Text>
+      </TouchableOpacity>
+    )
   }
 
   render() {
@@ -117,7 +106,7 @@ export default class MenuNavigation extends React.Component{
             marginBottom: 15,
             paddingBottom: 5,
             paddingTop: 10,
-            borderColor: '#E5E7EB',
+            borderColor: App.theme_border_color(),
             borderBottomWidth: 1,
             justifyContent: 'space-between',
             flexWrap: 'wrap',
@@ -125,7 +114,7 @@ export default class MenuNavigation extends React.Component{
           }}
         >
           {this._render_menu_items()}
-          <View style={{paddingTop: 10, marginTop: 5, borderColor: '#F9FAFB', borderTopWidth: 1, width: '100%'}}>
+          <View style={{paddingTop: 10, marginTop: 5, borderColor: App.theme_alt_border_color(), borderTopWidth: 1, width: '100%'}}>
             {this._render_secondary_menu_items()}
           </View>
         </View>

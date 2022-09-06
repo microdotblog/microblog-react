@@ -5,6 +5,7 @@ import BlockIcon from './../../assets/icons/block.png';
 import ReportIcon from './../../assets/icons/report.png';
 import Reporting from '../../stores/Reporting'
 import Auth from '../../stores/Auth';
+import App from '../../stores/App'
 
 @observer
 export default class ProfileMoreMenu extends React.Component{
@@ -20,7 +21,7 @@ export default class ProfileMoreMenu extends React.Component{
           borderRadius: 16
         }}
       >
-        <Text style={{ fontWeight: '800', marginBottom: 25 }}>More...</Text>
+        <Text style={{ fontWeight: '800', marginBottom: 25, color: App.theme_text_color() }}>More...</Text>
         {
           Auth.selected_user.muting?.is_muted(this.props.username) ?
             <TouchableOpacity

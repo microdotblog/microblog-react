@@ -1,13 +1,11 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View } from 'react-native';
 import Auth from '../../stores/Auth';
-import WebViewModule from '../../components/web/webview_module'
-import LoginMessage from '../../components/info/login_message'
-import ImageModalModule from '../../components/images/image_modal'
 import { Navigation } from 'react-native-navigation';
 import { replyScreen } from '..'
 import Reply from '../../stores/Reply'
+import GenericScreenComponent from '../../components/generic/generic_screen'
+import App from '../../stores/App'
 
 @observer
 export default class ConversationScreen extends React.Component{
@@ -18,23 +16,19 @@ export default class ConversationScreen extends React.Component{
   }
   
   navigationButtonPressed = async ({ buttonId }) => {
-		console.log("ConversationScreen:navigationButtonPressed::", buttonId)
     if(buttonId === "reply_button" && Reply.conversation_id){
       replyScreen()
     }
   }
   
   render() {
-    return(
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-				{
-					Auth.is_logged_in() && !Auth.is_selecting_user && !Reply.is_sending_reply && !Auth.selected_user.muting?.is_sending_mute && !Auth.selected_user.muting?.is_sending_unmute ?
-					<WebViewModule endpoint={`hybrid/conversation/${this.props.conversation_id}?show_actions=true#post_${this.props.conversation_id}`} component_id={this.props.componentId} />
-          :
-          <LoginMessage title="Conversation" />
-        }
-        <ImageModalModule />
-      </View>
+    return (
+      <GenericScreenComponent
+        can_show_web_view={Auth.is_logged_in() && !Auth.is_selecting_user && !Reply.is_sending_reply && !Auth.selected_user.muting?.is_sending_mute && !Auth.selected_user.muting?.is_sending_unmute}
+        endpoint={`hybrid/conversation/${ this.props.conversation_id }?show_actions=true&theme=${App.theme}#post_${ this.props.conversation_id }`}
+        component_id={this.props.componentId}
+        title="Conversation"
+      />
     )
   }
   

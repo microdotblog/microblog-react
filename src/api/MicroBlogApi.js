@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { Platform } from 'react-native'
 import Auth from './../stores/Auth';
 
 export const API_URL = 'https://micro.blog';
-export const APP_NAME = 'Micro.blog for Android';
+export const APP_NAME = Platform.OS === 'ios' ? 'Micro.blog for iOS' : 'Micro.blog for Android';
 export const REDIRECT_URL = 'microblog://signin/';
 export const LOGIN_INCORRECT = 1;
 export const LOGIN_ERROR = 2;
@@ -45,9 +46,16 @@ class MicroBlogApi {
     const login = axios
       .post('/account/signin', '', {
         params: {
-          email: email,
-          app_name: APP_NAME,
-          redirect_url: REDIRECT_URL
+					email: email,
+					redirect_url: REDIRECT_URL,
+					...Platform.select({
+						android: {
+							app_name: APP_NAME
+						},
+						ios: {
+							is_mobile: 1,
+						}
+					})
         }
       })
       .then(response => {
@@ -244,7 +252,11 @@ class MicroBlogApi {
 				params: {
 					device_token: push_token,
 					push_env: "production",
-					app_name: APP_NAME
+					...Platform.select({
+						android: {
+							app_name: APP_NAME
+						}
+					})
 				}
 			})
 			.then(response => {
@@ -266,7 +278,11 @@ class MicroBlogApi {
 				params: {
 					device_token: push_token,
 					push_env: "production",
-					app_name: APP_NAME
+					...Platform.select({
+						android: {
+							app_name: APP_NAME
+						}
+					})
 				}
 			})
 			.then(response => {

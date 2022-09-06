@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import Discover from '../../stores/Discover'
 import { tagmojiBottomSheet } from '../../screens'
+import App from '../../stores/App'
 
 @observer
 export default class TagmojiMenu extends React.Component{
@@ -30,7 +31,7 @@ export default class TagmojiMenu extends React.Component{
 								onPress={() => { tagmojiBottomSheet(true); App.navigate_to_screen("discover/topic", tagmoji) }}
 							>
 								<Text style={{ marginRight: 5, fontSize: 17 }}>{tagmoji.emoji}</Text>
-								<Text style={{ fontSize: 17 }}>{tagmoji.name}</Text>
+								<Text style={{ fontSize: 17, color: App.theme_text_color() }}>{tagmoji.name}</Text>
 							</TouchableOpacity>
 						)
 					}
@@ -50,7 +51,7 @@ export default class TagmojiMenu extends React.Component{
           borderRadius: 16
         }}
       >
-				<Text style={{ fontWeight: '800', marginBottom: 15 }}>Topics</Text>
+				<Text style={{ fontWeight: '800', marginBottom: 15, color: App.theme_text_color() }}>Topics</Text>
 				{this._return_tagmoji_menu()}
       </View>
     )

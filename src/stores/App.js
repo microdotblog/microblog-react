@@ -1,12 +1,13 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
-import { Linking, ToastAndroid } from 'react-native'
+import { Linking, ToastAndroid, Appearance, AppState } from 'react-native'
 import { Navigation } from "react-native-navigation";
 import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import Push from './Push'
+import { theme_options } from '../utils/navigation'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -17,13 +18,16 @@ export default App = types.model('App', {
   current_screen_id: types.maybeNull(types.string),
   image_modal_is_open: types.optional(types.boolean, false),
   current_image_url: types.maybeNull(types.string),
-  is_scrolling: types.optional(types.boolean, false)
+  is_scrolling: types.optional(types.boolean, false),
+  theme: types.optional(types.string, 'light'),
+  is_switching_theme: types.optional(types.boolean, false),
 })
 .actions(self => ({
 
   hydrate: flow(function* () {
     console.log("App:hydrate")
     self.is_loading = true
+    yield App.set_current_initial_theme()
     Push.hydrate()
     Auth.hydrate().then(() => {
       startApp().then(() => {
@@ -133,23 +137,23 @@ export default App = types.model('App', {
       switch (screen) {
         case "Timeline":
           tab_index = 0;
-          should_pop = self.current_screen_id !== "TIMELINE_SCREEN"
+          should_pop = self.current_screen_id !== "microblog.TimelineScreen"
           if(should_pop){
-            Navigation.popToRoot("TIMELINE_SCREEN")
+            Navigation.popToRoot("microblog.TimelineScreen")
           }
           break;
         case "Mentions":
           tab_index = 1;
-          should_pop = self.current_screen_id !== "MENTIONS_SCREEN"
+          should_pop = self.current_screen_id !== "microblog.MentionsScreen"
           if(should_pop){
-            Navigation.popToRoot("MENTIONS_SCREEN")
+            Navigation.popToRoot("microblog.MentionsScreen")
           }
           break;
         case "Discover":
           tab_index = 2;
-          should_pop = self.current_screen_id !== "DISCOVER_SCREEN"
+          should_pop = self.current_screen_id !== "microblog.DiscoverScreen"
           if(should_pop){
-            Navigation.popToRoot("DISCOVER_SCREEN")
+            Navigation.popToRoot("microblog.DiscoverScreen")
           }
           break;
       }
@@ -186,6 +190,9 @@ export default App = types.model('App', {
 
   handle_url_from_webview: flow(function* (url) {
     console.log("App:handle_url_from_webview", url)
+    if (AppState.currentState === "background" || AppState.currentState === "inactive") {
+      return
+    }
 
     // This is going to be messy. Don't judge.
     if (url.indexOf('https://micro.blog/') > -1 || url.indexOf('http://micro.blog/') > -1) {
@@ -289,5 +296,90 @@ export default App = types.model('App', {
     }
   }),
 
+  set_current_initial_theme: flow(function* () {
+    console.log("App:set_current_theme", Appearance.getColorScheme())
+    self.theme = Appearance.getColorScheme()
+    App.set_up_appearance_listener()
+  }),
+
+  set_up_appearance_listener: flow(function* () {
+    console.log("App:set_up_appearance_listener")
+    Appearance.addChangeListener(({ colorScheme }) => {
+      console.log("App:set_up_appearance_listener:change", colorScheme)
+      App.change_current_theme(colorScheme)
+    })
+  }),
+
+  change_current_theme: flow(function* (color) {
+    console.log("App:change_current_theme", color)
+    self.is_switching_theme = true
+    self.theme = color
+    yield App.update_navigation_screens()
+    self.is_switching_theme = false
+  }),
+
+  update_navigation_screens: flow(function* () {
+    console.log("App:update_navigation_screens")
+    const options = theme_options({})
+    // We set default options here so that any new screen, that might not be in the stack, will pick them up.
+    Navigation.setDefaultOptions(options)
+    Screens.forEach((_screen, key) => {
+      if (key != null &&
+        !key.includes("microblog.component") &&
+        key !== "__initBottomSheet__")
+      {
+        console.log("App:update_navigation_screens:screen", key)
+        Navigation.mergeOptions(key, options)
+      }
+    })
+  }),
+
+}))
+.views(self => ({
+  theme_background_color() {
+    return self.theme === "dark" ? "#1d2530" : "#fff"
+  },
+  theme_navigation_icon_color() {
+    return self.theme === "dark" ? "#9CA3AF" : "#000"
+  },
+  theme_text_color() {
+    return self.theme === "dark" ? "#fff" : "#000"
+  },
+  theme_background_color_secondary() {
+    return self.theme === "dark" ? "#1F2937" : "#fff"
+  },
+  theme_navbar_background_color() {
+    return self.theme === "dark" ? "#212936" : "#fff"
+  },
+  theme_button_background_color() {
+    return self.theme === "dark" ? "#374151" : "#F9FAFB"
+  },
+  theme_button_text_color() {
+    return self.theme === "dark" ? "#E5E7EB" : "#1F2937"
+  },
+  theme_section_background_color() {
+    return self.theme === "dark" ? "#374151" : "#E5E7EB"
+  },
+  theme_border_color() {
+    return self.theme === "dark" ? "#374151" : "#E5E7EB"
+  },
+  theme_alt_border_color() {
+    return self.theme === "dark" ? "#374151" : "#F9FAFB"
+  },
+  theme_input_background_color() {
+    return self.theme === "dark" ? "#1d2530" : "#f2f2f2"
+  },
+  theme_opacity_background_color() {
+    return self.theme === "dark" ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.6)"
+  },
+  should_reload_web_view() {
+    // When it returns true, this will trigger a reload of the webviews
+    return self.is_switching_theme
+  },
+  now() {
+    let now = new Date()
+    now.setHours(0, 0, 0, 0)
+    return now
+  }
 }))
 .create();

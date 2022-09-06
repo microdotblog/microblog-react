@@ -1,11 +1,12 @@
 import { types, flow } from 'mobx-state-tree';
 import Service from './posting/Service';
 import { blog_services } from './../enums/blog_services';
-import { Alert } from 'react-native';
+import { Alert, Platform, Linking } from 'react-native';
 import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Image from './posting/Image'
 import App from '../App'
+import Clipboard from '@react-native-clipboard/clipboard';
 
 export default Posting = types.model('Posting', {
   username: types.identifier,
@@ -16,7 +17,13 @@ export default Posting = types.model('Posting', {
   is_sending_post: types.optional(types.boolean, false),
   post_images: types.optional(types.array(Image), []),
   post_categories: types.optional(types.array(types.string), []),
-  is_adding_bookmark: types.optional(types.boolean, false)
+  is_adding_bookmark: types.optional(types.boolean, false),
+  text_selection: types.optional(
+    types.model('Selection', {
+      start: types.optional(types.number, 0),
+      end: types.optional(types.number, 0),
+    }), {start: 0, end: 0}
+  ),
 })
 .actions(self => ({
 
@@ -91,10 +98,41 @@ export default Posting = types.model('Posting', {
     return false
   }),
   
-  handle_text_action: flow(function* (action, current_selection) {
-		console.log("Posting:handle_text_action", action, current_selection)
+  handle_text_action: flow(function* (action) {
+    console.log("Posting:handle_text_action", action)
     const is_link = action === "[]"
-    self.post_text = self.post_text.InsertTextStyle(action, current_selection, is_link)
+    if (is_link) {
+      action = "[]()"
+      let has_web_url = null
+      let url = null
+      if (Platform.OS === "ios") {
+        has_web_url = yield Clipboard.hasWebURL()
+      }
+      else {
+        url = yield Clipboard.getString()
+        has_web_url = yield Linking.canOpenURL(url)
+        // I'm using this as a fallback, as Android sometimes doesn't know that it can open a URL.
+        if (!has_web_url) {
+          has_web_url = url.startsWith("http://") || url.startsWith("https://")
+        }
+      }
+      console.log("HAS WEB URL", url, has_web_url)
+      if (has_web_url) {
+        if (url === null) {
+          url = yield Clipboard.getString()
+        }
+        action = `[](${ url })`
+        console.log("TEXT OPTION", action)
+        self.post_text = self.post_text.InsertTextStyle(action, self.text_selection, true, url)
+      }
+      else {
+        self.post_text = self.post_text.InsertTextStyle(action, self.text_selection, true)
+      }
+    }
+    else {
+      self.post_text = self.post_text.InsertTextStyle(action, self.text_selection, is_link)
+    }
+    
   }),
 
   handle_image_action: flow(function* () {
@@ -177,6 +215,10 @@ export default Posting = types.model('Posting', {
       return true
     }
     return false
+  }),
+
+  set_text_selection: flow(function* (selection) {
+    self.text_selection = selection
   }),
 
 }))

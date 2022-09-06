@@ -1,6 +1,7 @@
 import { Navigation } from "react-native-navigation";
 import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import * as React from 'react';
+import { Platform } from 'react-native';
 import Reply from '../stores/Reply';
 
 // SCREENS
@@ -56,6 +57,8 @@ import ArrowBackIcon from './../assets/icons/arrow_back.png';
 import ReplyIcon from './../assets/icons/reply.png';
 import AddIcon from './../assets/icons/add.png';
 import Push from "../stores/Push"
+import { theme_options } from "../utils/navigation"
+import App from "../stores/App"
 
 // Set up screens
 export const Screens = new Map();
@@ -90,7 +93,7 @@ export const startApp = () => {
       stack: {
         children: [{
           component: {
-            id: 'TIMELINE_SCREEN',
+            id: TIMELINE_SCREEN,
             name: TIMELINE_SCREEN,
             options: {
               topBar: {
@@ -112,6 +115,19 @@ export const startApp = () => {
                     }
                   }
                 ],
+                ...Platform.select({
+                  ios: {
+                    leftButtons: [
+                    {
+                      id: 'profile_button',
+                      text: 'Profile',
+                      component: {
+                        name: PROFILE_IMAGE
+                      }
+                    }
+                  ],
+                  }
+                })
               }
             }
           },
@@ -119,7 +135,7 @@ export const startApp = () => {
         options: {
           bottomTab: {
             text: 'Timeline',
-            icon: TimelineIcon
+            icon: Platform.OS === 'ios' ? { system: 'bubble.left.and.bubble.right'} : TimelineIcon
           },
         },
       },
@@ -128,7 +144,7 @@ export const startApp = () => {
       stack: {
         children: [{
           component: {
-            id: 'MENTIONS_SCREEN',
+            id: MENTIONS_SCREEN,
             name: MENTIONS_SCREEN,
             options: {
               topBar: {
@@ -150,6 +166,19 @@ export const startApp = () => {
                     }
                   }
                 ],
+                ...Platform.select({
+                  ios: {
+                    leftButtons: [
+                    {
+                      id: 'profile_button',
+                      text: 'Profile',
+                      component: {
+                        name: PROFILE_IMAGE
+                      }
+                    }
+                  ],
+                  }
+                })
               }
             }
           },
@@ -157,7 +186,7 @@ export const startApp = () => {
         options: {
           bottomTab: {
             text: 'Mentions',
-            icon: MentionsIcon
+            icon: Platform.OS === 'ios' ? { system: 'at'} : MentionsIcon
           },
         },
       },
@@ -166,7 +195,7 @@ export const startApp = () => {
       stack: {
         children: [{
           component: {
-            id: 'DISCOVER_SCREEN',
+            id: DISCOVER_SCREEN,
             name: DISCOVER_SCREEN,
             options: {
               topBar: {
@@ -188,6 +217,19 @@ export const startApp = () => {
                     }
                   }
                 ],
+                ...Platform.select({
+                  ios: {
+                    leftButtons: [
+                    {
+                      id: 'profile_button',
+                      text: 'Profile',
+                      component: {
+                        name: PROFILE_IMAGE
+                      }
+                    }
+                  ],
+                  }
+                })
               }
             }
           },
@@ -195,27 +237,14 @@ export const startApp = () => {
         options: {
           bottomTab: {
             text: 'Discover',
-            icon: DiscoverIcon
+            icon: Platform.OS === 'ios' ? { system: 'magnifyingglass'} : DiscoverIcon
           },
         },
       },
     }
   ]
 
-  Navigation.setDefaultOptions({
-    animations: {
-      setRoot: {
-        waitForRender: true,
-      },
-      setStackRoot: {
-        waitForRender: true,
-      },
-    },
-    bottomTab: {
-      selectedIconColor: "#f80",
-      selectedTextColor: "#f80"
-    }
-  });
+  Navigation.setDefaultOptions(theme_options({}));
 
   return Navigation.setRoot({
     root: {
@@ -231,9 +260,10 @@ export const startApp = () => {
 export const loginScreen = (can_dismiss = false) => {
   return Navigation.showModal({
     stack: {
-      id: 'LOGIN_SCREEN',
+      id: LOGIN_SCREEN,
       children: [ {
         component: {
+          id: LOGIN_SCREEN,
           name: LOGIN_SCREEN,
           passProps: {
             can_dismiss: can_dismiss
@@ -261,6 +291,7 @@ export const menuBottomSheet = (close = false) => {
       snapPoints: [0, '20%', '40%', '70%'],
       initialSnapIndex: 2,
       borderRadius: 16,
+      backgroundColor: App.theme_background_color_secondary()
     })
   }
   RNNBottomSheet.closeBottomSheet()
@@ -508,6 +539,7 @@ export const tagmojiBottomSheet = (close = false) => {
       snapPoints: [0, '20%', '40%', '90%'],
       initialSnapIndex: 2,
       borderRadius: 16,
+      backgroundColor: App.theme_background_color_secondary()
     })
   }
   RNNBottomSheet.closeBottomSheet()
@@ -621,6 +653,7 @@ export const profileMoreBottomSheet = (username, close = false) => {
       snapPoints: [0, '30%', '40%'],
       initialSnapIndex: 1,
       borderRadius: 16,
+      backgroundColor: App.theme_background_color_secondary()
     })
   }
   RNNBottomSheet.closeBottomSheet()
