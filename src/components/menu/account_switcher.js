@@ -6,7 +6,6 @@ import App from './../../stores/App';
 import FastImage from 'react-native-fast-image';
 import { loginScreen, profileScreen } from './../../screens/';
 // IMAGES
-import GroupImage from './../../assets/icons/group.png';
 import AddAccountImage from './../../assets/icons/add_account.png';
 
 @observer
@@ -56,9 +55,6 @@ export default class AccountSwitcher extends React.Component{
             <Text style={{fontWeight: '600', color: App.theme_button_text_color()}}>{Auth.selected_user.full_name}</Text>
             <Text style={{ color: App.theme_button_text_color() }}>@{Auth.selected_user.username}</Text>
           </View>
-        </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-          <Image source={GroupImage} style={{ tintColor: App.theme_button_text_color()}} />
         </View>
       </TouchableOpacity>
     )
