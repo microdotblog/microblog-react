@@ -161,7 +161,7 @@ export default class AccountSwitcher extends React.Component{
 	}
 	
 	_render_account_logout_button = () => {
-    const sign_out_wording = Auth.users?.length > 1 ? "Sign Out of current account" : "Sign Out"
+    const sign_out_wording = Auth.users?.length > 1 ? `Sign Out of @${Auth.selected_user.username}` : "Sign Out"
 		return (
 			<TouchableOpacity
 				onPress={() => Auth.logout_user()}
