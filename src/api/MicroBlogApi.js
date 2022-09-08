@@ -251,7 +251,7 @@ class MicroBlogApi {
 				headers: { Authorization: `Bearer ${user_token}` },
 				params: {
 					device_token: push_token,
-					push_env: Platform.OS === 'ios' ? "prod" : "production",
+					push_env: Platform.OS === 'ios' ? __DEV__ ? "dev" : "prod" : "production",
 					...Platform.select({
 						android: {
 							app_name: APP_NAME
@@ -277,7 +277,7 @@ class MicroBlogApi {
 				headers: { Authorization: `Bearer ${user_token}` },
 				params: {
 					device_token: push_token,
-					push_env: Platform.OS === 'ios' ? "prod" : "production",
+					push_env: Platform.OS === 'ios' ? __DEV__ ? "dev" : "prod" : "production",
 					...Platform.select({
 						android: {
 							app_name: APP_NAME
