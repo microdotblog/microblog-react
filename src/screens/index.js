@@ -492,7 +492,7 @@ export const postingScreen = () => {
                 {
                   id: 'back_button',
                   text: 'Back',
-                  icon: ArrowBackIcon
+                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
                 },
               ],
               rightButtons: [
@@ -599,7 +599,7 @@ export const replyScreen = () => {
                 {
                   id: 'back_button',
                   text: 'Back',
-                  icon: ArrowBackIcon
+                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
                 },
               ],
               rightButtons: [
