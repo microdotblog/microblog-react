@@ -92,6 +92,9 @@ export default Auth = types.model('Auth', {
       self.selected_user = self.users[0]
       self.is_selecting_user = false
     }
+    else{
+      menuBottomSheet(true)
+    }
   }),
   
   logout_all_user: flow(function* () {
