@@ -1,11 +1,12 @@
 import { types, flow, applySnapshot, destroy } from 'mobx-state-tree';
-import { Keyboard, ToastAndroid } from 'react-native';
+import { Keyboard, Platform } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import User from './models/User'
 import Tokens from './Tokens'
 import CookieManager from '@react-native-cookies/cookies';
 import Push from './Push'
 import { menuBottomSheet } from '../screens'
+import Toast from 'react-native-simple-toast';
 
 export default Auth = types.model('Auth', {
   users: types.optional(types.array(User), []),
@@ -71,7 +72,9 @@ export default Auth = types.model('Auth', {
       user.posting.selected_service.hydrate()
       menuBottomSheet(true)
     }
-    ToastAndroid.showWithGravity(`You're now logged in as @${user.username}`, ToastAndroid.SHORT, ToastAndroid.CENTER)
+    setTimeout(() => {
+      Toast.showWithGravity(`You're now logged in as @${user.username}`, Toast.SHORT, Toast.CENTER)
+    }, Platform.OS === 'ios' ? 350 : 0)
     return
   }),
   

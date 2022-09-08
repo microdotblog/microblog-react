@@ -3,11 +3,12 @@ import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScre
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
-import { Linking, ToastAndroid, Appearance, AppState, Platform } from 'react-native'
+import { Linking, Appearance, AppState, Platform } from 'react-native'
 import { Navigation } from "react-native-navigation";
 import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import Push from './Push'
 import { theme_options } from '../utils/navigation'
+import Toast from 'react-native-simple-toast';
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -268,10 +269,10 @@ export default App = types.model('App', {
   handle_web_view_message: flow(function* (message) {
     console.log("App:handle_web_view_message", message)
     if (message === "bookmark_added") {
-      ToastAndroid.showWithGravity("Bookmark added!", ToastAndroid.SHORT, ToastAndroid.CENTER)
+      Toast.showWithGravity("Bookmark added!", Toast.SHORT, Toast.CENTER)
     }
     else if (message === "bookmark_removed") {
-      ToastAndroid.showWithGravity("Bookmark removed!", ToastAndroid.SHORT, ToastAndroid.CENTER)
+      Toast.showWithGravity("Bookmark removed!", Toast.SHORT, Toast.CENTER)
     }
     if (message === "bookmark_removed" && App.current_screen_id === "BOOKMARKS_SCREEN") {
       if (CURRENT_WEB_VIEW_REF) {
@@ -284,7 +285,9 @@ export default App = types.model('App', {
       }
     }
     else if (message === "bookmark_added_from_app") {
-      ToastAndroid.showWithGravity("Bookmark added!", ToastAndroid.SHORT, ToastAndroid.CENTER)
+      setTimeout(() => {
+        Toast.showWithGravity("Bookmark added!", Toast.SHORT, Toast.CENTER)
+      }, Platform.OS === 'ios' ? 350 : 0)
       if (CURRENT_WEB_VIEW_REF) {
         try {
           CURRENT_WEB_VIEW_REF.injectJavaScript(`window.scrollTo({ top: 0 })`)
