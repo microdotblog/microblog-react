@@ -320,13 +320,6 @@ export const profileScreen = (username, component_id, close_bottom_sheet = true)
               component: {
                 name: NEW_POST_BUTTON
               }
-            },
-            {
-              id: 'profile_button',
-              text: 'profile',
-              component: {
-                name: PROFILE_IMAGE
-              }
             }
           ],
 				}
