@@ -383,7 +383,7 @@ export const bookmarksScreen = (component_id) => {
             {
               id: 'add_bookmark_button',
               text: 'Add bookmark',
-              icon: AddIcon
+              icon: Platform.OS === 'ios' ? { system: 'plus' } : AddIcon
             },
             {
               id: 'profile_button',
@@ -656,7 +656,7 @@ export const addBoomarkScreen = () => {
                 {
                   id: 'back_button',
                   text: 'Back',
-                  icon: ArrowBackIcon
+                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
                 },
               ],
               rightButtons: [
