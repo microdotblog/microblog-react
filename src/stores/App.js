@@ -17,6 +17,8 @@ export default App = types.model('App', {
   is_loading: types.optional(types.boolean, false),
   current_screen_name: types.maybeNull(types.string),
   current_screen_id: types.maybeNull(types.string),
+  previous_screen_name: types.maybeNull(types.string),
+  previous_screen_id: types.maybeNull(types.string),
   image_modal_is_open: types.optional(types.boolean, false),
   current_image_url: types.maybeNull(types.string),
   is_scrolling: types.optional(types.boolean, false),
@@ -68,7 +70,13 @@ export default App = types.model('App', {
 
   set_current_screen_name_and_id: flow(function* (screen_name, screen_id) {
     console.log("App:set_current_screen_name_and_id", screen_name, screen_id)
-    if(screen_name.includes("microblog.component") || Platform.OS === 'ios' && (screen_name.includes("microblog.LoginScreen") || screen_name.includes("microblog.AddBookmarkScreen") || screen_name.includes("microblog.HelpScreen"))){
+    if(screen_name.includes("microblog.component") || Platform.OS === 'ios' && screen_name.includes("microblog.modal")){
+      
+      if(Platform.OS === 'ios' && screen_name.includes("microblog.modal")){
+        self.previous_screen_id = self.current_screen_id
+        self.previous_screen_name = self.current_screen_name
+      }
+      
       return
     }
     self.current_screen_name = screen_name
@@ -77,6 +85,12 @@ export default App = types.model('App', {
     if (screen_id === "DISCOVER_SCREEN") {
       Discover.shuffle_random_emoji()
     }
+  }),
+  
+  set_previous_screen_name_and_id: flow(function* () {
+    console.log("App:set_previous_screen_name_and_id", self.previous_screen_id, self.previous_screen_name)
+    self.current_screen_id = self.previous_screen_id
+    self.current_screen_name = self.previous_screen_name
   }),
 
   handle_url: flow(function* (url) {

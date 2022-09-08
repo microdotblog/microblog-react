@@ -24,18 +24,18 @@ import HelpScreen from "./help/help";
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
 export const DISCOVER_SCREEN = 'microblog.DiscoverScreen';
-export const LOGIN_SCREEN = 'microblog.LoginScreen';
+export const LOGIN_SCREEN = 'microblog.modal.LoginScreen';
 export const PROFILE_SCREEN = 'microblog.ProfileScreen';
 export const CONVERSATION_SCREEN = 'microblog.ConversationScreen';
 export const BOOKMARKS_SCREEN = 'microblog.BookmarksScreen';
 export const FOLLOWING_SCREEN = 'microblog.FollowingScreen';
-export const POSTING_SCREEN = 'microblog.PostingScreen';
+export const POSTING_SCREEN = 'microblog.modal.PostingScreen';
 export const DISCOVER_TOPIC_SCREEN = 'microblog.DiscoverTopicScreen';
-export const POSTING_OPTIONS_SCREEN = 'microblog.PostingOptionsScreen';
-export const REPLY_SCREEN = 'microblog.ReplyScreen';
+export const POSTING_OPTIONS_SCREEN = 'microblog.modal.PostingOptionsScreen';
+export const REPLY_SCREEN = 'microblog.modal.ReplyScreen';
 export const BOOKMARK_SCREEN = 'microblog.BookmarkScreen';
-export const ADD_BOOKMARK_SCREEN = 'microblog.AddBookmarkScreen';
-export const HELP_SCREEN = 'microblog.HelpScreen';
+export const ADD_BOOKMARK_SCREEN = 'microblog.modal.AddBookmarkScreen';
+export const HELP_SCREEN = 'microblog.modal.HelpScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -479,9 +479,11 @@ export const followingScreen = (username, component_id) => {
 export const postingScreen = () => {
   return Navigation.showModal({
     stack: {
-      id: 'POSTING_SCREEN',
+      id: POSTING_SCREEN,
+      name: POSTING_SCREEN,
       children: [ {
         component: {
+          id: POSTING_SCREEN,
           name: POSTING_SCREEN,
           options: {
             topBar: {
@@ -568,7 +570,7 @@ export const postingOptionsScreen = (component_id) => {
   console.log("Screens:discoverTopicScreen", component_id);
   const options = {
     component: {
-      id: 'POSTING_OPTIONS_SCREEN',
+      id: POSTING_OPTIONS_SCREEN,
 			name: POSTING_OPTIONS_SCREEN,
 			options: {
 				topBar: {
@@ -586,9 +588,11 @@ export const postingOptionsScreen = (component_id) => {
 export const replyScreen = () => {
   return Navigation.showModal({
     stack: {
-      id: 'REPLY_SCREEN',
+      id: REPLY_SCREEN,
+      name: REPLY_SCREEN,
       children: [ {
         component: {
+          id: REPLY_SCREEN,
           name: REPLY_SCREEN,
           options: {
             topBar: {
@@ -643,9 +647,11 @@ export const profileMoreBottomSheet = (username, close = false) => {
 export const addBoomarkScreen = () => {
   return Navigation.showModal({
     stack: {
-      id: 'ADD_BOOKMARK_SCREEN',
+      id: ADD_BOOKMARK_SCREEN,
+      name: ADD_BOOKMARK_SCREEN,
       children: [ {
         component: {
+          id: ADD_BOOKMARK_SCREEN,
           name: ADD_BOOKMARK_SCREEN,          
           options: {
             topBar: {
@@ -682,9 +688,11 @@ export const addBoomarkScreen = () => {
 export const helpScreen = () => {
   return Navigation.showModal({
     stack: {
-      id: 'HELP_SCREEN',
+      id: HELP_SCREEN,
+      name: HELP_SCREEN,
       children: [ {
         component: {
+          id: HELP_SCREEN,
           name: HELP_SCREEN,
           options: {
             topBar: {

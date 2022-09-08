@@ -10,6 +10,7 @@ Navigation.registerComponent(key, () => (props) => (
 ));
 
 Navigation.events().registerComponentDidAppearListener(({ componentName, componentId }) => {
+  console.log("registerComponentDidAppearListener", componentName, componentId)
   switch (componentName) {
     case componentName.includes("microblog.component"):
       return
@@ -19,6 +20,11 @@ Navigation.events().registerComponentDidAppearListener(({ componentName, compone
       App.set_current_screen_name_and_id(componentName, componentId)
       break;
   }
+})
+
+Navigation.events().registerModalDismissedListener(({ componentId }) => {
+  console.log("registerModalDismissedListener", componentId)
+  App.set_previous_screen_name_and_id()
 })
 
 export const theme_options = (settings) => {
