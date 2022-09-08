@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Platform } from 'react-native';
 import Auth from './../../stores/Auth';
 import App from './../../stores/App';
 import FastImage from 'react-native-fast-image';
 import { loginScreen, profileScreen } from './../../screens/';
+import { SFSymbol } from 'react-native-sfsymbols';
 // IMAGES
 import AddAccountImage from './../../assets/icons/add_account.png';
 
@@ -126,21 +127,41 @@ export default class AccountSwitcher extends React.Component{
           width: '100%',
           justifyContent: 'space-between',
           marginTop: Auth.users.length > 1 ? 10 : 0,
-          borderTopWidth: Auth.users.length > 1 ? .5 : 0,
-          borderColor: '#D1D5DB',
           paddingTop: Auth.users.length > 1 ? 8 : 0
         }}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image style={{width: 30, height: 30, marginRight: 18, marginLeft: 6, tintColor: App.theme_button_text_color()}} source={AddAccountImage} />
-          <Text style={{ color: App.theme_button_text_color() }}>Add account...</Text>
+          {
+            Platform.OS === 'ios' ?
+            <View
+              style={{
+                height: 40,
+                width: 40,
+                borderRadius: 50,
+                marginRight: 8,
+                backgroundColor: App.theme_input_background_color(),
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+              <SFSymbol
+                name={'plus'}
+                color={App.theme_text_color()}
+                style={{ height: 18, width: 18 }}
+                multicolor={true}
+              />
+            </View>
+            :
+            <Image style={{width: 30, height: 30, marginRight: 18, marginLeft: 6, tintColor: App.theme_button_text_color()}} source={AddAccountImage} />
+          }
+          
+          <Text style={{ color: App.theme_button_text_color() }}>Add Account...</Text>
         </View>
       </TouchableOpacity>
     )
 	}
 	
 	_render_account_logout_button = () => {
-    const sign_out_wording = Auth.users?.length > 1 ? "Sign out current account" : "Sign out"
+    const sign_out_wording = Auth.users?.length > 1 ? "Sign Out of current account" : "Sign Out"
 		return (
 			<TouchableOpacity
 				onPress={() => Auth.logout_user()}
