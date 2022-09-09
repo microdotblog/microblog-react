@@ -341,31 +341,38 @@ export const conversationScreen = (conversation_id, component_id) => {
   console.log("Screens:conversationScreen", conversation_id, component_id);
   Reply.hydrate(conversation_id)
   Push.check_and_remove_notifications_with_post_id(conversation_id)
-  const options = {
-    component: {
-      id: 'CONVERSATION_SCREEN',
-			name: CONVERSATION_SCREEN,
-			passProps: {
-        conversation_id: conversation_id
-			},
-			options: {
-				topBar: {
-          title: {
-            text: "Conversation"
-          },
-          rightButtons: Reply.replying_enabled() ? [
-            {
-              id: 'reply_button',
-              text: 'Reply',
-              icon: Platform.OS === 'ios' ? { system: 'arrowshape.turn.up.left.fill' } : ReplyIcon
-            }
-          ] : null,
-				}
-			}
-		}
-	};
-
-  return Navigation.push(component_id, options);
+  if(component_id === CONVERSATION_SCREEN ){
+    Navigation.updateProps(component_id, {
+      conversation_id: conversation_id
+    })
+  }
+  else{
+    const options = {
+      component: {
+        id: CONVERSATION_SCREEN,
+        name: CONVERSATION_SCREEN,
+        passProps: {
+          conversation_id: conversation_id
+        },
+        options: {
+          topBar: {
+            title: {
+              text: "Conversation"
+            },
+            rightButtons: Reply.replying_enabled() ? [
+              {
+                id: 'reply_button',
+                text: 'Reply',
+                icon: Platform.OS === 'ios' ? { system: 'arrowshape.turn.up.left.fill' } : ReplyIcon
+              }
+            ] : null,
+          }
+        }
+      }
+    };
+    
+    return Navigation.push(component_id, options);
+  }
 }
 
 export const bookmarksScreen = (component_id) => {
