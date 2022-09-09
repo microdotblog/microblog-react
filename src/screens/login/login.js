@@ -3,9 +3,23 @@ import { observer } from 'mobx-react';
 import { View, Text, TextInput, Button, ActivityIndicator, Platform, KeyboardAvoidingView, Keyboard } from 'react-native';
 import Login from './../../stores/Login';
 import App from '../../stores/App'
+import { Navigation } from 'react-native-navigation';
+import ArrowBackIcon from './../../assets/icons/arrow_back.png';
 
 @observer
 export default class LoginScreen extends React.Component{
+  
+  constructor (props) {
+    super(props)
+    Navigation.events().bindComponent(this)
+  }
+  
+  navigationButtonPressed = async ({ buttonId }) => {
+    console.log("navigationButtonPressed::", buttonId)
+    if(buttonId === "back_button"){
+      Navigation.dismissModal(this.props.componentId)
+    }
+  }
   
   render() {
     return(

@@ -273,9 +273,16 @@ export const loginScreen = (can_dismiss = false) => {
               title: {
                 text: 'Sign in',
               },
+              leftButtons: [
+                {
+                  id: 'back_button',
+                  text: 'Back',
+                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
+                },
+              ],
             },
             layout: {
-              backgroundColor: "#fff"
+              backgroundColor: App.theme_background_color()
             }
           }
         },
