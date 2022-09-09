@@ -341,7 +341,7 @@ export const conversationScreen = (conversation_id, component_id) => {
   console.log("Screens:conversationScreen", conversation_id, component_id);
   Reply.hydrate(conversation_id)
   Push.check_and_remove_notifications_with_post_id(conversation_id)
-  if(component_id === CONVERSATION_SCREEN ){
+  if(App.current_screen_name === CONVERSATION_SCREEN ){
     Navigation.updateProps(component_id, {
       conversation_id: conversation_id
     })
@@ -349,7 +349,7 @@ export const conversationScreen = (conversation_id, component_id) => {
   else{
     const options = {
       component: {
-        id: CONVERSATION_SCREEN,
+        id: `CONVERSATION_SCREEN_${conversation_id}`,
         name: CONVERSATION_SCREEN,
         passProps: {
           conversation_id: conversation_id
