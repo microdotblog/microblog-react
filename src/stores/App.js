@@ -89,8 +89,10 @@ export default App = types.model('App', {
   
   set_previous_screen_name_and_id: flow(function* () {
     console.log("App:set_previous_screen_name_and_id", self.previous_screen_id, self.previous_screen_name)
-    self.current_screen_id = self.previous_screen_id
-    self.current_screen_name = self.previous_screen_name
+    if(self.previous_screen_id != null && self.previous_screen_name != null){
+      self.current_screen_id = self.previous_screen_id
+      self.current_screen_name = self.previous_screen_name
+    }
   }),
 
   handle_url: flow(function* (url) {
