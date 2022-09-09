@@ -357,7 +357,7 @@ export const conversationScreen = (conversation_id, component_id) => {
             {
               id: 'reply_button',
               text: 'Reply',
-              icon: ReplyIcon
+              icon: Platform.OS === 'ios' ? { system: 'arrowshape.turn.up.left.fill' } : ReplyIcon
             }
           ] : null,
 				}
@@ -703,12 +703,12 @@ export const helpScreen = () => {
                 {
                   id: 'back_button',
                   text: 'Back',
-                  icon: ArrowBackIcon
+                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
                 },
               ],
             },
             layout: {
-              backgroundColor: "#fff"
+              backgroundColor: App.theme_background_color()
             }
           }
         },
