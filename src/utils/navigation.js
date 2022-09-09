@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Navigation } from "react-native-navigation"
 import App from '../stores/App'
-import { Screens } from './../screens';
+import Reply from '../stores/Reply'
+import { Screens, replyScreen } from './../screens';
 
 Screens.forEach((ScreenComponent, key) => 
 Navigation.registerComponent(key, () => (props) => (
@@ -25,6 +26,13 @@ Navigation.events().registerComponentDidAppearListener(({ componentName, compone
 Navigation.events().registerModalDismissedListener(({ componentId }) => {
   console.log("registerModalDismissedListener", componentId)
   App.set_previous_screen_name_and_id()
+})
+
+Navigation.events().registerNavigationButtonPressedListener(({ buttonId }) => {
+  console.log("registerNavigationButtonPressedListener", buttonId)
+  if(buttonId === "reply_button" && Reply.conversation_id){
+    replyScreen()
+  }
 })
 
 export const theme_options = (settings) => {
