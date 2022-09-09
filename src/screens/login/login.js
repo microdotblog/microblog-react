@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TextInput, Button, ActivityIndicator, Platform, KeyboardAvoidingView } from 'react-native';
+import { View, Text, TextInput, Button, ActivityIndicator, Platform, KeyboardAvoidingView, Keyboard } from 'react-native';
 import Login from './../../stores/Login';
 import App from '../../stores/App'
 
@@ -38,13 +38,13 @@ export default class LoginScreen extends React.Component{
             color: App.theme_text_color()
           }}
           onChangeText={(text) => Login.set_input_value(text)}
-          onSubmitEditing={Login.trigger_login}
+          onSubmitEditing={() => {Login.trigger_login(); Keyboard.dismiss()}}
           value={Login.input_value}
         />
         <Button
           title="Continue"
           color="#f80"
-          onPress={Login.trigger_login}
+          onPress={() => {Login.trigger_login(); Keyboard.dismiss()}}
           disabled={!Login.can_submit()}
         />
         <ActivityIndicator 
@@ -61,9 +61,7 @@ export default class LoginScreen extends React.Component{
               padding: 8,
               paddingHorizontal: 12,
               borderRadius: 5,
-              elevation: 2,
-              position: 'absolute',
-              bottom: 25
+              elevation: 2
             }}>
             <Text style={{color: "#064E3B", fontWeight: "600"}}>{Login.message}</Text>
           </View>
