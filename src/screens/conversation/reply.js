@@ -42,6 +42,7 @@ export default class ReplyScreen extends React.Component{
             fontSize: 18,
             justifyContent: 'flex-start',
 						alignItems: 'flex-start',
+            marginTop: 3,
             marginBottom: 38,
             padding: 8,
             color: App.theme_text_color()
