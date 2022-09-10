@@ -6,6 +6,7 @@ import PhotoLibrary from '../../assets/icons/toolbar/photo_library.png';
 import SettingsIcon from '../../assets/icons/toolbar/settings.png';
 import { postingOptionsScreen } from '../../screens';
 import App from '../../stores/App';
+import { SFSymbol } from 'react-native-sfsymbols';
 
 @observer
 export default class PostToolbar extends React.Component{
@@ -32,16 +33,26 @@ export default class PostToolbar extends React.Component{
 				}}
 			>
 				<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("**")}>
-					<Text style={{ fontSize: 20, fontWeight: '700', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"**"}</Text>
+					<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"**"}</Text>
 				</TouchableOpacity>
 				<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("_")}>
-					<Text style={{ fontSize: 20, fontWeight: '800', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"_"}</Text>
+					<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"_"}</Text>
 				</TouchableOpacity>
 				<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("[]")}>
-					<Text style={{ fontSize: 20, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"[ ]"}</Text>
+					<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"[ ]"}</Text>
 				</TouchableOpacity>
 				<TouchableOpacity style={{minWidth: 35, marginLeft: 8, marginRight: 8}} onPress={posting.handle_image_action}>
+					{
+					Platform.OS === 'ios' ?
+						<SFSymbol
+							name={'photo'}
+							color={App.theme_text_color()}
+							style={{ height: 22, width: 22 }}
+							multicolor={true}
+						/>
+					: 						
 					<Image source={PhotoLibrary} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
+				}
 				</TouchableOpacity>
 				<View
 					style={{
@@ -58,7 +69,17 @@ export default class PostToolbar extends React.Component{
 							marginRight: 8,
 						}}
 					>
+					{
+						Platform.OS === 'ios' ?
+							<SFSymbol
+								name={'gearshape'}
+								color={App.theme_text_color()}
+								style={{ height: 22, width: 22 }}
+								multicolor={true}
+							/>
+						: 						
 						<Image source={SettingsIcon} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
+					}
 					</TouchableOpacity>
 					<Text
 						style={{
