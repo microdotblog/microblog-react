@@ -64,9 +64,10 @@ export default class PostToolbar extends React.Component{
 						style={{
 							fontWeight: '200',
 							padding: 2,
-							backgroundColor: 'rgba(255,255,255,.6)'
+							color: App.theme_text_color(),
+							backgroundColor: App.theme_chars_background_color()
 						}}
-					><Text style={{ color: posting.post_text_length() > 280 ? '#a94442' : 'black' }}>{posting.post_text_length()}</Text>/280</Text>
+					><Text style={{ color: posting.post_text_length() > 280 ? '#a94442' : App.theme_text_color() }}>{posting.post_text_length()}</Text>/280</Text>
 				</View>
 			</View>
     )
