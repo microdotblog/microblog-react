@@ -26,6 +26,9 @@ export default Push = types.model('Push', {
 			onNotification: function(data) {
 				Push.handle_notification(data)
 			},
+			onAction: function(data){
+				console.log("Push:onAction:data", data);
+			},
 			permissions: {
 				alert: true,
 				badge: true,
@@ -97,14 +100,15 @@ export default Push = types.model('Push', {
 	}),
 
 	handle_notification: flow(function* (notification) {
-		console.log("Push::handle_notification", notification)
+		console.log("Push::handle_notification", notification, Auth.selected_user)
 		const nice_notification_object = {
-			id: Platform.OS === 'ios' ? notification.data?.notificationId : notification.id,
+			id: Platform.OS === 'ios' ? notification.data?.notificationId != null ? notification.data?.notificationId : notification.data?.post_id : notification.id,
 			message: notification.message,
 			post_id: notification.data?.post_id,
 			to_username: Platform.OS === 'ios' ? notification.data?.to_user?.username : JSON.parse(notification.data?.to_user)?.username,
 			from_username: Platform.OS === 'ios' ? notification.data?.from_user?.username : JSON.parse(notification.data?.from_user)?.username,
-			should_open: Platform.OS === 'ios'  && notification.foreground === false
+			should_open: Platform.OS === 'ios'  && notification.foreground === false,
+			did_load_before_user_was_loaded: Auth.selected_user == null
 		}
 		// Check if we have an existing notification in our array.
 		// This will never happen, except for DEV for sending through test messages.

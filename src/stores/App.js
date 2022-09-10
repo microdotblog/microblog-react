@@ -222,6 +222,10 @@ export default App = types.model('App', {
       const after_mb_link = url.replace('https://micro.blog/', '').replace('http://micro.blog/', '');
       const parts = after_mb_link.split("/")
       console.log("App:handle_url_from_webview:parts", after_mb_link, parts)
+      
+      if(after_mb_link.includes("hybrid/conversation")){
+        return
+      }
 
       if(parts.length === 2){
         // This is probably a convo
