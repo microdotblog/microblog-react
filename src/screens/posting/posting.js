@@ -81,6 +81,7 @@ export default class PostingScreen extends React.Component{
             fontSize: 18,
             justifyContent: 'flex-start',
 						alignItems: 'flex-start',
+            marginTop: 3,
             marginBottom: posting.post_text_length() > 280 || posting.post_title ? posting.post_images.length > 0 ? 135 : 80 : posting.post_images.length > 0 ? 93 : 38,
             padding: 8,
             color: App.theme_text_color()
