@@ -127,6 +127,7 @@ export default class AccountSwitcher extends React.Component{
           width: '100%',
           justifyContent: 'space-between',
           marginTop: Auth.users.length > 1 ? 10 : 0,
+          marginLeft: 1,
           paddingTop: Auth.users.length > 1 ? 8 : 0
         }}
       >
@@ -154,7 +155,7 @@ export default class AccountSwitcher extends React.Component{
             <Image style={{width: 30, height: 30, marginRight: 18, marginLeft: 6, tintColor: App.theme_button_text_color()}} source={AddAccountImage} />
           }
           
-          <Text style={{ color: App.theme_button_text_color() }}>Add Account...</Text>
+          <Text style={{ color: App.theme_button_text_color(), marginLeft: 6 }}>Add Account...</Text>
         </View>
       </TouchableOpacity>
     )
