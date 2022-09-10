@@ -10,7 +10,7 @@ export const NO_AUTH = 5
 class MicroPubApi {
   
   async get_config(service) {
-		console.log('MicroPubApi:get_config', service);
+		console.log('MicroPubApi:get_config', service.username);
 		const config = axios
 			.get(service.endpoint, {
 				headers: { Authorization: `Bearer ${service.token}` },
