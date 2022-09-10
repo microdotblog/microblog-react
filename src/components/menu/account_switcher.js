@@ -83,7 +83,8 @@ export default class AccountSwitcher extends React.Component{
                   flexDirection: 'row',
                   alignItems: 'center',
                   width: '100%',
-                  justifyContent: 'space-between'
+                  justifyContent: 'space-between',
+                  marginLeft: 16,
                 }}
               >
                 <View 
