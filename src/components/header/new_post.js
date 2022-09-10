@@ -21,7 +21,7 @@ export default class NewPostButton extends React.Component{
               <SFSymbol
                 name="square.and.pencil"
                 color={App.theme_text_color()}
-                style={{ width: 30, height: 30 }}
+                style={{ width: 26, height: 26 }}
               />
             :
             <Image source={PostAddIcon} style={{ width: 30, height: 30, tintColor: App.theme_text_color() }} />
