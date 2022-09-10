@@ -46,16 +46,16 @@ export default class PostingScreen extends React.Component{
         {
           posting.post_text_length() > 280 || posting.post_title ?
           <TextInput
-            placeholder="Optional post title"
-            placeholderTextColor="lightgrey"
+            placeholder="Title"
+            placeholderTextColor={App.theme_placeholder_text_color()}
             style={{
               fontSize: 18,
               justifyContent: 'flex-start',
 						  alignItems: 'flex-start',
               padding: 8,
-              marginBottom: -5,
+              marginBottom: 4,
               fontWeight: '700',
-              borderColor: '#E5E7EB',
+              borderColor: App.theme_border_color(),
               borderBottomWidth: .5,
               color: App.theme_text_color()
             }}
