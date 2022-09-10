@@ -28,7 +28,8 @@ export default class AccountSwitcher extends React.Component{
           justifyContent: 'space-between',
           alignItems: 'center',
           width: '100%',
-          padding: 8,
+          paddingTop: 14,
+          paddingBottom: 7,
           paddingHorizontal: 16,
           backgroundColor: App.theme_button_background_color(),
           borderRadius: 20,
@@ -66,7 +67,7 @@ export default class AccountSwitcher extends React.Component{
       <View 
         style={{ 
           padding: 8,
-          paddingHorizontal: 15,
+          paddingHorizontal: 0,
           backgroundColor: App.theme_button_background_color(),
           width: '100%',
           borderBottomLeftRadius: 20,
@@ -88,7 +89,7 @@ export default class AccountSwitcher extends React.Component{
                 <View 
                   style={{
                     flexDirection: 'row',
-                    alignItems: 'center',
+                    alignItems: 'center'
                   }}
                 >
                   <View style={{marginRight: 15}}>
@@ -127,7 +128,7 @@ export default class AccountSwitcher extends React.Component{
           width: '100%',
           justifyContent: 'space-between',
           marginTop: Auth.users.length > 1 ? 10 : 0,
-          marginLeft: 1,
+          marginLeft: 16,
           paddingTop: Auth.users.length > 1 ? 8 : 0
         }}
       >
@@ -172,10 +173,10 @@ export default class AccountSwitcher extends React.Component{
 					width: '100%',
 					justifyContent: 'space-between',
 					borderTopWidth: .5,
-					borderColor: '#D1D5DB',
-					paddingTop: 8,
-					paddingBottom: 5,
-					marginTop: 10
+					borderColor: App.theme_alt_background_div_color(),
+					paddingTop: 15,
+					paddingBottom: 10,
+					marginTop: 15
 				}}
 			>
 				<View style={{ flexDirection: 'row', alignItems: 'center', width: "100%", justifyContent: 'center' }}>
@@ -191,7 +192,7 @@ export default class AccountSwitcher extends React.Component{
         <View
           style={{
             width: '100%',
-            paddingTop: 15
+            paddingTop: 5
           }}
         >
           {this._render_current_user()}

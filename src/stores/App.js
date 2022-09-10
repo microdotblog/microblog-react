@@ -385,6 +385,9 @@ export default App = types.model('App', {
   theme_alt_border_color() {
     return self.theme === "dark" ? "#374151" : "#F9FAFB"
   },
+  theme_alt_background_div_color() {
+    return self.theme === "dark" ? "#5a5a5a" : "#eff1f3"
+  },
   theme_input_background_color() {
     return self.theme === "dark" ? "#1d2530" : "#f2f2f2"
   },
