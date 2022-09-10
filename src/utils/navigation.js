@@ -16,6 +16,7 @@ Navigation.events().registerComponentDidAppearListener(({ componentName, compone
     case componentName.includes("microblog.component"):
       return
     case "__initBottomSheet__":
+      App.set_bottom_sheet_last_opened_id(componentId)
       return
     default:
       App.set_current_screen_name_and_id(componentName, componentId)
@@ -25,7 +26,9 @@ Navigation.events().registerComponentDidAppearListener(({ componentName, compone
 
 Navigation.events().registerModalDismissedListener(({ componentId }) => {
   console.log("registerModalDismissedListener", componentId)
-  App.set_previous_screen_name_and_id()
+  if(componentId !== App.bottom_sheet_last_id){
+    App.set_previous_screen_name_and_id()
+  }
 })
 
 Navigation.events().registerNavigationButtonPressedListener(({ buttonId }) => {
