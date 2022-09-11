@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, Keyboard, ActivityIndicator, InputAccessoryView, Platform } from 'react-native';
+import { View, TextInput, Keyboard, ActivityIndicator, InputAccessoryView, Platform, KeyboardAvoidingView } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Auth from '../../stores/Auth';
 import PostToolbar from '../../components/keyboard/post_toolbar'
@@ -76,6 +76,12 @@ export default class PostingScreen extends React.Component{
           />
           : null
         }
+        <KeyboardAvoidingView
+          behavior='padding'
+          style={{
+            flex: 1,
+          }}
+        >
         <TextInput
           placeholderTextColor="lightgrey"
           style={{
@@ -83,9 +89,10 @@ export default class PostingScreen extends React.Component{
             justifyContent: 'flex-start',
 						alignItems: 'flex-start',
             marginTop: 3,
-            marginBottom: posting.post_text_length() > 280 || posting.post_title ? posting.post_images.length > 0 ? 135 : 80 : posting.post_images.length > 0 ? 93 : 38,
+            paddingBottom: posting.post_text_length() > 280 ? 150 : 0,
             padding: 8,
-            color: App.theme_text_color()
+            color: App.theme_text_color(),
+            flex: 1
           }}
           editable={!posting.is_sending_post}
           multiline={true}
@@ -104,7 +111,7 @@ export default class PostingScreen extends React.Component{
           }}
           inputAccessoryViewID={this.input_accessory_view_id}
         />
-        
+        </KeyboardAvoidingView>
         {
           Platform.OS === 'ios' ?
             <InputAccessoryView nativeID={this.input_accessory_view_id}>
