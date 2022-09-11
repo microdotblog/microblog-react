@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, Keyboard, ActivityIndicator, TouchableOpacity, Image, InputAccessoryView, Platform } from 'react-native';
+import { View, TextInput, Keyboard, ActivityIndicator, InputAccessoryView, Platform } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Auth from '../../stores/Auth';
 import PostToolbar from '../../components/keyboard/post_toolbar'
 import App from '../../stores/App'
+import ImageToolbar from '../../components/keyboard/image_toolbar';
 
 @observer
 export default class PostingScreen extends React.Component{
@@ -103,47 +104,18 @@ export default class PostingScreen extends React.Component{
           }}
           inputAccessoryViewID={this.input_accessory_view_id}
         />
-        {
-          posting.post_images.length > 0 ?
-            <View
-              style={{
-                position: 'absolute',
-                bottom: 40,
-                flexDirection: 'row',
-                padding: 8
-              }}
-            >
-              {
-                posting.post_images.map((image, index) => (
-                  <TouchableOpacity
-                    onPress={() => posting.image_action(image, index)}
-                    key={image.uri}
-                    style={{
-                      marginRight: 4,
-                      position: 'relative',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      width: 50,
-                      height: 50
-                    }}>
-                    <Image source={{ uri: image.remote_url ? image.remote_url : image.uri }} style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
-                    {
-                      image.is_uploading ?
-                        <ActivityIndicator color="#f80" style={{position: 'absolute'}} />
-                      : null
-                    }
-                  </TouchableOpacity>
-                ))
-              }
-            </View>
-          : null
-        }
+        
         {
           Platform.OS === 'ios' ?
             <InputAccessoryView nativeID={this.input_accessory_view_id}>
+              <ImageToolbar />
               <PostToolbar componentId={this.props.componentId} />
             </InputAccessoryView>
-          :  <PostToolbar componentId={this.props.componentId} />
+          :  
+          <>
+            <ImageToolbar />
+            <PostToolbar componentId={this.props.componentId} />
+          </>
         }
         {
           posting.is_sending_post ?
