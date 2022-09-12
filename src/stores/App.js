@@ -9,6 +9,7 @@ import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import Push from './Push'
 import { theme_options } from '../utils/navigation'
 import Toast from 'react-native-simple-toast';
+import { InAppBrowser } from 'react-native-inappbrowser-reborn'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -271,9 +272,21 @@ export default App = types.model('App', {
   }),
 
   open_url: flow(function* (url) {
-    Linking.canOpenURL(url).then(supported => {
+    Linking.canOpenURL(url).then(async (supported) => {
       if (supported) {
-        Linking.openURL(url);
+        const is_inapp_browser_avail = await InAppBrowser.isAvailable()
+        if(is_inapp_browser_avail){
+          return InAppBrowser.open(url, {
+            dismissButtonStyle: 'close',
+            preferredControlTintColor: "#f80",
+            readerMode: false,
+            animated: true,
+            modalEnabled: false
+          })
+        }
+        else{
+          Linking.openURL(url);
+        }
       }
       else {
         try {
