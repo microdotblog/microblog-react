@@ -20,6 +20,7 @@ import ReplyScreen from "./conversation/reply";
 import BookmarkScreen from "./bookmarks/bookmark";
 import AddBookmarkScreen from "./bookmarks/add_bookmark";
 import HelpScreen from "./help/help";
+import ImageOptionsScreen from "./posting/image_options";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -36,6 +37,7 @@ export const REPLY_SCREEN = 'microblog.modal.ReplyScreen';
 export const BOOKMARK_SCREEN = 'microblog.BookmarkScreen';
 export const ADD_BOOKMARK_SCREEN = 'microblog.modal.AddBookmarkScreen';
 export const HELP_SCREEN = 'microblog.modal.HelpScreen';
+export const IMAGE_OPTIONS_SCREEN = 'microblog.modal.ImageOptionsScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -77,6 +79,7 @@ Screens.set(REPLY_SCREEN, ReplyScreen);
 Screens.set(BOOKMARK_SCREEN, BookmarkScreen);
 Screens.set(ADD_BOOKMARK_SCREEN, AddBookmarkScreen);
 Screens.set(HELP_SCREEN, HelpScreen)
+Screens.set(IMAGE_OPTIONS_SCREEN, ImageOptionsScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
@@ -722,4 +725,27 @@ export const helpScreen = () => {
       }],
     }
   });
+}
+
+export const imageOptionsScreen = (image, index, component_id) => {
+  console.log("Screens:imageOptionsScreen", image, index, component_id);
+  const options = {
+    component: {
+      id: IMAGE_OPTIONS_SCREEN,
+      name: IMAGE_OPTIONS_SCREEN,
+      passProps: {
+        image: image,
+        index: index
+      },
+      options: {
+        topBar: {
+          title: {
+            text: "Image Options"
+          },
+        }
+      }
+    }
+  };
+
+  return Navigation.push(component_id, options);
 }

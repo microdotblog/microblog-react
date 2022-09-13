@@ -115,12 +115,12 @@ export default class PostingScreen extends React.Component{
         {
           Platform.OS === 'ios' ?
             <InputAccessoryView nativeID={this.input_accessory_view_id}>
-              <ImageToolbar />
+              <ImageToolbar componentId={this.props.componentId} />
               <PostToolbar componentId={this.props.componentId} />
             </InputAccessoryView>
           :  
           <>
-            <ImageToolbar />
+            <ImageToolbar componentId={this.props.componentId} />
             <PostToolbar componentId={this.props.componentId} />
           </>
         }

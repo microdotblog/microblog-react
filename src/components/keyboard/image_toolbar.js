@@ -25,7 +25,7 @@ export default class ImageToolbar extends React.Component{
           {
             posting.post_images.map((image, index) => (
               <TouchableOpacity
-                onPress={() => posting.image_action(image, index)}
+                onPress={() => posting.image_option_screen(image, index, this.props.componentId)}
                 key={image.uri}
                 style={{
                   marginRight: 4,
