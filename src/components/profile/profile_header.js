@@ -63,7 +63,7 @@ export default class ProfileHeader extends React.Component{
     const short_bio = long_bio ? long_bio.slice(0, 90).replace(/\n/g, " ") : null
     const show_expand_option = long_bio?.length > short_bio?.length
     return(
-      <View style={{ padding: 8, backgroundColor: App.theme_section_background_color(), width: '100%' }}>
+      <View style={{ padding: 8, backgroundColor: App.theme_button_background_color(), width: '100%' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Image source={{ uri: `${profile.author.avatar}?v=${this.now}` }} style={{ width: 50, height: 50, borderRadius: 50 }} />
           <View style={{ marginLeft: 15 }}>
@@ -135,9 +135,9 @@ export default class ProfileHeader extends React.Component{
         <View 
           style={{ 
             borderTopWidth: .5,
-            borderColor: '#D1D5DB', 
-            paddingTop: 6, 
-            marginTop: 6,
+            borderColor: App.theme_alt_background_div_color(), 
+            paddingTop: 8, 
+            marginTop: 8,
             paddingBottom: 3,
             justifyContent: 'space-between', 
             flexDirection: 'row',
