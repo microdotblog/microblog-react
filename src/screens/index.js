@@ -740,7 +740,7 @@ export const imageOptionsScreen = (image, index, component_id) => {
       options: {
         topBar: {
           title: {
-            text: "Image Options"
+            text: "Image options"
           },
         }
       }
