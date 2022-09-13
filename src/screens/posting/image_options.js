@@ -52,7 +52,7 @@ export default class ImageOptionsScreen extends React.Component{
             }
           </View>
           <TextInput
-            placeholder="Alt text"
+            placeholder="Accessibility description"
             placeholderTextColor={App.theme_placeholder_alt_text_color()}
             style={{
               fontSize: 20,
