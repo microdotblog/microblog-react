@@ -39,11 +39,18 @@ class MicroPubApi {
 			if (images_with_url) {
 				// Now that we have images, we can append them to our params
 				if (images_with_url.length === 1) {
-					params.append('photo', images_with_url[0].remote_url)
+					const first_image = images_with_url[0]
+					params.append('photo', first_image.remote_url)
+					if(first_image.alt_text != null && first_image.alt_text !== ""){
+						params.append('mp-photo-alt', first_image.alt_text)
+					}
 				}
 				else {
 					images_with_url.map((image) => {
 						params.append('photo[]', image.remote_url)
+						if(image.alt_text != null && image.alt_text !== ""){
+							params.append('mp-photo-alt[]', image.alt_text)
+						}
 					})
 				}
 			}
