@@ -47,20 +47,19 @@ export default class ImageOptionsScreen extends React.Component{
             <Image source={{ uri: image.remote_url ? image.remote_url : image.uri }} style={{ width: 250, height: 250, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
             {
               image.is_uploading ?
-                <ActivityIndicator color="#f80" style={{position: 'absolute'}} />
+                <ActivityIndicator color="#f80" size={"large"} style={{position: 'absolute'}} />
               : null
             }
           </View>
           <TextInput
             placeholder="Alt text"
-            placeholderTextColor={App.theme_button_text_color()}
+            placeholderTextColor={App.theme_placeholder_alt_text_color()}
             style={{
               fontSize: 20,
-              justifyContent: 'flex-start',
-              alignItems: 'flex-start',
               padding: 9,
+              paddingTop: 9,
               fontWeight: '400',
-              color: App.theme_button_text_color(),
+              color: App.theme_text_color(),
               marginVertical: 25,
               borderRadius: 5,
               backgroundColor: App.theme_button_background_color()
