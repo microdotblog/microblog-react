@@ -645,7 +645,7 @@ export const profileMoreBottomSheet = (username, close = false) => {
   if(!close){
     return RNNBottomSheet.openBottomSheet({
       renderContent: () => <ProfileMoreMenu username={username} />,
-      snapPoints: [0, '30%', '40%'],
+      snapPoints: [0, 200],
       initialSnapIndex: 1,
       borderRadius: 16,
       backgroundColor: App.theme_background_color_secondary()
