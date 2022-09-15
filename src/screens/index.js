@@ -469,13 +469,6 @@ export const followingScreen = (username, component_id) => {
               component: {
                 name: NEW_POST_BUTTON
               }
-            },
-            {
-              id: 'profile_button',
-              text: 'profile',
-              component: {
-                name: PROFILE_IMAGE
-              }
             }
           ],
 				}
