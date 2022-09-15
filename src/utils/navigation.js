@@ -70,6 +70,7 @@ export const theme_options = (settings) => {
       rightButtonColor: App.theme_text_color(),
       backButton: {
         color: App.theme_text_color(),
+        showTitle: false
       },
       title: {
         color: App.theme_text_color(),
