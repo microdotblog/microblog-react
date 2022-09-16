@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
@@ -58,6 +58,9 @@ export default App = types.model('App', {
       if (event?.url && event?.url.indexOf('/signin/') > -1) {
         Login.trigger_login_from_url(event.url)
       }
+      else if(event?.url && event?.url.includes('/post?text=') && Auth.is_logged_in()){
+        App.navigate_to_screen("post", event.url)
+      }
       else if (event?.url) {
         self.handle_url(event?.url)
       }
@@ -66,6 +69,9 @@ export default App = types.model('App', {
       console.log("App:set_up_url_listener:getInitialURL", value)
       if (value?.indexOf('/signin/') > -1) {
         Login.trigger_login_from_url(value)
+      }
+      else if(value?.includes('/post?text=') && Auth.is_logged_in()){
+        App.navigate_to_screen("post", value)
       }
     })
   }),
@@ -142,6 +148,9 @@ export default App = types.model('App', {
           return replyScreen(action_data, self.current_screen_id)
         case "bookmark":
           return bookmarkScreen(action_data, self.current_screen_id)
+        case "post":
+          Auth.selected_user.posting.set_post_text_from_action(action_data)
+          return postingScreen(action_data)
       }
     }
   }),

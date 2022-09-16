@@ -66,6 +66,11 @@ export default Posting = types.model('Posting', {
 		self.post_text = value
   }),
   
+  set_post_text_from_action: flow(function* (value) {
+    const text = value.replace("microblog://post?text=", "")
+    self.post_text = decodeURI(text)
+  }),
+  
   set_post_title: flow(function* (value) {
 		self.post_title = value === "" ? null : value
   }),
