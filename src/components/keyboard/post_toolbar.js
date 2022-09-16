@@ -92,7 +92,7 @@ export default class PostToolbar extends React.Component{
 					</TouchableOpacity>
 					<Text
 						style={{
-							fontWeight: '200',
+							fontWeight: '400',
 							padding: 2,
 							color: App.theme_text_color(),
 							// backgroundColor: App.theme_chars_background_color(),
