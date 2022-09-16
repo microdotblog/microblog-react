@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
@@ -34,6 +34,10 @@ export default App = types.model('App', {
     console.log("App:hydrate")
     self.is_loading = true
     yield App.set_current_initial_theme()
+
+    self.current_screen_name = TIMELINE_SCREEN
+    self.current_screen_id = TIMELINE_SCREEN
+    
     Push.hydrate()
     Auth.hydrate().then(() => {
       startApp().then(() => {
@@ -43,6 +47,9 @@ export default App = types.model('App', {
         }
         App.set_is_loading(false)
         App.set_up_url_listener()
+        if (Auth.is_logged_in()) {
+          Push.handle_first_notification()
+        }
       })
     })
   }),
@@ -88,7 +95,7 @@ export default App = types.model('App', {
       }
       return
     }
-    
+
     self.current_screen_name = screen_name
     self.current_screen_id = screen_id
 

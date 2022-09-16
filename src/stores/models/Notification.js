@@ -27,12 +27,7 @@ export default Notification = types.model('Notification', {
 	}),
 	
 	afterCreate: flow(function* () {
-		if(self.did_load_before_user_was_loaded != null && self.did_load_before_user_was_loaded){
-			setTimeout(() => {
-				self.handle_action()	
-			}, 1000)
-		}
-		else if (self.should_open != null && self.should_open) {
+		if (self.should_open != null && self.should_open) {
 			self.handle_action()
 		}
 		else{

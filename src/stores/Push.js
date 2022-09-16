@@ -123,6 +123,9 @@ export default Push = types.model('Push', {
 .views(self => ({
 	valid_notifications() {
 		return self.notifications.filter(n => n.can_show_notification())
+	},
+	handle_first_notification() {
+		return self.notifications.find(n => n.did_load_before_user_was_loaded)?.handle_action()
 	}
 }))
 .create({})
