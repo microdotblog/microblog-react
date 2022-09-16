@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Navigation } from "react-native-navigation"
 import App from '../stores/App'
-import { Screens } from './../screens';
+import Reply from '../stores/Reply'
+import { Screens, replyScreen } from './../screens';
 
 Screens.forEach((ScreenComponent, key) => 
 Navigation.registerComponent(key, () => (props) => (
@@ -10,14 +11,30 @@ Navigation.registerComponent(key, () => (props) => (
 ));
 
 Navigation.events().registerComponentDidAppearListener(({ componentName, componentId }) => {
+  console.log("registerComponentDidAppearListener", componentName, componentId)
   switch (componentName) {
     case componentName.includes("microblog.component"):
       return
     case "__initBottomSheet__":
+      App.set_bottom_sheet_last_opened_id(componentId)
       return
     default:
       App.set_current_screen_name_and_id(componentName, componentId)
       break;
+  }
+})
+
+Navigation.events().registerModalDismissedListener(({ componentId }) => {
+  console.log("registerModalDismissedListener", componentId)
+  if(componentId !== App.bottom_sheet_last_id){
+    App.set_previous_screen_name_and_id()
+  }
+})
+
+Navigation.events().registerNavigationButtonPressedListener(({ buttonId }) => {
+  console.log("registerNavigationButtonPressedListener", buttonId)
+  if(buttonId === "reply_button" && Reply.conversation_id){
+    replyScreen()
   }
 })
 
@@ -53,6 +70,7 @@ export const theme_options = (settings) => {
       rightButtonColor: App.theme_text_color(),
       backButton: {
         color: App.theme_text_color(),
+        showTitle: false
       },
       title: {
         color: App.theme_text_color(),

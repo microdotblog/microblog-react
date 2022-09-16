@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Image, Platform } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import App from '../../stores/App'
-import { getVersion } from 'react-native-device-info';
+import { getVersion, getBuildNumber } from 'react-native-device-info';
 
 @observer
 export default class HelpScreen extends React.Component{
@@ -40,7 +40,7 @@ export default class HelpScreen extends React.Component{
 						padding: 5,
 						marginBottom: 15
 					}}
-					onPress={() => App.handle_url_from_webview(`https://micro.blog/${member.handle}`)}
+					onPress={() => { App.handle_url_from_webview(`https://micro.blog/${ member.handle }`); Platform.OS === 'ios' && this._dismiss() }}
 				>
 					<Image source={{ uri: member.avatar }} style={{ width: 60, height: 60, borderRadius: 50, marginBottom: 5 }} />
 					<Text style={{ color: App.theme_text_color() }}>{member.name}</Text>
@@ -100,7 +100,7 @@ export default class HelpScreen extends React.Component{
 					</View>
 				</View>
 				<View style={{ marginTop: 15, paddingTop: 15, borderColor: App.theme_border_color(), borderTopWidth: 1 }}>
-					<Text style={{color: App.theme_text_color()}}>Version { getVersion() }</Text>
+					<Text style={{color: App.theme_text_color()}}>Version { getVersion() } (build { getBuildNumber() })</Text>
 				</View>
       </ScrollView>
     )

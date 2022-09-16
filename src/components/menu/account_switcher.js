@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Platform } from 'react-native';
 import Auth from './../../stores/Auth';
 import App from './../../stores/App';
 import FastImage from 'react-native-fast-image';
 import { loginScreen, profileScreen } from './../../screens/';
+import { SFSymbol } from 'react-native-sfsymbols';
 // IMAGES
-import GroupImage from './../../assets/icons/group.png';
 import AddAccountImage from './../../assets/icons/add_account.png';
 
 @observer
@@ -28,10 +28,11 @@ export default class AccountSwitcher extends React.Component{
           justifyContent: 'space-between',
           alignItems: 'center',
           width: '100%',
-          padding: 8,
+          paddingTop: 14,
+          paddingBottom: 7,
           paddingHorizontal: 16,
           backgroundColor: App.theme_button_background_color(),
-          borderRadius: 5,
+          borderRadius: 20,
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0
         }}
@@ -57,9 +58,6 @@ export default class AccountSwitcher extends React.Component{
             <Text style={{ color: App.theme_button_text_color() }}>@{Auth.selected_user.username}</Text>
           </View>
         </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-          <Image source={GroupImage} style={{ tintColor: App.theme_button_text_color()}} />
-        </View>
       </TouchableOpacity>
     )
   }
@@ -69,11 +67,11 @@ export default class AccountSwitcher extends React.Component{
       <View 
         style={{ 
           padding: 8,
-          paddingHorizontal: 15,
+          paddingHorizontal: 0,
           backgroundColor: App.theme_button_background_color(),
           width: '100%',
-          borderBottomLeftRadius: 5,
-          borderBottomRightRadius: 5
+          borderBottomLeftRadius: 20,
+          borderBottomRightRadius: 20
         }}>
         {
           Auth.all_users_except_current().map((user) => {
@@ -85,13 +83,14 @@ export default class AccountSwitcher extends React.Component{
                   flexDirection: 'row',
                   alignItems: 'center',
                   width: '100%',
-                  justifyContent: 'space-between'
+                  justifyContent: 'space-between',
+                  marginLeft: 16,
                 }}
               >
                 <View 
                   style={{
                     flexDirection: 'row',
-                    alignItems: 'center',
+                    alignItems: 'center'
                   }}
                 >
                   <View style={{marginRight: 15}}>
@@ -130,21 +129,42 @@ export default class AccountSwitcher extends React.Component{
           width: '100%',
           justifyContent: 'space-between',
           marginTop: Auth.users.length > 1 ? 10 : 0,
-          borderTopWidth: Auth.users.length > 1 ? .5 : 0,
-          borderColor: '#D1D5DB',
+          marginLeft: 16,
           paddingTop: Auth.users.length > 1 ? 8 : 0
         }}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image style={{width: 30, height: 30, marginRight: 18, marginLeft: 6, tintColor: App.theme_button_text_color()}} source={AddAccountImage} />
-          <Text style={{ color: App.theme_button_text_color() }}>Add account...</Text>
+          {
+            Platform.OS === 'ios' ?
+            <View
+              style={{
+                height: 40,
+                width: 40,
+                borderRadius: 50,
+                marginRight: 8,
+                backgroundColor: App.theme_input_background_color(),
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+              <SFSymbol
+                name={'plus'}
+                color={App.theme_text_color()}
+                style={{ height: 18, width: 18 }}
+                multicolor={true}
+              />
+            </View>
+            :
+            <Image style={{width: 30, height: 30, marginRight: 18, marginLeft: 6, tintColor: App.theme_button_text_color()}} source={AddAccountImage} />
+          }
+          
+          <Text style={{ color: App.theme_button_text_color(), marginLeft: 6 }}>Add Account...</Text>
         </View>
       </TouchableOpacity>
     )
 	}
 	
 	_render_account_logout_button = () => {
-    const sign_out_wording = Auth.users?.length > 1 ? "Sign out current account" : "Sign out"
+    const sign_out_wording = Auth.users?.length > 1 ? `Sign Out of @${Auth.selected_user.username}` : "Sign Out"
 		return (
 			<TouchableOpacity
 				onPress={() => Auth.logout_user()}
@@ -154,10 +174,10 @@ export default class AccountSwitcher extends React.Component{
 					width: '100%',
 					justifyContent: 'space-between',
 					borderTopWidth: .5,
-					borderColor: '#D1D5DB',
-					paddingTop: 8,
-					paddingBottom: 5,
-					marginTop: 10
+					borderColor: App.theme_alt_background_div_color(),
+					paddingTop: 15,
+					paddingBottom: 10,
+					marginTop: 15
 				}}
 			>
 				<View style={{ flexDirection: 'row', alignItems: 'center', width: "100%", justifyContent: 'center' }}>
@@ -173,7 +193,7 @@ export default class AccountSwitcher extends React.Component{
         <View
           style={{
             width: '100%',
-            paddingTop: 15
+            paddingTop: 5
           }}
         >
           {this._render_current_user()}

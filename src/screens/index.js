@@ -20,22 +20,24 @@ import ReplyScreen from "./conversation/reply";
 import BookmarkScreen from "./bookmarks/bookmark";
 import AddBookmarkScreen from "./bookmarks/add_bookmark";
 import HelpScreen from "./help/help";
+import ImageOptionsScreen from "./posting/image_options";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
 export const DISCOVER_SCREEN = 'microblog.DiscoverScreen';
-export const LOGIN_SCREEN = 'microblog.LoginScreen';
+export const LOGIN_SCREEN = 'microblog.modal.LoginScreen';
 export const PROFILE_SCREEN = 'microblog.ProfileScreen';
 export const CONVERSATION_SCREEN = 'microblog.ConversationScreen';
 export const BOOKMARKS_SCREEN = 'microblog.BookmarksScreen';
 export const FOLLOWING_SCREEN = 'microblog.FollowingScreen';
-export const POSTING_SCREEN = 'microblog.PostingScreen';
+export const POSTING_SCREEN = 'microblog.modal.PostingScreen';
 export const DISCOVER_TOPIC_SCREEN = 'microblog.DiscoverTopicScreen';
-export const POSTING_OPTIONS_SCREEN = 'microblog.PostingOptionsScreen';
-export const REPLY_SCREEN = 'microblog.ReplyScreen';
+export const POSTING_OPTIONS_SCREEN = 'microblog.modal.PostingOptionsScreen';
+export const REPLY_SCREEN = 'microblog.modal.ReplyScreen';
 export const BOOKMARK_SCREEN = 'microblog.BookmarkScreen';
-export const ADD_BOOKMARK_SCREEN = 'microblog.AddBookmarkScreen';
-export const HELP_SCREEN = 'microblog.HelpScreen';
+export const ADD_BOOKMARK_SCREEN = 'microblog.modal.AddBookmarkScreen';
+export const HELP_SCREEN = 'microblog.modal.HelpScreen';
+export const IMAGE_OPTIONS_SCREEN = 'microblog.modal.ImageOptionsScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -77,6 +79,7 @@ Screens.set(REPLY_SCREEN, ReplyScreen);
 Screens.set(BOOKMARK_SCREEN, BookmarkScreen);
 Screens.set(ADD_BOOKMARK_SCREEN, AddBookmarkScreen);
 Screens.set(HELP_SCREEN, HelpScreen)
+Screens.set(IMAGE_OPTIONS_SCREEN, ImageOptionsScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
@@ -135,7 +138,7 @@ export const startApp = () => {
         options: {
           bottomTab: {
             text: 'Timeline',
-            icon: Platform.OS === 'ios' ? { system: 'bubble.left.and.bubble.right'} : TimelineIcon
+            icon: Platform.OS === 'ios' ? { system: 'bubble.left.and.bubble.right' } : TimelineIcon
           },
         },
       },
@@ -186,7 +189,7 @@ export const startApp = () => {
         options: {
           bottomTab: {
             text: 'Mentions',
-            icon: Platform.OS === 'ios' ? { system: 'at'} : MentionsIcon
+            icon: Platform.OS === 'ios' ? { system: 'at' } : MentionsIcon
           },
         },
       },
@@ -237,7 +240,7 @@ export const startApp = () => {
         options: {
           bottomTab: {
             text: 'Discover',
-            icon: Platform.OS === 'ios' ? { system: 'magnifyingglass'} : DiscoverIcon
+            icon: Platform.OS === 'ios' ? { system: 'magnifyingglass' } : DiscoverIcon
           },
         },
       },
@@ -273,9 +276,16 @@ export const loginScreen = (can_dismiss = false) => {
               title: {
                 text: 'Sign in',
               },
+              leftButtons: [
+                {
+                  id: 'back_button',
+                  text: 'Back',
+                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
+                },
+              ],
             },
             layout: {
-              backgroundColor: "#fff"
+              backgroundColor: App.theme_background_color()
             }
           }
         },
@@ -288,7 +298,7 @@ export const menuBottomSheet = (close = false) => {
   if(!close){
     return RNNBottomSheet.openBottomSheet({
       renderContent: () => <SheetMenu />,
-      snapPoints: [0, '20%', '40%', '70%'],
+      snapPoints: [0, 200, 290, '70%'],
       initialSnapIndex: 2,
       borderRadius: 16,
       backgroundColor: App.theme_background_color_secondary()
@@ -297,8 +307,11 @@ export const menuBottomSheet = (close = false) => {
   RNNBottomSheet.closeBottomSheet()
 }
 
-export const profileScreen = (username, component_id) => {
+export const profileScreen = (username, component_id, close_bottom_sheet = true) => {
   console.log("Screens:profileScreen", username, component_id);
+  if (close_bottom_sheet) {
+    menuBottomSheet(true)
+  }
   const options = {
     component: {
 			name: PROFILE_SCREEN,
@@ -317,13 +330,6 @@ export const profileScreen = (username, component_id) => {
               component: {
                 name: NEW_POST_BUTTON
               }
-            },
-            {
-              id: 'profile_button',
-              text: 'profile',
-              component: {
-                name: PROFILE_IMAGE
-              }
             }
           ],
 				}
@@ -338,46 +344,38 @@ export const conversationScreen = (conversation_id, component_id) => {
   console.log("Screens:conversationScreen", conversation_id, component_id);
   Reply.hydrate(conversation_id)
   Push.check_and_remove_notifications_with_post_id(conversation_id)
-  const options = {
-    component: {
-      id: 'CONVERSATION_SCREEN',
-			name: CONVERSATION_SCREEN,
-			passProps: {
-        conversation_id: conversation_id
-			},
-			options: {
-				topBar: {
-          title: {
-            text: "Conversation"
-          },
-          rightButtons: Reply.replying_enabled() ? [
-            {
-              id: 'reply_button',
-              text: 'Reply',
-              icon: ReplyIcon
+  if(App.current_screen_name === CONVERSATION_SCREEN ){
+    Navigation.updateProps(component_id, {
+      conversation_id: conversation_id
+    })
+  }
+  else{
+    const options = {
+      component: {
+        id: `CONVERSATION_SCREEN_${conversation_id}`,
+        name: CONVERSATION_SCREEN,
+        passProps: {
+          conversation_id: conversation_id
+        },
+        options: {
+          topBar: {
+            title: {
+              text: "Conversation"
             },
-            {
-              id: 'profile_button',
-              text: 'profile',
-              component: {
-                name: PROFILE_IMAGE
+            rightButtons: Reply.replying_enabled() ? [
+              {
+                id: 'reply_button',
+                text: 'Reply',
+                icon: Platform.OS === 'ios' ? { system: 'arrowshape.turn.up.left.fill' } : ReplyIcon
               }
-            }
-          ] : [
-            {
-              id: 'profile_button',
-              text: 'profile',
-              component: {
-                name: PROFILE_IMAGE
-              }
-            }
-          ],
-				}
-			}
-		}
-	};
-
-  return Navigation.push(component_id, options);
+            ] : null,
+          }
+        }
+      }
+    };
+    
+    return Navigation.push(component_id, options);
+  }
 }
 
 export const bookmarksScreen = (component_id) => {
@@ -395,7 +393,7 @@ export const bookmarksScreen = (component_id) => {
             {
               id: 'add_bookmark_button',
               text: 'Add bookmark',
-              icon: AddIcon
+              icon: Platform.OS === 'ios' ? { system: 'plus' } : AddIcon
             },
             {
               id: 'profile_button',
@@ -471,13 +469,6 @@ export const followingScreen = (username, component_id) => {
               component: {
                 name: NEW_POST_BUTTON
               }
-            },
-            {
-              id: 'profile_button',
-              text: 'profile',
-              component: {
-                name: PROFILE_IMAGE
-              }
             }
           ],
 				}
@@ -491,9 +482,11 @@ export const followingScreen = (username, component_id) => {
 export const postingScreen = () => {
   return Navigation.showModal({
     stack: {
-      id: 'POSTING_SCREEN',
+      id: POSTING_SCREEN,
+      name: POSTING_SCREEN,
       children: [ {
         component: {
+          id: POSTING_SCREEN,
           name: POSTING_SCREEN,
           options: {
             topBar: {
@@ -504,7 +497,7 @@ export const postingScreen = () => {
                 {
                   id: 'back_button',
                   text: 'Back',
-                  icon: ArrowBackIcon
+                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
                 },
               ],
               rightButtons: [
@@ -566,13 +559,6 @@ export const discoverTopicScreen = (topic, component_id) => {
               component: {
                 name: NEW_POST_BUTTON
               }
-            },
-            {
-              id: 'profile_button',
-              text: 'profile',
-              component: {
-                name: PROFILE_IMAGE
-              }
             }
           ],
 				}
@@ -587,7 +573,7 @@ export const postingOptionsScreen = (component_id) => {
   console.log("Screens:discoverTopicScreen", component_id);
   const options = {
     component: {
-      id: 'POSTING_OPTIONS_SCREEN',
+      id: POSTING_OPTIONS_SCREEN,
 			name: POSTING_OPTIONS_SCREEN,
 			options: {
 				topBar: {
@@ -605,9 +591,11 @@ export const postingOptionsScreen = (component_id) => {
 export const replyScreen = () => {
   return Navigation.showModal({
     stack: {
-      id: 'REPLY_SCREEN',
+      id: REPLY_SCREEN,
+      name: REPLY_SCREEN,
       children: [ {
         component: {
+          id: REPLY_SCREEN,
           name: REPLY_SCREEN,
           options: {
             topBar: {
@@ -618,7 +606,7 @@ export const replyScreen = () => {
                 {
                   id: 'back_button',
                   text: 'Back',
-                  icon: ArrowBackIcon
+                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
                 },
               ],
               rightButtons: [
@@ -650,7 +638,7 @@ export const profileMoreBottomSheet = (username, close = false) => {
   if(!close){
     return RNNBottomSheet.openBottomSheet({
       renderContent: () => <ProfileMoreMenu username={username} />,
-      snapPoints: [0, '30%', '40%'],
+      snapPoints: [0, 200],
       initialSnapIndex: 1,
       borderRadius: 16,
       backgroundColor: App.theme_background_color_secondary()
@@ -662,9 +650,11 @@ export const profileMoreBottomSheet = (username, close = false) => {
 export const addBoomarkScreen = () => {
   return Navigation.showModal({
     stack: {
-      id: 'ADD_BOOKMARK_SCREEN',
+      id: ADD_BOOKMARK_SCREEN,
+      name: ADD_BOOKMARK_SCREEN,
       children: [ {
         component: {
+          id: ADD_BOOKMARK_SCREEN,
           name: ADD_BOOKMARK_SCREEN,          
           options: {
             topBar: {
@@ -675,7 +665,7 @@ export const addBoomarkScreen = () => {
                 {
                   id: 'back_button',
                   text: 'Back',
-                  icon: ArrowBackIcon
+                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
                 },
               ],
               rightButtons: [
@@ -701,9 +691,11 @@ export const addBoomarkScreen = () => {
 export const helpScreen = () => {
   return Navigation.showModal({
     stack: {
-      id: 'HELP_SCREEN',
+      id: HELP_SCREEN,
+      name: HELP_SCREEN,
       children: [ {
         component: {
+          id: HELP_SCREEN,
           name: HELP_SCREEN,
           options: {
             topBar: {
@@ -714,16 +706,39 @@ export const helpScreen = () => {
                 {
                   id: 'back_button',
                   text: 'Back',
-                  icon: ArrowBackIcon
+                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
                 },
               ],
             },
             layout: {
-              backgroundColor: "#fff"
+              backgroundColor: App.theme_background_color()
             }
           }
         },
       }],
     }
   });
+}
+
+export const imageOptionsScreen = (image, index, component_id) => {
+  console.log("Screens:imageOptionsScreen", image, index, component_id);
+  const options = {
+    component: {
+      id: IMAGE_OPTIONS_SCREEN,
+      name: IMAGE_OPTIONS_SCREEN,
+      passProps: {
+        image: image,
+        index: index
+      },
+      options: {
+        topBar: {
+          title: {
+            text: "Image options"
+          },
+        }
+      }
+    }
+  };
+
+  return Navigation.push(component_id, options);
 }

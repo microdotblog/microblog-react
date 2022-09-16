@@ -1,13 +1,15 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
-import { Linking, ToastAndroid, Appearance, AppState } from 'react-native'
+import { Linking, Appearance, AppState, Platform } from 'react-native'
 import { Navigation } from "react-native-navigation";
 import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import Push from './Push'
 import { theme_options } from '../utils/navigation'
+import Toast from 'react-native-simple-toast';
+import { InAppBrowser } from 'react-native-inappbrowser-reborn'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -16,11 +18,15 @@ export default App = types.model('App', {
   is_loading: types.optional(types.boolean, false),
   current_screen_name: types.maybeNull(types.string),
   current_screen_id: types.maybeNull(types.string),
+  previous_screen_name: types.maybeNull(types.string),
+  previous_screen_id: types.maybeNull(types.string),
   image_modal_is_open: types.optional(types.boolean, false),
   current_image_url: types.maybeNull(types.string),
   is_scrolling: types.optional(types.boolean, false),
   theme: types.optional(types.string, 'light'),
   is_switching_theme: types.optional(types.boolean, false),
+  bottom_sheet_last_id: types.maybeNull(types.string),
+  post_modal_is_open: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -28,6 +34,10 @@ export default App = types.model('App', {
     console.log("App:hydrate")
     self.is_loading = true
     yield App.set_current_initial_theme()
+
+    self.current_screen_name = TIMELINE_SCREEN
+    self.current_screen_id = TIMELINE_SCREEN
+    
     Push.hydrate()
     Auth.hydrate().then(() => {
       startApp().then(() => {
@@ -37,6 +47,9 @@ export default App = types.model('App', {
         }
         App.set_is_loading(false)
         App.set_up_url_listener()
+        if (Auth.is_logged_in()) {
+          Push.handle_first_notification()
+        }
       })
     })
   }),
@@ -53,6 +66,9 @@ export default App = types.model('App', {
       if (event?.url && event?.url.indexOf('/signin/') > -1) {
         Login.trigger_login_from_url(event.url)
       }
+      else if(event?.url && event?.url.includes('/post?text=') && Auth.is_logged_in()){
+        App.navigate_to_screen("post", event.url)
+      }
       else if (event?.url) {
         self.handle_url(event?.url)
       }
@@ -62,20 +78,44 @@ export default App = types.model('App', {
       if (value?.indexOf('/signin/') > -1) {
         Login.trigger_login_from_url(value)
       }
+      else if(value?.includes('/post?text=') && Auth.is_logged_in()){
+        App.navigate_to_screen("post", value)
+      }
     })
   }),
 
   set_current_screen_name_and_id: flow(function* (screen_name, screen_id) {
     console.log("App:set_current_screen_name_and_id", screen_name, screen_id)
-    if(screen_name.includes("microblog.component")){
+    self.post_modal_is_open = screen_id === POSTING_OPTIONS_SCREEN || screen_id === POSTING_SCREEN
+
+    if(screen_name.includes("microblog.component") || Platform.OS === 'ios' && screen_name.includes("microblog.modal")){
+      if(Platform.OS === 'ios' && screen_name.includes("microblog.modal")){
+        self.previous_screen_id = self.current_screen_id
+        self.previous_screen_name = self.current_screen_name
+      }
       return
     }
+
     self.current_screen_name = screen_name
     self.current_screen_id = screen_id
 
     if (screen_id === "DISCOVER_SCREEN") {
       Discover.shuffle_random_emoji()
     }
+  }),
+  
+  set_bottom_sheet_last_opened_id: flow(function* (component_id) {
+    console.log("App:set_bottom_sheet_last_opened_id", component_id)
+    self.bottom_sheet_last_id = component_id
+  }),
+  
+  set_previous_screen_name_and_id: flow(function* () {
+    console.log("App:set_previous_screen_name_and_id", self.previous_screen_id, self.previous_screen_name)
+    if(self.previous_screen_id != null && self.previous_screen_name != null){
+      self.current_screen_id = self.previous_screen_id
+      self.current_screen_name = self.previous_screen_name
+    }
+    self.post_modal_is_open = false
   }),
 
   handle_url: flow(function* (url) {
@@ -118,6 +158,13 @@ export default App = types.model('App', {
           return replyScreen(action_data, self.current_screen_id)
         case "bookmark":
           return bookmarkScreen(action_data, self.current_screen_id)
+        case "post":
+          console.log(self.current_screen_id, self.current_screen_name)
+          Auth.selected_user.posting.set_post_text_from_action(action_data)
+          if (!self.post_modal_is_open) {
+            return postingScreen(action_data)
+          }
+          return
       }
     }
   }),
@@ -199,6 +246,10 @@ export default App = types.model('App', {
       const after_mb_link = url.replace('https://micro.blog/', '').replace('http://micro.blog/', '');
       const parts = after_mb_link.split("/")
       console.log("App:handle_url_from_webview:parts", after_mb_link, parts)
+      
+      if(after_mb_link.includes("hybrid/conversation")){
+        return
+      }
 
       if(parts.length === 2){
         // This is probably a convo
@@ -244,9 +295,21 @@ export default App = types.model('App', {
   }),
 
   open_url: flow(function* (url) {
-    Linking.canOpenURL(url).then(supported => {
+    Linking.canOpenURL(url).then(async (supported) => {
       if (supported) {
-        Linking.openURL(url);
+        const is_inapp_browser_avail = await InAppBrowser.isAvailable()
+        if(is_inapp_browser_avail){
+          return InAppBrowser.open(url, {
+            dismissButtonStyle: 'close',
+            preferredControlTintColor: "#f80",
+            readerMode: false,
+            animated: true,
+            modalEnabled: false
+          })
+        }
+        else{
+          Linking.openURL(url);
+        }
       }
       else {
         try {
@@ -268,10 +331,10 @@ export default App = types.model('App', {
   handle_web_view_message: flow(function* (message) {
     console.log("App:handle_web_view_message", message)
     if (message === "bookmark_added") {
-      ToastAndroid.showWithGravity("Bookmark added!", ToastAndroid.SHORT, ToastAndroid.CENTER)
+      Toast.showWithGravity("Bookmark added!", Toast.SHORT, Toast.CENTER)
     }
     else if (message === "bookmark_removed") {
-      ToastAndroid.showWithGravity("Bookmark removed!", ToastAndroid.SHORT, ToastAndroid.CENTER)
+      Toast.showWithGravity("Bookmark removed!", Toast.SHORT, Toast.CENTER)
     }
     if (message === "bookmark_removed" && App.current_screen_id === "BOOKMARKS_SCREEN") {
       if (CURRENT_WEB_VIEW_REF) {
@@ -284,7 +347,9 @@ export default App = types.model('App', {
       }
     }
     else if (message === "bookmark_added_from_app") {
-      ToastAndroid.showWithGravity("Bookmark added!", ToastAndroid.SHORT, ToastAndroid.CENTER)
+      setTimeout(() => {
+        Toast.showWithGravity("Bookmark added!", Toast.SHORT, Toast.CENTER)
+      }, Platform.OS === 'ios' ? 350 : 0)
       if (CURRENT_WEB_VIEW_REF) {
         try {
           CURRENT_WEB_VIEW_REF.injectJavaScript(`window.scrollTo({ top: 0 })`)
@@ -345,6 +410,12 @@ export default App = types.model('App', {
   theme_text_color() {
     return self.theme === "dark" ? "#fff" : "#000"
   },
+  theme_placeholder_text_color() {
+    return self.theme === "dark" ? "#374151" : "lightgray"
+  },
+  theme_placeholder_alt_text_color() {
+    return self.theme === "dark" ? "rgba(255,255,255,0.6)" : "lightgray"
+  },
   theme_background_color_secondary() {
     return self.theme === "dark" ? "#1F2937" : "#fff"
   },
@@ -366,11 +437,17 @@ export default App = types.model('App', {
   theme_alt_border_color() {
     return self.theme === "dark" ? "#374151" : "#F9FAFB"
   },
+  theme_alt_background_div_color() {
+    return self.theme === "dark" ? "#5a5a5a" : "#eff1f3"
+  },
   theme_input_background_color() {
     return self.theme === "dark" ? "#1d2530" : "#f2f2f2"
   },
   theme_opacity_background_color() {
     return self.theme === "dark" ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.6)"
+  },
+  theme_chars_background_color() {
+    return self.theme === "dark" ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.6)"
   },
   should_reload_web_view() {
     // When it returns true, this will trigger a reload of the webviews

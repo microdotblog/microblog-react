@@ -9,7 +9,9 @@ export default Notification = types.model('Notification', {
 	message: types.maybeNull(types.string),
 	from_username: types.maybeNull(types.string),
 	from_avatar_url: types.maybeNull(types.string),
-	to_username: types.maybeNull(types.string)
+	to_username: types.maybeNull(types.string),
+	should_open: types.maybeNull(types.boolean),
+	did_load_before_user_was_loaded: types.maybeNull(types.boolean)
 })
 .actions(self => ({
 
@@ -25,11 +27,16 @@ export default Notification = types.model('Notification', {
 	}),
 	
 	afterCreate: flow(function* () {
-		self.hydrate()
+		if (self.should_open != null && self.should_open) {
+			self.handle_action()
+		}
+		else{
+			self.hydrate()
+		}
 	}),
 
 	handle_action: flow(function* () { 
-		console.log("Notification:handle_action", self)
+		console.log("Notification:handle_action", self, self.local_user())
 		if (self.local_user() != null) {
 			if (Auth.selected_user !== self.local_user()) {
 				yield Auth.select_user(self.local_user())
@@ -50,7 +57,7 @@ export default Notification = types.model('Notification', {
 	},
 
 	can_show_notification() {
-		return self.message && this.local_user() != null
+		return self.message && this.local_user() != null && !self.should_open
 	},
 
 	trimmed_message() {

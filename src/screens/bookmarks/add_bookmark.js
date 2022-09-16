@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { Text, TextInput, Button, ActivityIndicator, Keyboard, KeyboardAvoidingView } from 'react-native';
+import { Text, TextInput, Button, ActivityIndicator, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import App from '../../stores/App'
 
@@ -41,7 +41,7 @@ export default class AddBookmarkScreen extends React.Component{
 	render() {
 		const { posting } = Auth.selected_user
     return(
-      <KeyboardAvoidingView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 15, backgroundColor: App.theme_background_color() }}>
+      <KeyboardAvoidingView behavior={ Platform.OS === "ios" ? "padding" : "height" } style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 15, backgroundColor: App.theme_background_color() }}>
 				<Text style={{ fontWeight: "500", fontSize: 16, color: App.theme_text_color() }}>
 					For Micro.blog Premium subscribers, bookmarked web pages are also archived so you can read them later and make highlights.
 				</Text>

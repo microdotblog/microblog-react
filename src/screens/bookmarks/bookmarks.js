@@ -27,6 +27,7 @@ export default class BookmarksScreen extends React.Component{
         endpoint="hybrid/favorites"
         component_id={this.props.componentId}
         title="Bookmarks"
+        loading_text="Loading bookmarks..."
       />
     )
   }

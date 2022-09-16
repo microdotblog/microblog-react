@@ -26,7 +26,7 @@ export default class TagmojiMenu extends React.Component{
 									flexDirection: 'row',
 									alignItems: 'center',
 									width: '45%',
-									padding: 5,
+									padding: 8,
 								}}
 								onPress={() => { tagmojiBottomSheet(true); App.navigate_to_screen("discover/topic", tagmoji) }}
 							>

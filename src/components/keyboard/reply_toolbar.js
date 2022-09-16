@@ -28,30 +28,30 @@ export default class ReplyToolbar extends React.Component{
 				}}
 			>
 				<TouchableOpacity style={{minWidth: 35}} onPress={() => Reply.handle_text_action("**")}>
-					<Text style={{ fontSize: 20, fontWeight: '700', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"**"}</Text>
+					<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"**"}</Text>
 				</TouchableOpacity>
 				<TouchableOpacity style={{minWidth: 35}} onPress={() => Reply.handle_text_action("_")}>
-					<Text style={{ fontSize: 20, fontWeight: '800', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"_"}</Text>
+					<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"_"}</Text>
 				</TouchableOpacity>
 				<TouchableOpacity style={{minWidth: 35}} onPress={() => Reply.handle_text_action("[]")}>
-					<Text style={{ fontSize: 20, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"[ ]"}</Text>
+					<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"[ ]"}</Text>
 				</TouchableOpacity>
 				<View
 					style={{
 						position: 'absolute',
-						right: 8,
-						bottom: 9,
 						flexDirection: 'row',
-						alignItems: 'center'
+						alignItems: 'center',
+						top: -25,
+						right: 8
 					}}
 				>
 					<Text
 						style={{
-							fontWeight: '200',
+							fontWeight: '400',
 							padding: 2,
-							backgroundColor: 'rgba(255,255,255,.6)'
+							color: App.theme_text_color(),
 						}}
-					><Text style={{ color: Reply.reply_text_length() > 280 ? '#a94442' : 'black' }}>{Reply.reply_text_length()}</Text>/280</Text>
+					><Text style={{ color: Reply.reply_text_length() > 280 ? '#a94442' : App.theme_text_color() }}>{Reply.reply_text_length()}</Text>/280</Text>
 				</View>
 			</View>
     )

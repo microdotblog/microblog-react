@@ -5,6 +5,7 @@ import Auth from './../../stores/Auth';
 import { loginScreen } from './../../screens/';
 import AccountSwitcher from '../menu/account_switcher'
 import MenuNavigation from '../menu/nav'
+import App from '../../stores/App';
 
 @observer
 export default class SheetMenu extends React.Component{
@@ -29,7 +30,7 @@ export default class SheetMenu extends React.Component{
               style={{
                 padding: 8,
                 paddingHorizontal: 16,
-                backgroundColor: '#E5E7EB',
+                backgroundColor: App.theme_button_background_color(),
                 borderRadius: 5,
               }}
             >

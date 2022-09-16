@@ -21,10 +21,10 @@ export default class NewPostButton extends React.Component{
               <SFSymbol
                 name="square.and.pencil"
                 color={App.theme_text_color()}
-                style={{ width: 30, height: 30 }}
+                style={{ width: 28, height: 28 }}
               />
             :
-            <Image source={PostAddIcon} style={{ width: 30, height: 30, tintColor: App.theme_text_color() }} />
+            <Image source={PostAddIcon} style={{ width: 28, height: 28, tintColor: App.theme_text_color() }} />
           }
           
         </TouchableOpacity>

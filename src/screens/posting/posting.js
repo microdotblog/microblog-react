@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, Keyboard, ActivityIndicator, TouchableOpacity, Image, InputAccessoryView, Platform } from 'react-native';
+import { View, TextInput, Keyboard, ActivityIndicator, InputAccessoryView, Platform, KeyboardAvoidingView } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Auth from '../../stores/Auth';
 import PostToolbar from '../../components/keyboard/post_toolbar'
 import App from '../../stores/App'
+import ImageToolbar from '../../components/keyboard/image_toolbar';
 
 @observer
 export default class PostingScreen extends React.Component{
@@ -46,16 +47,16 @@ export default class PostingScreen extends React.Component{
         {
           posting.post_text_length() > 280 || posting.post_title ?
           <TextInput
-            placeholder="Optional post title"
-            placeholderTextColor="lightgrey"
+            placeholder="Title"
+            placeholderTextColor={App.theme_placeholder_text_color()}
             style={{
               fontSize: 18,
               justifyContent: 'flex-start',
 						  alignItems: 'flex-start',
               padding: 8,
-              marginBottom: -5,
+              marginBottom: 4,
               fontWeight: '700',
-              borderColor: '#E5E7EB',
+              borderColor: App.theme_border_color(),
               borderBottomWidth: .5,
               color: App.theme_text_color()
             }}
@@ -75,15 +76,23 @@ export default class PostingScreen extends React.Component{
           />
           : null
         }
+        <KeyboardAvoidingView
+          behavior='padding'
+          style={{
+            flex: 1,
+          }}
+        >
         <TextInput
           placeholderTextColor="lightgrey"
           style={{
             fontSize: 18,
             justifyContent: 'flex-start',
 						alignItems: 'flex-start',
-            marginBottom: posting.post_text_length() > 280 || posting.post_title ? posting.post_images.length > 0 ? 135 : 80 : posting.post_images.length > 0 ? 93 : 38,
+            marginTop: 3,
+            paddingBottom: posting.post_text_length() > 280 ? 150 : 0,
             padding: 8,
-            color: App.theme_text_color()
+            color: App.theme_text_color(),
+            flex: 1
           }}
           editable={!posting.is_sending_post}
           multiline={true}
@@ -102,47 +111,18 @@ export default class PostingScreen extends React.Component{
           }}
           inputAccessoryViewID={this.input_accessory_view_id}
         />
-        {
-          posting.post_images.length > 0 ?
-            <View
-              style={{
-                position: 'absolute',
-                bottom: 40,
-                flexDirection: 'row',
-                padding: 8
-              }}
-            >
-              {
-                posting.post_images.map((image, index) => (
-                  <TouchableOpacity
-                    onPress={() => posting.image_action(image, index)}
-                    key={image.uri}
-                    style={{
-                      marginRight: 4,
-                      position: 'relative',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      width: 50,
-                      height: 50
-                    }}>
-                    <Image source={{ uri: image.remote_url ? image.remote_url : image.uri }} style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
-                    {
-                      image.is_uploading ?
-                        <ActivityIndicator color="#f80" style={{position: 'absolute'}} />
-                      : null
-                    }
-                  </TouchableOpacity>
-                ))
-              }
-            </View>
-          : null
-        }
+        </KeyboardAvoidingView>
         {
           Platform.OS === 'ios' ?
             <InputAccessoryView nativeID={this.input_accessory_view_id}>
+              <ImageToolbar componentId={this.props.componentId} />
               <PostToolbar componentId={this.props.componentId} />
             </InputAccessoryView>
-          :  <PostToolbar componentId={this.props.componentId} />
+          :  
+          <>
+            <ImageToolbar componentId={this.props.componentId} />
+            <PostToolbar componentId={this.props.componentId} />
+          </>
         }
         {
           posting.is_sending_post ?
