@@ -32,7 +32,7 @@ export default class PostToolbar extends React.Component{
 					alignItems: 'center'
 				}}
 			>
-				<ScrollView keyboardShouldPersistTaps={'always'}  horizontal={true} style={{overflow: 'hidden', maxWidth: "75%"}} contentContainerStyle={{flexDirection: 'row', alignItems: 'center'}}>
+				<ScrollView keyboardShouldPersistTaps={'always'}  horizontal={true} style={{overflow: 'hidden', maxWidth: "90%"}} contentContainerStyle={{flexDirection: 'row', alignItems: 'center'}}>
 					<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("**")}>
 						<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"**"}</Text>
 					</TouchableOpacity>
@@ -77,9 +77,6 @@ export default class PostToolbar extends React.Component{
 				>
 					<TouchableOpacity
 						onPress={() => postingOptionsScreen(this.props.componentId)}
-						style={{
-							marginRight: 8,
-						}}
 					>
 					{
 						Platform.OS === 'ios' ?
@@ -98,7 +95,10 @@ export default class PostToolbar extends React.Component{
 							fontWeight: '200',
 							padding: 2,
 							color: App.theme_text_color(),
-							backgroundColor: App.theme_chars_background_color()
+							// backgroundColor: App.theme_chars_background_color(),
+							position: 'absolute',
+							top: -35,
+							right: 0
 						}}
 					><Text style={{ color: posting.post_text_length() > 280 ? '#a94442' : App.theme_text_color() }}>{posting.post_text_length()}</Text>/280</Text>
 				</View>
