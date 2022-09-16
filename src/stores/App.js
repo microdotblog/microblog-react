@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
@@ -25,7 +25,8 @@ export default App = types.model('App', {
   is_scrolling: types.optional(types.boolean, false),
   theme: types.optional(types.string, 'light'),
   is_switching_theme: types.optional(types.boolean, false),
-  bottom_sheet_last_id: types.maybeNull(types.string)
+  bottom_sheet_last_id: types.maybeNull(types.string),
+  post_modal_is_open: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -78,15 +79,16 @@ export default App = types.model('App', {
 
   set_current_screen_name_and_id: flow(function* (screen_name, screen_id) {
     console.log("App:set_current_screen_name_and_id", screen_name, screen_id)
+    self.post_modal_is_open = screen_id === POSTING_OPTIONS_SCREEN || screen_id === POSTING_SCREEN
+
     if(screen_name.includes("microblog.component") || Platform.OS === 'ios' && screen_name.includes("microblog.modal")){
-      
       if(Platform.OS === 'ios' && screen_name.includes("microblog.modal")){
         self.previous_screen_id = self.current_screen_id
         self.previous_screen_name = self.current_screen_name
       }
-      
       return
     }
+    
     self.current_screen_name = screen_name
     self.current_screen_id = screen_id
 
@@ -106,6 +108,7 @@ export default App = types.model('App', {
       self.current_screen_id = self.previous_screen_id
       self.current_screen_name = self.previous_screen_name
     }
+    self.post_modal_is_open = false
   }),
 
   handle_url: flow(function* (url) {
@@ -149,8 +152,12 @@ export default App = types.model('App', {
         case "bookmark":
           return bookmarkScreen(action_data, self.current_screen_id)
         case "post":
+          console.log(self.current_screen_id, self.current_screen_name)
           Auth.selected_user.posting.set_post_text_from_action(action_data)
-          return postingScreen(action_data)
+          if (!self.post_modal_is_open) {
+            return postingScreen(action_data)
+          }
+          return
       }
     }
   }),
