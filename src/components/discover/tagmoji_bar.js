@@ -24,7 +24,7 @@ export default class TagmojiBar extends React.Component{
           <Text style={{color: App.theme_text_color(), maxWidth: '80%'}}>Some recent posts from the community</Text>
           <TouchableOpacity
             style={{
-              borderColor: 'lightgray',
+              borderColor: App.theme_border_color(),
               borderWidth: 1,
               padding: 4,
               borderRadius: 5,

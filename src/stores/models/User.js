@@ -34,9 +34,7 @@ export default User = types.model('User', {
       else {
         self.muting.hydrate()
       }
-      if (!self.push_enabled) {
-        self.push_enabled = yield Push.register_token(self.token())
-      }
+      self.push_enabled = yield Push.register_token(self.token())
     }),
     
     afterCreate: flow(function* () {

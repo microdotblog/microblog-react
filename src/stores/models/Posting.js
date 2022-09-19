@@ -7,6 +7,7 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import Image from './posting/Image'
 import App from '../App'
 import Clipboard from '@react-native-clipboard/clipboard';
+import { imageOptionsScreen } from '../../screens';
 
 export default Posting = types.model('Posting', {
   username: types.identifier,
@@ -63,6 +64,11 @@ export default Posting = types.model('Posting', {
   
   set_post_text: flow(function* (value) {
 		self.post_text = value
+  }),
+  
+  set_post_text_from_action: flow(function* (value) {
+    const text = value.replace("microblog://post?text=", "")
+    self.post_text = decodeURI(text)
   }),
   
   set_post_title: flow(function* (value) {
@@ -184,6 +190,11 @@ export default Posting = types.model('Posting', {
         {cancelable: false},
       );
     }
+  }),
+  
+  image_option_screen: flow(function* (image, index, component_id) {
+    console.log("Posting:image_option_screen", image)
+    return imageOptionsScreen(image, index, component_id)
   }),
   
   remove_image: flow(function* (image_index) {

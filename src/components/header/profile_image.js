@@ -30,7 +30,7 @@ export default class ProfileImage extends React.Component{
               cache: FastImage.cacheControl.web
             }}
             resizeMode={FastImage.resizeMode.contain}
-            style={{ width: 30, height: 30, borderRadius: 50 }}
+            style={{ width: 28, height: 28, borderRadius: 50 }}
           />
         </TouchableOpacity>
       )

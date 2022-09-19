@@ -3,6 +3,8 @@ import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi'
 import PushNotification from "react-native-push-notification";
 import Notification from './models/Notification'
 import Auth from './Auth'
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import { Platform } from 'react-native'
 
 export default Push = types.model('Push', {
 	token: types.optional(types.string, ""),
@@ -24,6 +26,9 @@ export default Push = types.model('Push', {
 			onNotification: function(data) {
 				Push.handle_notification(data)
 			},
+			onAction: function(data){
+				console.log("Push:onAction:data", data);
+			},
 			permissions: {
 				alert: true,
 				badge: true,
@@ -32,6 +37,14 @@ export default Push = types.model('Push', {
 			popInitialNotification: true,
 			requestPermissions: true
 		});
+
+		if (Platform.OS === 'ios') {
+			PushNotificationIOS.requestPermissions()
+			
+			if (__DEV__) {
+				Push.set_token("TEST")
+			}
+		}
 	}),
 	
 	set_token: flow(function* (token) {
@@ -56,7 +69,7 @@ export default Push = types.model('Push', {
 		if (self.token != null && user_token != null) {
 			const data = yield MicroBlogApi.unregister_push(self.token, user_token)
 			if (data !== API_ERROR) {
-				console.log("Push:register_token:OK")
+				console.log("Push:unregister_user_from_push:OK")
 				return true
 			}
 		}
@@ -87,13 +100,15 @@ export default Push = types.model('Push', {
 	}),
 
 	handle_notification: flow(function* (notification) {
-		console.log("Push::handle_notification", notification)
+		console.log("Push::handle_notification", notification, Auth.selected_user)
 		const nice_notification_object = {
-			id: notification.id,
+			id: Platform.OS === 'ios' ? notification.data?.notificationId != null ? notification.data?.notificationId : notification.data?.post_id : notification.id,
 			message: notification.message,
 			post_id: notification.data?.post_id,
-			to_username: JSON.parse(notification.data?.to_user)?.username,
-			from_username: JSON.parse(notification.data?.from_user)?.username,
+			to_username: Platform.OS === 'ios' ? notification.data?.to_user?.username : JSON.parse(notification.data?.to_user)?.username,
+			from_username: Platform.OS === 'ios' ? notification.data?.from_user?.username : JSON.parse(notification.data?.from_user)?.username,
+			should_open: Platform.OS === 'ios'  && notification.foreground === false,
+			did_load_before_user_was_loaded: Auth.selected_user == null
 		}
 		// Check if we have an existing notification in our array.
 		// This will never happen, except for DEV for sending through test messages.
@@ -108,6 +123,9 @@ export default Push = types.model('Push', {
 .views(self => ({
 	valid_notifications() {
 		return self.notifications.filter(n => n.can_show_notification())
+	},
+	handle_first_notification() {
+		return self.notifications.find(n => n.did_load_before_user_was_loaded)?.handle_action()
 	}
 }))
 .create({})

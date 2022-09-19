@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, Keyboard, ActivityIndicator, InputAccessoryView, Platform } from 'react-native';
+import { View, TextInput, Keyboard, ActivityIndicator, InputAccessoryView, Platform, KeyboardAvoidingView } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Reply from '../../stores/Reply'
 import ReplyToolbar from '../../components/keyboard/reply_toolbar'
@@ -35,16 +35,18 @@ export default class ReplyScreen extends React.Component{
   
   render() {
     return(
-      <View style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
+      <KeyboardAvoidingView behavior='padding' style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
         <TextInput
           placeholderTextColor="lightgrey"
           style={{
             fontSize: 18,
             justifyContent: 'flex-start',
 						alignItems: 'flex-start',
+            marginTop: 3,
             marginBottom: 38,
             padding: 8,
-            color: App.theme_text_color()
+            color: App.theme_text_color(),
+            paddingBottom: Reply.reply_text_length() > 280 ? 90 : 0,
           }}
           editable={!Reply.is_sending_reply}
           multiline={true}
@@ -88,7 +90,7 @@ export default class ReplyScreen extends React.Component{
           </View>
           : null
         }
-      </View>
+      </KeyboardAvoidingView>
     )
   }
   

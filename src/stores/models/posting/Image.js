@@ -6,7 +6,8 @@ export default Image = types.model('Image', {
 	type: types.maybe(types.string),
 	is_uploading: types.optional(types.boolean, false),
 	did_upload: types.optional(types.boolean, false),
-	remote_url: types.maybe(types.string)
+	remote_url: types.maybe(types.string),
+	alt_text: types.maybe(types.string)
 })
 .actions(self => ({
 
@@ -19,6 +20,11 @@ export default Image = types.model('Image', {
 			self.did_upload = true
 		}
 		self.is_uploading = false
+	}),
+	
+	set_alt_text: flow(function* (text) {
+		console.log("Image:set_alt_text", text)
+		self.alt_text = text
 	})
 
 }))

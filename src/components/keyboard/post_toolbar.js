@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, Image, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Platform, ScrollView } from 'react-native';
 import Auth from '../../stores/Auth';
 import PhotoLibrary from '../../assets/icons/toolbar/photo_library.png';
 import SettingsIcon from '../../assets/icons/toolbar/settings.png';
 import { postingOptionsScreen } from '../../screens';
 import App from '../../stores/App';
+import { SFSymbol } from 'react-native-sfsymbols';
 
 @observer
 export default class PostToolbar extends React.Component{
@@ -31,42 +32,75 @@ export default class PostToolbar extends React.Component{
 					alignItems: 'center'
 				}}
 			>
-				<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("**")}>
-					<Text style={{ fontSize: 20, fontWeight: '700', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"**"}</Text>
-				</TouchableOpacity>
-				<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("_")}>
-					<Text style={{ fontSize: 20, fontWeight: '800', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"_"}</Text>
-				</TouchableOpacity>
-				<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("[]")}>
-					<Text style={{ fontSize: 20, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"[ ]"}</Text>
-				</TouchableOpacity>
-				<TouchableOpacity style={{minWidth: 35, marginLeft: 8, marginRight: 8}} onPress={posting.handle_image_action}>
-					<Image source={PhotoLibrary} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
-				</TouchableOpacity>
+				<ScrollView keyboardShouldPersistTaps={'always'}  horizontal={true} style={{overflow: 'hidden', maxWidth: "90%"}} contentContainerStyle={{flexDirection: 'row', alignItems: 'center'}}>
+					<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("**")}>
+						<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"**"}</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("_")}>
+						<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"_"}</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("[]")}>
+						<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"[ ]"}</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={{minWidth: 35, marginLeft: 8, marginRight: 8}} onPress={posting.handle_image_action}>
+						{
+						Platform.OS === 'ios' ?
+							<SFSymbol
+								name={'photo'}
+								color={App.theme_text_color()}
+								style={{ height: 22, width: 22 }}
+								multicolor={true}
+							/>
+						: 						
+						<Image source={PhotoLibrary} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
+					}
+					</TouchableOpacity>
+					{
+						posting.selected_service?.config?.active_destination() != null && posting.selected_service?.config?.destination?.length > 1 ?
+						<TouchableOpacity style={{marginRight: 8}} onPress={() => postingOptionsScreen(this.props.componentId)}>
+							<Text style={{ fontSize: 16, fontWeight: '500', textAlign: 'center', color: App.theme_text_color() }}>
+								{posting.selected_service.config.active_destination().name}
+							</Text>
+						</TouchableOpacity>
+						: null
+					}
+				</ScrollView>
 				<View
 					style={{
 						position: 'absolute',
 						right: 8,
 						bottom: 9,
 						flexDirection: 'row',
-						alignItems: 'center'
+						alignItems: 'center',
+						backgroundColor: App.theme_section_background_color(),
 					}}
 				>
 					<TouchableOpacity
 						onPress={() => postingOptionsScreen(this.props.componentId)}
-						style={{
-							marginRight: 8,
-						}}
 					>
+					{
+						Platform.OS === 'ios' ?
+							<SFSymbol
+								name={'gearshape'}
+								color={App.theme_text_color()}
+								style={{ height: 22, width: 22 }}
+								multicolor={true}
+							/>
+						: 						
 						<Image source={SettingsIcon} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
+					}
 					</TouchableOpacity>
 					<Text
 						style={{
-							fontWeight: '200',
+							fontWeight: '400',
 							padding: 2,
-							backgroundColor: 'rgba(255,255,255,.6)'
+							color: App.theme_text_color(),
+							// backgroundColor: App.theme_chars_background_color(),
+							position: 'absolute',
+							top: -35,
+							right: 0
 						}}
-					><Text style={{ color: posting.post_text_length() > 280 ? '#a94442' : 'black' }}>{posting.post_text_length()}</Text>/280</Text>
+					><Text style={{ color: posting.post_text_length() > 280 ? '#a94442' : App.theme_text_color() }}>{posting.post_text_length()}</Text>/280</Text>
 				</View>
 			</View>
     )
