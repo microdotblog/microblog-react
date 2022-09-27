@@ -35,7 +35,7 @@ export default class ReplyScreen extends React.Component{
   
   render() {
     return(
-      <KeyboardAvoidingView behavior='padding' style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
+      <KeyboardAvoidingView behavior={ Platform.OS === 'ios' ? 'padding' : undefined } style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
         <TextInput
           placeholderTextColor="lightgrey"
           style={{
