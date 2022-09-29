@@ -74,7 +74,7 @@ export default class AccountSwitcher extends React.Component{
           borderBottomRightRadius: 20
         }}>
         {
-          Auth.all_users_except_current().map((user) => {
+          Auth.all_users_except_current().map((user, index) => {
             return(
 							<TouchableOpacity
 								onPress={() => Auth.select_user(user)}
@@ -85,6 +85,7 @@ export default class AccountSwitcher extends React.Component{
                   width: '100%',
                   justifyContent: 'space-between',
                   marginLeft: 16,
+                  paddingBottom: index === Auth.all_users_except_current().length - 1 ? 0 : 8,
                 }}
               >
                 <View 
