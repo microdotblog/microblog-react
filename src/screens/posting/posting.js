@@ -38,7 +38,18 @@ export default class PostingScreen extends React.Component{
   _dismiss = () => {
     Keyboard.dismiss()
 		Navigation.dismissModal(this.props.componentId)
-	}
+  }
+  
+  _input_outer_view = (component) => {
+    if (Platform.OS === 'ios') {
+      return (
+        <KeyboardAvoidingView behavior={'padding'} style={{ flex: 1 }}>
+        {component}
+        </KeyboardAvoidingView>
+      )
+    }
+    return component
+  }
   
   render() {
     const { posting } = Auth.selected_user
@@ -76,42 +87,47 @@ export default class PostingScreen extends React.Component{
           />
           : null
         }
-        <KeyboardAvoidingView
-          behavior='padding'
-          style={{
-            flex: 1,
-          }}
-        >
-        <TextInput
-          placeholderTextColor="lightgrey"
-          style={{
-            fontSize: 18,
-            justifyContent: 'flex-start',
-						alignItems: 'flex-start',
-            marginTop: 3,
-            paddingBottom: posting.post_text_length() > 280 ? 150 : 0,
-            padding: 8,
-            color: App.theme_text_color(),
-            flex: 1
-          }}
-          editable={!posting.is_sending_post}
-          multiline={true}
-          scrollEnabled={true}
-          returnKeyType={'default'}
-					keyboardType={'default'}
-					autoFocus={true}
-					autoCorrect={true}
-					clearButtonMode={'while-editing'}
-					enablesReturnKeyAutomatically={true}
-					underlineColorAndroid={'transparent'}
-          value={posting.post_text}
-          onChangeText={(text) => !posting.is_sending_post ? posting.set_post_text(text) : null}
-          onSelectionChange={({ nativeEvent: { selection } }) => {
-            posting.set_text_selection(selection)
-          }}
-          inputAccessoryViewID={this.input_accessory_view_id}
-        />
-        </KeyboardAvoidingView>
+        {
+          this._input_outer_view(
+            <TextInput
+              placeholderTextColor="lightgrey"
+              style={{
+                fontSize: 18,
+                justifyContent: 'flex-start',
+                alignItems: 'flex-start',
+                marginTop: 3,
+                ...Platform.select({
+                  android: {
+                  marginBottom: posting.post_text_length() > 280 || posting.post_title ? posting.post_images.length > 0 ? 135 : 80 : posting.post_images.length > 0 ? 93 : 38,
+                  },
+                  ios: {
+                    paddingBottom: posting.post_text_length() > 280 ? 150 : 0,
+                    flex: 1
+                  }
+                }),
+                padding: 8,
+                color: App.theme_text_color()
+              }}
+              editable={!posting.is_sending_post}
+              multiline={true}
+              scrollEnabled={true}
+              returnKeyType={'default'}
+              keyboardType={'default'}
+              autoFocus={true}
+              autoCorrect={true}
+              clearButtonMode={'while-editing'}
+              enablesReturnKeyAutomatically={true}
+              underlineColorAndroid={'transparent'}
+              value={posting.post_text}
+              onChangeText={(text) => !posting.is_sending_post ? posting.set_post_text(text) : null}
+              onSelectionChange={({ nativeEvent: { selection } }) => {
+                posting.set_text_selection(selection)
+              }}
+              inputAccessoryViewID={this.input_accessory_view_id}
+            />
+          )
+        }
+        
         {
           Platform.OS === 'ios' ?
             <InputAccessoryView nativeID={this.input_accessory_view_id}>

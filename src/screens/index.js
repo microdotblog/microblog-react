@@ -298,7 +298,7 @@ export const menuBottomSheet = (close = false) => {
   if(!close){
     return RNNBottomSheet.openBottomSheet({
       renderContent: () => <SheetMenu />,
-      snapPoints: [0, 200, 290, '70%'],
+      snapPoints: [0, Platform.OS === 'ios' ? 200 : 220, Platform.OS === 'ios' ? 290 : 310, '70%'],
       initialSnapIndex: 2,
       borderRadius: 16,
       backgroundColor: App.theme_background_color_secondary()
