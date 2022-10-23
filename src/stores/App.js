@@ -286,6 +286,9 @@ export default App = types.model('App', {
           App.navigate_to_screen("open", number[0])
         }
       }
+      else if(parts?.length >= 2 && parts[0] === "account"){
+        App.open_url(url, true)
+      }
       else {
         const username = url.replace('https://micro.blog/', '').replace('http://micro.blog/', '')
         App.navigate_to_screen("user", username)
@@ -298,11 +301,11 @@ export default App = types.model('App', {
 
   }),
 
-  open_url: flow(function* (url) {
+  open_url: flow(function* (url, open_external = false) {
     Linking.canOpenURL(url).then(async (supported) => {
       if (supported) {
         const is_inapp_browser_avail = await InAppBrowser.isAvailable()
-        if(is_inapp_browser_avail){
+        if(is_inapp_browser_avail && !open_external){
           return InAppBrowser.open(url, {
             dismissButtonStyle: 'close',
             preferredControlTintColor: "#f80",
