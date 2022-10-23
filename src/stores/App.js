@@ -3,7 +3,7 @@ import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScre
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
-import { Linking, Appearance, AppState, Platform } from 'react-native'
+import { Linking, Appearance, AppState, Platform, Dimensions } from 'react-native'
 import { Navigation } from "react-native-navigation";
 import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import Push from './Push'
@@ -26,7 +26,9 @@ export default App = types.model('App', {
   theme: types.optional(types.string, 'light'),
   is_switching_theme: types.optional(types.boolean, false),
   bottom_sheet_last_id: types.maybeNull(types.string),
-  post_modal_is_open: types.optional(types.boolean, false)
+  post_modal_is_open: types.optional(types.boolean, false),
+  font_scale: types.optional(types.number, 1),
+  is_changing_font_scale: types.optional(types.boolean, false),
 })
 .actions(self => ({
 
@@ -34,6 +36,7 @@ export default App = types.model('App', {
     console.log("App:hydrate")
     self.is_loading = true
     yield App.set_current_initial_theme()
+    yield App.set_current_initial_font_scale()
 
     self.current_screen_name = TIMELINE_SCREEN
     self.current_screen_id = TIMELINE_SCREEN
@@ -405,6 +408,40 @@ export default App = types.model('App', {
       }
     })
   }),
+  
+  set_current_initial_font_scale: flow(function* () {
+    console.log("App:set_current_initial_font_scale", Dimensions.get("screen")?.fontScale)
+    let font_scale = Dimensions.get("screen")?.fontScale
+    self.font_scale = font_scale ?? self.font_scale
+    App.set_up_font_scale_listener()
+  }),
+  
+  set_up_font_scale_listener: flow(function* () {
+    console.log("App:set_up_font_scale_listener")
+    Dimensions.addEventListener(
+      "change",
+      ({ screen }) => {
+        console.log("App:set_up_font_scale_listener:change", screen?.fontScale)
+        App.change_font_scale(screen?.fontScale)
+      }
+    );
+  }),
+  
+  change_font_scale: flow(function* (font_scale) {
+    console.log("App:change_font_scale", font_scale)
+    self.is_changing_font_scale = true
+    self.font_scale = font_scale
+    // We need a timeout here so that it actually triggers the web views to reload.
+    setTimeout(() => {
+      App.set_is_changing_font_scale()
+    }, 100)
+  }),
+  
+  set_is_changing_font_scale: flow(function* (is_loading = false) {
+    console.log("App:set_is_changing_font_scale", is_loading)
+    self.is_changing_font_scale = is_loading
+  }),
+  
 
 }))
 .views(self => ({
@@ -458,7 +495,7 @@ export default App = types.model('App', {
   },
   should_reload_web_view() {
     // When it returns true, this will trigger a reload of the webviews
-    return self.is_switching_theme
+    return self.is_switching_theme || self.is_changing_font_scale
   },
   now() {
     let now = new Date()
