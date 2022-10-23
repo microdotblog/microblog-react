@@ -17,7 +17,7 @@ export default class ScreenTitle extends React.Component{
 					}}
 				>
 					{ Platform.OS === 'android' && <ProfileImage /> }
-					<Text style={{ color: App.theme_text_color(), fontSize: 18, minWidth: 100, fontWeight:  Platform.OS === 'ios' ? '600' : '400' , textAlign: Platform.OS === 'ios' ? 'center' : 'auto' }}>{this.props.title}</Text>
+					<Text style={{ color: App.theme_text_color(), fontSize: 18, minWidth: Platform.OS === 'ios' ? 100 : 150, fontWeight:  Platform.OS === 'ios' ? '600' : '400' , textAlign: Platform.OS === 'ios' ? 'center' : 'auto' }}>{this.props.title}</Text>
 				</View>
 			)
 		}
