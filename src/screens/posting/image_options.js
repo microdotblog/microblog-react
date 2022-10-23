@@ -85,7 +85,7 @@ export default class ImageOptionsScreen extends React.Component{
               alignItems: 'center'
             }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', width: "100%", justifyContent: 'center' }}>
-              <Text style={{color: 'red'}}>Remove image...</Text>
+              <Text style={{color: 'red'}}>{image.is_uploading ? "Cancel upload & remove image..." : "Remove image..."}</Text>
             </View>
           </TouchableOpacity>
         </ScrollView>
