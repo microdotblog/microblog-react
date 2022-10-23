@@ -58,6 +58,8 @@ import DiscoverIcon from './../assets/icons/tab_bar/discover.png';
 import ArrowBackIcon from './../assets/icons/arrow_back.png';
 import ReplyIcon from './../assets/icons/reply.png';
 import AddIcon from './../assets/icons/add.png';
+import BookmarksIcon from './../assets/icons/nav/bookmarks.png'
+
 import Push from "../stores/Push"
 import { theme_options } from "../utils/navigation"
 import App from "../stores/App"
@@ -241,6 +243,55 @@ export const startApp = () => {
           bottomTab: {
             text: 'Discover',
             icon: Platform.OS === 'ios' ? { system: 'magnifyingglass' } : DiscoverIcon
+          },
+        },
+      },
+    },
+    {
+      stack: {
+        children: [{
+          component: {
+            id: BOOKMARKS_SCREEN,
+            name: BOOKMARKS_SCREEN,
+            options: {
+              topBar: {
+                title: {
+                  component: {
+                    name: SCREEN_TITLE,
+                    passProps: {
+                      title: 'Bookmarks'
+                    },
+                  },
+                  text: 'Bookmarks',
+                },
+                rightButtons: [
+                  {
+                    id: 'add_bookmark_button',
+                    text: 'Add bookmark',
+                    icon: Platform.OS === 'ios' ? { system: 'plus' } : AddIcon
+                  }
+                ],
+                ...Platform.select({
+                  ios: {
+                    leftButtons: [
+                    {
+                      id: 'profile_button',
+                      text: 'Profile',
+                      component: {
+                        name: PROFILE_IMAGE
+                      }
+                    }
+                  ],
+                  }
+                })
+              }
+            }
+          },
+        }],
+        options: {
+          bottomTab: {
+            text: 'Bookmarks',
+            icon: Platform.OS === 'ios' ? { system: 'star' } : BookmarksIcon
           },
         },
       },

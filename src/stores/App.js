@@ -172,10 +172,7 @@ export default App = types.model('App', {
   navigate_to_screen_from_menu: flow(function* (screen) {
     console.log("App:navigate_to_screen_from_menu", screen, RNNBottomSheet.getComponentName())
     RNNBottomSheet.closeBottomSheet()
-    if(screen === "Bookmarks"){
-      return bookmarksScreen(self.current_screen_id)
-    }
-    else if (screen === "Help") {
+    if (screen === "Help") {
       return helpScreen()
     }
     else{
@@ -201,6 +198,13 @@ export default App = types.model('App', {
           should_pop = self.current_screen_id !== "microblog.DiscoverScreen"
           if(should_pop){
             Navigation.popToRoot("microblog.DiscoverScreen")
+          }
+          break;
+        case "Bookmarks":
+          tab_index = 3;
+          should_pop = self.current_screen_id !== "microblog.BookmarksScreen"
+          if(should_pop){
+            Navigation.popToRoot("microblog.BookmarksScreen")
           }
           break;
       }
