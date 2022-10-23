@@ -35,7 +35,7 @@ export default class ImageToolbar extends React.Component{
                   width: 50,
                   height: 50
                 }}>
-                <Image source={{ uri: image.remote_url ? image.remote_url : image.uri }} style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
+                <Image source={{ uri: image.remote_url ? image.remote_url : image.uri }} style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB', opacity: image.is_uploading ? .5 : 1 }} />
                 {
                   image.is_uploading ?
                     <ActivityIndicator color="#f80" style={{position: 'absolute'}} />
