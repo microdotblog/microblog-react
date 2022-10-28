@@ -47,6 +47,7 @@ export const theme_options = (settings) => {
     },
     layout: {
       backgroundColor: App.theme_background_color(),
+      componentBackgroundColor: App.theme_background_color()
     },
     animations: {
       setRoot: {
