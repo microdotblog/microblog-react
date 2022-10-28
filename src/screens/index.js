@@ -93,222 +93,236 @@ export const startApp = () => {
   // INIT BOTTOMSHEET
   RNNBottomSheet.init()
 
-  const tabs = [
-    {
-      stack: {
-        children: [{
-          component: {
-            id: TIMELINE_SCREEN,
-            name: TIMELINE_SCREEN,
-            options: {
-              topBar: {
-                title: {
-                  component: {
-                    name: SCREEN_TITLE,
-                    passProps: {
-                      title: 'Timeline'
-                    },
-                  },
-                  text: 'Timeline',
-                },
-                rightButtons: [
-                  {
-                    id: 'post_button',
-                    text: 'New',
-                    component: {
-                      name: NEW_POST_BUTTON
-                    }
-                  }
-                ],
-                ...Platform.select({
-                  ios: {
-                    leftButtons: [
-                    {
-                      id: 'profile_button',
-                      text: 'Profile',
-                      component: {
-                        name: PROFILE_IMAGE
-                      }
-                    }
-                  ],
-                  }
-                })
-              }
-            }
-          },
-        }],
-        options: {
-          bottomTab: {
-            text: 'Timeline',
-            icon: Platform.OS === 'ios' ? { system: 'bubble.left.and.bubble.right' } : TimelineIcon
-          },
-        },
-      },
-    },
-    {
-      stack: {
-        children: [{
-          component: {
-            id: MENTIONS_SCREEN,
-            name: MENTIONS_SCREEN,
-            options: {
-              topBar: {
-                title: {
-                  component: {
-                    name: SCREEN_TITLE,
-                    passProps: {
-                      title: 'Mentions'
-                    },
-                  },
-                  text: 'Mentions',
-                },
-                rightButtons: [
-                  {
-                    id: 'post_button',
-                    text: 'New',
-                    component: {
-                      name: NEW_POST_BUTTON
-                    }
-                  }
-                ],
-                ...Platform.select({
-                  ios: {
-                    leftButtons: [
-                    {
-                      id: 'profile_button',
-                      text: 'Profile',
-                      component: {
-                        name: PROFILE_IMAGE
-                      }
-                    }
-                  ],
-                  }
-                })
-              }
-            }
-          },
-        }],
-        options: {
-          bottomTab: {
-            text: 'Mentions',
-            icon: Platform.OS === 'ios' ? { system: 'at' } : MentionsIcon
-          },
-        },
-      },
-    },
-    {
-      stack: {
-        children: [{
-          component: {
-            id: DISCOVER_SCREEN,
-            name: DISCOVER_SCREEN,
-            options: {
-              topBar: {
-                title: {
-                  component: {
-                    name: SCREEN_TITLE,
-                    passProps: {
-                      title: 'Discover'
-                    },
-                  },
-                  text: 'Discover',
-                },
-                rightButtons: [
-                  {
-                    id: 'post_button',
-                    text: 'New',
-                    component: {
-                      name: NEW_POST_BUTTON
-                    }
-                  }
-                ],
-                ...Platform.select({
-                  ios: {
-                    leftButtons: [
-                    {
-                      id: 'profile_button',
-                      text: 'Profile',
-                      component: {
-                        name: PROFILE_IMAGE
-                      }
-                    }
-                  ],
-                  }
-                })
-              }
-            }
-          },
-        }],
-        options: {
-          bottomTab: {
-            text: 'Discover',
-            icon: Platform.OS === 'ios' ? { system: 'magnifyingglass' } : DiscoverIcon
-          },
-        },
-      },
-    },
-    {
-      stack: {
-        children: [{
-          component: {
-            id: BOOKMARKS_SCREEN,
-            name: BOOKMARKS_SCREEN,
-            options: {
-              topBar: {
-                title: {
-                  component: {
-                    name: SCREEN_TITLE,
-                    passProps: {
-                      title: 'Bookmarks'
-                    },
-                  },
-                  text: 'Bookmarks',
-                },
-                rightButtons: [
-                  {
-                    id: 'add_bookmark_button',
-                    text: 'Add bookmark',
-                    icon: Platform.OS === 'ios' ? { system: 'plus' } : AddIcon
-                  }
-                ],
-                ...Platform.select({
-                  ios: {
-                    leftButtons: [
-                    {
-                      id: 'profile_button',
-                      text: 'Profile',
-                      component: {
-                        name: PROFILE_IMAGE
-                      }
-                    }
-                  ],
-                  }
-                })
-              }
-            }
-          },
-        }],
-        options: {
-          bottomTab: {
-            text: 'Bookmarks',
-            icon: Platform.OS === 'ios' ? { system: 'star' } : BookmarksIcon
-          },
-        },
-      },
-    }
-  ]
-
   Navigation.setDefaultOptions(theme_options({}));
 
   return Navigation.setRoot({
     root: {
       bottomTabs: {
         id: 'ROOT',
-        children: tabs,
+        children: [
+          timelineStackScreen(),
+          mentionsStackScreen(),
+          bookmarksStackScreen(),
+          discoverStackScreen()
+        ],
       }
     },
   });
 
+}
+
+export const timelineStackScreen = () =>{
+  return {
+    stack: {
+      children: [{
+        component: {
+          id: TIMELINE_SCREEN,
+          name: TIMELINE_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                component: {
+                  name: SCREEN_TITLE,
+                  passProps: {
+                    title: 'Timeline'
+                  },
+                },
+                text: 'Timeline',
+              },
+              rightButtons: [
+                {
+                  id: 'post_button',
+                  text: 'New',
+                  component: {
+                    name: NEW_POST_BUTTON
+                  }
+                }
+              ],
+              ...Platform.select({
+                ios: {
+                  leftButtons: [
+                  {
+                    id: 'profile_button',
+                    text: 'Profile',
+                    component: {
+                      name: PROFILE_IMAGE
+                    }
+                  }
+                ],
+                }
+              })
+            }
+          }
+        },
+      }],
+      options: {
+        bottomTab: {
+          text: 'Timeline',
+          icon: Platform.OS === 'ios' ? { system: 'bubble.left.and.bubble.right' } : TimelineIcon
+        },
+      },
+    },
+  }
+}
+
+export const mentionsStackScreen = () =>{
+  return {
+    stack: {
+      children: [{
+        component: {
+          id: MENTIONS_SCREEN,
+          name: MENTIONS_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                component: {
+                  name: SCREEN_TITLE,
+                  passProps: {
+                    title: 'Mentions'
+                  },
+                },
+                text: 'Mentions',
+              },
+              rightButtons: [
+                {
+                  id: 'post_button',
+                  text: 'New',
+                  component: {
+                    name: NEW_POST_BUTTON
+                  }
+                }
+              ],
+              ...Platform.select({
+                ios: {
+                  leftButtons: [
+                  {
+                    id: 'profile_button',
+                    text: 'Profile',
+                    component: {
+                      name: PROFILE_IMAGE
+                    }
+                  }
+                ],
+                }
+              })
+            }
+          }
+        },
+      }],
+      options: {
+        bottomTab: {
+          text: 'Mentions',
+          icon: Platform.OS === 'ios' ? { system: 'at' } : MentionsIcon
+        },
+      },
+    },
+  }
+}
+
+export const discoverStackScreen = () =>{
+  return {
+    stack: {
+      children: [{
+        component: {
+          id: DISCOVER_SCREEN,
+          name: DISCOVER_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                component: {
+                  name: SCREEN_TITLE,
+                  passProps: {
+                    title: 'Discover'
+                  },
+                },
+                text: 'Discover',
+              },
+              rightButtons: [
+                {
+                  id: 'post_button',
+                  text: 'New',
+                  component: {
+                    name: NEW_POST_BUTTON
+                  }
+                }
+              ],
+              ...Platform.select({
+                ios: {
+                  leftButtons: [
+                  {
+                    id: 'profile_button',
+                    text: 'Profile',
+                    component: {
+                      name: PROFILE_IMAGE
+                    }
+                  }
+                ],
+                }
+              })
+            }
+          }
+        },
+      }],
+      options: {
+        bottomTab: {
+          text: 'Discover',
+          icon: Platform.OS === 'ios' ? { system: 'magnifyingglass' } : DiscoverIcon
+        },
+      },
+    },
+  }
+}
+
+export const bookmarksStackScreen = () =>{
+  return {
+    stack: {
+      children: [{
+        component: {
+          id: BOOKMARKS_SCREEN,
+          name: BOOKMARKS_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                component: {
+                  name: SCREEN_TITLE,
+                  passProps: {
+                    title: 'Bookmarks'
+                  },
+                },
+                text: 'Bookmarks',
+              },
+              rightButtons: [
+                {
+                  id: 'add_bookmark_button',
+                  text: 'Add bookmark',
+                  icon: Platform.OS === 'ios' ? { system: 'plus' } : AddIcon
+                }
+              ],
+              ...Platform.select({
+                ios: {
+                  leftButtons: [
+                  {
+                    id: 'profile_button',
+                    text: 'Profile',
+                    component: {
+                      name: PROFILE_IMAGE
+                    }
+                  }
+                ],
+                }
+              })
+            }
+          }
+        },
+      }],
+      options: {
+        bottomTab: {
+          text: 'Bookmarks',
+          icon: Platform.OS === 'ios' ? { system: 'star' } : BookmarksIcon
+        },
+      },
+    },
+  }
 }
 
 export const loginScreen = (can_dismiss = false) => {
