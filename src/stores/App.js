@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, bookmarksScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
@@ -175,43 +175,46 @@ export default App = types.model('App', {
   navigate_to_screen_from_menu: flow(function* (screen) {
     console.log("App:navigate_to_screen_from_menu", screen, RNNBottomSheet.getComponentName())
     RNNBottomSheet.closeBottomSheet()
-    if (screen === "Help") {
-      return helpScreen()
+    let tab_index = null
+    let should_pop = false
+    switch (screen) {
+      case "Timeline":
+        tab_index = 0;
+        should_pop = self.current_screen_id !== "microblog.TimelineScreen"
+        if(should_pop){
+          Navigation.popToRoot("microblog.TimelineScreen")
+        }
+        break;
+      case "Mentions":
+        tab_index = 1;
+        should_pop = self.current_screen_id !== "microblog.MentionsScreen"
+        if(should_pop){
+          Navigation.popToRoot("microblog.MentionsScreen")
+        }
+        break;
+      case "Discover":
+        tab_index = 2;
+        should_pop = self.current_screen_id !== "microblog.DiscoverScreen"
+        if(should_pop){
+          Navigation.popToRoot("microblog.DiscoverScreen")
+        }
+        break;
+      case "Bookmarks":
+        tab_index = 3;
+        should_pop = self.current_screen_id !== "microblog.BookmarksScreen"
+        if(should_pop){
+          Navigation.popToRoot("microblog.BookmarksScreen")
+        }
+        break;
+      case "Help":
+        return helpScreen()
+        break
+      case "Replies":
+        return repliesScreen(self.current_screen_id)
+        break
     }
-    else{
-      let tab_index = 0
-      let should_pop = false
-      switch (screen) {
-        case "Timeline":
-          tab_index = 0;
-          should_pop = self.current_screen_id !== "microblog.TimelineScreen"
-          if(should_pop){
-            Navigation.popToRoot("microblog.TimelineScreen")
-          }
-          break;
-        case "Mentions":
-          tab_index = 1;
-          should_pop = self.current_screen_id !== "microblog.MentionsScreen"
-          if(should_pop){
-            Navigation.popToRoot("microblog.MentionsScreen")
-          }
-          break;
-        case "Discover":
-          tab_index = 2;
-          should_pop = self.current_screen_id !== "microblog.DiscoverScreen"
-          if(should_pop){
-            Navigation.popToRoot("microblog.DiscoverScreen")
-          }
-          break;
-        case "Bookmarks":
-          tab_index = 3;
-          should_pop = self.current_screen_id !== "microblog.BookmarksScreen"
-          if(should_pop){
-            Navigation.popToRoot("microblog.BookmarksScreen")
-          }
-          break;
-      }
-      console.log("App:navigate_to_screen_from_menu:index", screen, tab_index, self.current_screen_id, should_pop)
+    console.log("App:navigate_to_screen_from_menu:index", screen, tab_index, self.current_screen_id, should_pop)
+    if(tab_index != null){
       Navigation.mergeOptions('ROOT', {
         bottomTabs: {
           currentTabIndex: tab_index

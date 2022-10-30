@@ -295,6 +295,26 @@ class MicroBlogApi {
 			});
 		return push;
 	}
+	
+	async get_replies() {
+		console.log('MicroBlogApi: get_replies');
+		const push = axios
+			.get(`/posts/replies`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+			})
+			.then(response => {
+				console.log('MicroBlogApi:get_replies:data', response.data);
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: get_replies', error);
+				return API_ERROR;
+			});
+		return push;
+	}
   
 }
 

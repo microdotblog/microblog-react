@@ -26,6 +26,7 @@ export default class MenuNavigation extends React.Component{
     ]
 
     this.secondary_menu = [
+      "Replies",
       "Help"
     ]
   }
@@ -59,6 +60,9 @@ export default class MenuNavigation extends React.Component{
       switch(item.toLowerCase()){
         case "help":
           Platform.OS === 'ios' ? symbol = "questionmark.circle" : image = Help
+        break;
+        case "replies":
+          Platform.OS === 'ios' ? symbol = "arrowshape.turn.up.left.2" : image = null
         break;
       }
       return this._return_nav_item(item, image, symbol)
@@ -114,7 +118,17 @@ export default class MenuNavigation extends React.Component{
           }}
         >
           {this._render_menu_items()}
-          <View style={{paddingTop: 15, marginTop: 10, paddingBottom: 5, borderColor: App.theme_alt_border_color(), borderTopWidth: 1, width: '100%'}}>
+          <View style={{
+            paddingTop: 15,
+            marginTop: 10,
+            paddingBottom: 5,
+            borderColor: App.theme_alt_border_color(),
+            borderTopWidth: 1,
+            width: '100%',
+            flexWrap: 'wrap',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
             {this._render_secondary_menu_items()}
           </View>
         </View>
