@@ -65,7 +65,9 @@ export default class ProfileHeader extends React.Component{
     return(
       <View style={{ padding: 8, backgroundColor: App.theme_button_background_color(), width: '100%' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image source={{ uri: `${profile.author.avatar}?v=${this.now}` }} style={{ width: 50, height: 50, borderRadius: 50 }} />
+          <TouchableOpacity onPress={() => App.set_image_modal_data_and_activate(`${profile.author.avatar}?v=${this.now}`)}>
+            <Image source={{ uri: `${profile.author.avatar}?v=${this.now}` }} style={{ width: 50, height: 50, borderRadius: 50 }} />
+          </TouchableOpacity>
           <View style={{ marginLeft: 15 }}>
             <Text style={{ fontWeight: '700', fontSize: 18, marginBottom: 2, color: App.theme_text_color() }}>{profile.author.name}</Text>
             <Text style={{ fontWeight: '300', color: App.theme_text_color() }}>@{profile._microblog.username}</Text>
