@@ -11,6 +11,7 @@ import Timeline from './../../assets/icons/nav/timeline.png';
 import Discover from './../../assets/icons/nav/discover.png';
 import Mentions from './../../assets/icons/nav/mentions.png';
 import Help from './../../assets/icons/nav/help.png';
+import Replies from './../../assets/icons/nav/replies.png';
 
 @observer
 export default class MenuNavigation extends React.Component{
@@ -62,7 +63,7 @@ export default class MenuNavigation extends React.Component{
           Platform.OS === 'ios' ? symbol = "questionmark.circle" : image = Help
         break;
         case "replies":
-          Platform.OS === 'ios' ? symbol = "arrowshape.turn.up.left.2" : image = null
+          Platform.OS === 'ios' ? symbol = "arrowshape.turn.up.left.2" : image = Replies
         break;
       }
       return this._return_nav_item(item, image, symbol)
