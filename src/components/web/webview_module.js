@@ -8,6 +8,7 @@ import WebView from 'react-native-webview'
 import { Navigation } from "react-native-navigation";
 import PushNotifications from '../push/push_notifications'
 import WebLoadingViewModule from './loading_view'
+import WebErrorViewModule from './error_view'
 
 @observer
 export default class WebViewModule extends React.Component{
@@ -89,6 +90,7 @@ export default class WebViewModule extends React.Component{
       }}
       style={{ flex: 1, backgroundColor: App.theme_background_color(), ...Platform.select({android: { height: scroll_view_height }}) }}
       renderLoading={() => <WebLoadingViewModule loading_text={this.props.loading_text} />}
+      renderError={(name, code, description) => <WebErrorViewModule error_name={description} /> }
       injectedJavaScript={Platform.OS === 'ios' ? `const meta = document.createElement('meta'); meta.setAttribute('content', 'width=width, initial-scale=${App.font_scale}'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);` : null}
     />)
   }
