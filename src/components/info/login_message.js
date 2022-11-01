@@ -16,7 +16,7 @@ export default class LoginMessage extends React.Component{
           : null
         }
         <TouchableOpacity onPress={loginScreen}>
-          <Text style={{fontWeight: "700", color: "orange"}}>Please sign in to continue</Text>
+          <Text style={{fontWeight: "700", color: App.theme_accent_color()}}>Please sign in to continue</Text>
         </TouchableOpacity>
       </View>
     )
