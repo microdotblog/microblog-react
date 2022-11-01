@@ -18,5 +18,14 @@ export default Reply = types.model('Reply', {
 .views(self => ({
   relative_date(){
     return self._microblog?.date_relative
+  },
+  can_edit(){
+    // Don't ask...
+    const then = new Date(self.date_published)
+    const now = new Date()
+    const ms_between = Math.abs(then.getTime() - now.getTime())
+    const hours_between = ms_between / (60 * 60 * 1000) // min, sec, ms
+    
+    return hours_between < 24
   }
 }))

@@ -64,9 +64,12 @@ export default class RepliesScreen extends React.Component{
                     <Text style={{color: "gray", fontSize: 12}}>{reply.relative_date()}</Text>
                   </TouchableOpacity>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <TouchableOpacity style={{marginRight: 10}}>
-                      <Text>Edit</Text>
-                    </TouchableOpacity>
+                    {
+                      reply.can_edit() &&
+                      <TouchableOpacity style={{marginRight: 10}}>
+                        <Text>Edit</Text>
+                      </TouchableOpacity>
+                    }
                     <TouchableOpacity>
                       <Text>Delete...</Text>
                     </TouchableOpacity>
