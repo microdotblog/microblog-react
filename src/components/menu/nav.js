@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity, Image, Platform } from 'react-native';
 import Auth from './../../stores/Auth';
 import App from './../../stores/App';
 import { SFSymbol } from "react-native-sfsymbols";
+import { SvgXml } from 'react-native-svg';
 
 // Nav icons
 import Bookmarks from './../../assets/icons/nav/bookmarks.png';
@@ -36,6 +37,7 @@ export default class MenuNavigation extends React.Component{
     return this.menu.map(item => {
       let image = null
       let symbol = null
+      let svg = null
       switch(item.toLowerCase()){
         case "timeline":
           Platform.OS === 'ios' ? symbol = "bubble.left.and.bubble.right" : image = Timeline
@@ -50,7 +52,7 @@ export default class MenuNavigation extends React.Component{
           Platform.OS === 'ios' ? symbol = "star" : image = Bookmarks
         break;
       }
-      return this._return_nav_item(item, image, symbol)
+      return this._return_nav_item(item, image, symbol, svg)
     })
   }
 
@@ -58,19 +60,24 @@ export default class MenuNavigation extends React.Component{
     return this.secondary_menu.map(item => {
       let image = null
       let symbol = null
+      let svg = null
       switch(item.toLowerCase()){
         case "help":
           Platform.OS === 'ios' ? symbol = "questionmark.circle" : image = Help
         break;
         case "replies":
-          Platform.OS === 'ios' ? symbol = "arrowshape.turn.up.left.2" : image = Replies
+          svg = `
+          <svg fill="currentColor" viewBox="0 0 30 30" width="30px" height="30px">
+          <path d="M 8 3 C 6.895 3 6 3.895 6 5 L 23 5 C 24.657 5 26 6.343 26 8 L 26 21 C 27.105 21 28 20.105 28 19 L 28 5 C 28 3.895 27.105 3 26 3 L 8 3 z M 4 7 C 2.895 7 2 7.895 2 9 L 2 23 C 2 24.105 2.895 25 4 25 L 7 25 L 7 28 A 1 1 0 0 0 8 29 A 1 1 0 0 0 8.8378906 28.542969 L 11.498047 25 L 22 25 C 23.105 25 24 24.105 24 23 L 24 9 C 24 7.895 23.105 7 22 7 L 4 7 z"></path>
+          </svg>
+          `
         break;
       }
-      return this._return_nav_item(item, image, symbol)
+      return this._return_nav_item(item, image, symbol, svg)
     })
   }
   
-  _return_nav_item = (item, image = null, symbol = null) => {
+  _return_nav_item = (item, image = null, symbol = null, svg = null) => {
     return(
       <TouchableOpacity
         onPress={() => App.navigate_to_screen_from_menu(item)}
@@ -95,6 +102,15 @@ export default class MenuNavigation extends React.Component{
                 color={App.theme_text_color()}
                 style={{ marginRight: 8, height: 22, width: 22, marginTop: 1 }}
               />
+            : svg != null ?
+            <SvgXml
+              xml={svg}
+              width={22}
+              height={22}
+              style={{marginRight: 8}}
+              stroke={App.theme_button_text_color()}
+              fill={"transparent"}
+            />
             : null
         }
         <Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_button_text_color() }}>{item}</Text>

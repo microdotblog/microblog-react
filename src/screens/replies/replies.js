@@ -46,12 +46,13 @@ export default class RepliesScreen extends React.Component{
           Auth.selected_user.replies.replies.map((reply) => {
             return(
               <TouchableOpacity
-                key={reply.url}
+                key={reply.id}
                 style={{
                   padding: 15,
                   borderColor: App.theme_alt_background_div_color(),
                   borderBottomWidth: .5
                 }}
+                onPress={reply.can_edit() ? null : () => App.handle_url_from_webview(reply.url)}
               >
                 <Text style={{marginBottom: 20, color: App.theme_text_color(), fontSize: 15}}>{reply.content_text}</Text>
                 <View
@@ -66,12 +67,12 @@ export default class RepliesScreen extends React.Component{
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     {
                       reply.can_edit() &&
-                      <TouchableOpacity style={{marginRight: 10}}>
+                      <TouchableOpacity style={{marginRight: 15}}>
                         <Text>Edit</Text>
                       </TouchableOpacity>
                     }
                     <TouchableOpacity>
-                      <Text>Delete...</Text>
+                      <Text style={{color: "red"}}>Delete...</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
