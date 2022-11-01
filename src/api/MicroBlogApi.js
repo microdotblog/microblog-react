@@ -303,7 +303,6 @@ class MicroBlogApi {
 				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
 			})
 			.then(response => {
-				console.log('MicroBlogApi:get_replies:data', response.data);
 				if(response.data != null){
 					return response.data
 				}

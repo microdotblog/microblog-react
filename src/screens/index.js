@@ -816,6 +816,7 @@ export const imageOptionsScreen = (image, index, component_id) => {
 }
 
 export const repliesScreen = (component_id) => {
+  Auth.selected_user.replies.hydrate()
   const options = {
     component: {
       id: REPLIES_SCREEN,

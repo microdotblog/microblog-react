@@ -14,7 +14,6 @@ export default Replies = types.model('Replies', {
     console.log("Replies:hydrate")
     self.is_loading = true
     const replies = yield MicroBlogApi.get_replies()
-    console.log("Replies:hydrate:data", replies)
     if(replies !== API_ERROR && replies.items != null){
       self.replies = replies.items
     }

@@ -2,7 +2,6 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, TextInput, Keyboard, ActivityIndicator, InputAccessoryView, Platform, KeyboardAvoidingView } from 'react-native';
 import { Navigation } from 'react-native-navigation';
-import Reply from '../../stores/Reply'
 import ReplyToolbar from '../../components/keyboard/reply_toolbar'
 import App from '../../stores/App'
 import Auth from '../../stores/Auth'
