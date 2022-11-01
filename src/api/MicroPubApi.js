@@ -168,6 +168,45 @@ class MicroPubApi {
 			});
 		return post;
 	}
+	
+	async post_update(service, content, url) {
+		console.log('MicroBlogApi:MicroPub:post_update', content, url);
+		const params = {
+			"action": "update",
+			"url": url,
+			"replace": {
+				"content": [
+					content
+				]
+			}
+		}
+		console.log("MicroBlogApi:MicroPub:post_update:PARAMS", params)
+		
+		const post = axios
+			.post(`https://micro.blog/micropub`, params ,{
+				headers: { Authorization: `Bearer ${service.token}` }
+			})
+			.then(response => {
+				return true;
+			})
+			.catch(error => {
+				console.log("MicroBlogApi:post_update:ERROR", error.response.status, error.response.data);
+				if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
+					Alert.alert(
+						"Something went wrong.",
+						`${error.response.data.error_description}. Try again later.`,
+					)
+				}
+				else {
+					Alert.alert(
+						"Something went wrong.",
+						`Please try again later.`,
+					)
+				}
+				return POST_ERROR;
+			});
+		return post;
+	}
 
 }
 
