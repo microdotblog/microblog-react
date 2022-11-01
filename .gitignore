@@ -62,3 +62,4 @@ buck-out/
 /android/java_pid46681.hprof
 *.hprof
 /android/app/google-services.json
+vendor
