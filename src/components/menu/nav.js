@@ -12,7 +12,6 @@ import Timeline from './../../assets/icons/nav/timeline.png';
 import Discover from './../../assets/icons/nav/discover.png';
 import Mentions from './../../assets/icons/nav/mentions.png';
 import Help from './../../assets/icons/nav/help.png';
-import Replies from './../../assets/icons/nav/replies.png';
 
 @observer
 export default class MenuNavigation extends React.Component{
