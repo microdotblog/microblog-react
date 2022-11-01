@@ -2,6 +2,8 @@ import { types, flow } from 'mobx-state-tree';
 import MicroPubApi, { POST_ERROR } from './../../../api/MicroPubApi';
 import { Alert, Platform } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
+import Auth from '../../Auth';
+import App from '../../App';
 
 export default Reply = types.model('Reply', {
   id: types.identifier,
@@ -33,6 +35,25 @@ export default Reply = types.model('Reply', {
   set_reply_text: flow(function* (value) {
     console.log("Reply:set_reply_text", value)
     self.reply_text = value
+  }),
+  
+  update_reply: flow(function* () {
+    console.log("Reply:update_reply", self.reply_text)
+    self.is_sending_reply = true
+    const data = yield MicroPubApi.post_update(Auth.selected_user.posting.selected_service.service_object(), self.reply_text, self.url)
+    console.log("Reply:update_reply:data", data)
+    if (data !== POST_ERROR) {
+      self.reply_text = ""
+      self.is_sending_reply = false
+      Auth.selected_user.replies.hydrate()
+      App.show_toast("Reply was updated!")
+      return true
+    }
+    else {
+      Alert.alert("Whoops", "Could not update reply. Please try again.")
+    }
+    self.is_sending_reply = false
+    return false
   }),
   
   handle_text_action: flow(function* (action) {

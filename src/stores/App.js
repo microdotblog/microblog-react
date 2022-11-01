@@ -445,6 +445,13 @@ export default App = types.model('App', {
     self.is_changing_font_scale = is_loading
   }),
   
+  show_toast: flow(function* (message) {
+    console.log("App:show_toast", message)
+    setTimeout(() => {
+      Toast.showWithGravity(message, Toast.SHORT, Toast.CENTER)
+    }, Platform.OS === 'ios' ? 350 : 0)
+  }),
+  
 
 }))
 .views(self => ({

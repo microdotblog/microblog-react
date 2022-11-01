@@ -17,16 +17,15 @@ export default class ReplyEditScreen extends React.Component{
   
   navigationButtonPressed = async ({ buttonId }) => {
     console.log("ReplyEditScreen:navigationButtonPressed::", buttonId)
-    this._dismiss()
-    // if(buttonId === "post_button"){
-    //   const sent = await Auth.selected_user.replies.selected_reply.send_reply()
-    //   if(sent){
-    //     this._dismiss()
-    //   }
-    // }
-    // else{
-    //   this._dismiss()
-    // }
+    if(buttonId === "post_button"){
+      const sent = await Auth.selected_user.replies.selected_reply.update_reply()
+      if(sent){
+        this._dismiss()
+      }
+    }
+    else{
+      this._dismiss()
+    }
   }
   
   _dismiss = () => {
