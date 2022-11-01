@@ -362,26 +362,26 @@ PODS:
     - React-jsi (= 0.66.0)
     - React-logger (= 0.66.0)
     - React-perflogger (= 0.66.0)
-  - ReactNativeNavigation (7.29.0):
+  - ReactNativeNavigation (7.29.1):
     - HMSegmentedControl
     - React-Core
     - React-RCTImage
     - React-RCTText
-    - ReactNativeNavigation/Core (= 7.29.0)
-  - ReactNativeNavigation/Core (7.29.0):
+    - ReactNativeNavigation/Core (= 7.29.1)
+  - ReactNativeNavigation/Core (7.29.1):
     - HMSegmentedControl
     - React-Core
     - React-RCTImage
     - React-RCTText
   - RNCAsyncStorage (1.17.10):
     - React-Core
-  - RNCClipboard (1.11.0):
+  - RNCClipboard (1.11.1):
     - React-Core
   - RNCPushNotificationIOS (1.10.1):
     - React-Core
   - RNDeviceInfo (8.7.1):
     - React-Core
-  - RNFastImage (8.6.1):
+  - RNFastImage (8.6.3):
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
@@ -672,12 +672,12 @@ SPEC CHECKSUMS:
   React-RCTVibration: 53b92d54b923283638cb0186da7a5c2d2b70a49b
   React-runtimeexecutor: 4bb657a97aa74568d9ed634c8bd478299bb8a3a6
   ReactCommon: eb059748e842a1a86025ebbd4ac9d99e74492f88
-  ReactNativeNavigation: 3b09d0b7a64326dbcea7e64231287c766b18adf0
+  ReactNativeNavigation: f1c5b86f993758d0af2942ba9058a340166bef07
   RNCAsyncStorage: 0c357f3156fcb16c8589ede67cc036330b6698ca
-  RNCClipboard: 4b8bec7c195e27bcec746f52dff7601161683249
+  RNCClipboard: 2834e1c4af68697089cdd455ee4a4cdd198fa7dd
   RNCPushNotificationIOS: 87b8d16d3ede4532745e05b03c42cff33a36cc45
   RNDeviceInfo: aad3c663b25752a52bf8fce93f2354001dd185aa
-  RNFastImage: 3207b9eb17c2425d574ca40db35185db6e324f4e
+  RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNInAppBrowser: e36d6935517101ccba0e875bac8ad7b0cb655364
   RNReanimated: da3860204e5660c0dd66739936732197d359d753
