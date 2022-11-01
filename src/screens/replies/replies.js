@@ -38,8 +38,6 @@ export default class RepliesScreen extends React.Component{
           <RefreshControl
             refreshing={Auth.selected_user.replies.is_loading}
             onRefresh={Auth.selected_user.replies.refresh}
-            tintColor={App.theme_accent_color()}
-            progressBackgroundColor={App.theme_accent_color()}
           />
         }
       >
