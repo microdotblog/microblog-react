@@ -77,16 +77,16 @@ export default class RepliesScreen extends React.Component{
                           width={14}
                           height={14}
                           style={{marginRight: 4}}
-                          stroke={App.theme_button_text_color()}
+                          stroke={"rgb(115,115,115)"}
                           fill={"transparent"}
                         />
-                        <Text style={{color: App.theme_button_text_color(), fontSize: 15}}>
+                        <Text style={{color: "rgb(115,115,115)", fontSize: 15}}>
                           Edit
                         </Text>
                       </TouchableOpacity>
                     }
-                    <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Text style={{color: "red", fontSize: 15}}>Delete...</Text>
+                    <TouchableOpacity onPress={reply.trigger_delete} style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Text style={{color: "rgb(239,68,68)", fontSize: 15}}>Delete...</Text>
                     </TouchableOpacity>
                   </View>
                 </View>

@@ -93,6 +93,26 @@ export default Reply = types.model('Reply', {
   set_text_selection: flow(function* (selection) {
     self.text_selection = selection
   }),
+  
+  trigger_delete: flow(function* () {
+    Alert.alert(
+      "Delete reply?",
+      "Are you sure you want to delete this reply?",
+      [
+        {
+          text: "Cancel",
+          style: 'cancel',
+        },
+        {
+          text: "Delete",
+          onPress: () => Auth.selected_user.replies.delete_reply(self),
+          style: 'destructive'
+        },
+      ],
+      {cancelable: false},
+    );
+  }),
+  
 }))
 .views(self => ({
   relative_date(){

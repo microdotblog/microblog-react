@@ -1,6 +1,8 @@
-import { types, flow } from 'mobx-state-tree';
-import MicroBlogApi, { API_ERROR } from '../../api/MicroBlogApi';
+import { types, flow, destroy } from 'mobx-state-tree';
+import MicroBlogApi, { API_ERROR, DELETE_ERROR } from '../../api/MicroBlogApi';
 import Reply from './account/reply'
+import App from './../App'
+import { Alert } from 'react-native';
 
 export default Replies = types.model('Replies', {
   username: types.identifier,
@@ -33,5 +35,22 @@ export default Replies = types.model('Replies', {
     reply.hydrate()
     self.selected_reply = reply
   }),
+  
+  delete_reply: flow(function* (reply) {
+    console.log("Reply:delete_reply", reply)
+    const reply_id = reply.id
+    destroy(reply)
+    const status = yield MicroBlogApi.delete_post(reply_id)
+    if(status !== DELETE_ERROR){
+      App.show_toast("Reply was deleted.")
+      self.hydrate()
+    }
+    else{
+      Alert.alert("Whoops", "Could not delete reply. Please try again.")
+      self.hydrate()
+      self.is_loading = false
+    }
+  }),
+  
 
 }))

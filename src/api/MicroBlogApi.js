@@ -14,6 +14,7 @@ export const POST_ERROR = 6;
 export const BOOKMARK_ERROR = 7;
 export const REPORTING_ERROR = 8;
 export const MUTING_ERROR = 9;
+export const DELETE_ERROR = 10;
 
 axios.defaults.baseURL = API_URL;
 
@@ -313,6 +314,22 @@ class MicroBlogApi {
 				return API_ERROR;
 			});
 		return push;
+	}
+	
+	async delete_post(id) {
+		console.log('MicroBlogApi:delete_post', id);
+		const posts = axios
+			.delete(`/posts/${id}`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` }
+			})
+			.then(response => {
+				return response.data;
+			})
+			.catch(error => {
+				console.log(error);
+				return DELETE_ERROR;
+			});
+		return posts;
 	}
   
 }
