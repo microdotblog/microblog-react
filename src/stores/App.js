@@ -448,6 +448,9 @@ export default App = types.model('App', {
 
 }))
 .views(self => ({
+  theme_accent_color(){
+    return "#f80"
+  },
   theme_background_color() {
     return self.theme === "dark" ? "#1d2530" : "#fff"
   },
