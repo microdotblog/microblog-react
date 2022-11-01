@@ -55,11 +55,12 @@ export default class RepliesScreen extends React.Component{
                 }}
                 onPress={reply.can_edit() ? () => replyEditScreen(reply) : () => App.handle_url_from_webview(reply.url)}
               >
-                <Text style={{marginBottom: 20, color: App.theme_text_color(), fontSize: 15}}>{reply.content_text}</Text>
+                <Text style={{color: App.theme_text_color(), fontSize: 15}}>{reply.content_text}</Text>
                 <View
                   style={{
                     flexDirection: "row",
-                    justifyContent: "space-between"
+                    justifyContent: "space-between",
+                    marginTop: 20
                   }}
                 >
                   <TouchableOpacity onPress={() => App.handle_url_from_webview(reply.url)}>
@@ -81,13 +82,13 @@ export default class RepliesScreen extends React.Component{
                           stroke={App.theme_button_text_color()}
                           fill={"transparent"}
                         />
-                        <Text style={{color: App.theme_button_text_color()}}>
+                        <Text style={{color: App.theme_button_text_color(), fontSize: 15}}>
                           Edit
                         </Text>
                       </TouchableOpacity>
                     }
                     <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Text style={{color: "red"}}>Delete...</Text>
+                      <Text style={{color: "red", fontSize: 15}}>Delete...</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
