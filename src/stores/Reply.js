@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { Alert } from 'react-native'
+import { Alert, Platform } from 'react-native'
 import MicroBlogApi, { API_ERROR, POST_ERROR } from '../api/MicroBlogApi'
 import Auth from './Auth'
 import Clipboard from '@react-native-clipboard/clipboard';

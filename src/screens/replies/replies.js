@@ -2,10 +2,10 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
 import Auth from './../../stores/Auth';
-import WebViewModule from '../../components/web/webview_module'
 import LoginMessage from '../../components/info/login_message'
 import ImageModalModule from '../../components/images/image_modal'
 import App from '../../stores/App'
+import { replyEditScreen  } from '../../screens';
 
 @observer
 export default class RepliesScreen extends React.Component{
@@ -52,7 +52,7 @@ export default class RepliesScreen extends React.Component{
                   borderColor: App.theme_alt_background_div_color(),
                   borderBottomWidth: .5
                 }}
-                onPress={reply.can_edit() ? null : () => App.handle_url_from_webview(reply.url)}
+                onPress={reply.can_edit() ? () => replyEditScreen(reply) : () => App.handle_url_from_webview(reply.url)}
               >
                 <Text style={{marginBottom: 20, color: App.theme_text_color(), fontSize: 15}}>{reply.content_text}</Text>
                 <View
@@ -67,7 +67,7 @@ export default class RepliesScreen extends React.Component{
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     {
                       reply.can_edit() &&
-                      <TouchableOpacity style={{marginRight: 15}}>
+                      <TouchableOpacity style={{marginRight: 15}} onPress={() => replyEditScreen(reply)}>
                         <Text>Edit</Text>
                       </TouchableOpacity>
                     }

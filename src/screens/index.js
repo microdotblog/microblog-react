@@ -3,6 +3,7 @@ import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import * as React from 'react';
 import { Platform } from 'react-native';
 import Reply from '../stores/Reply';
+import Auth from '../stores/Auth'
 
 // SCREENS
 import TimelineScreen from './timeline/timeline';
@@ -22,6 +23,7 @@ import AddBookmarkScreen from "./bookmarks/add_bookmark";
 import HelpScreen from "./help/help";
 import ImageOptionsScreen from "./posting/image_options";
 import RepliesScreen from "./replies/replies";
+import ReplyEditScreen from "./replies/edit";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -40,6 +42,7 @@ export const ADD_BOOKMARK_SCREEN = 'microblog.modal.AddBookmarkScreen';
 export const HELP_SCREEN = 'microblog.modal.HelpScreen';
 export const IMAGE_OPTIONS_SCREEN = 'microblog.modal.ImageOptionsScreen';
 export const REPLIES_SCREEN = 'micrblog.RepliesScreen';
+export const REPLY_EDIT_SCREEN = 'microblog.ReplyEditScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -85,6 +88,7 @@ Screens.set(ADD_BOOKMARK_SCREEN, AddBookmarkScreen);
 Screens.set(HELP_SCREEN, HelpScreen)
 Screens.set(IMAGE_OPTIONS_SCREEN, ImageOptionsScreen);
 Screens.set(REPLIES_SCREEN, RepliesScreen);
+Screens.set(REPLY_EDIT_SCREEN, ReplyEditScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
@@ -584,7 +588,7 @@ export const postingScreen = () => {
 					    ]
             },
             layout: {
-              backgroundColor: "#fff"
+              backgroundColor: App.theme_background_color()
             }
           }
         },
@@ -693,7 +697,7 @@ export const replyScreen = () => {
 					    ]
             },
             layout: {
-              backgroundColor: "#fff"
+              backgroundColor: App.theme_background_color()
             }
           }
         },
@@ -747,7 +751,7 @@ export const addBoomarkScreen = () => {
 					    ]
             },
             layout: {
-              backgroundColor: "#fff"
+              backgroundColor: App.theme_background_color()
             }
           }
         },
@@ -827,4 +831,44 @@ export const repliesScreen = (component_id) => {
   };
 
   return Navigation.push(component_id, options);
+}
+
+export const replyEditScreen = async (reply) => {
+  await Auth.selected_user.replies.select_reply(reply)
+  return Navigation.showModal({
+    stack: {
+      id: REPLY_EDIT_SCREEN,
+      name: REPLY_EDIT_SCREEN,
+      children: [ {
+        component: {
+          id: REPLY_EDIT_SCREEN,
+          name: REPLY_EDIT_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                text: 'Update Reply',
+              },
+              leftButtons: [
+                {
+                  id: 'back_button',
+                  text: 'Back',
+                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
+                },
+              ],
+              rightButtons: [
+                {
+                  id: 'post_button',
+                  text: 'Update',
+                  color: App.theme_accent_color()
+                }
+              ]
+            },
+            layout: {
+              backgroundColor: App.theme_background_color()
+            }
+          }
+        },
+      }],
+    }
+  });
 }
