@@ -13,7 +13,8 @@
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher"
       android:allowBackup="false"
-      android:theme="@style/AppTheme">
+      android:theme="@style/AppTheme"
+        android:exported="true">
 
         <meta-data android:name="com.dieam.reactnativepushnotification.notification_foreground" android:value="true"/>
         <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notification" />
@@ -21,7 +22,7 @@
         <meta-data android:name="com.dieam.reactnativepushnotification.notification_color" android:resource="@color/notification"/>
         <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" />
         <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
-        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver">
+        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
@@ -40,6 +41,7 @@
       <activity
         android:name=".SplashActivity"
         android:theme="@style/SplashTheme"
+          android:exported="true"
         >
           <intent-filter>
               <action android:name="android.intent.action.MAIN" />
@@ -51,7 +53,7 @@
         android:label="@string/app_name"
         android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
         android:launchMode="singleTask"
-        android:windowSoftInputMode="adjustResize" android:theme="@style/AppTheme">
+        android:windowSoftInputMode="adjustResize" android:theme="@style/AppTheme" android:exported="true">
           <intent-filter>
               <action android:name="android.intent.action.VIEW" />
               <category android:name="android.intent.category.DEFAULT" />
