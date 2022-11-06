@@ -6,8 +6,8 @@ import Auth from '../../Auth';
 import App from '../../App';
 
 export default Reply = types.model('Reply', {
-  id: types.identifier,
-  url: types.maybeNull(types.string),
+  url: types.identifier,
+  id: types.maybeNull(types.string),
   content_text: types.maybeNull(types.string),
   date_published: types.maybeNull(types.string),
   _microblog: types.maybe(
