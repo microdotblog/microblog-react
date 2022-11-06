@@ -62,7 +62,6 @@ import MentionsIcon from './../assets/icons/tab_bar/mentions.png';
 import DiscoverIcon from './../assets/icons/tab_bar/discover.png';
 import ArrowBackIcon from './../assets/icons/arrow_back.png';
 import ReplyIcon from './../assets/icons/reply.png';
-import AddIcon from './../assets/icons/add.png';
 import BookmarksIcon from './../assets/icons/nav/bookmarks.png'
 
 import Push from "../stores/Push"
@@ -298,13 +297,6 @@ export const bookmarksStackScreen = () =>{
                 },
                 text: 'Bookmarks',
               },
-              rightButtons: [
-                {
-                  id: 'add_bookmark_button',
-                  text: 'Add bookmark',
-                  icon: Platform.OS === 'ios' ? { system: 'plus' } : AddIcon
-                }
-              ],
               ...Platform.select({
                 ios: {
                   leftButtons: [
@@ -448,39 +440,6 @@ export const conversationScreen = (conversation_id, component_id) => {
     
     return Navigation.push(component_id, options);
   }
-}
-
-export const bookmarksScreen = (component_id) => {
-  console.log("Screens:bookmarksScreen", component_id);
-  const options = {
-    component: {
-      id: 'BOOKMARKS_SCREEN',
-      name: BOOKMARKS_SCREEN,
-      options: {
-        topBar: {
-          title: {
-            text: "Bookmarks"
-          },
-          rightButtons: [
-            {
-              id: 'add_bookmark_button',
-              text: 'Add bookmark',
-              icon: Platform.OS === 'ios' ? { system: 'plus' } : AddIcon
-            },
-            {
-              id: 'profile_button',
-              text: 'profile',
-              component: {
-                name: PROFILE_IMAGE
-              }
-            }
-          ],
-        }
-      }
-    }
-  };
-
-  return Navigation.push(component_id, options);
 }
 
 export const bookmarkScreen = (bookmark_id, component_id) => {
