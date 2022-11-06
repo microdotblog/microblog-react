@@ -51,10 +51,12 @@ import NewPostButton from './../components/header/new_post';
 import TagmojiMenu from "../components/sheets/tagmoji";
 import ProfileMoreMenu from "../components/sheets/profile_more";
 import ScreenTitle from "../components/header/screen_title";
+import RefreshActivity from "../components/header/refresh_activity";
 
 export const PROFILE_IMAGE = 'microblog.component.ProfileImage'
 export const NEW_POST_BUTTON = 'microblog.component.NewPostButton'
 export const SCREEN_TITLE = 'microblog.component.ScreenTitle'
+export const REFRESH_ACTIVITY = 'microblog.component.RefreshActivity'
 
 // ICONS
 import TimelineIcon from './../assets/icons/tab_bar/timeline.png';
@@ -93,6 +95,7 @@ Screens.set(REPLY_EDIT_SCREEN, ReplyEditScreen);
 Screens.set(PROFILE_IMAGE, ProfileImage)
 Screens.set(NEW_POST_BUTTON, NewPostButton)
 Screens.set(SCREEN_TITLE, ScreenTitle)
+Screens.set(REFRESH_ACTIVITY, RefreshActivity)
 
 export const startApp = () => {
   
@@ -785,6 +788,15 @@ export const repliesScreen = (component_id) => {
           title: {
             text: "Replies"
           },
+          rightButtons: [
+            {
+              id: 'refresh_indicator',
+              text: 'refresh',
+              component: {
+                name: REFRESH_ACTIVITY
+              }
+            }
+          ]
         }
       }
     }

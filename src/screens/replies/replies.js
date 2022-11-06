@@ -36,7 +36,7 @@ export default class RepliesScreen extends React.Component{
         }}
         refreshControl={
           <RefreshControl
-            refreshing={Auth.selected_user.replies.is_loading}
+            refreshing={false}
             onRefresh={Auth.selected_user.replies.refresh}
           />
         }
