@@ -193,14 +193,14 @@ export default App = types.model('App', {
         }
         break;
       case "Discover":
-        tab_index = 2;
+        tab_index = 3;
         should_pop = self.current_screen_id !== "microblog.DiscoverScreen"
         if(should_pop){
           Navigation.popToRoot("microblog.DiscoverScreen")
         }
         break;
       case "Bookmarks":
-        tab_index = 3;
+        tab_index = 2;
         should_pop = self.current_screen_id !== "microblog.BookmarksScreen"
         if(should_pop){
           Navigation.popToRoot("microblog.BookmarksScreen")
