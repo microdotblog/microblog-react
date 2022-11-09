@@ -52,6 +52,7 @@ import TagmojiMenu from "../components/sheets/tagmoji";
 import ProfileMoreMenu from "../components/sheets/profile_more";
 import ScreenTitle from "../components/header/screen_title";
 import RefreshActivity from "../components/header/refresh_activity";
+import SheetHeader from "../components/sheets/header";
 
 export const PROFILE_IMAGE = 'microblog.component.ProfileImage'
 export const NEW_POST_BUTTON = 'microblog.component.NewPostButton'
@@ -563,6 +564,7 @@ export const tagmojiBottomSheet = (close = false) => {
   if(!close){
     return RNNBottomSheet.openBottomSheet({
       renderContent: () => <TagmojiMenu />,
+      renderHeader: () => <SheetHeader title="Topics" /> ,
       snapPoints: [0, '20%', '40%', '90%'],
       initialSnapIndex: 2,
       borderRadius: 16,

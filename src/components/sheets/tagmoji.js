@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import Discover from '../../stores/Discover'
 import { tagmojiBottomSheet } from '../../screens'
 import App from '../../stores/App'
@@ -14,7 +14,8 @@ export default class TagmojiMenu extends React.Component{
 				style={{
 					flexDirection: 'row',
 					flexWrap: 'wrap',
-					paddingBottom: 35
+					padding: 16,
+					marginBottom: 20
 				}}
 			>
 				{
@@ -42,19 +43,7 @@ export default class TagmojiMenu extends React.Component{
 	}
   
   render() {
-    return(
-      <View
-        style={{
-          padding: 15,
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: 16
-        }}
-      >
-				<Text style={{ fontWeight: '800', marginBottom: 15, color: App.theme_text_color() }}>Topics</Text>
-				{this._return_tagmoji_menu()}
-      </View>
-    )
+    return this._return_tagmoji_menu()
   }
   
 }
