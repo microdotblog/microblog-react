@@ -3,6 +3,7 @@ import MicroBlogApi, { API_ERROR, DELETE_ERROR } from '../../api/MicroBlogApi';
 import Reply from './account/reply'
 import App from './../App'
 import { Alert } from 'react-native';
+import { replyEditScreen  } from '../../screens';
 
 export default Replies = types.model('Replies', {
   username: types.identifier,
@@ -15,6 +16,7 @@ export default Replies = types.model('Replies', {
   hydrate: flow(function* () {
     console.log("Replies:hydrate")
     self.is_loading = true
+    self.selected_reply = null
     const replies = yield MicroBlogApi.get_replies()
     if(replies !== API_ERROR && replies.items != null){
       self.replies = replies.items
@@ -30,10 +32,10 @@ export default Replies = types.model('Replies', {
     self.hydrate()
   }),
   
-  select_reply: flow(function* (reply) {
+  select_reply_and_open_edit: flow(function* (reply) {
     console.log("Reply:select_reply", reply)
-    reply.hydrate()
     self.selected_reply = reply
+    replyEditScreen()
   }),
   
   delete_reply: flow(function* (reply) {

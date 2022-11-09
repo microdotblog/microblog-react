@@ -51,7 +51,7 @@ export default class RepliesScreen extends React.Component{
                   borderColor: App.theme_alt_background_div_color(),
                   borderBottomWidth: .5
                 }}
-                onPress={reply.can_edit() ? () => replyEditScreen(reply) : () => App.handle_url_from_webview(reply.url)}
+                onPress={reply.can_edit() ? reply.trigger_edit : () => App.handle_url_from_webview(reply.url)}
               >
                 <Text style={{color: App.theme_text_color(), fontSize: 15}}>{reply.content_text}</Text>
                 <View
@@ -67,7 +67,7 @@ export default class RepliesScreen extends React.Component{
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     {
                       reply.can_edit() &&
-                      <TouchableOpacity style={{marginRight: 15, flexDirection: 'row', alignItems: 'center'}} onPress={() => replyEditScreen(reply)}>
+                      <TouchableOpacity style={{marginRight: 15, flexDirection: 'row', alignItems: 'center'}} onPress={reply.trigger_edit}>
                         <SvgXml
                           xml={`
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" strokeWidth=".85" fill="currentColor" viewBox="0 0 16 16">

@@ -807,8 +807,7 @@ export const repliesScreen = (component_id) => {
   return Navigation.push(component_id, options);
 }
 
-export const replyEditScreen = async (reply) => {
-  await Auth.selected_user.replies.select_reply(reply)
+export const replyEditScreen = () => {
   return Navigation.showModal({
     stack: {
       id: REPLY_EDIT_SCREEN,

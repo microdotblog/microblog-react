@@ -113,6 +113,12 @@ export default Reply = types.model('Reply', {
     );
   }),
   
+  trigger_edit: flow(function* () {
+    console.log("Reply:trigger_edit", self.url)
+    yield self.hydrate()
+    Auth.selected_user.replies.select_reply_and_open_edit(self)
+  }),
+  
 }))
 .views(self => ({
   relative_date(){
