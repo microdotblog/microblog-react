@@ -26,13 +26,13 @@ export default class ReplyToolbar extends React.Component{
 					alignItems: 'center'
 				}}
 			>
-				<TouchableOpacity style={{minWidth: 35}} onPress={() => this.props.reply.handle_text_action("**")}>
+				<TouchableOpacity style={{minWidth: 35}} onPress={() => this.props.reply?.handle_text_action("**")}>
 					<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"**"}</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={{minWidth: 35}} onPress={() => this.props.reply.handle_text_action("_")}>
+				<TouchableOpacity style={{minWidth: 35}} onPress={() => this.props.reply?.handle_text_action("_")}>
 					<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"_"}</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={{minWidth: 35}} onPress={() => this.props.reply.handle_text_action("[]")}>
+				<TouchableOpacity style={{minWidth: 35}} onPress={() => this.props.reply?.handle_text_action("[]")}>
 					<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"[ ]"}</Text>
 				</TouchableOpacity>
 				<View
@@ -50,7 +50,7 @@ export default class ReplyToolbar extends React.Component{
 							padding: 2,
 							color: App.theme_text_color(),
 						}}
-					><Text style={{ color: this.props.reply.reply_text_length() > 280 ? '#a94442' : App.theme_text_color() }}>{this.props.reply.reply_text_length()}</Text>/280</Text>
+					><Text style={{ color: this.props.reply?.reply_text_length() > 280 ? '#a94442' : App.theme_text_color() }}>{this.props.reply?.reply_text_length()}</Text>/280</Text>
 				</View>
 			</View>
     )

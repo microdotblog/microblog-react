@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Navigation } from "react-native-navigation"
 import App from '../stores/App'
 import Reply from '../stores/Reply'
+import Replies from '../stores/Replies'
 import { Screens, replyScreen } from './../screens';
 
 Screens.forEach((ScreenComponent, key) => 
@@ -28,6 +29,9 @@ Navigation.events().registerModalDismissedListener(({ componentId }) => {
   console.log("registerModalDismissedListener", componentId)
   if(componentId !== App.bottom_sheet_last_id){
     App.set_previous_screen_name_and_id()
+  }
+  if(componentId === "microblog.ReplyEditScreen"){
+    Replies.hydrate()
   }
 })
 

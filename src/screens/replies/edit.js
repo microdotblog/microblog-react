@@ -4,7 +4,7 @@ import { View, TextInput, Keyboard, ActivityIndicator, InputAccessoryView, Platf
 import { Navigation } from 'react-native-navigation';
 import ReplyToolbar from '../../components/keyboard/reply_toolbar'
 import App from '../../stores/App'
-import Auth from '../../stores/Auth'
+import Replies from '../../stores/Replies'
 
 @observer
 export default class ReplyEditScreen extends React.Component{
@@ -18,7 +18,7 @@ export default class ReplyEditScreen extends React.Component{
   navigationButtonPressed = async ({ buttonId }) => {
     console.log("ReplyEditScreen:navigationButtonPressed::", buttonId)
     if(buttonId === "post_button"){
-      const sent = await Auth.selected_user.replies.selected_reply.update_reply()
+      const sent = await Replies.selected_reply.update_reply()
       if(sent){
         this._dismiss()
       }
@@ -46,9 +46,9 @@ export default class ReplyEditScreen extends React.Component{
             marginBottom: 38,
             padding: 8,
             color: App.theme_text_color(),
-            paddingBottom: Auth.selected_user.replies.selected_reply.reply_text_length() > 280 ? 90 : 0,
+            paddingBottom: Replies.selected_reply?.reply_text_length() > 280 ? 90 : 0,
           }}
-          editable={!Auth.selected_user.replies.selected_reply.is_sending_reply}
+          editable={!Replies.selected_reply?.is_sending_reply}
           multiline={true}
           scrollEnabled={true}
           returnKeyType={'default'}
@@ -58,22 +58,22 @@ export default class ReplyEditScreen extends React.Component{
           clearButtonMode={'while-editing'}
           enablesReturnKeyAutomatically={true}
           underlineColorAndroid={'transparent'}
-          value={Auth.selected_user.replies.selected_reply.reply_text}
-          onChangeText={(text) => !Auth.selected_user.replies.selected_reply.is_sending_reply ? Auth.selected_user.replies.selected_reply.set_reply_text(text) : null}
+          value={Replies.selected_reply?.reply_text}
+          onChangeText={(text) => !Replies.selected_reply?.is_sending_reply ? Replies.selected_reply.set_reply_text(text) : null}
           onSelectionChange={({ nativeEvent: { selection } }) => {
-            Auth.selected_user.replies.selected_reply.set_text_selection(selection)
+            Replies.selected_reply?.set_text_selection(selection)
           }}
           inputAccessoryViewID={this.input_accessory_view_id}
         />
         {
           Platform.OS === 'ios' ?
             <InputAccessoryView nativeID={this.input_accessory_view_id}>
-              <ReplyToolbar reply={Auth.selected_user.replies.selected_reply} />
+              <ReplyToolbar reply={Replies.selected_reply} />
             </InputAccessoryView>
-          :  <ReplyToolbar reply={Auth.selected_user.replies.selected_reply} />
+          :  <ReplyToolbar reply={Replies.selected_reply} />
         }
         {
-          Auth.selected_user.replies.selected_reply.is_sending_reply ?
+          Replies.selected_reply?.is_sending_reply ?
           <View 
             style={{ 
               position: 'absolute',

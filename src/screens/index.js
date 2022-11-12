@@ -3,7 +3,7 @@ import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import * as React from 'react';
 import { Platform } from 'react-native';
 import Reply from '../stores/Reply';
-import Auth from '../stores/Auth'
+import Replies from '../stores/Replies'
 
 // SCREENS
 import TimelineScreen from './timeline/timeline';
@@ -780,7 +780,7 @@ export const imageOptionsScreen = (image, index, component_id) => {
 }
 
 export const repliesScreen = (component_id) => {
-  Auth.selected_user.replies.hydrate()
+  Replies.hydrate()
   const options = {
     component: {
       id: REPLIES_SCREEN,

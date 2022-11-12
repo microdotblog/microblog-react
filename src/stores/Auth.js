@@ -67,11 +67,11 @@ export default Auth = types.model('Auth', {
     console.log("Auth:select_user", user)
     yield Auth.clear_cookies()
     self.selected_user = user
-    self.is_selecting_user = false
     if (self.selected_user.posting.selected_service != null) {
       user.posting.selected_service.hydrate()
       menuBottomSheet(true)
     }
+    self.is_selecting_user = false
     setTimeout(() => {
       Toast.showWithGravity(`You're now logged in as @${user.username}`, Toast.SHORT, Toast.CENTER)
     }, Platform.OS === 'ios' ? 350 : 0)

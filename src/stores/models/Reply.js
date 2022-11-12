@@ -1,13 +1,14 @@
 import { types, flow } from 'mobx-state-tree';
-import MicroPubApi, { POST_ERROR } from './../../../api/MicroPubApi';
+import MicroPubApi, { POST_ERROR } from './../../api/MicroPubApi';
 import { Alert, Platform } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
-import Auth from '../../Auth';
-import App from '../../App';
+import Auth from '../Auth';
+import App from '../App';
+import Replies from '../Replies';
 
 export default Reply = types.model('Reply', {
-  url: types.identifier,
-  id: types.maybeNull(types.string),
+  id: types.identifier,
+  url: types.maybeNull(types.string),
   content_text: types.maybeNull(types.string),
   date_published: types.maybeNull(types.string),
   _microblog: types.maybe(
@@ -45,7 +46,7 @@ export default Reply = types.model('Reply', {
     if (data !== POST_ERROR) {
       self.reply_text = ""
       self.is_sending_reply = false
-      Auth.selected_user.replies.hydrate()
+      //Replies.hydrate()
       App.show_toast("Reply was updated!")
       return true
     }
@@ -105,7 +106,7 @@ export default Reply = types.model('Reply', {
         },
         {
           text: "Delete",
-          onPress: () => Auth.selected_user.replies.delete_reply(self),
+          onPress: () => Replies.delete_reply(self),
           style: 'destructive'
         },
       ],
@@ -116,7 +117,7 @@ export default Reply = types.model('Reply', {
   trigger_edit: flow(function* () {
     console.log("Reply:trigger_edit", self.url)
     yield self.hydrate()
-    Auth.selected_user.replies.select_reply_and_open_edit(self)
+    Replies.select_reply_and_open_edit(self)
   }),
   
 }))
