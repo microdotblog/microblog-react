@@ -4,8 +4,10 @@ import Reply from './models/Reply'
 import App from './App'
 import { Alert } from 'react-native';
 import { replyEditScreen  } from '../screens';
+import Auth from './Auth';
 
 export default Replies = types.model('Replies', {
+  current_username: types.maybeNull(types.string),
   replies: types.optional(types.array(Reply), []),
   is_loading: types.optional(types.boolean, false),
   selected_reply: types.maybeNull(types.reference(Reply))
@@ -14,7 +16,10 @@ export default Replies = types.model('Replies', {
 
   hydrate: flow(function* () {
     console.log("Replies:hydrate")
-    self.replies = []
+    if(self.current_username == null || self.current_username !== Auth.selected_user?.username){
+      self.replies = []
+      self.current_username = Auth.selected_user?.username
+    }
     self.selected_reply = null
     self.is_loading = true
     const replies = yield MicroBlogApi.get_replies()
