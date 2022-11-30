@@ -380,7 +380,18 @@ export default App = types.model('App', {
 
   set_up_appearance_listener: flow(function* () {
     console.log("App:set_up_appearance_listener")
+    AppState.addEventListener("change", nextAppState => {
+      if (nextAppState === "active") {
+        const colorScheme = Appearance.getColorScheme()
+        if (self.theme !== colorScheme){
+          App.change_current_theme(colorScheme)
+        }
+      }
+    })
     Appearance.addChangeListener(({ colorScheme }) => {
+      if (AppState.currentState === "background" || AppState.currentState === "inactive") {
+        return
+      }
       console.log("App:set_up_appearance_listener:change", colorScheme)
       App.change_current_theme(colorScheme)
     })
