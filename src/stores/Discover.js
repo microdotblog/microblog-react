@@ -11,7 +11,8 @@ export default Discover = types.model('Discover', {
 	random_tagmoji: types.optional(types.array(types.string), []),
 	search_shown: types.optional(types.boolean, false),
 	search_query: types.optional(types.string, ""),
-	search_trigger: types.optional(types.boolean, false)
+	search_trigger: types.optional(types.boolean, false),
+	did_trigger_search: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -36,6 +37,7 @@ export default Discover = types.model('Discover', {
 		if(!self.search_shown){
 			self.search_query = ""
 			self.search_trigger = false
+			self.did_trigger_search = false
 		}
 	}),
 	
@@ -43,12 +45,15 @@ export default Discover = types.model('Discover', {
 		self.search_query = value
 		if(value === ""){
 			self.search_trigger = false
+			self.did_trigger_search = false
 		}
 	}),
 	
 	trigger_search: flow(function* (value = true) { 
+		if(value){
+			self.did_trigger_search = true
+		}
 		self.search_trigger = value
-		
 		setTimeout(() =>{
 			self.trigger_search(false)
 		}, 50)
@@ -73,7 +78,7 @@ export default Discover = types.model('Discover', {
 	},
 	
 	can_show_search(){
-		return self.search_shown && self.search_query !== "" && self.search_query.length >= 3
+		return self.did_trigger_search && self.search_shown && self.search_query !== "" && self.search_query.length >= 3
 	},
 	
 	should_load_search(){
