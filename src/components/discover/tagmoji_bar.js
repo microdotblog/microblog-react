@@ -19,7 +19,7 @@ export default class TagmojiBar extends React.Component{
             justifyContent: 'space-between',
             alignItems: 'center',
             paddingHorizontal: 15,
-            paddingVertical: 10,
+            paddingVertical: Discover.search_shown ? 12 : 10,
             width: '100%',
             backgroundColor: App.theme_input_background_color(),
           }}>

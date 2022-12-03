@@ -14,15 +14,16 @@ export default class DiscoverScreen extends React.Component{
 
   render() {
     return (
+      <>
+      <TagmojiBar />
       <GenericScreenComponent
         can_show_web_view={Auth.is_logged_in() && !Auth.is_selecting_user && !Auth.selected_user.muting?.is_sending_mute && !Auth.selected_user.muting?.is_sending_unmute && !Discover.should_load_search()}
         endpoint={Discover.can_show_search() ? `hybrid/discover/search?q=${Discover.search_query}` : "hybrid/discover"}
         component_id={this.props.componentId}
         title={Discover.can_show_search() ? "Search" : "Discover"}
         is_search={Discover.can_show_search()}
-      >
-        <TagmojiBar />
-      </GenericScreenComponent>
+      />
+      </>
     )
   }
 
