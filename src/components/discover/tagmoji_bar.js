@@ -71,7 +71,7 @@ export default class TagmojiBar extends React.Component{
               </View>
             </>
             :
-            <View style={{flexDirection: "row"}}>
+            <View style={{flexDirection: "row", alignItems: "center"}}>
             <TouchableOpacity
               style={{
                 justifyContent: "center",
@@ -80,7 +80,9 @@ export default class TagmojiBar extends React.Component{
                 borderWidth: 2,
                 padding: 4,
                 borderRadius: 50,
-                marginRight: 8
+                marginRight: 8,
+                width: 28,
+                height: 28
               }}
               onPress={Discover.toggle_search_bar}
             >
@@ -89,7 +91,7 @@ export default class TagmojiBar extends React.Component{
               <SFSymbol
                 name={"xmark"}
                 color={App.theme_button_text_color()}
-                style={{ height: 18, width: 18 }}
+                style={{ height: 12, width: 12 }}
               />
               :
               <Image source={SearchIcon} style={{ height: 22, width: 22, tintColor: App.theme_button_text_color() }} />
