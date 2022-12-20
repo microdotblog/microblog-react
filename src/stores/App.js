@@ -10,6 +10,7 @@ import Push from './Push'
 import { theme_options } from '../utils/navigation'
 import Toast from 'react-native-simple-toast';
 import { InAppBrowser } from 'react-native-inappbrowser-reborn'
+import Discover from './Discover'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -271,8 +272,13 @@ export default App = types.model('App', {
               App.open_url(url)
             }
             else {
-              // TODO: Load Discover More
-              App.open_url(url)
+              const topic = Discover.topic_by_slug(parts[1])
+              if(topic != null){
+                App.navigate_to_screen("discover/topic", topic)
+              }
+              else{
+                App.open_url(url)
+              }
             }
           }
           else {

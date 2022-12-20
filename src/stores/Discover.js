@@ -83,6 +83,10 @@ export default Discover = types.model('Discover', {
 	
 	should_load_search(){
 		return self.search_trigger
+	},
+	
+	topic_by_slug(slug){
+		return self.tagmoji.find(topic => topic.name === slug)
 	}
 
 }))
