@@ -47,7 +47,6 @@ export const REPLY_EDIT_SCREEN = 'microblog.ReplyEditScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
-import SheetMenu from './../components/sheets/menu';
 import NewPostButton from './../components/header/new_post';
 import TagmojiMenu from "../components/sheets/tagmoji";
 import ProfileMoreMenu from "../components/sheets/profile_more";
@@ -69,8 +68,8 @@ import ReplyIcon from './../assets/icons/reply.png';
 import BookmarksIcon from './../assets/icons/nav/bookmarks.png'
 
 // SHEETS
-import MainActionSheet from "./../components/sheets/main_action_sheet"
-registerSheet("main_sheet", MainActionSheet);
+import SheetMenu from './../components/sheets/menu';
+registerSheet("main_sheet", SheetMenu);
 
 import Push from "../stores/Push"
 import { theme_options } from "../utils/navigation"
