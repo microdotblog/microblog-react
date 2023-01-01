@@ -9,6 +9,7 @@ import { Navigation } from "react-native-navigation";
 import PushNotifications from '../push/push_notifications'
 import WebLoadingViewModule from './loading_view'
 import WebErrorViewModule from './error_view'
+import { SheetProvider } from "react-native-actions-sheet";
 
 @observer
 export default class WebViewModule extends React.Component{
@@ -99,6 +100,9 @@ export default class WebViewModule extends React.Component{
     const { is_pull_to_refresh_enabled } = this.state
     return (
       <>
+      {
+        Platform.OS === "ios" && <SheetProvider />
+      }
       <ScrollView
         overScrollMode={Platform.OS === 'ios' ? 'auto' : 'always'}
         style={{ flex: 1, width: '100%', height: '100%', backgroundColor: App.theme_background_color() }}

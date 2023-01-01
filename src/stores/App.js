@@ -5,7 +5,6 @@ import Login from './Login';
 import Reply from './Reply';
 import { Linking, Appearance, AppState, Platform, Dimensions } from 'react-native'
 import { Navigation } from "react-native-navigation";
-import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import Push from './Push'
 import { theme_options } from '../utils/navigation'
 import Toast from 'react-native-simple-toast';
