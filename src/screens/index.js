@@ -2,6 +2,7 @@ import { Navigation } from "react-native-navigation";
 import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import * as React from 'react';
 import { Platform } from 'react-native';
+import { registerSheet, SheetManager } from "react-native-actions-sheet";
 import Reply from '../stores/Reply';
 import Replies from '../stores/Replies'
 
@@ -66,6 +67,10 @@ import DiscoverIcon from './../assets/icons/tab_bar/discover.png';
 import ArrowBackIcon from './../assets/icons/arrow_back.png';
 import ReplyIcon from './../assets/icons/reply.png';
 import BookmarksIcon from './../assets/icons/nav/bookmarks.png'
+
+// SHEETS
+import MainActionSheet from "./../components/sheets/main_action_sheet"
+registerSheet("main_sheet", MainActionSheet);
 
 import Push from "../stores/Push"
 import { theme_options } from "../utils/navigation"
@@ -364,15 +369,20 @@ export const loginScreen = (can_dismiss = false) => {
 
 export const menuBottomSheet = (close = false) => {
   if(!close){
-    return RNNBottomSheet.openBottomSheet({
-      renderContent: () => <SheetMenu />,
-      snapPoints: [0, Platform.OS === 'ios' ? 200 : 220, Platform.OS === 'ios' ? 290 : 310, '70%'],
-      initialSnapIndex: 2,
-      borderRadius: 16,
-      backgroundColor: App.theme_background_color_secondary()
-    })
+    return SheetManager.show("main_sheet")
   }
-  RNNBottomSheet.closeBottomSheet()
+  SheetManager.hideAll()
+  
+  // if(!close){
+  //   return RNNBottomSheet.openBottomSheet({
+  //     renderContent: () => <SheetMenu />,
+  //     snapPoints: [0, Platform.OS === 'ios' ? 200 : 220, Platform.OS === 'ios' ? 290 : 310, '70%'],
+  //     initialSnapIndex: 2,
+  //     borderRadius: 16,
+  //     backgroundColor: App.theme_background_color_secondary()
+  //   })
+  // }
+  // RNNBottomSheet.closeBottomSheet()
 }
 
 export const profileScreen = (username, component_id, close_bottom_sheet = true) => {

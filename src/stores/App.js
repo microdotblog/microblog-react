@@ -11,6 +11,7 @@ import { theme_options } from '../utils/navigation'
 import Toast from 'react-native-simple-toast';
 import { InAppBrowser } from 'react-native-inappbrowser-reborn'
 import Discover from './Discover'
+import { menuBottomSheet } from "./../screens"
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -174,8 +175,8 @@ export default App = types.model('App', {
   }),
 
   navigate_to_screen_from_menu: flow(function* (screen) {
-    console.log("App:navigate_to_screen_from_menu", screen, RNNBottomSheet.getComponentName())
-    RNNBottomSheet.closeBottomSheet()
+    console.log("App:navigate_to_screen_from_menu", screen)
+    menuBottomSheet(true)
     let tab_index = null
     let should_pop = false
     switch (screen) {
