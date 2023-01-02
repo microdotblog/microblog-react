@@ -1,5 +1,4 @@
 import { Navigation } from "react-native-navigation";
-import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import * as React from 'react';
 import { Platform } from 'react-native';
 import { registerSheet, SheetManager } from "react-native-actions-sheet";
@@ -48,10 +47,8 @@ export const REPLY_EDIT_SCREEN = 'microblog.ReplyEditScreen';
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
 import NewPostButton from './../components/header/new_post';
-import TagmojiMenu from "../components/sheets/tagmoji";
 import ScreenTitle from "../components/header/screen_title";
 import RefreshActivity from "../components/header/refresh_activity";
-import SheetHeader from "../components/sheets/header";
 
 export const PROFILE_IMAGE = 'microblog.component.ProfileImage'
 export const NEW_POST_BUTTON = 'microblog.component.NewPostButton'
@@ -69,8 +66,10 @@ import BookmarksIcon from './../assets/icons/nav/bookmarks.png'
 // SHEETS
 import SheetMenu from './../components/sheets/menu';
 import ProfileMoreMenu from "./../components/sheets/profile_more"
+import TagmojiMenu from "../components/sheets/tagmoji";
 registerSheet("main_sheet", SheetMenu);
 registerSheet("profile_more_menu", ProfileMoreMenu);
+registerSheet("tagmoji_menu", TagmojiMenu);
 
 import Push from "../stores/Push"
 import { theme_options } from "../utils/navigation"
@@ -104,9 +103,6 @@ Screens.set(SCREEN_TITLE, ScreenTitle)
 Screens.set(REFRESH_ACTIVITY, RefreshActivity)
 
 export const startApp = () => {
-  
-  // INIT BOTTOMSHEET
-  RNNBottomSheet.init()
 
   Navigation.setDefaultOptions(theme_options({}));
 
@@ -561,16 +557,9 @@ export const postingScreen = () => {
 
 export const tagmojiBottomSheet = (close = false) => {
   if(!close){
-    return RNNBottomSheet.openBottomSheet({
-      renderContent: () => <TagmojiMenu />,
-      renderHeader: () => <SheetHeader title="Topics" /> ,
-      snapPoints: [0, '20%', '40%', '90%'],
-      initialSnapIndex: 2,
-      borderRadius: 16,
-      backgroundColor: App.theme_background_color_secondary()
-    })
+    return SheetManager.show("tagmoji_menu")
   }
-  RNNBottomSheet.closeBottomSheet()
+  SheetManager.hide("tagmoji_menu")
 }
 
 export const discoverTopicScreen = (topic, component_id) => {

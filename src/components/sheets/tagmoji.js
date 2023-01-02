@@ -1,12 +1,24 @@
 import * as React from 'react';
+import { useRef } from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import ActionSheet, { useScrollHandlers, ActionSheetRef} from "react-native-actions-sheet";
 import Discover from '../../stores/Discover'
 import { tagmojiBottomSheet } from '../../screens'
 import App from '../../stores/App'
+import SheetHeader from "./header";
 
 @observer
 export default class TagmojiMenu extends React.Component{
+	
+	constructor(props){
+		super(props);
+		this.actionSheetRef = useRef<ActionSheetRef>(null)
+		this.scrollHandlers = useScrollHandlers<ScrollView>(
+			"tagmojo-scroll",
+			this.actionSheetRef
+		)
+	}
 
 	_return_tagmoji_menu() {
 		return (
@@ -43,7 +55,25 @@ export default class TagmojiMenu extends React.Component{
 	}
   
   render() {
-    return this._return_tagmoji_menu()
+    return(
+			<ActionSheet
+				ref={this.actionSheetRef}
+				id={this.props.sheetId}
+				snapPoints={[40,90,100]}
+				initialSnapIndex={[0]}
+				overdrawEnabled={true}
+				useBottomSafeAreaPadding={true}
+				gestureEnabled={true}
+				containerStyle={{
+					backgroundColor: App.theme_background_color_secondary()
+				}}
+			>
+			<SheetHeader title="Topics" />
+			<ScrollView {...this.scrollHandlers}>
+			{this._return_tagmoji_menu()}
+			</ScrollView>
+			</ActionSheet>
+		)
   }
   
 }
