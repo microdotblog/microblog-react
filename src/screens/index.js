@@ -49,7 +49,6 @@ export const REPLY_EDIT_SCREEN = 'microblog.ReplyEditScreen';
 import ProfileImage from './../components/header/profile_image';
 import NewPostButton from './../components/header/new_post';
 import TagmojiMenu from "../components/sheets/tagmoji";
-import ProfileMoreMenu from "../components/sheets/profile_more";
 import ScreenTitle from "../components/header/screen_title";
 import RefreshActivity from "../components/header/refresh_activity";
 import SheetHeader from "../components/sheets/header";
@@ -69,7 +68,9 @@ import BookmarksIcon from './../assets/icons/nav/bookmarks.png'
 
 // SHEETS
 import SheetMenu from './../components/sheets/menu';
+import ProfileMoreMenu from "./../components/sheets/profile_more"
 registerSheet("main_sheet", SheetMenu);
+registerSheet("profile_more_menu", ProfileMoreMenu);
 
 import Push from "../stores/Push"
 import { theme_options } from "../utils/navigation"
@@ -370,18 +371,7 @@ export const menuBottomSheet = (close = false) => {
   if(!close){
     return SheetManager.show("main_sheet")
   }
-  SheetManager.hideAll()
-  
-  // if(!close){
-  //   return RNNBottomSheet.openBottomSheet({
-  //     renderContent: () => <SheetMenu />,
-  //     snapPoints: [0, Platform.OS === 'ios' ? 200 : 220, Platform.OS === 'ios' ? 290 : 310, '70%'],
-  //     initialSnapIndex: 2,
-  //     borderRadius: 16,
-  //     backgroundColor: App.theme_background_color_secondary()
-  //   })
-  // }
-  // RNNBottomSheet.closeBottomSheet()
+  SheetManager.hide("main_sheet")
 }
 
 export const profileScreen = (username, component_id, close_bottom_sheet = true) => {
@@ -681,15 +671,13 @@ export const replyScreen = () => {
 
 export const profileMoreBottomSheet = (username, close = false) => {
   if(!close){
-    return RNNBottomSheet.openBottomSheet({
-      renderContent: () => <ProfileMoreMenu username={username} />,
-      snapPoints: [0, 200],
-      initialSnapIndex: 1,
-      borderRadius: 16,
-      backgroundColor: App.theme_background_color_secondary()
+    return SheetManager.show("profile_more_menu", {
+      payload: {
+        username: username
+      }
     })
   }
-  RNNBottomSheet.closeBottomSheet()
+  SheetManager.hide("profile_more_menu")
 }
 
 export const addBoomarkScreen = () => {
