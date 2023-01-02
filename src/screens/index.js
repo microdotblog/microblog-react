@@ -24,6 +24,7 @@ import HelpScreen from "./help/help";
 import ImageOptionsScreen from "./posting/image_options";
 import RepliesScreen from "./replies/replies";
 import ReplyEditScreen from "./replies/edit";
+import SettingsScreen from "./settings/settings";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -43,6 +44,7 @@ export const HELP_SCREEN = 'microblog.modal.HelpScreen';
 export const IMAGE_OPTIONS_SCREEN = 'microblog.modal.ImageOptionsScreen';
 export const REPLIES_SCREEN = 'micrblog.RepliesScreen';
 export const REPLY_EDIT_SCREEN = 'microblog.ReplyEditScreen';
+export const SETTINGS_SCREEN = 'microblog.modal.SettingsScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -95,6 +97,7 @@ Screens.set(HELP_SCREEN, HelpScreen)
 Screens.set(IMAGE_OPTIONS_SCREEN, ImageOptionsScreen);
 Screens.set(REPLIES_SCREEN, RepliesScreen);
 Screens.set(REPLY_EDIT_SCREEN, ReplyEditScreen);
+Screens.set(SETTINGS_SCREEN, SettingsScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
@@ -821,6 +824,38 @@ export const replyEditScreen = () => {
                   color: App.theme_accent_color()
                 }
               ]
+            },
+            layout: {
+              backgroundColor: App.theme_background_color()
+            }
+          }
+        },
+      }],
+    }
+  });
+}
+
+export const settingsScreen = () => {
+  return Navigation.showModal({
+    stack: {
+      id: SETTINGS_SCREEN,
+      name: SETTINGS_SCREEN,
+      children: [ {
+        component: {
+          id: SETTINGS_SCREEN,
+          name: SETTINGS_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                text: 'Settings',
+              },
+              leftButtons: [
+                {
+                  id: 'back_button',
+                  text: 'Back',
+                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
+                },
+              ],
             },
             layout: {
               backgroundColor: App.theme_background_color()

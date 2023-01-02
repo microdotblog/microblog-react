@@ -12,6 +12,7 @@ import Timeline from './../../assets/icons/nav/timeline.png';
 import Discover from './../../assets/icons/nav/discover.png';
 import Mentions from './../../assets/icons/nav/mentions.png';
 import Help from './../../assets/icons/nav/help.png';
+import SettingsIcon from './../../assets/icons/toolbar/settings.png';
 
 @observer
 export default class MenuNavigation extends React.Component{
@@ -28,6 +29,7 @@ export default class MenuNavigation extends React.Component{
 
     this.secondary_menu = [
       "Replies",
+      "Settings",
       "Help"
     ]
   }
@@ -63,6 +65,9 @@ export default class MenuNavigation extends React.Component{
       switch(item.toLowerCase()){
         case "help":
           Platform.OS === 'ios' ? symbol = "questionmark.circle" : image = Help
+        break;
+        case "settings":
+          Platform.OS === 'ios' ? symbol = "gearshape" : image = SettingsIcon
         break;
         case "replies":
           svg = `
