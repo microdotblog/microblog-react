@@ -121,7 +121,7 @@ class MicroBlogApi {
 			})
 			.catch(error => {
 				console.log(error);
-				return FETCH_ERROR;
+				return POST_ERROR;
 			});
 		return unfollow;
   }
