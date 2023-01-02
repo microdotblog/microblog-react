@@ -101,12 +101,12 @@ export default class ProfileHeader extends React.Component{
         <ScrollView style={{marginTop: 5, marginBottom: 5, maxHeight: more_expanded ? 205 : 'auto'}}>
         {
           long_bio && more_expanded ?
-          <Hyperlink linkDefault={ true } linkStyle={{ textDecorationLine: 'underline' }}>
+          <Hyperlink onPress={(url) => App.handle_url_from_webview(url)} linkStyle={{ textDecorationLine: 'underline' }}>
             <Text style={{ paddingBottom: 20, color: App.theme_text_color() }}>{long_bio}</Text>
           </Hyperlink>
           :
           long_bio && !more_expanded ?
-          <Hyperlink linkDefault={ true } linkStyle={{ textDecorationLine: 'underline' }}>
+          <Hyperlink onPress={(url) => App.handle_url_from_webview(url)} linkStyle={{ textDecorationLine: 'underline' }}>
             <Text style={{ position: 'relative', color: App.theme_text_color() }}>
               {short_bio}{ long_bio.length > short_bio.length ? "..." : "" }
             </Text>
