@@ -11,6 +11,7 @@ import Toast from 'react-native-simple-toast';
 import { InAppBrowser } from 'react-native-inappbrowser-reborn'
 import Discover from './Discover'
 import { menuBottomSheet } from "./../screens"
+import Settings from "./Settings"
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -29,7 +30,7 @@ export default App = types.model('App', {
   bottom_sheet_last_id: types.maybeNull(types.string),
   post_modal_is_open: types.optional(types.boolean, false),
   font_scale: types.optional(types.number, 1),
-  is_changing_font_scale: types.optional(types.boolean, false),
+  is_changing_font_scale: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -43,6 +44,7 @@ export default App = types.model('App', {
     self.current_screen_id = TIMELINE_SCREEN
     
     Push.hydrate()
+    Settings.hydrate()
     Auth.hydrate().then(() => {
       startApp().then(() => {
         console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
