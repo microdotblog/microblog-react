@@ -17,11 +17,9 @@ export default class ProfileHeader extends React.Component{
       loading: true,
       profile: null,
       more_expanded: false,
-      is_toggling_follow: false
+      is_toggling_follow: false,
+      is_mastodon: false
     }
-    let now = new Date()
-    now.setHours(0, 0, 0, 0)
-    this.now = now
   }
   
   componentDidMount = async () => {
@@ -49,7 +47,8 @@ export default class ProfileHeader extends React.Component{
       this.setState({
         loading: false,
         profile: profile,
-        is_toggling_follow: false
+        is_toggling_follow: false,
+        is_mastodon: profile._microblog.username.includes("@")
       })
     }
     else if(profile === API_ERROR){
@@ -65,8 +64,8 @@ export default class ProfileHeader extends React.Component{
     return(
       <View style={{ padding: 8, backgroundColor: App.theme_button_background_color(), width: '100%' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => App.set_image_modal_data_and_activate(`${profile.author.avatar}?v=${this.now}`)}>
-            <Image source={{ uri: `${profile.author.avatar}?v=${this.now}` }} style={{ width: 50, height: 50, borderRadius: 50 }} />
+          <TouchableOpacity onPress={() => App.set_image_modal_data_and_activate(`${profile.author.avatar}${!this.state.is_mastodon ? `?v=${App.now()}`: ""}`)}>
+            <Image source={{ uri: `${profile.author.avatar}${!this.state.is_mastodon ? `?v=${App.now()}`: ""}` }} style={{ width: 50, height: 50, borderRadius: 50 }} />
           </TouchableOpacity>
           <View style={{ marginLeft: 15 }}>
             <Text style={{ fontWeight: '700', fontSize: 18, marginBottom: 2, color: App.theme_text_color() }}>{profile.author.name}</Text>
