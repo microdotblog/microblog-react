@@ -55,6 +55,7 @@ buck-out/
 # Bundle artifact
 *.jsbundle
 
+# Ruby / CocoaPods
 # CocoaPods
 /ios/Pods/
 .nova
@@ -63,3 +64,5 @@ buck-out/
 *.hprof
 /android/app/google-services.json
 vendor
+ios/.xcode.env.local
+/vendor/bundle/
