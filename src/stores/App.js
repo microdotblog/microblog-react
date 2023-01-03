@@ -319,11 +319,11 @@ export default App = types.model('App', {
     Linking.canOpenURL(url).then(async (supported) => {
       if (supported) {
         const is_inapp_browser_avail = await InAppBrowser.isAvailable()
-        if(is_inapp_browser_avail && !open_external){
+        if(is_inapp_browser_avail && !open_external && !Settings.open_links_in_external_browser){
           return InAppBrowser.open(url, {
             dismissButtonStyle: 'close',
             preferredControlTintColor: "#f80",
-            readerMode: false,
+            readerMode: Settings.open_links_with_reader_mode,
             animated: true,
             modalEnabled: false
           })
