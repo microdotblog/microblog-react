@@ -1,23 +1,32 @@
-# Micro.blog Android App (React Native)
+# Micro.blog React Native App 
 
 Welcome to the React Native app for Micro.blog. Here are some things to get started:
 
 ## Install & Run the project
 
-In the main root of this repo, run `yarn` or `npm install`.
+In the main root of this repo, run `yarn` or `npm install`. Yarn is preferred as the lock file will always be respected and the app will run the exact same package versions.
 
+### Running on Android:
 Note that you need to have a working installation of Android Studio and an enabled emulator. You can download it [here](https://developer.android.com/studio/).
 
 Once your packages have been installed using the above command, you can open up the project in Android Studio. Once Gradle has finished doing what it needs to, "Run" the app in your emulator and/or real device.
 
 Alternatively you can run `yarn android` which will do all the steps above without having to open Android Studio.
 
+### Running on iOS:
+Before running the app on iOS, you will need to install pod files via `cocoapods`. Navigate to `./ios` and run `pod install`.
+
+Afterwards, open Xcode and run the app. You may need to sign the app. Alternatively you can run `yarn ios`.
+
+### Running the app after installing on the simulators:
+You can simply start the development server (Metro), used for getting code to the development app, by running `yarn start`. Then simply open the app on your simulator of choice.
+
 ## Android Push Notifications
 
 Push notifications on Android require the `google-services.json` file to be present in the root of `android/app`. There might be build errors if it isn't present. Note that this file has been excluded/ignored from source control. Check the Firebase dashboard to download it.
 
 To test notifications, use the following "data" within the message:
-`{"from_user": "{"username":"gluon"}", "post_id": "12499040", "to_user": "{"username":"vincent"}"}`
+`{"from_user": "{"username":"manton"}", "post_id": "12499040", "to_user": "{"username":"vincent"}"}`
 
 ## iOS Push Notifications
 
@@ -28,10 +37,10 @@ To test notifications with the iOS simulator, you can use an app like [Sim Genie
 {
 	"aps" : {
 		"alert" : {
-			"body" : "This should work…"
+			"body" : "You should work harder..."
 		},
 	},
-	"from_user": {"username":"gluon"},
+	"from_user": {"username":"manton"},
 	"post_id": "12499040", 
 	"to_user": {"username":"vincent"}
 }
@@ -41,7 +50,7 @@ To test notifications with the iOS simulator, you can use an app like [Sim Genie
 
 A by product of loving the Ruby language so much, I started adopting snake_case in JavaScript years ago as it provided better readability for me. This might be confusing at first. I don't mind if camelCase will be used for anything, just be aware that I'll continue to adopt my approach in future (unless I change my mind).
 
-## Connection issues to Metro in the sim, or device, when running in develop mode
+## Connection issues to Metro in the sim, or device, when running in develop mode on Android
 
 Sometimes the Android simulator won't connect to the Meto Bundler locally. In order to get it to work, use the following command in the terminal after the sim or device is connected/running.
 
