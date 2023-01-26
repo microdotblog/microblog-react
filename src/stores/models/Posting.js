@@ -151,8 +151,8 @@ export default Posting = types.model('Posting', {
   handle_image_action: flow(function* () {
     console.log("Posting:handle_image_action")
     const options = {
-      title: 'Select an image',
-      mediaType: 'photo',
+      title: 'Select an image or video',
+      mediaType: 'mixed',
     };
     const result = yield launchImageLibrary(options)
     console.log("Posting:handle_image_action:result", result)
