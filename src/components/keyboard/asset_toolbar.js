@@ -4,11 +4,11 @@ import { View, TouchableOpacity, Image, ActivityIndicator, Platform } from 'reac
 import Auth from '../../stores/Auth';
 
 @observer
-export default class ImageToolbar extends React.Component{
+export default class AssetToolbar extends React.Component{
   
   render() {
     const { posting } = Auth.selected_user
-    if(posting.post_images.length > 0){
+    if(posting.post_assets.length > 0){
       return(
         <View
           style={{
@@ -23,10 +23,10 @@ export default class ImageToolbar extends React.Component{
           }}
         >
           {
-            posting.post_images.map((image, index) => (
+            posting.post_assets.map((asset, index) => (
               <TouchableOpacity
-                onPress={() => posting.image_option_screen(image, index, this.props.componentId)}
-                key={image.uri}
+                onPress={() => posting.image_option_screen(asset, index, this.props.componentId)}
+                key={asset.uri}
                 style={{
                   marginRight: 4,
                   position: 'relative',
@@ -35,9 +35,9 @@ export default class ImageToolbar extends React.Component{
                   width: 50,
                   height: 50
                 }}>
-                <Image source={{ uri: image.remote_url ? image.remote_url : image.uri }} style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
+                <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
                 {
-                  image.is_uploading ?
+                  asset.is_uploading ?
                     <View 
                       style={{ 
                         position: 'absolute',

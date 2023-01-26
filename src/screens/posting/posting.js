@@ -5,7 +5,7 @@ import { Navigation } from 'react-native-navigation';
 import Auth from '../../stores/Auth';
 import PostToolbar from '../../components/keyboard/post_toolbar'
 import App from '../../stores/App'
-import ImageToolbar from '../../components/keyboard/image_toolbar';
+import AssetToolbar from '../../components/keyboard/asset_toolbar';
 
 @observer
 export default class PostingScreen extends React.Component{
@@ -98,7 +98,7 @@ export default class PostingScreen extends React.Component{
                 marginTop: 3,
                 ...Platform.select({
                   android: {
-                  marginBottom: posting.post_text_length() > 280 || posting.post_title ? posting.post_images.length > 0 ? 135 : 80 : posting.post_images.length > 0 ? 93 : 38,
+                  marginBottom: posting.post_text_length() > 280 || posting.post_title ? posting.post_assets.length > 0 ? 135 : 80 : posting.post_assets.length > 0 ? 93 : 38,
                   },
                   ios: {
                     paddingBottom: posting.post_text_length() > 280 ? 150 : 0,
@@ -131,12 +131,12 @@ export default class PostingScreen extends React.Component{
         {
           Platform.OS === 'ios' ?
             <InputAccessoryView nativeID={this.input_accessory_view_id}>
-              <ImageToolbar componentId={this.props.componentId} />
+              <AssetToolbar componentId={this.props.componentId} />
               <PostToolbar componentId={this.props.componentId} />
             </InputAccessoryView>
           :  
           <>
-            <ImageToolbar componentId={this.props.componentId} />
+            <AssetToolbar componentId={this.props.componentId} />
             <PostToolbar componentId={this.props.componentId} />
           </>
         }

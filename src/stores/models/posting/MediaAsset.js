@@ -1,7 +1,7 @@
 import { types, flow } from 'mobx-state-tree';
 import MicroPubApi, { POST_ERROR } from './../../../api/MicroPubApi';
 
-export default Image = types.model('Image', {
+export default MediaAsset = types.model('MediaAsset', {
 	uri: types.identifier,
 	type: types.maybe(types.string),
 	is_uploading: types.optional(types.boolean, false),
@@ -14,7 +14,7 @@ export default Image = types.model('Image', {
 	upload: flow(function* (service_object) {
 		self.is_uploading = true
 		const response = yield MicroPubApi.upload_image(service_object, self)
-		console.log("Image:upload", response)
+		console.log("MediaAsset:upload", response)
 		if (response !== POST_ERROR) {
 			self.remote_url = response.url
 			self.did_upload = true
@@ -23,7 +23,7 @@ export default Image = types.model('Image', {
 	}),
 	
 	set_alt_text: flow(function* (text) {
-		console.log("Image:set_alt_text", text)
+		console.log("MediaAsset:set_alt_text", text)
 		self.alt_text = text
 	})
 

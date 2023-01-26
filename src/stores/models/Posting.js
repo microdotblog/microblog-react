@@ -4,7 +4,7 @@ import { blog_services } from './../enums/blog_services';
 import { Alert, Platform, Linking } from 'react-native';
 import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
 import { launchImageLibrary } from 'react-native-image-picker';
-import Image from './posting/Image'
+import MediaAsset from './posting/MediaAsset'
 import App from '../App'
 import Clipboard from '@react-native-clipboard/clipboard';
 import { imageOptionsScreen } from '../../screens';
@@ -16,7 +16,7 @@ export default Posting = types.model('Posting', {
   post_text: types.optional(types.string, ""),
   post_title: types.maybeNull(types.string),
   is_sending_post: types.optional(types.boolean, false),
-  post_images: types.optional(types.array(Image), []),
+  post_assets: types.optional(types.array(MediaAsset), []),
   post_categories: types.optional(types.array(types.string), []),
   is_adding_bookmark: types.optional(types.boolean, false),
   text_selection: types.optional(
@@ -53,7 +53,7 @@ export default Posting = types.model('Posting', {
       // We want to select one default endpoint
       self.selected_service = self.services[0]
     }
-    self.post_images = []
+    self.post_assets = []
     self.is_sending_post = false
     self.is_adding_bookmark = false
   }),
@@ -77,7 +77,7 @@ export default Posting = types.model('Posting', {
   
   send_post: flow(function* () {
 		console.log("Posting:send_post", self.post_text)
-    if(self.post_text === "" && self.post_images.length === 0){
+    if(self.post_text === "" && self.post_assets.length === 0){
       Alert.alert(
         "Whoops...",
         "There is nothing to post... type something to get started."
@@ -91,20 +91,20 @@ export default Posting = types.model('Posting', {
       )
       return false
     }
-    if(self.post_images.filter(image => image.is_uploading)?.length > 0){
+    if(self.post_assets.filter(image => image.is_uploading)?.length > 0){
       Alert.alert(
         "Whoops...",
-        "We're still uploading images. Please wait and try again."
+        "We're still uploading your media. Please wait and try again."
       )
       return false
     }
     self.is_sending_post = true
-    const post_success = yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_images, self.post_categories)
+    const post_success = yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories)
     self.is_sending_post = false
     if(post_success !== POST_ERROR){
       self.post_text = ""
       self.post_title = null
-      self.post_images = []
+      self.post_assets = []
       self.post_categories = []
       return true
     }
@@ -148,38 +148,39 @@ export default Posting = types.model('Posting', {
     
   }),
 
-  handle_image_action: flow(function* () {
-    console.log("Posting:handle_image_action")
+  handle_asset_action: flow(function* () {
+    console.log("Posting:handle_asset_action")
     const options = {
       title: 'Select an image or video',
       mediaType: 'mixed',
     };
     const result = yield launchImageLibrary(options)
-    console.log("Posting:handle_image_action:result", result)
+    console.log("Posting:handle_asset_action:result", result)
     if(result.didCancel){
       return
     }
     if(result.errorCode){
       Alert.alert(
         "Whoops...",
-        "There was an error with selecting your image, please try again."
+        "There was an error with selecting your image or video, please try again."
       )
       return
     }
     if (result.assets) {
       result.assets.forEach((asset) => {
         console.log("Posting:handle_image_action:asset", asset)
-        const image = Image.create(asset)
-        self.post_images.push(image)
-        image.upload(self.selected_service.service_object())
+        const media_asset = MediaAsset.create(asset)
+        self.post_assets.push(media_asset)
+        media_asset.upload(self.selected_service.service_object())
       })
     }
   }),
 
-  image_action: flow(function* (image, index) {
+  asset_action: flow(function* (asset, index) {
     console.log("Posting:image_action", image)
-    const existing_index = self.post_images.findIndex(file => file.uri === image.uri)
+    const existing_index = self.post_assets.findIndex(file => file.uri === asset.uri)
     if (existing_index > -1) {
+      // TODO: Add correct terminology for file type
       Alert.alert(
         "Remove image",
         "Are you sure you want to remove this image from this post?",
@@ -190,7 +191,7 @@ export default Posting = types.model('Posting', {
           },
           {
             text: "Remove",
-            onPress: () => self.remove_image(index),
+            onPress: () => self.remove_asset(index),
             style: 'destructive'
           },
         ],
@@ -204,9 +205,9 @@ export default Posting = types.model('Posting', {
     return imageOptionsScreen(image, index, component_id)
   }),
   
-  remove_image: flow(function* (image_index) {
-    console.log("Posting:remove_image:index", image_index)
-    self.post_images.splice(image_index, 1)
+  remove_asset: flow(function* (media_index) {
+    console.log("Posting:remove_image:index", media_index)
+    self.post_assets.splice(media_index, 1)
   }),
 
   remove_post_categories: flow(function* () {

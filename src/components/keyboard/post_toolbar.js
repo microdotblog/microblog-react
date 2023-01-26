@@ -42,7 +42,7 @@ export default class PostToolbar extends React.Component{
 					<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("[]")}>
 						<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"[ ]"}</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={{minWidth: 35, marginLeft: 8, marginRight: 8}} onPress={posting.handle_image_action}>
+					<TouchableOpacity style={{minWidth: 35, marginLeft: 8, marginRight: 8}} onPress={posting.handle_asset_action}>
 						{
 						Platform.OS === 'ios' ?
 							<SFSymbol
@@ -95,7 +95,6 @@ export default class PostToolbar extends React.Component{
 							fontWeight: '400',
 							padding: 2,
 							color: App.theme_text_color(),
-							// backgroundColor: App.theme_chars_background_color(),
 							position: 'absolute',
 							top: -35,
 							right: 0
