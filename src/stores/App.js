@@ -525,6 +525,9 @@ export default App = types.model('App', {
   theme_chars_background_color() {
     return self.theme === "dark" ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.6)"
   },
+  theme_settings_group_background_color() {
+    return self.theme === "dark" ? "#1F2937" : "#eff1f3"
+  },
   should_reload_web_view() {
     // When it returns true, this will trigger a reload of the webviews
     return self.is_switching_theme || self.is_changing_font_scale
