@@ -12,7 +12,7 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.facebook.react.bridge.JSIModulePackage;
-// import com.swmansion.reanimated.ReanimatedJSIModulePackage;
+import com.swmansion.reanimated.ReanimatedJSIModulePackage;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 
@@ -41,7 +41,7 @@ public class MainApplication extends NavigationApplication {
 
         @Override
         protected JSIModulePackage getJSIModulePackage() {
-          // return new ReanimatedJSIModulePackage(); // <- add
+          return new ReanimatedJSIModulePackage(); // <- add
         }
       };
 
