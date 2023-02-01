@@ -94,7 +94,7 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    //namespace "blog.micro.android"
+    namespace "blog.micro.android"
     defaultConfig {
         applicationId "blog.micro.android"
         minSdkVersion rootProject.ext.minSdkVersion
