@@ -14,10 +14,7 @@ export default class ScreenTitle extends React.Component{
 					style={{
 						flexDirection: 'row',
 						alignItems: 'center',
-						...Platform.select({
-							android: {
-							marginTop: 12
-						}})
+						flex: 1
 					}}
 				>
 					{ Platform.OS === 'android' && <ProfileImage /> }
