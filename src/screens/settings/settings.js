@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, ScrollView, Switch } from 'react-native';
+import { View, Text, ScrollView, Switch, Platform } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import App from '../../stores/App'
 import Settings from '../../stores/Settings';
@@ -32,10 +32,13 @@ export default class SettingsScreen extends React.Component{
 						<Text style={{ fontSize: 16, color: App.theme_text_color() }}>Open links in external browser</Text>
 						<Switch value={Settings.open_links_in_external_browser} onValueChange={Settings.toggle_open_links_in_external_browser} trackColor={{true: App.theme_accent_color()}} />
 					</View>
-					<View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 10, paddingBottom: 0, }}>
-						<Text style={{ fontSize: 16, color: App.theme_text_color() }}>Reader View</Text>
-						<Switch disabled={Settings.open_links_in_external_browser} value={Settings.open_links_in_external_browser ? false : Settings.open_links_with_reader_mode} onValueChange={Settings.toggle_open_links_with_reader_mode} trackColor={{true: App.theme_accent_color()}} />
-					</View>
+					{
+						Platform.OS === "ios" &&
+						<View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 10, paddingBottom: 0, }}>
+							<Text style={{ fontSize: 16, color: App.theme_text_color() }}>Reader View</Text>
+							<Switch disabled={Settings.open_links_in_external_browser} value={Settings.open_links_in_external_browser ? false : Settings.open_links_with_reader_mode} onValueChange={Settings.toggle_open_links_with_reader_mode} trackColor={{true: App.theme_accent_color()}} />
+						</View>
+					}
 				</View>
       </ScrollView>
     )
