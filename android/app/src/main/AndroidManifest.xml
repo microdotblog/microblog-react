@@ -1,5 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="blog.micro.android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <permission android:name="blog.micro.android.permission.permission.C2D_MESSAGE" android:protectionLevel="signature" />
     <uses-permission android:name="blog.micro.android.permission.permission.C2D_MESSAGE" />
