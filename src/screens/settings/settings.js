@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, ScrollView, Switch, Platform, ActivityIndicator } from 'react-native';
 import { Navigation } from 'react-native-navigation';
+import FastImage from 'react-native-fast-image';
 import App from '../../stores/App'
 import Auth from '../../stores/Auth';
 import Settings from '../../stores/Settings';
@@ -65,7 +66,18 @@ export default class SettingsScreen extends React.Component{
 										borderColor: App.theme_border_color()
 									}}
 								>
-									<Text style={{ fontSize: 16, color: App.theme_text_color() }}>@{user.username}</Text>
+									<View style={{flexDirection: "row", alignItems: "center"}}>
+										<FastImage
+											source={{
+												uri: `${user.avatar}?v=${App.now()}`,
+												priority: FastImage.priority.normal,
+												cache: FastImage.cacheControl.web
+											}}
+											resizeMode={FastImage.resizeMode.contain}
+											style={{ width: 24, height: 24, borderRadius: 50, marginRight: 8 }}
+										/>
+										<Text style={{ fontSize: 16, color: App.theme_text_color() }}>@{user.username}</Text>
+									</View>
 									<View style={{flexDirection: "row"}}>
 									{
 										user.toggling_push &&
