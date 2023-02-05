@@ -13,7 +13,9 @@ export default User = types.model('User', {
     full_name: types.maybeNull(types.string),
     posting: types.maybeNull(Posting),
     muting: types.maybeNull(Muting),
-    push_enabled: types.optional(types.boolean, false)
+    push_enabled: types.optional(types.boolean, false),
+    toggling_push: types.optional(types.boolean, false),
+    did_complete_auto_register_push: types.optional(types.boolean, false)
   })
   .actions(self => ({
 
@@ -34,11 +36,32 @@ export default User = types.model('User', {
       else {
         self.muting.hydrate()
       }
-      self.push_enabled = yield Push.register_token(self.token())
+      if(!self.did_complete_auto_register_push){
+        self.push_enabled = yield Push.register_token(self.token())
+        if(self.push_enabled){
+          self.did_complete_auto_register_push = true
+        }
+      }
+      self.toggling_push = false
     }),
     
     afterCreate: flow(function* () {
       self.hydrate()
+    }),
+    
+    toggle_push_notifications: flow(function* () {
+      self.toggling_push = true
+      !self.push_enabled ? yield self.register_for_push() : yield self.unregister_for_push()
+      self.toggling_push = false
+    }),
+    
+    register_for_push: flow(function* () {
+      self.push_enabled = yield Push.register_token(self.token())
+    }),
+    
+    unregister_for_push: flow(function* () {
+      let did_unregister = yield Push.unregister_user_from_push(self.token())
+      self.push_enabled = !did_unregister
     }),
     
   }))
