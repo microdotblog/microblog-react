@@ -8,13 +8,6 @@ import App from '../../stores/App';
 
 @observer
 export default class ProfileImage extends React.Component{
-
-  constructor (props) {
-    super(props)
-    let now = new Date()
-		now.setHours(0,0,0,0)
-		this.now = now
-  }
   
   render() {
     if(Auth.selected_user != null){
@@ -25,7 +18,7 @@ export default class ProfileImage extends React.Component{
         >
           <FastImage
             source={{
-              uri: `${Auth.selected_user.avatar}?v=${this.now}`,
+              uri: `${Auth.selected_user.avatar}?v=${App.now()}`,
               priority: FastImage.priority.normal,
               cache: FastImage.cacheControl.web
             }}
