@@ -27,7 +27,6 @@ export default App = types.model('App', {
   is_scrolling: types.optional(types.boolean, false),
   theme: types.optional(types.string, 'light'),
   is_switching_theme: types.optional(types.boolean, false),
-  bottom_sheet_last_id: types.maybeNull(types.string),
   post_modal_is_open: types.optional(types.boolean, false),
   font_scale: types.optional(types.number, 1),
   is_changing_font_scale: types.optional(types.boolean, false)
@@ -108,11 +107,6 @@ export default App = types.model('App', {
     if (screen_id === "DISCOVER_SCREEN") {
       Discover.shuffle_random_emoji()
     }
-  }),
-  
-  set_bottom_sheet_last_opened_id: flow(function* (component_id) {
-    console.log("App:set_bottom_sheet_last_opened_id", component_id)
-    self.bottom_sheet_last_id = component_id
   }),
   
   set_previous_screen_name_and_id: flow(function* () {

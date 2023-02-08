@@ -16,9 +16,6 @@ Navigation.events().registerComponentDidAppearListener(({ componentName, compone
   switch (componentName) {
     case componentName.includes("microblog.component"):
       return
-    case "__initBottomSheet__":
-      App.set_bottom_sheet_last_opened_id(componentId)
-      return
     default:
       App.set_current_screen_name_and_id(componentName, componentId)
       break;
