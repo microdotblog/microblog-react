@@ -48,7 +48,7 @@ export default class RepliesScreen extends React.Component{
       >
         {
           Replies.replies.map((reply) => {
-            return <ReplyCell reply={reply} />
+            return <ReplyCell key={reply.id} reply={reply} />
           })
         }
       </ScrollView>
