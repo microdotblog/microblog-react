@@ -87,7 +87,7 @@ export default class ReplyCell extends React.Component{
           }}
           onPress={reply.can_edit() ? reply.trigger_edit : () => App.handle_url_from_webview(reply.url)}
         >
-          <Text style={{color: App.theme_text_color(), fontSize: 15}}>{reply.content_text}</Text>
+          <Text style={{color: App.theme_text_color(), fontSize: 15, opacity: reply.can_edit() ? 1 : .5}}>{reply.content_text}</Text>
           <View
             style={{
               flexDirection: "row",
