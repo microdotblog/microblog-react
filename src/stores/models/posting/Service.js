@@ -30,6 +30,8 @@ export default Service = types.model('Service', {
   check_for_categories: flow(function* () { 
     if(self.config?.destination != null && self.config.destination.length > 0){
       self.config.destination.forEach(async (destination) => {
+        // TODO: Perhaps check if we already have categories downloaded before fetching,
+        // as we download them on demand when opening the new post screen.
         console.log("Endpoint:check_for_categories", destination.uid)
         const data = await MicroPubApi.get_categories(self.service_object(), destination.uid)
         console.log("Endpoint:check_for_categories:categories", data)
@@ -43,11 +45,12 @@ export default Service = types.model('Service', {
   check_for_posts: flow(function* () { 
     if(self.config?.destination != null && self.config.destination.length > 0){
       self.config.destination.forEach(async (destination) => {
+        // TODO: Check if we already have posts for the destination before downloading again.
         console.log("Endpoint:check_for_posts", destination.uid)
         const data = await MicroPubApi.get_posts(self.service_object(), destination.uid)
         console.log("Endpoint:check_for_posts:posts", data?.items?.length)
         if(data?.items != null && data.items?.length > 0){
-          // TODO: DO SOMETHING WITH THE POSTS
+          destination.set_posts(data.items)
         }
       })
     }

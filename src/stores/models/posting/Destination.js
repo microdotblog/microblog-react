@@ -6,7 +6,8 @@ export default Destination = types.model('Destination', {
 	"microblog-audio": types.optional(types.boolean, false),
 	"microblog-default": types.optional(types.boolean, false),
 	"microblog-title": types.maybeNull(types.string),
-	categories: types.optional(types.array(types.string), [])
+	categories: types.optional(types.array(types.string), []),
+	posts: types.optional(types.array(types.string), [])
 })
 .actions(self => ({
 
@@ -16,6 +17,11 @@ export default Destination = types.model('Destination', {
 
 	set_default(is_default) {
 		self[ "microblog-default" ] = is_default
-	}
+	},
+	
+	set_posts(posts) {
+		console.log("Destination:set_posts", posts.length)
+		//self.posts = posts
+	},
 
 }))
