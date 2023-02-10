@@ -22,6 +22,7 @@ export default Service = types.model('Service', {
       if(config){
         self.config = config
         self.check_for_categories()
+        self.check_for_posts()
       }
     }
   }),
@@ -34,6 +35,19 @@ export default Service = types.model('Service', {
         console.log("Endpoint:check_for_categories:categories", data)
         if(data?.categories != null && data.categories.length > 0){
           destination.set_categories(data.categories)
+        }
+      })
+    }
+  }),
+  
+  check_for_posts: flow(function* () { 
+    if(self.config?.destination != null && self.config.destination.length > 0){
+      self.config.destination.forEach(async (destination) => {
+        console.log("Endpoint:check_for_posts", destination.uid)
+        const data = await MicroPubApi.get_posts(self.service_object(), destination.uid)
+        console.log("Endpoint:check_for_posts:posts", data?.items?.length)
+        if(data?.items != null && data.items?.length > 0){
+          // TODO: DO SOMETHING WITH THE POSTS
         }
       })
     }
