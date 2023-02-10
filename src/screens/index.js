@@ -25,6 +25,7 @@ import ImageOptionsScreen from "./posts/image_options";
 import RepliesScreen from "./replies/replies";
 import ReplyEditScreen from "./replies/edit";
 import SettingsScreen from "./settings/settings";
+import PostsScreen from "./posts/posts";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -45,6 +46,7 @@ export const IMAGE_OPTIONS_SCREEN = 'microblog.modal.ImageOptionsScreen';
 export const REPLIES_SCREEN = 'micrblog.RepliesScreen';
 export const REPLY_EDIT_SCREEN = 'microblog.ReplyEditScreen';
 export const SETTINGS_SCREEN = 'microblog.modal.SettingsScreen';
+export const POSTS_SCREEN = 'microblog.PostsScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -784,7 +786,10 @@ export const repliesScreen = (component_id) => {
               id: 'refresh_indicator',
               text: 'refresh',
               component: {
-                name: REFRESH_ACTIVITY
+                name: REFRESH_ACTIVITY,
+                passProps: {
+                  type: "replies"
+                }
               }
             }
           ]
@@ -865,4 +870,34 @@ export const settingsScreen = () => {
       }],
     }
   });
+}
+
+export const postsScreen = (component_id) => {
+  const options = {
+    component: {
+      id: POSTS_SCREEN,
+      name: POSTS_SCREEN,
+      options: {
+        topBar: {
+          title: {
+            text: "Posts"
+          },
+          rightButtons: [
+            {
+              id: 'refresh_indicator',
+              text: 'refresh',
+              component: {
+                name: REFRESH_ACTIVITY,
+                passProps: {
+                  type: "posts"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  };
+
+  return Navigation.push(component_id, options);
 }
