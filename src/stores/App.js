@@ -259,6 +259,11 @@ export default App = types.model('App', {
       if(after_mb_link.includes("hybrid/conversation")){
         return
       }
+      
+      if(after_mb_link.includes("hybrid/discover")){
+        App.navigate_to_screen_from_menu("Discover")
+        return
+      }
 
       if(parts.length === 2){
         // This is probably a convo
