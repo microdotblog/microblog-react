@@ -28,6 +28,7 @@ export default class MenuNavigation extends React.Component{
     ]
 
     this.secondary_menu = Platform.OS === "ios" ? [
+      "Posts",
       "Replies",
       "Settings",
       "Help"
@@ -73,6 +74,13 @@ export default class MenuNavigation extends React.Component{
           svg = `
           <svg fill="currentColor" viewBox="0 0 30 30" width="30px" height="30px">
           <path d="M 8 3 C 6.895 3 6 3.895 6 5 L 23 5 C 24.657 5 26 6.343 26 8 L 26 21 C 27.105 21 28 20.105 28 19 L 28 5 C 28 3.895 27.105 3 26 3 L 8 3 z M 4 7 C 2.895 7 2 7.895 2 9 L 2 23 C 2 24.105 2.895 25 4 25 L 7 25 L 7 28 A 1 1 0 0 0 8 29 A 1 1 0 0 0 8.8378906 28.542969 L 11.498047 25 L 22 25 C 23.105 25 24 24.105 24 23 L 24 9 C 24 7.895 23.105 7 22 7 L 4 7 z"></path>
+          </svg>
+          `
+        break;
+        case "posts":
+          svg = `
+          <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="30px" height="30px">
+          <path d="M24,4H6C4.895,4,4,4.895,4,6v18c0,1.105,0.895,2,2,2h18c1.105,0,2-0.895,2-2V6C26,4.895,25.105,4,24,4z M17,20H9 c-0.552,0-1-0.448-1-1c0-0.552,0.448-1,1-1h8c0.552,0,1,0.448,1,1C18,19.552,17.552,20,17,20z M21,16H9c-0.552,0-1-0.448-1-1 c0-0.552,0.448-1,1-1h12c0.552,0,1,0.448,1,1C22,15.552,21.552,16,21,16z M21,12H9c-0.552,0-1-0.448-1-1c0-0.552,0.448-1,1-1h12 c0.552,0,1,0.448,1,1C22,11.552,21.552,12,21,12z"></path>
           </svg>
           `
         break;

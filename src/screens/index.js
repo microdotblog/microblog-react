@@ -100,6 +100,7 @@ Screens.set(IMAGE_OPTIONS_SCREEN, ImageOptionsScreen);
 Screens.set(REPLIES_SCREEN, RepliesScreen);
 Screens.set(REPLY_EDIT_SCREEN, ReplyEditScreen);
 Screens.set(SETTINGS_SCREEN, SettingsScreen);
+Screens.set(POSTS_SCREEN, PostsScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
