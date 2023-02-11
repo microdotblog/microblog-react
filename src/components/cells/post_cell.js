@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, Animated, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, Animated, ScrollView } from 'react-native';
 import App from '../../stores/App'
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { RectButton } from 'react-native-gesture-handler';
 import { SvgXml } from 'react-native-svg';
+import FastImage from 'react-native-fast-image';
 
 @observer
 export default class PostCell extends React.Component{
@@ -67,6 +68,29 @@ export default class PostCell extends React.Component{
     );
   }
   
+  _render_images = () => {
+    const { post } = this.props
+    const images = post.images_from_content().map((url) => {
+      return(
+        <FastImage
+          key={url}
+          source={{
+            uri: url,
+            priority: FastImage.priority.normal,
+            cache: FastImage.cacheControl.web
+          }}
+          resizeMode={FastImage.resizeMode.cover}
+          style={{ width: 80, height: 80, borderRadius: 5 }}
+        />
+      )
+    })
+    return(
+      <View style={{marginTop: 12, flexDirection: "row", gap: 5, flexWrap: "wrap"}}>
+        {images}
+      </View>
+    )
+  }
+  
   render() {
     const { post } = this.props
     return(
@@ -87,6 +111,7 @@ export default class PostCell extends React.Component{
           //onPress={reply.can_edit() ? reply.trigger_edit : () => App.handle_url_from_webview(reply.url)}
         >
           <Text style={{color: App.theme_text_color(), fontSize: 15, opacity: 1}}>{post.plain_text_content()}</Text>
+          { post.images_from_content()?.length > 0 && this._render_images() }
           <View
             style={{
               flexDirection: "row",
