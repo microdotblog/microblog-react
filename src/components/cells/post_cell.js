@@ -99,7 +99,7 @@ export default class PostCell extends React.Component{
         friction={1}
         overshootFriction={8}
         enableTrackpadTwoFingerGesture={true}
-        renderRightActions={(progress) => this._right_actions(progress, post)}
+        //renderRightActions={(progress) => this._right_actions(progress, post)}
       >
         <TouchableOpacity
           style={{
