@@ -21,6 +21,7 @@ export default Service = types.model('Service', {
       console.log("Endpoint:hydrate:config", config)
       if(config){
         self.config = config
+        self.config.hydrate_default_destination()
         self.check_for_categories()
         self.check_for_posts()
       }
