@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, Animated, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Animated } from 'react-native';
 import App from '../../stores/App'
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { RectButton } from 'react-native-gesture-handler';
