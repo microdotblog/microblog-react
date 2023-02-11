@@ -1,5 +1,6 @@
 import { types } from 'mobx-state-tree';
 import Post from "./Post";
+import MicroPubApi from './../../../api/MicroPubApi';
 
 export default Destination = types.model('Destination', {
 	uid: types.identifier,
@@ -35,7 +36,7 @@ export default Destination = types.model('Destination', {
 				published: published,
 				url: url
 			}
-			if (!uid || url === "" || self.posts.find(p => p.uid === uid)) {
+			if (!uid || url === "") {
 				return acc;
 			}
 			return [...acc, post]

@@ -10,7 +10,8 @@ export default Service = types.model('Service', {
   type: types.maybeNull(types.string),
   username: types.maybeNull(types.string),
   is_microblog: types.optional(types.boolean, false),
-  config: types.maybeNull(Config)
+  config: types.maybeNull(Config),
+  is_loading_posts: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -45,6 +46,7 @@ export default Service = types.model('Service', {
   
   check_for_posts: flow(function* () { 
     if(self.config?.destination != null && self.config.destination.length > 0){
+      self.is_loading_posts = true
       self.config.destination.forEach(async (destination) => {
         // TODO: Check if we already have posts for the destination before downloading again.
         console.log("Endpoint:check_for_posts", destination.uid)
@@ -54,6 +56,20 @@ export default Service = types.model('Service', {
           destination.set_posts(data.items)
         }
       })
+      self.is_loading_posts = false
+    }
+  }),
+  
+  check_for_posts_for_destination: flow(function* (destination) { 
+    if(destination){
+      self.is_loading_posts = true
+      console.log("Endpoint:check_for_posts_for_destination", destination.uid)
+      const data = yield MicroPubApi.get_posts(self.service_object(), destination.uid)
+      console.log("Endpoint:check_for_posts_for_destination:posts", data?.items?.length)
+      if(data?.items != null && data.items?.length > 0){
+        destination.set_posts(data.items)
+      }
+      self.is_loading_posts = false
     }
   }),
   

@@ -44,16 +44,23 @@ export default class PostsScreen extends React.Component{
   }
   
   _return_posts_list = () => {
-    const { config } = Auth.selected_user.posting.selected_service
+    const { selected_service } = Auth.selected_user.posting
+    const { config } = selected_service
     return(
       <FlatList
         data={config.posts_for_destination()}
-        extraData={config.posts_for_destination().length}
+        extraData={config.posts_for_destination().length && !selected_service.is_loading_posts}
         keyExtractor={this._key_extractor}
         renderItem={this.render_post_item}
         style={{
           backgroundColor: App.theme_background_color_secondary()
         }}
+        refreshControl={
+          <RefreshControl
+            refreshing={false}
+            onRefresh={() => selected_service.check_for_posts_for_destination(config.posts_destination())}
+          />
+        }
       />
     )
   }
