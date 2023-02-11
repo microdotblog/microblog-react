@@ -8,6 +8,8 @@ import MediaAsset from './posting/MediaAsset'
 import App from '../App'
 import Clipboard from '@react-native-clipboard/clipboard';
 import { imageOptionsScreen } from '../../screens';
+import md from 'markdown-it';
+const parser = md();
 
 export default Posting = types.model('Posting', {
   username: types.identifier,
@@ -248,7 +250,10 @@ export default Posting = types.model('Posting', {
   },
   
   post_text_length(){
-    return self.post_text.length
+    const html = parser.render(self.post_text)
+    const regex = /(<([^>]+)>)/ig
+    const text = html.replace(regex, '')
+    return text ? text.length : 0
   }
   
 }))

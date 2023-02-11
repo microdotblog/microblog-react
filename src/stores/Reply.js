@@ -3,6 +3,8 @@ import { Alert, Platform } from 'react-native'
 import MicroBlogApi, { API_ERROR, POST_ERROR } from '../api/MicroBlogApi'
 import Auth from './Auth'
 import Clipboard from '@react-native-clipboard/clipboard';
+import md from 'markdown-it';
+const parser = md();
 
 export default Reply = types.model('Reply', {
   reply_text: types.optional(types.string, ""),
@@ -114,7 +116,10 @@ export default Reply = types.model('Reply', {
   },
   
   reply_text_length(){
-    return self.reply_text.length
+    const html = parser.render(self.reply_text)
+    const regex = /(<([^>]+)>)/ig
+    const text = html.replace(regex, '')
+    return text ? text.length : 0
   }
   
 }))
