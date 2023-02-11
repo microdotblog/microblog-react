@@ -120,7 +120,7 @@ export default class PostCell extends React.Component{
             }}
           >
             <TouchableOpacity onPress={() => App.handle_url_from_webview(post.url)}>
-              <Text style={{color: "gray", fontSize: 12}}>{post.published}</Text>
+              <Text style={{color: "gray", fontSize: 12}}>{post.nice_local_published_date()}</Text>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>

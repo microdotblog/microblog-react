@@ -31,6 +31,11 @@ export default Post = types.model('Post', {
     }
     
     return images;
+  },
+  
+  nice_local_published_date(){
+    const date = new Date(self.published);
+    return date.toLocaleString();
   }
   
 }))
