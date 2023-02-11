@@ -46,17 +46,9 @@ export default Service = types.model('Service', {
   
   check_for_posts: flow(function* () { 
     if(self.config?.destination != null && self.config.destination.length > 0){
-      self.is_loading_posts = true
-      self.config.destination.forEach(async (destination) => {
-        // TODO: Check if we already have posts for the destination before downloading again.
-        console.log("Endpoint:check_for_posts", destination.uid)
-        const data = await MicroPubApi.get_posts(self.service_object(), destination.uid)
-        console.log("Endpoint:check_for_posts:posts", data?.items?.length)
-        if(data?.items != null && data.items?.length > 0){
-          destination.set_posts(data.items)
-        }
+      self.config.destination.forEach((destination) => {
+        self.check_for_posts_for_destination(destination)
       })
-      self.is_loading_posts = false
     }
   }),
   

@@ -15,6 +15,10 @@ export default class PostsScreen extends React.Component{
     Navigation.events().bindComponent(this)
   }
   
+  componentDidAppear(){
+    Auth.selected_user?.posting.selected_service.check_for_posts()
+  }
+  
   _return_header = () => {
     const { config } = Auth.selected_user.posting.selected_service
     return(
