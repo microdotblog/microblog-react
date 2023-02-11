@@ -24,7 +24,6 @@ export default Service = types.model('Service', {
         self.config = config
         self.config.hydrate_default_destination()
         self.check_for_categories()
-        self.check_for_posts()
       }
     }
   }),

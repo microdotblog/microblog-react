@@ -16,7 +16,9 @@ export default class PostsScreen extends React.Component{
   }
   
   componentDidAppear(){
-    Auth.selected_user?.posting.selected_service.check_for_posts()
+    const { selected_service } = Auth.selected_user.posting
+    const { config } = selected_service
+    selected_service?.check_for_posts_for_destination(config.posts_destination())
   }
   
   _return_header = () => {
