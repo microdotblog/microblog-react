@@ -64,6 +64,13 @@ export default Service = types.model('Service', {
     }
   }),
   
+  set_active_posts_dettination: flow(function* (destination) { 
+    if(destination){
+      self.config.set_selected_posts_destination(destination)
+      self.check_for_posts_for_destination(destination)
+    }
+  }),
+  
   afterCreate: flow(function* () {
     self.hydrate()
   }),

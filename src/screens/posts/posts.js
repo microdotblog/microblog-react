@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, FlatList, RefreshControl } from 'react-native';
+import { View, Text, FlatList, RefreshControl, TouchableOpacity } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
 import { Navigation } from 'react-native-navigation';
 import PostCell from '../../components/cells/post_cell';
+import { postsDestinationBottomSheet } from '..'
+import { SheetProvider } from "react-native-actions-sheet";
 
 @observer
 export default class PostsScreen extends React.Component{
@@ -34,9 +36,11 @@ export default class PostsScreen extends React.Component{
           width: '100%',
           backgroundColor: App.theme_input_background_color(),
         }}>
-        <Text style={{color: App.theme_text_color()}}>
-        {config.posts_destination()?.name} ({config.destination.length})
-        </Text>
+        <TouchableOpacity onPress={() => postsDestinationBottomSheet()}>
+          <Text style={{color: App.theme_text_color(), fontWeight: "500", fontSize: 16}}>
+            {config.posts_destination()?.name}
+          </Text>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -72,18 +76,20 @@ export default class PostsScreen extends React.Component{
   }
   
   render() {
-    return(
-      <View style={{ flex: 1, alignItems: 'center' }}>
-        {
-          Auth.is_logged_in() && !Auth.is_selecting_user ?
-            <>
-            {this._return_header()}
-            {this._return_posts_list()}
-            </>
-          :
-          <LoginMessage title="Posts" />
-        }
-      </View>
+    return (
+      <SheetProvider>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          {
+            Auth.is_logged_in() && !Auth.is_selecting_user ?
+              <>
+              {this._return_header()}
+              {this._return_posts_list()}
+              </>
+            :
+            <LoginMessage title="Posts" />
+          }
+        </View>
+      </SheetProvider>
     )
   }
   

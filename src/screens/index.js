@@ -71,9 +71,11 @@ import BookmarksIcon from './../assets/icons/nav/bookmarks.png'
 import SheetMenu from './../components/sheets/menu';
 import ProfileMoreMenu from "./../components/sheets/profile_more"
 import TagmojiMenu from "../components/sheets/tagmoji";
+import PostsDestinationMenu from "../components/sheets/posts_destination";
 registerSheet("main_sheet", SheetMenu);
 registerSheet("profile_more_menu", ProfileMoreMenu);
 registerSheet("tagmoji_menu", TagmojiMenu);
+registerSheet("posts_destination_menu", PostsDestinationMenu);
 
 import Push from "../stores/Push"
 import { theme_options } from "../utils/navigation"
@@ -901,4 +903,11 @@ export const postsScreen = (component_id) => {
   };
 
   return Navigation.push(component_id, options);
+}
+
+export const postsDestinationBottomSheet = (close = false) => {
+  if(!close){
+    return SheetManager.show("posts_destination_menu")
+  }
+  SheetManager.hide("posts_destination_menu")
 }
