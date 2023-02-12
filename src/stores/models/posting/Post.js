@@ -1,4 +1,5 @@
 import { types } from 'mobx-state-tree';
+import { DOMParser } from "@xmldom/xmldom";
 
 export default Post = types.model('Post', {
   uid: types.identifierNumber,
@@ -13,8 +14,11 @@ export default Post = types.model('Post', {
 .views(self => ({
   
   plain_text_content(){
-    const regex = /(<[^>]+>)/ig
-    let plain_text = self.content.replace(regex, '')
+    let html = "<p>" + self.content + "</p>";
+    let parser = new DOMParser();    
+    let doc = parser.parseFromString(html, "text/html");
+    let plain_text = doc.documentElement.textContent;
+
     if (plain_text.length > 300) {
       plain_text = plain_text.substring(0, 300) + '...'
     }
