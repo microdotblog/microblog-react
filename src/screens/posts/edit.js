@@ -1,43 +1,37 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, Keyboard, ActivityIndicator, InputAccessoryView, Platform, KeyboardAvoidingView } from 'react-native';
+import { View, TextInput, Keyboard, ActivityIndicator, Platform, KeyboardAvoidingView, InputAccessoryView } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Auth from '../../stores/Auth';
-import PostToolbar from '../../components/keyboard/post_toolbar'
 import App from '../../stores/App'
-import AssetToolbar from '../../components/keyboard/asset_toolbar';
+import PostToolbar from '../../components/keyboard/post_toolbar'
 
 @observer
-export default class PostingScreen extends React.Component{
+export default class PostEditScreen extends React.Component{
   
   constructor(props) {
-		super(props)
-		Navigation.events().bindComponent(this);
+    super(props)
+    Navigation.events().bindComponent(this);
     this.input_accessory_view_id = "input_toolbar";
-  }
-  
-  componentDidMount() {
-    if (Auth.selected_user.posting.selected_service != null) {
-      Auth.selected_user.posting.selected_service.check_for_categories()
-    }
   }
   
   navigationButtonPressed = async ({ buttonId }) => {
     console.log("navigationButtonPressed::", buttonId)
     if(buttonId === "post_button"){
-      const sent = await Auth.selected_user.posting.send_post()
+      const sent = await Auth.selected_user.posting.send_update_post()
       if(sent){
         this._dismiss()
       }
     }
     else{
       this._dismiss()
+      Auth.selected_user.posting.clear_post()
     }
   }
   
   _dismiss = () => {
     Keyboard.dismiss()
-		Navigation.dismissModal(this.props.componentId)
+    Navigation.dismissModal(this.props.componentId)
   }
   
   _input_outer_view = (component) => {
@@ -63,7 +57,7 @@ export default class PostingScreen extends React.Component{
             style={{
               fontSize: 18,
               justifyContent: 'flex-start',
-						  alignItems: 'flex-start',
+              alignItems: 'flex-start',
               padding: 8,
               marginBottom: 4,
               fontWeight: '700',
@@ -75,12 +69,12 @@ export default class PostingScreen extends React.Component{
             multiline={false}
             scrollEnabled={false}
             returnKeyType={'default'}
-					  keyboardType={'default'}
-					  autoFocus={false}
-					  autoCorrect={true}
-					  clearButtonMode={'while-editing'}
-					  enablesReturnKeyAutomatically={true}
-					  underlineColorAndroid={'transparent'}
+            keyboardType={'default'}
+            autoFocus={false}
+            autoCorrect={true}
+            clearButtonMode={'while-editing'}
+            enablesReturnKeyAutomatically={true}
+            underlineColorAndroid={'transparent'}
             value={posting.post_title}
             onChangeText={(text) => !posting.is_sending_post ? posting.set_post_title(text) : null}
             inputAccessoryViewID={this.input_accessory_view_id}
@@ -130,13 +124,11 @@ export default class PostingScreen extends React.Component{
         {
           Platform.OS === 'ios' ?
             <InputAccessoryView nativeID={this.input_accessory_view_id}>
-              <AssetToolbar componentId={this.props.componentId} />
-              <PostToolbar componentId={this.props.componentId} />
+              <PostToolbar componentId={this.props.componentId} is_post_edit />
             </InputAccessoryView>
           :  
           <>
-            <AssetToolbar componentId={this.props.componentId} />
-            <PostToolbar componentId={this.props.componentId} />
+            <PostToolbar componentId={this.props.componentId} is_post_edit />
           </>
         }
         {

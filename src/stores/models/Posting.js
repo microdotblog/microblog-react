@@ -27,6 +27,8 @@ export default Posting = types.model('Posting', {
       end: types.optional(types.number, 0),
     }), {start: 0, end: 0}
   ),
+  is_editing_post: types.optional(types.boolean, false),
+  post_url: types.maybeNull(types.string)
 })
 .actions(self => ({
 
@@ -58,6 +60,15 @@ export default Posting = types.model('Posting', {
     self.post_assets = []
     self.is_sending_post = false
     self.is_adding_bookmark = false
+    self.is_editing_post = false
+  }),
+  
+  hydrate_post_edit: flow(function* (post) {
+    console.log("hydrate_post_edit", post)
+    self.is_editing_post = true
+    self.post_title = post.name != "" ? post.name : null
+    self.post_text = post.content
+    self.post_url = post.url
   }),
   
   afterCreate: flow(function* () {
@@ -241,6 +252,41 @@ export default Posting = types.model('Posting', {
   set_text_selection: flow(function* (selection) {
     self.text_selection = selection
   }),
+  
+  send_update_post: flow(function* () {
+    console.log("Posting:send_update_post", self.post_text)
+    if(self.post_text === ""){
+      Alert.alert(
+        "Whoops...",
+        "There is nothing to post... type something to get started."
+      )
+      return false
+    }
+    if(self.is_sending_post){
+      Alert.alert(
+        "Whoops...",
+        "We're already sending another message, please wait and try again."
+      )
+      return false
+    }
+    self.is_sending_post = true
+    const post_success = yield MicroPubApi.post_update(self.selected_service.service_object(), self.post_text, self.post_url, self.post_title)
+    self.is_sending_post = false
+    if(post_success !== POST_ERROR){
+      self.clear_post()
+      return true
+    }
+    return false
+  }),
+  
+  clear_post: flow(function* () {
+    self.post_text = ""
+    self.post_title = null
+    self.post_assets = []
+    self.post_categories = []
+    self.is_editing_post = false
+    self.post_url = null
+  })
 
 }))
 .views(self => ({

@@ -6,6 +6,7 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { RectButton } from 'react-native-gesture-handler';
 import { SvgXml } from 'react-native-svg';
 import FastImage from 'react-native-fast-image';
+import { editPostScreen } from '../../screens';
 
 @observer
 export default class PostCell extends React.Component{
@@ -108,7 +109,7 @@ export default class PostCell extends React.Component{
             borderBottomWidth: .5,
             backgroundColor: App.theme_background_color_secondary()
           }}
-          //onPress={reply.can_edit() ? reply.trigger_edit : () => App.handle_url_from_webview(reply.url)}
+          onPress={() => editPostScreen(post)}
         >
           <Text style={{color: App.theme_text_color(), fontSize: 15, opacity: 1}}>{post.plain_text_content()}</Text>
           { post.images_from_content()?.length > 0 && this._render_images() }

@@ -169,14 +169,17 @@ class MicroPubApi {
 		return post;
 	}
 	
-	async post_update(service, content, url) {
-		console.log('MicroBlogApi:MicroPub:post_update', content, url);
+	async post_update(service, content, url, title) {
+		console.log('MicroBlogApi:MicroPub:post_update', content, url, title);
 		const params = {
 			"action": "update",
 			"url": url,
 			"replace": {
 				"content": [
 					content
+				],
+				"name": [
+					title
 				]
 			}
 		}
