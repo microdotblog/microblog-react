@@ -50,7 +50,7 @@ export default class ReplyToolbar extends React.Component{
 							padding: 2,
 							color: App.theme_text_color(),
 						}}
-					><Text style={{ color: this.props.reply?.reply_text_length() > 280 ? '#a94442' : App.theme_text_color() }}>{this.props.reply?.reply_text_length()}</Text>/280</Text>
+					><Text style={{ color: this.props.reply?.reply_text_length() > App.max_characters_allowed ? '#a94442' : App.theme_text_color() }}>{this.props.reply?.reply_text_length()}</Text>/{App.max_characters_allowed}</Text>
 				</View>
 			</View>
     )

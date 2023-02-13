@@ -5,6 +5,8 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import Auth from '../Auth';
 import App from '../App';
 import Replies from '../Replies';
+import md from 'markdown-it';
+const parser = md();
 
 export default Reply = types.model('Reply', {
   id: types.identifier,
@@ -40,20 +42,25 @@ export default Reply = types.model('Reply', {
   
   update_reply: flow(function* () {
     console.log("Reply:update_reply", self.reply_text)
-    self.is_sending_reply = true
-    const data = yield MicroPubApi.post_update(Auth.selected_user.posting.selected_service.service_object(), self.reply_text, self.url)
-    console.log("Reply:update_reply:data", data)
-    if (data !== POST_ERROR) {
-      self.reply_text = ""
+    if(!self.is_sending_reply && self.reply_text !== " " && App.enforce_max_characters ? self.reply_text_length() <= App.max_characters_allowed : true){
+      self.is_sending_reply = true
+      const data = yield MicroPubApi.post_update(Auth.selected_user.posting.selected_service.service_object(), self.reply_text, self.url)
+      console.log("Reply:update_reply:data", data)
+      if (data !== POST_ERROR) {
+        self.reply_text = ""
+        self.is_sending_reply = false
+        //Replies.hydrate()
+        App.show_toast("Reply was updated!")
+        return true
+      }
+      else {
+        Alert.alert("Whoops", "Could not update reply. Please try again.")
+      }
       self.is_sending_reply = false
-      //Replies.hydrate()
-      App.show_toast("Reply was updated!")
-      return true
     }
-    else {
-      Alert.alert("Whoops", "Could not update reply. Please try again.")
+    if(self.reply_text_length() > App.max_characters_allowed && App.enforce_max_characters){
+      Alert.alert("Whoops", "Your reply is too long. Either shorten it, or consider writing a blog post instead.")
     }
-    self.is_sending_reply = false
     return false
   }),
   
@@ -139,6 +146,9 @@ export default Reply = types.model('Reply', {
     return selected_user.username != null && selected_user.token() != null
   },
   reply_text_length(){
-    return self.reply_text.length
+    const html = parser.render(self.reply_text)
+    const regex = /(<([^>]+)>)/ig
+    const text = html.replace(regex, '')
+    return text ? text.length : 0
   }
 }))

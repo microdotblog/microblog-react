@@ -49,7 +49,7 @@ export default Reply = types.model('Reply', {
   
   send_reply: flow(function* () {
 		console.log("Reply:send_reply", self.reply_text)
-    if(!self.is_sending_reply && self.reply_text !== " "){
+    if(!self.is_sending_reply && self.reply_text !== " " && App.enforce_max_characters ? self.reply_text_length() <= App.max_characters_allowed : true){
       self.is_sending_reply = true
       const data = yield MicroBlogApi.send_reply(self.conversation_id, self.reply_text)
       console.log("Reply:send_reply:data", data)
@@ -63,6 +63,9 @@ export default Reply = types.model('Reply', {
       }
       self.is_sending_reply = false
       return false
+    }
+    if(self.reply_text_length() > App.max_characters_allowed && App.enforce_max_characters){
+      Alert.alert("Whoops", "Your reply is too long. Either shorten it, or consider writing a blog post instead.")
     }
     return false
   }),
