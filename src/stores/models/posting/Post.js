@@ -1,6 +1,8 @@
 import { types } from 'mobx-state-tree';
 import { DOMParser } from "@xmldom/xmldom";
 
+let html_parser = new DOMParser();
+
 export default Post = types.model('Post', {
   uid: types.identifierNumber,
   name: types.maybe(types.string),
@@ -15,8 +17,7 @@ export default Post = types.model('Post', {
   
   plain_text_content(){
     let html = "<p>" + self.content + "</p>";
-    let parser = new DOMParser();    
-    let doc = parser.parseFromString(html, "text/html");
+    let doc = html_parser.parseFromString(html, "text/html");
     let text = doc.documentElement.textContent;
 
     if (text.length > 300) {
