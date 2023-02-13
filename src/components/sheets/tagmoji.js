@@ -69,7 +69,7 @@ export default class TagmojiMenu extends React.Component{
 				}}
 			>
 			<SheetHeader title="Topics" />
-			<ScrollView style={{height: 700, marginBottom: 15}} {...this.scrollHandlers}>
+			<ScrollView style={{maxHeight: 700, marginBottom: 15}} {...this.scrollHandlers}>
 			{this._return_tagmoji_menu()}
 			</ScrollView>
 			</ActionSheet>
