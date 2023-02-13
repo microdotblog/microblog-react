@@ -14,11 +14,14 @@ export default Post = types.model('Post', {
   
   plain_text_content(){
     const regex = /(<[^>]+>)/ig
-    let plain_text = self.content.replace(regex, '')
+    let plain_text = self.content
+    if(plain_text.search(regex) !== -1){
+      plain_text = plain_text.replace(regex, '').replace(/\r\n|\n\r|\n|\r/g, '\n\n')
+    }
     if (plain_text.length > 300) {
       plain_text = plain_text.substring(0, 300) + '...'
     }
-    return plain_text.replace(/\r\n|\n\r|\n|\r/g, '\n\n')
+    return plain_text
   },
   
   images_from_content(){
