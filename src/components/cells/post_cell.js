@@ -111,7 +111,11 @@ export default class PostCell extends React.Component{
           }}
           onPress={() => editPostScreen(post)}
         >
-          <Text style={{color: App.theme_text_color(), fontSize: 15, opacity: 1}}>{post.plain_text_content()}</Text>
+          {
+            post.name &&
+            <Text style={{color: App.theme_text_color(), fontSize: 16, fontWeight: "700", marginBottom: 15}}>{post.name}</Text>
+          }
+          <Text style={{color: App.theme_text_color(), fontSize: 15}}>{post.plain_text_content()}</Text>
           { post.images_from_content()?.length > 0 && this._render_images() }
           <View
             style={{
