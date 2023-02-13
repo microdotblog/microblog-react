@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity, Animated } from 'react-native';
 import App from '../../stores/App'
+import Auth from '../../stores/Auth'
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { RectButton } from 'react-native-gesture-handler';
 import { SvgXml } from 'react-native-svg';
@@ -40,7 +41,7 @@ export default class PostCell extends React.Component{
     
     const press_handler = () => {
       if (text === "Delete") {
-        //item.trigger_delete()
+        Auth.selected_user.posting.selected_service?.trigger_post_delete(item)
         this._swipeable?.current?.close()
       }
     };
@@ -100,7 +101,7 @@ export default class PostCell extends React.Component{
         friction={1}
         overshootFriction={8}
         enableTrackpadTwoFingerGesture={true}
-        //renderRightActions={(progress) => this._right_actions(progress, post)}
+        renderRightActions={(progress) => this._right_actions(progress, post)}
       >
         <TouchableOpacity
           style={{

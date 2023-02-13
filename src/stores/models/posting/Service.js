@@ -1,7 +1,8 @@
 import { types, flow } from 'mobx-state-tree';
 import Tokens from './../../Tokens';
-import MicroPubApi from './../../../api/MicroPubApi';
+import MicroPubApi, { DELETE_ERROR } from './../../../api/MicroPubApi';
 import Config from './Config';
+import { Alert } from 'react-native';
 
 export default Service = types.model('Service', {
   id: types.identifier,
@@ -26,6 +27,10 @@ export default Service = types.model('Service', {
         self.check_for_categories()
       }
     }
+  }),
+  
+  afterCreate: flow(function* () {
+    self.hydrate()
   }),
 
   check_for_categories: flow(function* () { 
@@ -78,9 +83,37 @@ export default Service = types.model('Service', {
     }
   }),
   
-  afterCreate: flow(function* () {
-    self.hydrate()
-  }),
+  trigger_post_delete(post) {
+    console.log("Destination:trigger_post_delete", post)
+    Alert.alert(
+      "Delete post?",
+      "Are you sure you want to delete this post?",
+      [
+        {
+          text: "Cancel",
+          style: 'cancel',
+        },
+        {
+          text: "Delete",
+          onPress: () => self.delete_post(post),
+          style: 'destructive'
+        },
+      ],
+      {cancelable: false},
+    )
+  },
+  
+  delete_post: flow(function* (post) {
+    console.log("Destination:delete_post", post)
+    const status = yield MicroPubApi.delete_post(self.service_object(), post.url)
+    if(status !== DELETE_ERROR){
+      App.show_toast("Post was deleted.")
+      self.upate_posts_for_active_posts_destination()
+    }
+    else{
+      Alert.alert("Whoops", "Could not delete post. Please try again.")
+    }
+  })
 
 }))
 .views(self => ({

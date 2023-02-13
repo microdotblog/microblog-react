@@ -1,11 +1,12 @@
 import { Alert } from 'react-native';
 import axios from 'axios';
 
-export const FETCH_ERROR = 1;
-export const POST_ERROR = 2;
-export const FETCH_OK = 3
-export const POST_OK = 4
-export const NO_AUTH = 5
+export const FETCH_ERROR = 2
+export const POST_ERROR = 3
+export const FETCH_OK = 4
+export const POST_OK = 5
+export const NO_AUTH = 6
+export const DELETE_ERROR = 7
 
 class MicroPubApi {
   
@@ -226,6 +227,40 @@ class MicroPubApi {
 				return FETCH_ERROR;
 			});
 		return config;
+	}
+	
+	async delete_post(service, url) {
+		console.log('MicroBlogApi:MicroPub:delete_post', url);
+		const params = {
+			"action": "delete",
+			"url": url
+		}
+		console.log("MicroBlogApi:MicroPub:delete_post:PARAMS", params)
+		
+		const post = axios
+			.post(`https://micro.blog/micropub`, params ,{
+				headers: { Authorization: `Bearer ${service.token}` }
+			})
+			.then(response => {
+				return true;
+			})
+			.catch(error => {
+				console.log("MicroBlogApi:delete_post:ERROR", error.response.status, error.response.data);
+				if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
+					Alert.alert(
+						"Something went wrong.",
+						`${error.response.data.error_description}. Try again later.`,
+					)
+				}
+				else {
+					Alert.alert(
+						"Something went wrong.",
+						`Please try again later.`,
+					)
+				}
+				return DELETE_ERROR;
+			});
+		return post;
 	}
 
 }

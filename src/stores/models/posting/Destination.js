@@ -1,6 +1,5 @@
 import { types } from 'mobx-state-tree';
 import Post from "./Post";
-import MicroPubApi from './../../../api/MicroPubApi';
 
 export default Destination = types.model('Destination', {
 	uid: types.identifier,
