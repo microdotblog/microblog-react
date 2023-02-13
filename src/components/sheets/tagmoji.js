@@ -59,7 +59,7 @@ export default class TagmojiMenu extends React.Component{
 			<ActionSheet
 				ref={this.actionSheetRef}
 				id={this.props.sheetId}
-				snapPoints={[40,90,100]}
+				snapPoints={[40,95]}
 				initialSnapIndex={[0]}
 				overdrawEnabled={true}
 				useBottomSafeAreaPadding={true}
@@ -69,7 +69,7 @@ export default class TagmojiMenu extends React.Component{
 				}}
 			>
 			<SheetHeader title="Topics" />
-			<ScrollView {...this.scrollHandlers}>
+			<ScrollView style={{height: 700, marginBottom: 15}} {...this.scrollHandlers}>
 			{this._return_tagmoji_menu()}
 			</ScrollView>
 			</ActionSheet>
