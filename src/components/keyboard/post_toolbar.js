@@ -42,21 +42,24 @@ export default class PostToolbar extends React.Component{
 					<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("[]")}>
 						<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"[ ]"}</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={{minWidth: 35, marginLeft: 8, marginRight: 8}} onPress={posting.handle_asset_action}>
-						{
-						Platform.OS === 'ios' ?
-							<SFSymbol
-								name={'photo'}
-								color={App.theme_text_color()}
-								style={{ height: 22, width: 22 }}
-								multicolor={true}
-							/>
-						: 						
-						<Image source={PhotoLibrary} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
-					}
-					</TouchableOpacity>
 					{
-						posting.selected_service?.config?.active_destination() != null && posting.selected_service?.config?.destination?.length > 1 ?
+						!this.props.is_post_edit &&
+						<TouchableOpacity style={{minWidth: 35, marginLeft: 8, marginRight: 8}} onPress={posting.handle_asset_action}>
+						{
+							Platform.OS === 'ios' ?
+								<SFSymbol
+									name={'photo'}
+									color={App.theme_text_color()}
+									style={{ height: 22, width: 22 }}
+									multicolor={true}
+								/>
+							: 						
+							<Image source={PhotoLibrary} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
+						}
+						</TouchableOpacity>
+					}
+					{
+						!this.props.is_post_edit && posting.selected_service?.config?.active_destination() != null && posting.selected_service?.config?.destination?.length > 1 ?
 						<TouchableOpacity style={{marginRight: 8}} onPress={() => postingOptionsScreen(this.props.componentId)}>
 							<Text style={{ fontSize: 16, fontWeight: '500', textAlign: 'center', color: App.theme_text_color() }}>
 								{posting.selected_service.config.active_destination().name}
@@ -90,16 +93,19 @@ export default class PostToolbar extends React.Component{
 						<Image source={SettingsIcon} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
 					}
 					</TouchableOpacity>
-					<Text
-						style={{
-							fontWeight: '400',
-							padding: 2,
-							color: App.theme_text_color(),
-							position: 'absolute',
-							top: -35,
-							right: 0
-						}}
-					><Text style={{ color: posting.post_text_length() > 280 ? '#a94442' : App.theme_text_color() }}>{posting.post_text_length()}</Text>/280</Text>
+					{
+						!posting.post_title &&
+						<Text
+							style={{
+								fontWeight: '400',
+								padding: 2,
+								color: App.theme_text_color(),
+								position: 'absolute',
+								top: -35,
+								right: 0
+							}}
+						><Text style={{ color: posting.post_text_length() > App.max_characters_allowed ? '#a94442' : App.theme_text_color() }}>{posting.post_text_length()}</Text>/{App.max_characters_allowed}</Text>
+					}
 				</View>
 			</View>
     )

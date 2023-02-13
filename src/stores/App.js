@@ -29,7 +29,9 @@ export default App = types.model('App', {
   is_switching_theme: types.optional(types.boolean, false),
   post_modal_is_open: types.optional(types.boolean, false),
   font_scale: types.optional(types.number, 1),
-  is_changing_font_scale: types.optional(types.boolean, false)
+  is_changing_font_scale: types.optional(types.boolean, false),
+  max_characters_allowed: types.optional(types.number, 280),
+  enforce_max_characters: types.optional(types.boolean, false)
 })
 .actions(self => ({
 

@@ -17,12 +17,13 @@ export default Post = types.model('Post', {
     let html = "<p>" + self.content + "</p>";
     let parser = new DOMParser();    
     let doc = parser.parseFromString(html, "text/html");
-    let plain_text = doc.documentElement.textContent;
+    let text = doc.documentElement.textContent;
 
-    if (plain_text.length > 300) {
-      plain_text = plain_text.substring(0, 300) + '...'
+    if (text.length > 300) {
+      text = text.substring(0, 300) + '...'
     }
-    return plain_text.replace(/\r\n|\n\r|\n|\r/g, '\n\n')
+    
+    return text;
   },
   
   images_from_content(){

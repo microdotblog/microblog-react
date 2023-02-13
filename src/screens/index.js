@@ -26,6 +26,7 @@ import RepliesScreen from "./replies/replies";
 import ReplyEditScreen from "./replies/edit";
 import SettingsScreen from "./settings/settings";
 import PostsScreen from "./posts/posts";
+import EditPostScreen from "./posts/edit";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -47,6 +48,7 @@ export const REPLIES_SCREEN = 'micrblog.RepliesScreen';
 export const REPLY_EDIT_SCREEN = 'microblog.ReplyEditScreen';
 export const SETTINGS_SCREEN = 'microblog.modal.SettingsScreen';
 export const POSTS_SCREEN = 'microblog.PostsScreen';
+export const EDIT_POST_SCREEN = 'microblog.EditPostScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -80,6 +82,7 @@ registerSheet("posts_destination_menu", PostsDestinationMenu);
 import Push from "../stores/Push"
 import { theme_options } from "../utils/navigation"
 import App from "../stores/App"
+import Auth from "../stores/Auth"
 
 // Set up screens
 export const Screens = new Map();
@@ -103,6 +106,7 @@ Screens.set(REPLIES_SCREEN, RepliesScreen);
 Screens.set(REPLY_EDIT_SCREEN, ReplyEditScreen);
 Screens.set(SETTINGS_SCREEN, SettingsScreen);
 Screens.set(POSTS_SCREEN, PostsScreen);
+Screens.set(EDIT_POST_SCREEN, EditPostScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
@@ -910,4 +914,44 @@ export const postsDestinationBottomSheet = (close = false) => {
     return SheetManager.show("posts_destination_menu")
   }
   SheetManager.hide("posts_destination_menu")
+}
+
+export const editPostScreen = (post) => {
+  Auth.selected_user?.posting.hydrate_post_edit(post)
+  return Navigation.showModal({
+    stack: {
+      id: EDIT_POST_SCREEN,
+      name: EDIT_POST_SCREEN,
+      children: [ {
+        component: {
+          id: EDIT_POST_SCREEN,
+          name: EDIT_POST_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                text: 'Edit Post',
+              },
+              leftButtons: [
+                {
+                  id: 'back_button',
+                  text: 'Back',
+                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
+                },
+              ],
+              rightButtons: [
+                {
+                  id: 'post_button',
+                  text: 'Update',
+                  color: '#f80'
+                }
+              ]
+            },
+            layout: {
+              backgroundColor: App.theme_background_color()
+            }
+          }
+        },
+      }],
+    }
+  });
 }

@@ -27,12 +27,12 @@ export default class MenuNavigation extends React.Component{
       "Discover"
     ]
 
-    this.secondary_menu = Platform.OS === "ios" ? [
+    this.secondary_menu = [
       "Posts",
       "Replies",
       "Settings",
       "Help"
-    ] : ["Replies","Help"]
+    ]
   }
 
   _render_menu_items = () => {
