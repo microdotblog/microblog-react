@@ -32,6 +32,10 @@ export default class PostCell extends React.Component{
     </View>
   )
   
+  _trigger_delete = () => {
+    Auth.selected_user.posting.selected_service?.trigger_post_delete(this.props.post)
+  }
+  
   _return_action = (text, color, x, progress, icon, item) => {
     
     const trans = progress.interpolate({
@@ -41,7 +45,7 @@ export default class PostCell extends React.Component{
     
     const press_handler = () => {
       if (text === "Delete") {
-        Auth.selected_user.posting.selected_service?.trigger_post_delete(item)
+        this._trigger_delete()
         this._swipeable?.current?.close()
       }
     };
@@ -128,6 +132,12 @@ export default class PostCell extends React.Component{
             <TouchableOpacity onPress={() => App.handle_url_from_webview(post.url)}>
               <Text style={{color: "gray", fontSize: 12}}>{post.nice_local_published_date()}</Text>
             </TouchableOpacity>
+            {
+              Platform.OS === "android" &&
+              <TouchableOpacity onPress={this._trigger_delete} style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={{color: "rgb(239,68,68)", fontSize: 15}}>Delete...</Text>
+              </TouchableOpacity>
+            }
           </View>
         </TouchableOpacity>
       </Swipeable>

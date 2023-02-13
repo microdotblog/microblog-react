@@ -100,8 +100,8 @@ export default class ReplyCell extends React.Component{
             {
               Platform.OS === "android" &&
               <TouchableOpacity onPress={reply.trigger_delete} style={{flexDirection: 'row', alignItems: 'center'}}>
-                 <Text style={{color: "rgb(239,68,68)", fontSize: 15}}>Delete...</Text>
-               </TouchableOpacity>
+                <Text style={{color: "rgb(239,68,68)", fontSize: 15}}>Delete...</Text>
+              </TouchableOpacity>
             }
           </View>
         </TouchableOpacity>
