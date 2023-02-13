@@ -93,16 +93,19 @@ export default class PostToolbar extends React.Component{
 						<Image source={SettingsIcon} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
 					}
 					</TouchableOpacity>
-					<Text
-						style={{
-							fontWeight: '400',
-							padding: 2,
-							color: App.theme_text_color(),
-							position: 'absolute',
-							top: -35,
-							right: 0
-						}}
-					><Text style={{ color: posting.post_text_length() > 280 ? '#a94442' : App.theme_text_color() }}>{posting.post_text_length()}</Text>/280</Text>
+					{
+						!posting.post_title &&
+						<Text
+							style={{
+								fontWeight: '400',
+								padding: 2,
+								color: App.theme_text_color(),
+								position: 'absolute',
+								top: -35,
+								right: 0
+							}}
+						><Text style={{ color: posting.post_text_length() > 280 ? '#a94442' : App.theme_text_color() }}>{posting.post_text_length()}</Text>/280</Text>
+					}
 				</View>
 			</View>
     )
