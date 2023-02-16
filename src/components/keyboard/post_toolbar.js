@@ -78,21 +78,24 @@ export default class PostToolbar extends React.Component{
 						backgroundColor: App.theme_section_background_color(),
 					}}
 				>
-					<TouchableOpacity
-						onPress={() => postingOptionsScreen(this.props.componentId)}
-					>
 					{
-						Platform.OS === 'ios' ?
-							<SFSymbol
-								name={'gearshape'}
-								color={App.theme_text_color()}
-								style={{ height: 22, width: 22 }}
-								multicolor={true}
-							/>
-						: 						
-						<Image source={SettingsIcon} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
+						!this.props.is_post_edit &&
+						<TouchableOpacity
+							onPress={() => postingOptionsScreen(this.props.componentId)}
+						>
+						{
+							Platform.OS === 'ios' ?
+								<SFSymbol
+									name={'gearshape'}
+									color={App.theme_text_color()}
+									style={{ height: 22, width: 22 }}
+									multicolor={true}
+								/>
+							: 						
+							<Image source={SettingsIcon} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
+						}
+						</TouchableOpacity>
 					}
-					</TouchableOpacity>
 					{
 						!posting.post_title &&
 						<Text
@@ -101,7 +104,7 @@ export default class PostToolbar extends React.Component{
 								padding: 2,
 								color: App.theme_text_color(),
 								position: 'absolute',
-								top: -35,
+								top: !this.props.is_post_edit ? -35 : -55,
 								right: 0
 							}}
 						><Text style={{ color: posting.post_text_length() > App.max_characters_allowed ? '#a94442' : App.theme_text_color() }}>{posting.post_text_length()}</Text>/{App.max_characters_allowed}</Text>
