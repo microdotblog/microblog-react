@@ -39,6 +39,11 @@ Navigation.events().registerNavigationButtonPressedListener(({ buttonId }) => {
   }
 })
 
+Navigation.events().registerBottomTabPressedListener(({ tabIndex }) => {
+  console.log("registerBottomTabPressedListener", tabIndex)
+  App.set_current_tab_index(tabIndex)
+})
+
 export const theme_options = (settings) => {
 
   return {

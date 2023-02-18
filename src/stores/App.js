@@ -12,6 +12,7 @@ import { InAppBrowser } from 'react-native-inappbrowser-reborn'
 import Discover from './Discover'
 import { menuBottomSheet } from "./../screens"
 import Settings from "./Settings"
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -31,7 +32,8 @@ export default App = types.model('App', {
   font_scale: types.optional(types.number, 1),
   is_changing_font_scale: types.optional(types.boolean, false),
   max_characters_allowed: types.optional(types.number, 280),
-  enforce_max_characters: types.optional(types.boolean, false)
+  enforce_max_characters: types.optional(types.boolean, false),
+  current_tab_index: types.optional(types.number, 0)
 })
 .actions(self => ({
 
@@ -472,6 +474,13 @@ export default App = types.model('App', {
     setTimeout(() => {
       Toast.showWithGravity(message, Toast.SHORT, Toast.CENTER)
     }, Platform.OS === 'ios' ? 350 : 0)
+  }),
+  
+  set_current_tab_index: flow(function* (tab_index) {
+    console.log("App:set_current_tab_index", tab_index)
+    if(tab_index === self.current_tab_index){return}
+    self.current_tab_index = tab_index
+    AsyncStorage.setItem("App:tab_index", JSON.stringify(self.current_tab_index))
   }),
   
 
