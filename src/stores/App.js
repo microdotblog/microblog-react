@@ -42,6 +42,7 @@ export default App = types.model('App', {
     self.is_loading = true
     yield App.set_current_initial_theme()
     yield App.set_current_initial_font_scale()
+    yield App.hydrate_last_tab_index()
 
     self.current_screen_name = TIMELINE_SCREEN
     self.current_screen_id = TIMELINE_SCREEN
@@ -218,11 +219,7 @@ export default App = types.model('App', {
     }
     console.log("App:navigate_to_screen_from_menu:index", screen, tab_index, self.current_screen_id, should_pop)
     if(tab_index != null){
-      Navigation.mergeOptions('ROOT', {
-        bottomTabs: {
-          currentTabIndex: tab_index
-        }
-      });
+      App.navigate_to_tab_index(tab_index)
     }
   }),
 
@@ -483,6 +480,27 @@ export default App = types.model('App', {
     AsyncStorage.setItem("App:tab_index", JSON.stringify(self.current_tab_index))
   }),
   
+  hydrate_last_tab_index: flow(function* () {
+    console.log("App:hydrate_last_tab_index")
+    const last_tab_index = yield AsyncStorage.getItem("App:tab_index")
+    if(last_tab_index != null){
+      const tab_index = JSON.parse(last_tab_index)
+      console.log("App:hydrate_last_tab_index:tab_index", tab_index)
+      if(tab_index != null){
+        self.current_tab_index = tab_index
+      }
+    }
+  }),
+  
+  navigate_to_tab_index: flow(function* (tab_index) {
+    console.log("App:navigate_to_tab_index", tab_index)
+    App.set_current_tab_index(tab_index)
+    Navigation.mergeOptions('ROOT', {
+      bottomTabs: {
+        currentTabIndex: tab_index
+      }
+    });
+  }),
 
 }))
 .views(self => ({
