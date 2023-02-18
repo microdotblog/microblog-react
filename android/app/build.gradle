@@ -99,8 +99,8 @@ android {
         applicationId "blog.micro.android"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 34
-        versionName "1.4"
+        versionCode 35
+        versionName "1.5"
     }
 
     splits {
