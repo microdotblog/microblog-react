@@ -52,6 +52,9 @@ export default App = types.model('App', {
     Auth.hydrate().then(() => {
       startApp().then(() => {
         console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
+        if(self.current_tab_index > 0){
+          App.navigate_to_tab_index(self.current_tab_index)
+        }
         if(!Auth.is_logged_in()){
           loginScreen()
         }
