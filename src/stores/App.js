@@ -31,7 +31,7 @@ export default App = types.model('App', {
   post_modal_is_open: types.optional(types.boolean, false),
   font_scale: types.optional(types.number, 1),
   is_changing_font_scale: types.optional(types.boolean, false),
-  max_characters_allowed: types.optional(types.number, 280),
+  max_characters_allowed: types.optional(types.number, 300),
   enforce_max_characters: types.optional(types.boolean, false),
   current_tab_index: types.optional(types.number, 0)
 })

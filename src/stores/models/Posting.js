@@ -300,6 +300,12 @@ export default Posting = types.model('Posting', {
     const regex = /(<([^>]+)>)/ig
     const text = html.replace(regex, '')
     return text ? text.length : 0
+  },
+  
+  max_post_length(){
+    const html = parser.render(self.post_text)
+    const has_blockquote = html.includes('<blockquote>')
+    return has_blockquote ? App.max_characters_allowed * 2 : App.max_characters_allowed
   }
   
 }))

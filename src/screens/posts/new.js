@@ -56,7 +56,7 @@ export default class PostingScreen extends React.Component{
     return(
       <View style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
         {
-          posting.post_text_length() > 280 || posting.post_title ?
+          posting.post_text_length() > posting.max_post_length() || posting.post_title ?
           <TextInput
             placeholder="Title"
             placeholderTextColor={App.theme_placeholder_text_color()}
