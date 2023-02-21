@@ -51,7 +51,7 @@ export default class PostEditScreen extends React.Component{
     return(
       <View style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
         {
-          posting.post_text_length() > 280 || posting.post_title ?
+          posting.post_text_length() > posting.max_post_length() || posting.post_title ?
           <TextInput
             placeholder="Title"
             placeholderTextColor={App.theme_placeholder_text_color()}
@@ -93,10 +93,10 @@ export default class PostEditScreen extends React.Component{
                 marginTop: 3,
                 ...Platform.select({
                   android: {
-                  marginBottom: posting.post_text_length() > 280 || posting.post_title ? posting.post_assets.length > 0 ? 135 : 80 : posting.post_assets.length > 0 ? 93 : 38,
+                  marginBottom: posting.post_text_length() > posting.max_post_length() || posting.post_title ? posting.post_assets.length > 0 ? 135 : 80 : posting.post_assets.length > 0 ? 93 : 38,
                   },
                   ios: {
-                    paddingBottom: posting.post_text_length() > 280 ? 150 : 0,
+                    paddingBottom: posting.post_text_length() > posting.max_post_length() ? 150 : 0,
                     flex: 1
                   }
                 }),
