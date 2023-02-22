@@ -304,7 +304,7 @@ export default Posting = types.model('Posting', {
   
   max_post_length(){
     const html = parser.render(self.post_text)
-    const has_blockquote = html.includes('<blockquote>')
+    const has_blockquote = html.includes('<blockquote')
     return has_blockquote ? App.max_characters_allowed * 2 : App.max_characters_allowed
   }
   
