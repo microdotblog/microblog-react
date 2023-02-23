@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ActivityIndicator, Platform } from 'react-native';
 import ActionSheet from "react-native-actions-sheet";
 import BlockIcon from './../../assets/icons/block.png';
 import ReportIcon from './../../assets/icons/report.png';
@@ -37,7 +37,7 @@ export default class ProfileMoreMenu extends React.Component{
             {
               Auth.selected_user.muting?.is_muted(this.props.payload.username) ?
                 <TouchableOpacity
-                  onPress={() => Auth.selected_user.muting?.unmute_user(this.props.username)}
+                  onPress={() => Auth.selected_user.muting?.unmute_user(this.props.payload.username)}
                   style={{ 
                     padding: 8,
                     paddingHorizontal: 16,
@@ -47,6 +47,9 @@ export default class ProfileMoreMenu extends React.Component{
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between',
+                    alignSelf: 'flex-start',
+                    borderColor: App.theme_section_background_color(),
+                    borderWidth: 1
                   }}
                 >
                   <Image source={BlockIcon} style={{ marginRight: 8, height: 24, width: 24 }} />
@@ -86,7 +89,9 @@ export default class ProfileMoreMenu extends React.Component{
           </View>
           <View style={{width: "100%", marginBottom: 25}}>
             <Text style={{ fontWeight: '700', marginBottom: 5, color: App.theme_text_color() }}>Reporting</Text>
-            <Text style={{ fontWeight: '400', marginBottom: 25, color: App.theme_text_color(), lineHeight: 22 }}>When reporting, we'll look at this user's posts to determine if they violate our <TouchableOpacity onPress={() => App.open_url(App.guidelines_url)}><Text style={{fontWeight: "600", color: App.theme_text_color(), textDecorationLine: "underline"}}>community guidelines</Text></TouchableOpacity>.</Text>
+            <TouchableOpacity style={{marginBottom: 25}} onPress={() => App.open_url(App.guidelines_url)}>
+              <Text style={{ fontWeight: '400', color: App.theme_text_color() }}>When reporting, we'll look at this user's posts to determine if they violate our <Text style={{fontWeight: "600", color: App.theme_text_color(), textDecorationLine: "underline"}}>community guidelines</Text>.</Text>
+            </TouchableOpacity>
             <TouchableOpacity
               disabled={Reporting.is_sending_report}
               onPress={() => Reporting.report_user(this.props.payload.username)}
