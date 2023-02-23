@@ -30,76 +30,87 @@ export default class ProfileMoreMenu extends React.Component{
             borderRadius: 16
           }}
         >
-          <Text style={{ fontWeight: '800', marginBottom: 25, color: App.theme_text_color() }}>More...</Text>
-          {
-            Auth.selected_user.muting?.is_muted(this.props.payload.username) ?
-              <TouchableOpacity
-                onPress={() => Auth.selected_user.muting?.unmute_user(this.props.username)}
-                style={{ 
-                  padding: 8,
-                  paddingHorizontal: 16,
-                  borderRadius: 20,
-                  backgroundColor: "#F9FAFB",
-                  marginBottom: 12,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Image source={BlockIcon} style={{ marginRight: 8, height: 24, width: 24 }} />
-                {
-                  Auth.selected_user.muting?.is_sending_unmute ?
-                    <ActivityIndicator size="small" color="#1F2937" />
-                    :
-                    <Text style={{ fontSize: 16, fontWeight: '500', color: '#1F2937' }}>Unmute @{ this.props.payload.username }</Text>
-                }
-              </TouchableOpacity>
-              :
-              <TouchableOpacity
-                onPress={() => Auth.selected_user.muting?.mute_user(this.props.payload.username)}
-                style={{ 
-                  padding: 8,
-                  paddingHorizontal: 16,
-                  borderRadius: 20,
-                  backgroundColor: "#F9FAFB",
-                  marginBottom: 12,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Image source={BlockIcon} style={{ marginRight: 8, height: 24, width: 24 }} />
-                {
-                  Auth.selected_user.muting?.is_sending_mute ?
-                    <ActivityIndicator size="small" color="#1F2937" />
-                    :
-                    <Text style={{ fontSize: 16, fontWeight: '500', color: '#1F2937' }}>Mute @{ this.props.payload.username }</Text>
-                }
-              </TouchableOpacity>
-          }
-          
-          <TouchableOpacity
-            disabled={Reporting.is_sending_report}
-            onPress={() => Reporting.report_user(this.props.payload.username)}
-            style={{ 
-              padding: 8,
-              paddingHorizontal: 16,
-              borderRadius: 20,
-              backgroundColor: "#F87171",
-              marginBottom: 8,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}
-          >
-            <Image source={ReportIcon} style={{ marginRight: 8, height: 24, width: 24 }} />
+          <Text style={{ fontWeight: '800', marginBottom: 25, color: App.theme_text_color() }}>Muting & Reporting</Text>
+          <View style={{width: "100%", marginBottom: 15}}>
+            <Text style={{ fontWeight: '700', marginBottom: 5, color: App.theme_text_color() }}>Muting</Text>
+            <Text style={{ fontWeight: '400', marginBottom: 25, color: App.theme_text_color() }}>You can mute/unmute @{this.props.payload.username}. Posts and replies from @{this.props.payload.username} will be hidden in your timeline.</Text>
             {
-              Reporting.is_sending_report ?
-                <ActivityIndicator size="small" color="#fff" />
+              Auth.selected_user.muting?.is_muted(this.props.payload.username) ?
+                <TouchableOpacity
+                  onPress={() => Auth.selected_user.muting?.unmute_user(this.props.username)}
+                  style={{ 
+                    padding: 8,
+                    paddingHorizontal: 16,
+                    borderRadius: 20,
+                    backgroundColor: "#F9FAFB",
+                    marginBottom: 12,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <Image source={BlockIcon} style={{ marginRight: 8, height: 24, width: 24 }} />
+                  {
+                    Auth.selected_user.muting?.is_sending_unmute ?
+                      <ActivityIndicator size="small" color="#1F2937" />
+                      :
+                      <Text style={{ fontSize: 16, fontWeight: '500', color: '#1F2937' }}>Unmute @{ this.props.payload.username }</Text>
+                  }
+                </TouchableOpacity>
                 :
-                <Text style={{ fontSize: 16, fontWeight: '500', color: 'white' }}>Report @{ this.props.payload.username }</Text>
+                <TouchableOpacity
+                  onPress={() => Auth.selected_user.muting?.mute_user(this.props.payload.username)}
+                  style={{ 
+                    padding: 8,
+                    paddingHorizontal: 16,
+                    borderRadius: 20,
+                    backgroundColor: "#F9FAFB",
+                    marginBottom: 12,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    alignSelf: 'flex-start',
+                    borderColor: App.theme_section_background_color(),
+                    borderWidth: 1
+                  }}
+                >
+                  <Image source={BlockIcon} style={{ marginRight: 8, height: 24, width: 24 }} />
+                  {
+                    Auth.selected_user.muting?.is_sending_mute ?
+                      <ActivityIndicator size="small" color="#1F2937" />
+                      :
+                      <Text style={{ fontSize: 16, fontWeight: '500', color: '#1F2937' }}>Mute @{ this.props.payload.username }</Text>
+                  }
+                </TouchableOpacity>
             }
-          </TouchableOpacity>
+          </View>
+          <View style={{width: "100%", marginBottom: 25}}>
+            <Text style={{ fontWeight: '700', marginBottom: 5, color: App.theme_text_color() }}>Reporting</Text>
+            <Text style={{ fontWeight: '400', marginBottom: 25, color: App.theme_text_color(), lineHeight: 22 }}>When reporting, we'll look at this user's posts to determine if they violate our <TouchableOpacity onPress={() => App.open_url(App.guidelines_url)}><Text style={{fontWeight: "600", color: App.theme_text_color(), textDecorationLine: "underline"}}>community guidelines</Text></TouchableOpacity>.</Text>
+            <TouchableOpacity
+              disabled={Reporting.is_sending_report}
+              onPress={() => Reporting.report_user(this.props.payload.username)}
+              style={{ 
+                padding: 8,
+                paddingHorizontal: 16,
+                borderRadius: 20,
+                backgroundColor: "#F87171",
+                marginBottom: 8,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                alignSelf: 'flex-start'
+              }}
+            >
+              <Image source={ReportIcon} style={{ marginRight: 8, height: 24, width: 24 }} />
+              {
+                Reporting.is_sending_report ?
+                  <ActivityIndicator size="small" color="#fff" />
+                  :
+                  <Text style={{ fontSize: 16, fontWeight: '500', color: 'white' }}>Report @{ this.props.payload.username }</Text>
+              }
+            </TouchableOpacity>
+          </View>
         </View>
       </ActionSheet>
     )
