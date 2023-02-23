@@ -33,7 +33,10 @@ export default App = types.model('App', {
   is_changing_font_scale: types.optional(types.boolean, false),
   max_characters_allowed: types.optional(types.number, 300),
   enforce_max_characters: types.optional(types.boolean, false),
-  current_tab_index: types.optional(types.number, 0)
+  current_tab_index: types.optional(types.number, 0),
+  terms_url: types.optional(types.string, "https://help.micro.blog/t/terms-of-service/113"),
+  privacy_url: types.optional(types.string, "https://help.micro.blog/t/privacy-policy/114"),
+  guidelines_url: types.optional(types.string, "https://help.micro.blog/t/community-guidelines/39")
 })
 .actions(self => ({
 

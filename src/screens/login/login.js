@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TextInput, Button, ActivityIndicator, Platform, KeyboardAvoidingView, Keyboard } from 'react-native';
+import { View, Text, TextInput, Button, ActivityIndicator, Platform, KeyboardAvoidingView, Keyboard, TouchableOpacity } from 'react-native';
 import Login from './../../stores/Login';
 import App from '../../stores/App'
 import { Navigation } from 'react-native-navigation';
-import ArrowBackIcon from './../../assets/icons/arrow_back.png';
 
 @observer
 export default class LoginScreen extends React.Component{
@@ -61,12 +60,20 @@ export default class LoginScreen extends React.Component{
           onPress={() => {Login.trigger_login(); Keyboard.dismiss()}}
           disabled={!Login.can_submit()}
         />
-        <ActivityIndicator 
-          animating={Login.is_loading}
-          style={{
-            marginTop: 15
-          }}
-        />
+        {
+          Login.is_loading &&
+          <ActivityIndicator 
+            animating={Login.is_loading}
+            style={{
+              marginTop: 15,
+              marginBottom: 15
+            }}
+          />
+        }
+        
+        <Text style={{fontWeight: "300", color: App.theme_text_color(), lineHeight: 22, textAlign: "center", marginBottom: 5, marginTop: Login.is_loading ? 0 : 8}}>
+          By using the app you accept our <TouchableOpacity onPress={() => App.open_url(App.terms_url)}><Text style={{fontWeight: "600", color: App.theme_text_color(), textDecorationLine: "underline"}}>terms of service</Text></TouchableOpacity>, <TouchableOpacity onPress={() => App.open_url(App.privacy_url)}><Text style={{fontWeight: "600", color: App.theme_text_color(), textDecorationLine: "underline"}}>privacy policy</Text></TouchableOpacity>, and <TouchableOpacity onPress={() => App.open_url(App.guidelines_url)}><Text style={{fontWeight: "600", color: App.theme_text_color(), textDecorationLine: "underline"}}>community guidelines</Text></TouchableOpacity>.
+        </Text>
         {
           Login.message !== null && Login.message !== "" ?
           <View 
