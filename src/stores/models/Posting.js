@@ -9,7 +9,7 @@ import App from '../App'
 import Clipboard from '@react-native-clipboard/clipboard';
 import { imageOptionsScreen } from '../../screens';
 import md from 'markdown-it';
-const parser = md();
+const parser = md({ html: true });
 
 export default Posting = types.model('Posting', {
   username: types.identifier,
@@ -298,7 +298,13 @@ export default Posting = types.model('Posting', {
   post_text_length(){
     const html = parser.render(self.post_text)
     const regex = /(<([^>]+)>)/ig
-    const text = html.replace(regex, '')
+    var text = html.replace(regex, '')
+
+    // if last char is a newline, chop it off
+    if (text[text.length - 1] == '\n') {
+      text = text.substring(0, text.length - 1)
+    }
+
     return text ? text.length : 0
   },
   
