@@ -39,7 +39,7 @@ export default class PostingOptionsScreen extends React.Component{
 											posting.handle_post_category_select(category)
 										}}
 									>
-										<Text style={ is_selected ? { fontWeight: '500', color: App.theme_button_text_color() } : { color: App.theme_button_text_color() }}>{category} { is_selected ? <Image source={CheckmarkIcon} style={{ width: 15, height: 15, tintColor: App.theme_button_text_color() }} /> : null }</Text>
+										<Text style={ is_selected ? { fontWeight: '500', color: App.theme_button_text_color() } : { color: App.theme_button_text_color() }}>{category} { is_selected ? <Image source={CheckmarkIcon} style={{ width: 12, height: 12, tintColor: App.theme_button_text_color() }} /> : null }</Text>
 									</TouchableOpacity>
 								)
 							})
