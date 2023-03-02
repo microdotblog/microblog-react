@@ -154,7 +154,9 @@ export default class PostCell extends React.Component{
             }}
           >
             <TouchableOpacity onPress={() => App.handle_url_from_webview(post.url)}>
-              <Text style={{color: "gray", fontSize: 12}}>{post.nice_local_published_date()}</Text>
+              <Text style={{color: "gray", fontSize: 12}}>{post.nice_local_published_date()}
+                { post.is_draft() ? <Text> — draft</Text> : null }
+              </Text>
             </TouchableOpacity>
             {
               Platform.OS === "android" &&
