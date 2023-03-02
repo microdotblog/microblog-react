@@ -113,8 +113,20 @@ export default Service = types.model('Service', {
     else{
       Alert.alert("Whoops", "Could not delete post. Please try again.")
     }
-  })
+  }),
 
+  publish_draft: flow(function* (post) {
+    console.log("Destination:publish_draft", post)
+    const status = yield MicroPubApi.publish_draft(self.service_object(), post.content, post.url, post.name)
+    if(status !== DELETE_ERROR){
+      App.show_toast("Post was published.")
+      self.upate_posts_for_active_posts_destination()
+    }
+    else{
+      Alert.alert("Error Publishing", "Could not publish the draft. Please try again.")
+    }
+  })
+  
 }))
 .views(self => ({
   

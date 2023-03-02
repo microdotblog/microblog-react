@@ -178,6 +178,7 @@ class MicroPubApi {
 		const params = {
 			"action": "update",
 			"url": url,
+			"mp-destination": service.destination,
 			"replace": {
 				"content": [
 					content
@@ -236,7 +237,8 @@ class MicroPubApi {
 		console.log('MicroBlogApi:MicroPub:delete_post', url);
 		const params = {
 			"action": "delete",
-			"url": url
+			"url": url,
+			"mp-destination": service.destination
 		}
 		console.log("MicroBlogApi:MicroPub:delete_post:PARAMS", params)
 		
@@ -249,6 +251,46 @@ class MicroPubApi {
 			})
 			.catch(error => {
 				console.log("MicroBlogApi:delete_post:ERROR", error.response.status, error.response.data);
+				if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
+					Alert.alert(
+						"Something went wrong.",
+						`${error.response.data.error_description}. Try again later.`,
+					)
+				}
+				else {
+					Alert.alert(
+						"Something went wrong.",
+						`Please try again later.`,
+					)
+				}
+				return DELETE_ERROR;
+			});
+		return post;
+	}
+
+	async publish_draft(service, content, url, title) {
+		console.log('MicroBlogApi:MicroPub:publish_post', url);
+		const params = {
+			"action": "update",
+			"url": url,
+			"mp-destination": service.destination,
+			"replace": {
+				"name": [ title ],
+				"content": [ content ],
+				"post-status": [ "published" ]
+			}
+		}
+		console.log("MicroBlogApi:MicroPub:publish_draft:PARAMS", params)
+		
+		const post = axios
+			.post(`https://micro.blog/micropub`, params ,{
+				headers: { Authorization: `Bearer ${service.token}` }
+			})
+			.then(response => {
+				return true;
+			})
+			.catch(error => {
+				console.log("MicroBlogApi:publish_draft:ERROR", error.response.status, error.response.data);
 				if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
 					Alert.alert(
 						"Something went wrong.",

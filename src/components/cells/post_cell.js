@@ -49,7 +49,7 @@ export default class PostCell extends React.Component{
   )
   
   _trigger_publish = () => {
-    // Auth.selected_user.posting.selected_service?.trigger_post_delete(this.props.post)
+    Auth.selected_user.posting.selected_service?.publish_draft(this.props.post)
   }
 
   _trigger_delete = () => {
