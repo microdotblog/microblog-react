@@ -20,7 +20,7 @@ export default Posting = types.model('Posting', {
   is_sending_post: types.optional(types.boolean, false),
   post_assets: types.optional(types.array(MediaAsset), []),
   post_categories: types.optional(types.array(types.string), []),
-  post_status: types.maybeNull(types.string),
+  post_status: "published",
   is_adding_bookmark: types.optional(types.boolean, false),
   text_selection: types.optional(
     types.model('Selection', {
@@ -120,7 +120,7 @@ export default Posting = types.model('Posting', {
       self.post_title = null
       self.post_assets = []
       self.post_categories = []
-      self.post_status = null
+      self.post_status = "published"
       return true
     }
     return false

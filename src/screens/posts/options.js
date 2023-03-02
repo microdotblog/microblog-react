@@ -29,7 +29,7 @@ export default class PostingOptionsScreen extends React.Component{
 								posting.handle_post_status_select("published")
 							}}
 						>
-							<Text style={{ color: App.theme_button_text_color() }}>Publish to your blog</Text>
+							<Text style={ posting.post_status == "published" ? { fontWeight: '500', color: App.theme_button_text_color() } : { color: App.theme_button_text_color() }}>Publish to your blog { posting.post_status == "published" ? <Image source={CheckmarkIcon} style={{ width: 12, height: 12, tintColor: App.theme_button_text_color() }} /> : null }</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
 							key={"draft"}
@@ -38,7 +38,7 @@ export default class PostingOptionsScreen extends React.Component{
 								posting.handle_post_status_select("draft")
 							}}
 						>
-							<Text style={{ color: App.theme_button_text_color() }}>Save as a draft</Text>
+							<Text style={ posting.post_status == "draft" ? { fontWeight: '500', color: App.theme_button_text_color() } : { color: App.theme_button_text_color() }}>Save as a draft { posting.post_status == "draft" ? <Image source={CheckmarkIcon} style={{ width: 12, height: 12, tintColor: App.theme_button_text_color() }} /> : null }</Text>
 						</TouchableOpacity>
 					</View>
 				</View>
