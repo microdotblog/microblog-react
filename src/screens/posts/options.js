@@ -25,8 +25,8 @@ export default class PostingOptionsScreen extends React.Component{
 						<TouchableOpacity
 							key={"published"}
 							style={{ padding: 8, marginBottom: 5, flexDirection: 'row', alignItems: 'center' }}
-							onPress={() => {						
-								// posting.handle_post_category_select(category)
+							onPress={() => {	
+								posting.handle_post_status_select("published")
 							}}
 						>
 							<Text style={{ color: App.theme_button_text_color() }}>Publish to your blog</Text>
@@ -35,6 +35,7 @@ export default class PostingOptionsScreen extends React.Component{
 							key={"draft"}
 							style={{ padding: 8, marginBottom: 5, flexDirection: 'row', alignItems: 'center' }}
 							onPress={() => {						
+								posting.handle_post_status_select("draft")
 							}}
 						>
 							<Text style={{ color: App.theme_button_text_color() }}>Save as a draft</Text>

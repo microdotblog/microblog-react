@@ -27,13 +27,16 @@ class MicroPubApi {
 		return config;
 	}
 
-	async send_post(service, content, title = null, images = [], categories = []) {
-		console.log('MicroBlogApi:send_post', service, content, title, images);
+	async send_post(service, content, title = null, images = [], categories = [], status = null) {
+		console.log('MicroBlogApi:send_post', service, content, title, images, status);
 		const params = new FormData()
 		params.append('h', 'entry')
 		params.append('content', content)
 		if (title) {
 			params.append('name', title)
+		}
+		if (status) {
+			params.append('post-status', status)
 		}
 		if (images.length) {
 			const images_with_url = images.filter(image => image.remote_url !== null && image.did_upload)
