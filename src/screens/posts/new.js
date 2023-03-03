@@ -22,6 +22,26 @@ export default class PostingScreen extends React.Component{
     }
   }
   
+  componentDidAppear() {  
+    var button_title = "Post";
+    
+    if (Auth.selected_user.posting.post_status == "draft") {
+      button_title = "Save";
+    }
+    
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        rightButtons: [
+          {
+            id: 'post_button',
+            text: button_title,
+            color: '#f80'
+          }
+        ]
+      }
+    });
+  }
+  
   navigationButtonPressed = async ({ buttonId }) => {
     console.log("navigationButtonPressed::", buttonId)
     if(buttonId === "post_button"){

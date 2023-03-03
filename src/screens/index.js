@@ -36,6 +36,7 @@ export const PROFILE_SCREEN = 'microblog.ProfileScreen';
 export const CONVERSATION_SCREEN = 'microblog.ConversationScreen';
 export const BOOKMARKS_SCREEN = 'microblog.BookmarksScreen';
 export const FOLLOWING_SCREEN = 'microblog.FollowingScreen';
+export const POSTING_STACK = 'microblog.modal.PostingStack';
 export const POSTING_SCREEN = 'microblog.modal.PostingScreen';
 export const DISCOVER_TOPIC_SCREEN = 'microblog.DiscoverTopicScreen';
 export const POSTING_OPTIONS_SCREEN = 'microblog.modal.PostingOptionsScreen';
@@ -527,7 +528,7 @@ export const followingScreen = (username, component_id) => {
 export const postingScreen = () => {
   return Navigation.showModal({
     stack: {
-      id: POSTING_SCREEN,
+      id: POSTING_STACK,
       name: POSTING_SCREEN,
       children: [ {
         component: {
@@ -551,13 +552,13 @@ export const postingScreen = () => {
 							    text: 'Post',
                   color: '#f80'
                 },
-                {
-                  id: 'profile_button',
-                  text: 'profile',
-                  component: {
-                    name: PROFILE_IMAGE
-                  }
-                }
+                // {
+                //   id: 'profile_button',
+                //   text: 'profile',
+                //   component: {
+                //     name: PROFILE_IMAGE
+                //   }
+                // }
 					    ]
             },
             layout: {
