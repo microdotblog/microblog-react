@@ -1,7 +1,5 @@
 import { types } from 'mobx-state-tree';
 import { DOMParser } from "@xmldom/xmldom";
-import md from 'markdown-it';
-const parser = md();
 
 let html_parser = new DOMParser();
 
