@@ -11,9 +11,6 @@ export default Post = types.model('Post', {
   url: types.maybe(types.string),
   post_status: types.maybe(types.string)
 })
-.actions(self => ({
-
-}))
 .views(self => ({
   
   plain_text_content(){
