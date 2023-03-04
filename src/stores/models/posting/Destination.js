@@ -28,12 +28,14 @@ export default Destination = types.model('Destination', {
 			const content = entry.properties.content[0] || ""
 			const published = entry.properties.published[0]
 			const url = entry.properties.url[0] || ""
+			const post_status = entry.properties["post-status"][0] || ""
 			const post = {
 				uid: uid,
 				name: name,
 				content: content,
 				published: published,
-				url: url
+				url: url,
+				post_status: post_status
 			}
 			if (!uid || url === "") {
 				return acc;

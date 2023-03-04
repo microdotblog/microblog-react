@@ -27,13 +27,16 @@ class MicroPubApi {
 		return config;
 	}
 
-	async send_post(service, content, title = null, images = [], categories = []) {
-		console.log('MicroBlogApi:send_post', service, content, title, images);
+	async send_post(service, content, title = null, images = [], categories = [], status = null) {
+		console.log('MicroBlogApi:send_post', service, content, title, images, status);
 		const params = new FormData()
 		params.append('h', 'entry')
 		params.append('content', content)
 		if (title) {
 			params.append('name', title)
+		}
+		if (status) {
+			params.append('post-status', status)
 		}
 		if (images.length) {
 			const images_with_url = images.filter(image => image.remote_url !== null && image.did_upload)
@@ -175,6 +178,7 @@ class MicroPubApi {
 		const params = {
 			"action": "update",
 			"url": url,
+			"mp-destination": service.destination,
 			"replace": {
 				"content": [
 					content
@@ -233,7 +237,8 @@ class MicroPubApi {
 		console.log('MicroBlogApi:MicroPub:delete_post', url);
 		const params = {
 			"action": "delete",
-			"url": url
+			"url": url,
+			"mp-destination": service.destination
 		}
 		console.log("MicroBlogApi:MicroPub:delete_post:PARAMS", params)
 		
@@ -246,6 +251,46 @@ class MicroPubApi {
 			})
 			.catch(error => {
 				console.log("MicroBlogApi:delete_post:ERROR", error.response.status, error.response.data);
+				if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
+					Alert.alert(
+						"Something went wrong.",
+						`${error.response.data.error_description}. Try again later.`,
+					)
+				}
+				else {
+					Alert.alert(
+						"Something went wrong.",
+						`Please try again later.`,
+					)
+				}
+				return DELETE_ERROR;
+			});
+		return post;
+	}
+
+	async publish_draft(service, content, url, title) {
+		console.log('MicroBlogApi:MicroPub:publish_post', url);
+		const params = {
+			"action": "update",
+			"url": url,
+			"mp-destination": service.destination,
+			"replace": {
+				"name": [ title ],
+				"content": [ content ],
+				"post-status": [ "published" ]
+			}
+		}
+		console.log("MicroBlogApi:MicroPub:publish_draft:PARAMS", params)
+		
+		const post = axios
+			.post(`https://micro.blog/micropub`, params ,{
+				headers: { Authorization: `Bearer ${service.token}` }
+			})
+			.then(response => {
+				return true;
+			})
+			.catch(error => {
+				console.log("MicroBlogApi:publish_draft:ERROR", error.response.status, error.response.data);
 				if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
 					Alert.alert(
 						"Something went wrong.",

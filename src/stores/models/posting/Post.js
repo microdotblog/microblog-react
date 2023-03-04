@@ -5,7 +5,8 @@ export default Post = types.model('Post', {
   name: types.maybe(types.string),
   content: types.maybe(types.string),
   published: types.maybe(types.string),
-  url: types.maybe(types.string)
+  url: types.maybe(types.string),
+  post_status: types.maybe(types.string)
 })
 .actions(self => ({
 
@@ -39,6 +40,10 @@ export default Post = types.model('Post', {
   nice_local_published_date(){
     const date = new Date(self.published);
     return date.toLocaleString();
+  },
+  
+  is_draft() {
+    return self.post_status == "draft"
   }
   
 }))

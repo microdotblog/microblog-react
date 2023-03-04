@@ -18,6 +18,31 @@ export default class PostingOptionsScreen extends React.Component{
     const { posting } = Auth.selected_user
     return(
 			<ScrollView style={{ flex: 1, padding: 15 }}>
+				{/* Post status */}
+				<View style={{ marginBottom: 25 }}>
+					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>When sending this post to Micro.blog:</Text>
+					<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
+						<TouchableOpacity
+							key={"published"}
+							style={{ padding: 8, marginBottom: 5, flexDirection: 'row', alignItems: 'center' }}
+							onPress={() => {	
+								posting.handle_post_status_select("published")
+							}}
+						>
+							<Text style={ posting.post_status == "published" ? { fontWeight: '500', color: App.theme_button_text_color() } : { color: App.theme_button_text_color() }}>Publish to your blog { posting.post_status == "published" ? <Image source={CheckmarkIcon} style={{ width: 12, height: 12, tintColor: App.theme_button_text_color() }} /> : null }</Text>
+						</TouchableOpacity>
+						<TouchableOpacity
+							key={"draft"}
+							style={{ padding: 8, marginBottom: 5, flexDirection: 'row', alignItems: 'center' }}
+							onPress={() => {						
+								posting.handle_post_status_select("draft")
+							}}
+						>
+							<Text style={ posting.post_status == "draft" ? { fontWeight: '500', color: App.theme_button_text_color() } : { color: App.theme_button_text_color() }}>Save as a draft { posting.post_status == "draft" ? <Image source={CheckmarkIcon} style={{ width: 12, height: 12, tintColor: App.theme_button_text_color() }} /> : null }</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+				
 				{/* Categories */}
 				<View style={{ marginBottom: 25 }}>
 					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>Select categories for this post:</Text>
@@ -47,6 +72,7 @@ export default class PostingOptionsScreen extends React.Component{
 					}
 					</View>
 				</View>
+				
 				{/* Blogs */}
 				<View style={{ marginBottom: 25 }}>
 					<Text style={{ fontSize: 16, fontWeight: '500', marginBottom: 5, color: App.theme_text_color() }}>Choose a default microblog to post to:</Text>

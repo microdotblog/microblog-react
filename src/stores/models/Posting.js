@@ -20,6 +20,7 @@ export default Posting = types.model('Posting', {
   is_sending_post: types.optional(types.boolean, false),
   post_assets: types.optional(types.array(MediaAsset), []),
   post_categories: types.optional(types.array(types.string), []),
+  post_status: types.optional(types.string, "published"),
   is_adding_bookmark: types.optional(types.boolean, false),
   text_selection: types.optional(
     types.model('Selection', {
@@ -112,13 +113,14 @@ export default Posting = types.model('Posting', {
       return false
     }
     self.is_sending_post = true
-    const post_success = yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories)
+    const post_success = yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
     self.is_sending_post = false
     if(post_success !== POST_ERROR){
       self.post_text = ""
       self.post_title = null
       self.post_assets = []
       self.post_categories = []
+      self.post_status = "published"
       return true
     }
     return false
@@ -235,6 +237,11 @@ export default Posting = types.model('Posting', {
     } else {
       self.post_categories.push(category)
     }
+  }),
+
+  handle_post_status_select: flow(function* (status) {
+    console.log("Posting:handle_post_status_select: " + status)
+    self.post_status = status
   }),
 
   add_bookmark: flow(function* (url) {
