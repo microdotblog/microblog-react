@@ -271,8 +271,11 @@ export default App = types.model('App', {
         App.navigate_to_screen_from_menu("Discover")
         return
       }
-
-      if(parts.length === 2){
+      
+      if(parts.length === 3 && parts[0] === 'discover' && parts[1] !== null && parts[2] === "grid"){
+        App.open_url(url)
+      }
+      else if(parts.length === 2){
         // This is probably a convo
         // Now we also want to check if it contains anything but a number
         const number = parts[1].match(/\d+/);
