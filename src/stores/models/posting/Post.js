@@ -20,6 +20,7 @@ export default Post = types.model('Post', {
     let html = "<p>" + self.content + "</p>";
     let doc = html_parser.parseFromString(html, "text/html");
     let text = doc.documentElement.textContent;
+    text = text.replace(/\r\n|\n\r|\n|\r/g, '\n\n')
 
     if (text.length > 300) {
       text = text.substring(0, 300) + '...'
