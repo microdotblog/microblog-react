@@ -1,5 +1,7 @@
 import { types } from 'mobx-state-tree';
 import { DOMParser } from "@xmldom/xmldom";
+import md from 'markdown-it';
+const parser = md();
 
 let html_parser = new DOMParser();
 
@@ -20,7 +22,6 @@ export default Post = types.model('Post', {
     let html = "<p>" + self.content + "</p>";
     let doc = html_parser.parseFromString(html, "text/html");
     let text = doc.documentElement.textContent;
-    text = text.replace(/\r\n|\n\r|\n|\r/g, '\n\n')
 
     if (text.length > 300) {
       text = text.substring(0, 300) + '...'
