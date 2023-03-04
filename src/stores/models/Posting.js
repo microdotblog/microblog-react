@@ -7,7 +7,8 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import MediaAsset from './posting/MediaAsset'
 import App from '../App'
 import Clipboard from '@react-native-clipboard/clipboard';
-import { imageOptionsScreen } from '../../screens';
+import { imageOptionsScreen, POSTING_SCREEN } from '../../screens';
+import { Navigation } from 'react-native-navigation';
 import md from 'markdown-it';
 const parser = md({ html: true });
 
@@ -242,6 +243,17 @@ export default Posting = types.model('Posting', {
   handle_post_status_select: flow(function* (status) {
     console.log("Posting:handle_post_status_select: " + status)
     self.post_status = status
+    Navigation.mergeOptions(POSTING_SCREEN, {
+      topBar: {
+        rightButtons: [
+          {
+            id: 'post_button',
+            text: status === "draft" ? "Save" : "Post",
+            color: '#f80'
+          }
+        ]
+      }
+    });
   }),
 
   add_bookmark: flow(function* (url) {

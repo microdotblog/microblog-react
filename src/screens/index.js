@@ -526,10 +526,11 @@ export const followingScreen = (username, component_id) => {
 }
 
 export const postingScreen = () => {
+  const { post_status } = Auth.selected_user?.posting
   return Navigation.showModal({
     stack: {
       id: POSTING_STACK,
-      name: POSTING_SCREEN,
+      name: POSTING_STACK,
       children: [ {
         component: {
           id: POSTING_SCREEN,
@@ -549,16 +550,9 @@ export const postingScreen = () => {
               rightButtons: [
 						    {
 							    id: 'post_button',
-							    text: 'Post',
+							    text: post_status === "draft" ? "Save" : "Post",
                   color: '#f80'
                 },
-                // {
-                //   id: 'profile_button',
-                //   text: 'profile',
-                //   component: {
-                //     name: PROFILE_IMAGE
-                //   }
-                // }
 					    ]
             },
             layout: {
