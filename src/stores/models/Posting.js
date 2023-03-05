@@ -3,6 +3,7 @@ import Service from './posting/Service';
 import { blog_services } from './../enums/blog_services';
 import { Alert, Platform, Linking } from 'react-native';
 import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
+import MicroBlogApi, { API_ERROR } from '../../api/MicroBlogApi';
 import { launchImageLibrary } from 'react-native-image-picker';
 import MediaAsset from './posting/MediaAsset'
 import App from '../App'
@@ -30,7 +31,8 @@ export default Posting = types.model('Posting', {
     }), {start: 0, end: 0}
   ),
   is_editing_post: types.optional(types.boolean, false),
-  post_url: types.maybeNull(types.string)
+  post_url: types.maybeNull(types.string),
+  found_usernames: types.optional(types.array(types.string), []),
 })
 .actions(self => ({
 
@@ -79,6 +81,7 @@ export default Posting = types.model('Posting', {
   
   set_post_text: flow(function* (value) {
 		self.post_text = value
+    self.check_usernames()
   }),
   
   set_post_text_from_action: flow(function* (value) {
@@ -305,8 +308,30 @@ export default Posting = types.model('Posting', {
     self.post_categories = []
     self.is_editing_post = false
     self.post_url = null
-  })
+  }),
 
+  check_usernames: flow(function* () {
+    const s = self.post_text;
+    
+    // for a quick test, we're just going to grab usernames regardless of insertion point
+    // later, will be smarter about only checking the username that is being typed
+    
+    const regex = /\@([a-z][A-Z]*)/ig
+    const pieces = s.match(regex)
+    if (pieces != null) {
+      const username = pieces[0].substr(1) // get rid of @
+      console.log("check_usernames: found", username)
+      if (username.length >= 3) {
+        const results = yield MicroBlogApi.find_users(username)
+        if (results !== API_ERROR && results.contacts != null) {
+          self.found_usernames = []
+          for (var c of results.contacts) {
+            self.found_usernames.push(c.nickname)
+          }
+        }
+      }
+    }
+  })
 }))
 .views(self => ({
   
