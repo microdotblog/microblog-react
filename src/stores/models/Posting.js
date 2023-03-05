@@ -6,6 +6,7 @@ import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
 import MicroBlogApi, { API_ERROR } from '../../api/MicroBlogApi';
 import { launchImageLibrary } from 'react-native-image-picker';
 import MediaAsset from './posting/MediaAsset'
+import Contact from './posting/Contact'
 import App from '../App'
 import Clipboard from '@react-native-clipboard/clipboard';
 import { imageOptionsScreen, POSTING_SCREEN } from '../../screens';
@@ -32,7 +33,7 @@ export default Posting = types.model('Posting', {
   ),
   is_editing_post: types.optional(types.boolean, false),
   post_url: types.maybeNull(types.string),
-  found_usernames: types.optional(types.array(types.string), []),
+  found_users: types.optional(types.array(Contact), []),
 })
 .actions(self => ({
 
@@ -324,9 +325,13 @@ export default Posting = types.model('Posting', {
       if (username.length >= 3) {
         const results = yield MicroBlogApi.find_users(username)
         if (results !== API_ERROR && results.contacts != null) {
-          self.found_usernames = []
+          self.found_users = []
           for (var c of results.contacts) {
-            self.found_usernames.push(c.nickname)
+            const u = Contact.create({
+              username: c.nickname,
+              avatar: c.photo
+            })
+            self.found_users.push(u)
           }
         }
       }

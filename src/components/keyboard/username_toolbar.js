@@ -33,13 +33,14 @@ export default class UsernameToolbar extends React.Component{
 				}}
 			>
 				<ScrollView keyboardShouldPersistTaps={'always'}  horizontal={true} style={{overflow: 'hidden', maxWidth: "90%"}} contentContainerStyle={{flexDirection: 'row', alignItems: 'center'}}>
-					{ posting.found_usernames.map((username, index) => {
+					{ posting.found_users.map((u, index) => {
 						return (
-							<TouchableOpacity style={{marginLeft: 4, marginRight: 8}} onPress={() => {
-								console.log("username tapped", username);
+							<TouchableOpacity style={{marginLeft: 4, marginRight: 8, flexDirection: "row"}} onPress={() => {
+								console.log("username tapped", u.username);
 							}}>
-								<Text style={{ fontSize: 16, textAlign: 'center', color: App.theme_text_color() }}>
-									@{ username }
+								<Image source={{ uri: u.avatar }} style={{ width: 24, height: 24, borderRadius: 12, marginRight: 3 }} />		
+								<Text style={{ fontSize: 15, textAlign: 'center', color: App.theme_text_color() }}>
+									@{ u.username }
 								</Text>
 							</TouchableOpacity>
 						)
