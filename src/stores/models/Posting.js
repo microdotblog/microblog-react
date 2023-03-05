@@ -353,7 +353,7 @@ export default Posting = types.model('Posting', {
   
   update_autocomplete: flow(function* (selected_username) {
     var s = self.post_text;
-    s = s.replace("@" + self.current_autocomplete, "@" + selected_username)
+    s = s.replace("@" + self.current_autocomplete, "@" + selected_username + " ")
     self.post_text = s
     self.found_users = []
     self.current_autocomplete = ""
