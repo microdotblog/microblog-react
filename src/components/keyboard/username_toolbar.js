@@ -37,6 +37,7 @@ export default class UsernameToolbar extends React.Component{
 						{ posting.found_users.map((u, index) => {
 							return (
 								<TouchableOpacity style={{marginLeft: 4, marginRight: 8, flexDirection: "row"}} onPress={() => {
+									posting.update_autocomplete(u.username)
 									console.log("username tapped", u.username);
 								}}>
 									<Image source={{ uri: u.avatar }} style={{ width: 24, height: 24, borderRadius: 12, marginRight: 3 }} />		

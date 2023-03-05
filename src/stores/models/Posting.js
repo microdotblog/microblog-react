@@ -34,6 +34,7 @@ export default Posting = types.model('Posting', {
   is_editing_post: types.optional(types.boolean, false),
   post_url: types.maybeNull(types.string),
   found_users: types.optional(types.array(Contact), []),
+  current_autocomplete: types.optional(types.string, ""),
 })
 .actions(self => ({
 
@@ -321,25 +322,43 @@ export default Posting = types.model('Posting', {
     const pieces = s.match(regex)
     if (pieces != null) {
       const username = pieces[0].substr(1) // get rid of @
-      console.log("check_usernames: found", username)
       if (username.length >= 3) {
-        const results = yield MicroBlogApi.find_users(username)
-        if (results !== API_ERROR && results.contacts != null) {
-          self.found_users = []
-          for (var c of results.contacts) {
-            const u = Contact.create({
-              username: c.nickname,
-              avatar: c.photo
-            })
-            self.found_users.push(u)
+        // make sure this is at the end of the text for now
+        const len = s.length
+        const offset = s.indexOf(username)
+        if ((len - username.length) == offset) {
+          // query the server
+          const results = yield MicroBlogApi.find_users(username)
+          if (results !== API_ERROR && results.contacts != null) {
+            self.found_users = []
+            self.current_autocomplete = username
+            for (var c of results.contacts) {
+              const u = Contact.create({
+                username: c.nickname,
+                avatar: c.photo
+              })
+              self.found_users.push(u)
+            }
           }
+        }
+        else {
+          self.found_users = []
         }
       }
     }
     else {
       self.found_users = []
     }
+  }),
+  
+  update_autocomplete: flow(function* (selected_username) {
+    var s = self.post_text;
+    s = s.replace("@" + self.current_autocomplete, "@" + selected_username)
+    self.post_text = s
+    self.found_users = []
+    self.current_autocomplete = ""
   })
+  
 }))
 .views(self => ({
   
