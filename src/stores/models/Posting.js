@@ -336,6 +336,9 @@ export default Posting = types.model('Posting', {
         }
       }
     }
+    else {
+      self.found_users = []
+    }
   })
 }))
 .views(self => ({
