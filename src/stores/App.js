@@ -556,8 +556,16 @@ export default App = types.model('App', {
   
   update_autocomplete: flow(function* (selected_username, obj) {
     var s = obj.post_text
-    s = s.replace("@" + self.current_autocomplete, "@" + selected_username + " ")
-    obj.set_post_text(s)
+    if (s == undefined) {
+      s = obj.reply_text
+    }
+    s = s.replace("@" + App.current_autocomplete, "@" + selected_username + " ")
+    if (obj.reply_text != undefined) {
+      obj.set_reply_text(s)
+    }
+    else {
+      obj.set_post_text(s)
+    }
     App.found_users = []
     App.current_autocomplete = ""
   })

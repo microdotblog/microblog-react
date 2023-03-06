@@ -9,7 +9,6 @@ import { SFSymbol } from 'react-native-sfsymbols';
 export default class UsernameToolbar extends React.Component{
   
 	render() {
-		const { posting } = Auth.selected_user
 		if (App.found_users.length == 0) {
 			return null
 		}
@@ -37,7 +36,7 @@ export default class UsernameToolbar extends React.Component{
 						{ App.found_users.map((u, index) => {
 							return (
 								<TouchableOpacity key={index} style={{marginLeft: 4, marginRight: 8, flexDirection: "row"}} onPress={() => {
-									App.update_autocomplete(u.username, posting)
+									App.update_autocomplete(u.username, this.props.object)
 								}}>
 									<Image source={{ uri: u.avatar }} style={{ width: 24, height: 24, borderRadius: 12, marginRight: 3 }} />		
 									<Text style={{ fontSize: 15, textAlign: 'center', color: App.theme_text_color() }}>
