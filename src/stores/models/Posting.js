@@ -321,7 +321,7 @@ export default Posting = types.model('Posting', {
     const regex = /\@([a-z][A-Z]*)/ig
     const pieces = s.match(regex)
     if (pieces != null) {
-      const username = pieces[0].substr(1) // get rid of @
+      const username = pieces[pieces.length - 1].substr(1) // get rid of @
       if (username.length >= 3) {
         // make sure this is at the end of the text for now
         const len = s.length
