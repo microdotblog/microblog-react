@@ -10,7 +10,7 @@ export default class UsernameToolbar extends React.Component{
   
 	render() {
 		const { posting } = Auth.selected_user
-		if (posting.found_users.length == 0) {
+		if (App.found_users.length == 0) {
 			return null
 		}
 		else {
@@ -34,11 +34,10 @@ export default class UsernameToolbar extends React.Component{
 					}}
 				>
 					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} showsHorizontalScrollIndicator={false} style={{overflow: 'hidden'}} contentContainerStyle={{flexDirection: 'row', alignItems: 'center'}}>
-						{ posting.found_users.map((u, index) => {
+						{ App.found_users.map((u, index) => {
 							return (
 								<TouchableOpacity key={index} style={{marginLeft: 4, marginRight: 8, flexDirection: "row"}} onPress={() => {
-									posting.update_autocomplete(u.username)
-									console.log("username tapped", u.username);
+									App.update_autocomplete(u.username, posting)
 								}}>
 									<Image source={{ uri: u.avatar }} style={{ width: 24, height: 24, borderRadius: 12, marginRight: 3 }} />		
 									<Text style={{ fontSize: 15, textAlign: 'center', color: App.theme_text_color() }}>

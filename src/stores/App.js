@@ -13,6 +13,8 @@ import Discover from './Discover'
 import { menuBottomSheet } from "./../screens"
 import Settings from "./Settings"
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Contact from './models/posting/Contact'
+import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -36,7 +38,9 @@ export default App = types.model('App', {
   current_tab_index: types.optional(types.number, 0),
   terms_url: types.optional(types.string, "https://help.micro.blog/t/terms-of-service/113"),
   privacy_url: types.optional(types.string, "https://help.micro.blog/t/privacy-policy/114"),
-  guidelines_url: types.optional(types.string, "https://help.micro.blog/t/community-guidelines/39")
+  guidelines_url: types.optional(types.string, "https://help.micro.blog/t/community-guidelines/39"),
+  found_users: types.optional(types.array(Contact), []),
+  current_autocomplete: types.optional(types.string, "")
 })
 .actions(self => ({
 
@@ -510,6 +514,53 @@ export default App = types.model('App', {
       }
     });
   }),
+
+  check_usernames: flow(function* (text) {
+    const s = text
+    
+    // for a quick test, we're just going to grab usernames regardless of insertion point
+    // later, will be smarter about only checking the username that is being typed
+    
+    const regex = /\@([a-z][A-Z]*)/ig
+    const pieces = s.match(regex)
+    if (pieces != null) {
+      const username = pieces[pieces.length - 1].substr(1) // get rid of @
+      if (username.length >= 3) {
+        // make sure this is at the end of the text for now
+        const len = s.length
+        const offset = s.indexOf(username)
+        if ((len - username.length) == offset) {
+          // query the server
+          const results = yield MicroBlogApi.find_users(username)
+          if (results !== API_ERROR && results.contacts != null) {
+            self.found_users = []
+            self.current_autocomplete = username
+            for (var c of results.contacts) {
+              const u = Contact.create({
+                username: c.nickname,
+                avatar: c.photo
+              })
+              self.found_users.push(u)
+            }
+          }
+        }
+        else {
+          self.found_users = []
+        }
+      }
+    }
+    else {
+      self.found_users = []
+    }
+  }),
+  
+  update_autocomplete: flow(function* (selected_username, obj) {
+    var s = obj.post_text
+    s = s.replace("@" + self.current_autocomplete, "@" + selected_username + " ")
+    obj.set_post_text(s)
+    App.found_users = []
+    App.current_autocomplete = ""
+  })
 
 }))
 .views(self => ({

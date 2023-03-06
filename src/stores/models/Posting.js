@@ -6,7 +6,6 @@ import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
 import MicroBlogApi, { API_ERROR } from '../../api/MicroBlogApi';
 import { launchImageLibrary } from 'react-native-image-picker';
 import MediaAsset from './posting/MediaAsset'
-import Contact from './posting/Contact'
 import App from '../App'
 import Clipboard from '@react-native-clipboard/clipboard';
 import { imageOptionsScreen, POSTING_SCREEN } from '../../screens';
@@ -32,9 +31,7 @@ export default Posting = types.model('Posting', {
     }), {start: 0, end: 0}
   ),
   is_editing_post: types.optional(types.boolean, false),
-  post_url: types.maybeNull(types.string),
-  found_users: types.optional(types.array(Contact), []),
-  current_autocomplete: types.optional(types.string, ""),
+  post_url: types.maybeNull(types.string)
 })
 .actions(self => ({
 
@@ -83,7 +80,11 @@ export default Posting = types.model('Posting', {
   
   set_post_text: flow(function* (value) {
 		self.post_text = value
-    self.check_usernames()
+  }),
+
+  set_post_text_from_typing: flow(function* (value) {
+    self.post_text = value
+    App.check_usernames(self.post_text)
   }),
   
   set_post_text_from_action: flow(function* (value) {
@@ -310,53 +311,6 @@ export default Posting = types.model('Posting', {
     self.post_categories = []
     self.is_editing_post = false
     self.post_url = null
-  }),
-
-  check_usernames: flow(function* () {
-    const s = self.post_text;
-    
-    // for a quick test, we're just going to grab usernames regardless of insertion point
-    // later, will be smarter about only checking the username that is being typed
-    
-    const regex = /\@([a-z][A-Z]*)/ig
-    const pieces = s.match(regex)
-    if (pieces != null) {
-      const username = pieces[pieces.length - 1].substr(1) // get rid of @
-      if (username.length >= 3) {
-        // make sure this is at the end of the text for now
-        const len = s.length
-        const offset = s.indexOf(username)
-        if ((len - username.length) == offset) {
-          // query the server
-          const results = yield MicroBlogApi.find_users(username)
-          if (results !== API_ERROR && results.contacts != null) {
-            self.found_users = []
-            self.current_autocomplete = username
-            for (var c of results.contacts) {
-              const u = Contact.create({
-                username: c.nickname,
-                avatar: c.photo
-              })
-              self.found_users.push(u)
-            }
-          }
-        }
-        else {
-          self.found_users = []
-        }
-      }
-    }
-    else {
-      self.found_users = []
-    }
-  }),
-  
-  update_autocomplete: flow(function* (selected_username) {
-    var s = self.post_text;
-    s = s.replace("@" + self.current_autocomplete, "@" + selected_username + " ")
-    self.post_text = s
-    self.found_users = []
-    self.current_autocomplete = ""
   })
   
 }))
@@ -394,7 +348,7 @@ export default Posting = types.model('Posting', {
       offset = -35
     }
     
-   if (self.found_users.length > 0) {
+   if (App.found_users.length > 0) {
      // if usernames bar, move chars counter higher
      offset -= 40
    }
