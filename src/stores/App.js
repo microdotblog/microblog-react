@@ -567,6 +567,9 @@ export default App = types.model('App', {
   theme_settings_group_background_color() {
     return self.theme === "dark" ? "#1F2937" : "#eff1f3"
   },
+  theme_autocomplete_background_color() {
+    return self.theme === "dark" ? "#1c2028" : "#f4f6f8"
+  },
   should_reload_web_view() {
     // When it returns true, this will trigger a reload of the webviews
     return self.is_switching_theme || self.is_changing_font_scale
