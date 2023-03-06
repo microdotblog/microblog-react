@@ -36,7 +36,7 @@ export default class UsernameToolbar extends React.Component{
 					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} showsHorizontalScrollIndicator={false} style={{overflow: 'hidden'}} contentContainerStyle={{flexDirection: 'row', alignItems: 'center'}}>
 						{ posting.found_users.map((u, index) => {
 							return (
-								<TouchableOpacity style={{marginLeft: 4, marginRight: 8, flexDirection: "row"}} onPress={() => {
+								<TouchableOpacity key={index} style={{marginLeft: 4, marginRight: 8, flexDirection: "row"}} onPress={() => {
 									posting.update_autocomplete(u.username)
 									console.log("username tapped", u.username);
 								}}>
