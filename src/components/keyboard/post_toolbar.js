@@ -104,7 +104,7 @@ export default class PostToolbar extends React.Component{
 								padding: 2,
 								color: App.theme_text_color(),
 								position: 'absolute',
-								top: !this.props.is_post_edit ? -35 : -55,
+								top: posting.post_chars_offset(this.props.is_post_edit),
 								right: 0
 							}}
 						><Text style={{ color: posting.post_text_length() > posting.max_post_length() ? '#a94442' : App.theme_text_color() }}>{posting.post_text_length()}</Text>/{posting.max_post_length()}</Text>

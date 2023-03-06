@@ -383,6 +383,23 @@ export default Posting = types.model('Posting', {
     const html = parser.render(self.post_text)
     const has_blockquote = html.includes('<blockquote')
     return has_blockquote ? App.max_characters_allowed * 2 : App.max_characters_allowed
+  },
+  
+  post_chars_offset(is_post_edit) {
+    var offset = 0
+    if (is_post_edit) {
+      offset = -55
+    }
+    else {
+      offset = -35
+    }
+    
+   if (self.found_users.length > 0) {
+     // if usernames bar, move chars counter higher
+     offset -= 40
+   }
+    
+    return offset
   }
   
 }))
