@@ -520,6 +520,7 @@ export default App = types.model('App', {
     
     // for a quick test, we're just going to grab usernames regardless of insertion point
     // later, will be smarter about only checking the username that is being typed
+    // TODO: use Posting.text_selection
     
     const regex = /\@([a-z][A-Z]*)/ig
     const pieces = s.match(regex)
