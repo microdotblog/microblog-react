@@ -46,6 +46,11 @@ export default Reply = types.model('Reply', {
   set_reply_text: flow(function* (value) {
 		self.reply_text = value
   }),
+
+  set_reply_text_from_typing: flow(function* (value) {
+    self.reply_text = value
+    App.check_usernames(self.reply_text)
+  }),
   
   send_reply: flow(function* () {
 		console.log("Reply:send_reply", self.reply_text)

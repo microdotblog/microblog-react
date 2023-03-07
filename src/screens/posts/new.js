@@ -3,9 +3,10 @@ import { observer } from 'mobx-react';
 import { View, TextInput, Keyboard, ActivityIndicator, InputAccessoryView, Platform, KeyboardAvoidingView } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Auth from '../../stores/Auth';
-import PostToolbar from '../../components/keyboard/post_toolbar'
-import App from '../../stores/App'
+import App from '../../stores/App';
+import PostToolbar from '../../components/keyboard/post_toolbar';
 import AssetToolbar from '../../components/keyboard/asset_toolbar';
+import UsernameToolbar from '../../components/keyboard/username_toolbar';
 
 @observer
 export default class PostingScreen extends React.Component{
@@ -119,7 +120,7 @@ export default class PostingScreen extends React.Component{
               enablesReturnKeyAutomatically={true}
               underlineColorAndroid={'transparent'}
               value={posting.post_text}
-              onChangeText={(text) => !posting.is_sending_post ? posting.set_post_text(text) : null}
+              onChangeText={(text) => !posting.is_sending_post ? posting.set_post_text_from_typing(text) : null}
               onSelectionChange={({ nativeEvent: { selection } }) => {
                 posting.set_text_selection(selection)
               }}
@@ -130,11 +131,13 @@ export default class PostingScreen extends React.Component{
         {
           Platform.OS === 'ios' ?
             <InputAccessoryView nativeID={this.input_accessory_view_id}>
+              <UsernameToolbar componentId={this.props.componentId} object={posting} />
               <AssetToolbar componentId={this.props.componentId} />
               <PostToolbar componentId={this.props.componentId} />
             </InputAccessoryView>
           :  
           <>
+            <UsernameToolbar componentId={this.props.componentId} object={posting} />
             <AssetToolbar componentId={this.props.componentId} />
             <PostToolbar componentId={this.props.componentId} />
           </>

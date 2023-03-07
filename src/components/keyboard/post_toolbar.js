@@ -33,18 +33,9 @@ export default class PostToolbar extends React.Component{
 				}}
 			>
 				<ScrollView keyboardShouldPersistTaps={'always'}  horizontal={true} style={{overflow: 'hidden', maxWidth: "90%"}} contentContainerStyle={{flexDirection: 'row', alignItems: 'center'}}>
-					<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("**")}>
-						<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"**"}</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("_")}>
-						<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"_"}</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("[]")}>
-						<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"[ ]"}</Text>
-					</TouchableOpacity>
 					{
 						!this.props.is_post_edit &&
-						<TouchableOpacity style={{minWidth: 35, marginLeft: 8, marginRight: 8}} onPress={posting.handle_asset_action}>
+						<TouchableOpacity style={{minWidth: 35, marginLeft: 4, marginRight: 0}} onPress={posting.handle_asset_action}>
 						{
 							Platform.OS === 'ios' ?
 								<SFSymbol
@@ -58,9 +49,18 @@ export default class PostToolbar extends React.Component{
 						}
 						</TouchableOpacity>
 					}
+					<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("**")}>
+						<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"**"}</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("_")}>
+						<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"_"}</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("[]")}>
+						<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"[ ]"}</Text>
+					</TouchableOpacity>
 					{
 						!this.props.is_post_edit && posting.selected_service?.config?.active_destination() != null && posting.selected_service?.config?.destination?.length > 1 ?
-						<TouchableOpacity style={{marginRight: 8}} onPress={() => postingOptionsScreen(this.props.componentId)}>
+						<TouchableOpacity style={{marginLeft: 8, marginRight: 8}} onPress={() => postingOptionsScreen(this.props.componentId)}>
 							<Text style={{ fontSize: 16, fontWeight: '500', textAlign: 'center', color: App.theme_text_color() }}>
 								{posting.selected_service.config.active_destination().name}
 							</Text>
@@ -104,7 +104,7 @@ export default class PostToolbar extends React.Component{
 								padding: 2,
 								color: App.theme_text_color(),
 								position: 'absolute',
-								top: !this.props.is_post_edit ? -35 : -55,
+								top: posting.post_chars_offset(this.props.is_post_edit),
 								right: 0
 							}}
 						><Text style={{ color: posting.post_text_length() > posting.max_post_length() ? '#a94442' : App.theme_text_color() }}>{posting.post_text_length()}</Text>/{posting.max_post_length()}</Text>

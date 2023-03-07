@@ -3,6 +3,7 @@ import Service from './posting/Service';
 import { blog_services } from './../enums/blog_services';
 import { Alert, Platform, Linking } from 'react-native';
 import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
+import MicroBlogApi, { API_ERROR } from '../../api/MicroBlogApi';
 import { launchImageLibrary } from 'react-native-image-picker';
 import MediaAsset from './posting/MediaAsset'
 import App from '../App'
@@ -79,6 +80,11 @@ export default Posting = types.model('Posting', {
   
   set_post_text: flow(function* (value) {
 		self.post_text = value
+  }),
+
+  set_post_text_from_typing: flow(function* (value) {
+    self.post_text = value
+    App.check_usernames(self.post_text)
   }),
   
   set_post_text_from_action: flow(function* (value) {
@@ -306,7 +312,7 @@ export default Posting = types.model('Posting', {
     self.is_editing_post = false
     self.post_url = null
   })
-
+  
 }))
 .views(self => ({
   
@@ -331,6 +337,23 @@ export default Posting = types.model('Posting', {
     const html = parser.render(self.post_text)
     const has_blockquote = html.includes('<blockquote')
     return has_blockquote ? App.max_characters_allowed * 2 : App.max_characters_allowed
+  },
+  
+  post_chars_offset(is_post_edit) {
+    var offset = 0
+    if (is_post_edit) {
+      offset = -55
+    }
+    else {
+      offset = -35
+    }
+    
+   if (App.found_users.length > 0) {
+     // if usernames bar, move chars counter higher
+     offset -= 40
+   }
+    
+    return offset
   }
   
 }))

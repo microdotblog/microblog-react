@@ -331,6 +331,25 @@ class MicroBlogApi {
 			});
 		return posts;
 	}
+
+	async find_users(username) {
+		console.log('MicroBlogApi: find_users', username);
+		const push = axios
+			.get(`/micropub?q=contact&filter=${username}`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+			})
+			.then(response => {
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: find_users', error);
+				return API_ERROR;
+			});
+		return push;
+	}
   
 }
 
