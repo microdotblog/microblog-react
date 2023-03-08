@@ -46,7 +46,7 @@ export const BOOKMARK_SCREEN = 'microblog.BookmarkScreen';
 export const ADD_BOOKMARK_SCREEN = 'microblog.modal.AddBookmarkScreen';
 export const HELP_SCREEN = 'microblog.modal.HelpScreen';
 export const IMAGE_OPTIONS_SCREEN = 'microblog.modal.ImageOptionsScreen';
-export const IMAGE_CROP_SCREEN = 'microblog.modal.ImageCropScreen';
+export const IMAGE_CROP_SCREEN = 'microblog.ImageCropScreen';
 export const REPLIES_SCREEN = 'micrblog.RepliesScreen';
 export const REPLY_EDIT_SCREEN = 'microblog.ReplyEditScreen';
 export const SETTINGS_SCREEN = 'microblog.modal.SettingsScreen';
@@ -778,19 +778,30 @@ export const imageOptionsScreen = (image, index, component_id) => {
   return Navigation.push(component_id, options);
 }
 
-export const imageCropScreen = (component_id) => {
+export const imageCropScreen = (asset, component_id) => {
   console.log("Screens:imageCropScreen");
+  
+  asset.save_to_temp()
+  
   const options = {
     component: {
       id: IMAGE_CROP_SCREEN,
       name: IMAGE_CROP_SCREEN,
       passProps: {
+        asset: asset
       },
       options: {
         topBar: {
           title: {
             text: "Photo"
-          }
+          },
+          rightButtons: [
+            {
+              id: 'add_photo_button',
+              text: 'Add Photo',
+              color: App.theme_accent_color()
+            }
+          ]
         }
       }
     }

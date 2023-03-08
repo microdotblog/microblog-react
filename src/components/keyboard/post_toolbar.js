@@ -35,7 +35,7 @@ export default class PostToolbar extends React.Component{
 				<ScrollView keyboardShouldPersistTaps={'always'}  horizontal={true} style={{overflow: 'hidden', maxWidth: "90%"}} contentContainerStyle={{flexDirection: 'row', alignItems: 'center'}}>
 					{
 						!this.props.is_post_edit &&
-						<TouchableOpacity style={{minWidth: 35, marginLeft: 4, marginRight: 0}} onPress={() => posting.handle_crop_action(this.props.componentId)}>
+						<TouchableOpacity style={{minWidth: 35, marginLeft: 4, marginRight: 0}} onPress={() => posting.handle_asset_action(this.props.componentId)}>
 						{
 							Platform.OS === 'ios' ?
 								<SFSymbol

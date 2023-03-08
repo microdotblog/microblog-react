@@ -171,7 +171,7 @@ export default Posting = types.model('Posting', {
     
   }),
 
-  handle_asset_action: flow(function* () {
+  handle_asset_action: flow(function* (component_id) {
     console.log("Posting:handle_asset_action")
     const options = {
       title: 'Select an image',
@@ -193,15 +193,12 @@ export default Posting = types.model('Posting', {
       result.assets.forEach((asset) => {
         console.log("Posting:handle_image_action:asset", asset)
         const media_asset = MediaAsset.create(asset)
-        self.post_assets.push(media_asset)
-        media_asset.upload(self.selected_service.service_object())
+        imageCropScreen(media_asset, component_id)
+
+        // self.post_assets.push(media_asset)
+        // media_asset.upload(self.selected_service.service_object())
       })
     }
-  }),
-
-  handle_crop_action: flow(function* (component_id) {
-    console.log("Posting:handle_crop_action")
-    return imageCropScreen(component_id)
   }),
 
   asset_action: flow(function* (asset, index) {

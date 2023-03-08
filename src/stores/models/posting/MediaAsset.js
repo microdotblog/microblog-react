@@ -1,5 +1,6 @@
 import { types, flow } from 'mobx-state-tree';
 import MicroPubApi, { POST_ERROR } from './../../../api/MicroPubApi';
+const FS = require("react-native-fs")
 
 export default MediaAsset = types.model('MediaAsset', {
 	uri: types.identifier,
@@ -25,6 +26,14 @@ export default MediaAsset = types.model('MediaAsset', {
 	set_alt_text: flow(function* (text) {
 		console.log("MediaAsset:set_alt_text", text)
 		self.alt_text = text
+	}),
+	
+	save_to_temp: flow(function* () {
+		const filename = (Math.floor(Math.random() * 10000)).toString()
+		const new_path = FS.TemporaryDirectoryPath + "/" + filename
+		console.log("MediaAsset:save_to_temp", new_path)
+		FS.copyFile(self.uri, new_path)
+		self.uri = "file://" + new_path
 	})
 
 }))
