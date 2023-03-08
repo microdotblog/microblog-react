@@ -22,6 +22,7 @@ import BookmarkScreen from "./bookmarks/bookmark";
 import AddBookmarkScreen from "./bookmarks/add_bookmark";
 import HelpScreen from "./help/help";
 import ImageOptionsScreen from "./posts/image_options";
+import ImageCropScreen from "./posts/image_crop";
 import RepliesScreen from "./replies/replies";
 import ReplyEditScreen from "./replies/edit";
 import SettingsScreen from "./settings/settings";
@@ -45,6 +46,7 @@ export const BOOKMARK_SCREEN = 'microblog.BookmarkScreen';
 export const ADD_BOOKMARK_SCREEN = 'microblog.modal.AddBookmarkScreen';
 export const HELP_SCREEN = 'microblog.modal.HelpScreen';
 export const IMAGE_OPTIONS_SCREEN = 'microblog.modal.ImageOptionsScreen';
+export const IMAGE_CROP_SCREEN = 'microblog.modal.ImageCropScreen';
 export const REPLIES_SCREEN = 'micrblog.RepliesScreen';
 export const REPLY_EDIT_SCREEN = 'microblog.ReplyEditScreen';
 export const SETTINGS_SCREEN = 'microblog.modal.SettingsScreen';
@@ -105,6 +107,7 @@ Screens.set(BOOKMARK_SCREEN, BookmarkScreen);
 Screens.set(ADD_BOOKMARK_SCREEN, AddBookmarkScreen);
 Screens.set(HELP_SCREEN, HelpScreen)
 Screens.set(IMAGE_OPTIONS_SCREEN, ImageOptionsScreen);
+Screens.set(IMAGE_CROP_SCREEN, ImageCropScreen);
 Screens.set(REPLIES_SCREEN, RepliesScreen);
 Screens.set(REPLY_EDIT_SCREEN, ReplyEditScreen);
 Screens.set(SETTINGS_SCREEN, SettingsScreen);
@@ -767,6 +770,27 @@ export const imageOptionsScreen = (image, index, component_id) => {
           title: {
             text: "Image options"
           },
+        }
+      }
+    }
+  };
+
+  return Navigation.push(component_id, options);
+}
+
+export const imageCropScreen = (component_id) => {
+  console.log("Screens:imageCropScreen");
+  const options = {
+    component: {
+      id: IMAGE_CROP_SCREEN,
+      name: IMAGE_CROP_SCREEN,
+      passProps: {
+      },
+      options: {
+        topBar: {
+          title: {
+            text: "Photo"
+          }
         }
       }
     }

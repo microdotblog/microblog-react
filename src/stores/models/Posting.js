@@ -9,6 +9,7 @@ import MediaAsset from './posting/MediaAsset'
 import App from '../App'
 import Clipboard from '@react-native-clipboard/clipboard';
 import { imageOptionsScreen, POSTING_SCREEN } from '../../screens';
+import { imageCropScreen } from '../../screens';
 import { Navigation } from 'react-native-navigation';
 import md from 'markdown-it';
 const parser = md({ html: true });
@@ -196,6 +197,11 @@ export default Posting = types.model('Posting', {
         media_asset.upload(self.selected_service.service_object())
       })
     }
+  }),
+
+  handle_crop_action: flow(function* (component_id) {
+    console.log("Posting:handle_crop_action")
+    return imageCropScreen(component_id)
   }),
 
   asset_action: flow(function* (asset, index) {
