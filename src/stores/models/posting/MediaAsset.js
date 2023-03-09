@@ -26,14 +26,37 @@ export default MediaAsset = types.model('MediaAsset', {
 	set_alt_text: flow(function* (text) {
 		console.log("MediaAsset:set_alt_text", text)
 		self.alt_text = text
-	}),
-	
-	save_to_temp: flow(function* () {
-		const filename = (Math.floor(Math.random() * 10000)).toString()
-		const new_path = FS.TemporaryDirectoryPath + "/" + filename
-		console.log("MediaAsset:save_to_temp", new_path)
-		FS.copyFile(self.uri, new_path)
-		self.uri = "file://" + new_path
 	})
 
+}))
+.views(self => ({
+
+	async save_to_temp() {
+		const filename = (Math.floor(Math.random() * 10000)).toString() + self.file_extension()
+		const new_path = FS.TemporaryDirectoryPath + filename
+
+		var new_asset = MediaAsset.create({
+			uri: "file://" + new_path,
+			type: self.type
+		})
+
+		var promise = FS.copyFile(self.uri, new_path).then((result) => {
+			return new_asset
+		})
+		
+		return promise
+	},
+  
+	file_extension() {
+		if (self.type === "image/png") {
+			return ".png"			
+		}
+		else if (self.type === "image/gif") {
+			return ".gif"
+		}
+		else {
+			return ".jpg"
+		}
+	}
+  
 }))

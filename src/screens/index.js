@@ -778,17 +778,17 @@ export const imageOptionsScreen = (image, index, component_id) => {
   return Navigation.push(component_id, options);
 }
 
-export const imageCropScreen = (asset, component_id) => {
+export const imageCropScreen = async (asset, component_id) => {
   console.log("Screens:imageCropScreen");
   
-  asset.save_to_temp()
+  const new_asset = await asset.save_to_temp()
   
   const options = {
     component: {
       id: IMAGE_CROP_SCREEN,
       name: IMAGE_CROP_SCREEN,
       passProps: {
-        asset: asset
+        asset: new_asset
       },
       options: {
         topBar: {
@@ -797,7 +797,7 @@ export const imageCropScreen = (asset, component_id) => {
           },
           rightButtons: [
             {
-              id: 'add_photo_button',
+              id: 'add_image_button',
               text: 'Add Photo',
               color: App.theme_accent_color()
             }

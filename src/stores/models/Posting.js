@@ -194,11 +194,13 @@ export default Posting = types.model('Posting', {
         console.log("Posting:handle_image_action:asset", asset)
         const media_asset = MediaAsset.create(asset)
         imageCropScreen(media_asset, component_id)
-
-        // self.post_assets.push(media_asset)
-        // media_asset.upload(self.selected_service.service_object())
       })
     }
+  }),
+  
+  attach_asset: flow(function* (asset) {
+    self.post_assets.push(asset)
+    asset.upload(self.selected_service.service_object())
   }),
 
   asset_action: flow(function* (asset, index) {
