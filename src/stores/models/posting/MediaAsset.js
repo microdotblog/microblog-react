@@ -57,6 +57,14 @@ export default MediaAsset = types.model('MediaAsset', {
 		else {
 			return ".jpg"
 		}
+	},
+	
+	is_landscape() {
+		return true
+	},
+	
+	scale_width_for_height(height) {
+		return 600
 	}
   
 }))
