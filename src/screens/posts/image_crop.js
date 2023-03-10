@@ -30,13 +30,34 @@ export default class ImageCropScreen extends React.Component{
 		const { asset } = this.props
 		return (
 			<View style={{ flex: 1, flexDirection: "column" }}>
-				<View style={{ flex: 1, flexDirection: "row" }}>
-					<ScrollView style={{ width: "100%", height: scroll_size }} bounces={ false } contentContainerStyle={{ width: asset.scale_width_for_height(scroll_size), height: scroll_size }} onLayout={(e) => {
-						this.setState({ scroll_size: e.nativeEvent.layout.width })
-					}}>
-						<Image source={{ uri: asset.uri }} style={{ width: asset.scale_width_for_height(scroll_size), height: scroll_size, resizeMode: "contain" }} />
-					</ScrollView>
-				</View>
+				{ asset.is_landscape() ? 
+					(
+						is_cropped ? 
+							<View style={{ flex: 1, flexDirection: "row" }}>
+								<ScrollView style={{ width: "100%", height: scroll_size, backgroundColor: "#000" }} bounces={ false } contentContainerStyle={{ width: asset.scale_width_for_height(scroll_size), height: scroll_size }} onLayout={(e) => {
+									this.setState({ scroll_size: e.nativeEvent.layout.width })
+								}}>
+									<Image source={{ uri: asset.uri }} style={{ width: asset.scale_width_for_height(scroll_size), height: scroll_size, resizeMode: "contain" }} />
+								</ScrollView>
+							</View>
+						:
+							<View style={{ flex: 1, flexDirection: "row" }}>
+								<ScrollView style={{ width: "100%", height: scroll_size, backgroundColor: "#000" }} bounces={ false } contentContainerStyle={{ width: scroll_size, height: scroll_size }} onLayout={(e) => {
+									this.setState({ scroll_size: e.nativeEvent.layout.width })
+								}}>
+									<Image source={{ uri: asset.uri }} style={{ width: scroll_size, height: scroll_size, resizeMode: "contain" }} />
+								</ScrollView>
+							</View>
+					)
+				:
+					<View style={{ flex: 1, flexDirection: "row" }}>
+						<ScrollView style={{ width: "100%", height: scroll_size, backgroundColor: "#000" }} bounces={ false } contentContainerStyle={{ width: asset.scale_width_for_height(scroll_size), height: scroll_size }} onLayout={(e) => {
+							this.setState({ scroll_size: e.nativeEvent.layout.width })
+						}}>
+							<Image source={{ uri: asset.uri }} style={{ width: asset.scale_width_for_height(scroll_size), height: scroll_size, resizeMode: "contain" }} />
+						</ScrollView>
+					</View>
+				}
 				<View style={{ flex: 1, flexDirection: "row" }}>
 					<TouchableOpacity
 						key={ "toggle_square" }
