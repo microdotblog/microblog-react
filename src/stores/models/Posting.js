@@ -9,6 +9,7 @@ import MediaAsset from './posting/MediaAsset'
 import App from '../App'
 import Clipboard from '@react-native-clipboard/clipboard';
 import { imageOptionsScreen, POSTING_SCREEN } from '../../screens';
+import { imageCropScreen } from '../../screens';
 import { Navigation } from 'react-native-navigation';
 import md from 'markdown-it';
 const parser = md({ html: true });
@@ -170,7 +171,7 @@ export default Posting = types.model('Posting', {
     
   }),
 
-  handle_asset_action: flow(function* () {
+  handle_asset_action: flow(function* (component_id) {
     console.log("Posting:handle_asset_action")
     const options = {
       title: 'Select an image',
@@ -192,10 +193,14 @@ export default Posting = types.model('Posting', {
       result.assets.forEach((asset) => {
         console.log("Posting:handle_image_action:asset", asset)
         const media_asset = MediaAsset.create(asset)
-        self.post_assets.push(media_asset)
-        media_asset.upload(self.selected_service.service_object())
+        imageCropScreen(media_asset, component_id)
       })
     }
+  }),
+  
+  attach_asset: flow(function* (asset) {
+    self.post_assets.push(asset)
+    asset.upload(self.selected_service.service_object())
   }),
 
   asset_action: flow(function* (asset, index) {

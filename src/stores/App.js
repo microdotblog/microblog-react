@@ -603,6 +603,12 @@ export default App = types.model('App', {
   theme_button_text_color() {
     return self.theme === "dark" ? "#E5E7EB" : "#1F2937"
   },
+  theme_button_disabled_background_color() {
+    return self.theme === "dark" ? "#272d37" : "#F9FAFB"    
+  },
+  theme_button_disabled_text_color() {
+    return self.theme === "dark" ? "#a1a3a5" : "#4e6180"
+  },
   theme_section_background_color() {
     return self.theme === "dark" ? "#374151" : "#E5E7EB"
   },
@@ -629,6 +635,15 @@ export default App = types.model('App', {
   },
   theme_autocomplete_background_color() {
     return self.theme === "dark" ? "#1c2028" : "#f4f6f8"
+  },
+  theme_crop_button_text_color() {
+    return self.theme === "dark" ? "#E5E7EB" : "#000000"
+  },
+  theme_crop_button_background_color() {
+    return self.theme === "dark" ? "#374151" : "#d9dadb"
+  },
+  theme_crop_background_color() {
+    return self.theme === "dark" ? "#000000" : "#e5e5e5"    
   },
   should_reload_web_view() {
     // When it returns true, this will trigger a reload of the webviews
