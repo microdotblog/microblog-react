@@ -61,7 +61,7 @@ export default class AddBookmarkScreen extends React.Component{
           enablesReturnKeyAutomatically={true}
           underlineColorAndroid={'transparent'}
           style={{ 
-            backgroundColor: App.theme_input_background_color(), 
+            backgroundColor: App.theme_input_contrast_background_color(), 
             fontSize: 17,
             borderColor: '#f80', 
             borderWidth: 1,

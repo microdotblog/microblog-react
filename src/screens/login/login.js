@@ -39,7 +39,7 @@ export default class LoginScreen extends React.Component{
           enablesReturnKeyAutomatically={true}
           underlineColorAndroid={'transparent'}
           style={{ 
-            backgroundColor: App.theme_input_background_color(), 
+            backgroundColor: App.theme_input_contrast_background_color(), 
             fontSize: 17,
             borderColor: `${!Login.show_error ? "#f80" : "#ea053b"}`, 
             borderWidth: 1,
