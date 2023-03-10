@@ -65,6 +65,10 @@ export default MediaAsset = types.model('MediaAsset', {
 	
 	scale_width_for_height(height) {
 		return 600
+	},
+	
+	scale_height_for_height(width) {
+		return 600
 	}
   
 }))

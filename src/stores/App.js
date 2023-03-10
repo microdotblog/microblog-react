@@ -603,6 +603,12 @@ export default App = types.model('App', {
   theme_button_text_color() {
     return self.theme === "dark" ? "#E5E7EB" : "#1F2937"
   },
+  theme_button_disabled_background_color() {
+    return self.theme === "dark" ? "#272d37" : "#F9FAFB"    
+  },
+  theme_button_disabled_text_color() {
+    return self.theme === "dark" ? "#a1a3a5" : "#1F2937"
+  },
   theme_section_background_color() {
     return self.theme === "dark" ? "#374151" : "#E5E7EB"
   },
