@@ -702,16 +702,7 @@ export const addBoomarkScreen = () => {
                   text: 'Back',
                   icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
                 },
-              ],
-              rightButtons: [
-                {
-                  id: 'profile_button',
-                  text: 'profile',
-                  component: {
-                    name: PROFILE_IMAGE
-                  }
-                }
-					    ]
+              ]
             },
             layout: {
               backgroundColor: App.theme_background_color()
