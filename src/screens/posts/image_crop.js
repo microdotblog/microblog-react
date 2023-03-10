@@ -44,6 +44,7 @@ export default class ImageCropScreen extends React.Component{
 				}
 				ImageEditor.cropImage(this.props.asset.uri, crop_info).then(url => {
 					console.log("Cropped image", url)
+					this.props.asset.delete_file()
 					var media_asset = MediaAsset.create({
 						uri: url,
 						type: this.props.asset.type,

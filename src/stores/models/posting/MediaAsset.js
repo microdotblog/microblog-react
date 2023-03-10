@@ -50,6 +50,11 @@ export default MediaAsset = types.model('MediaAsset', {
 		
 		return promise
 	},
+	
+	async delete_file() {
+		const path = self.uri.replace("file://", "")
+		FS.unlink(path)
+	},
   
 	file_extension() {
 		if (self.type === "image/png") {
