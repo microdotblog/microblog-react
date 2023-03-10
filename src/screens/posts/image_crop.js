@@ -4,6 +4,7 @@ import { ScrollView, View, Text, Image, TouchableOpacity } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import { Screens, POSTING_SCREEN } from '../../screens';
 import CheckmarkIcon from '../../assets/icons/checkmark.png';
+import ImageEditor from "@react-native-community/image-editor";
 
 @observer
 export default class ImageCropScreen extends React.Component{
@@ -12,7 +13,8 @@ export default class ImageCropScreen extends React.Component{
 		super(props)
 		this.state = {
 			scroll_size: 0,
-			is_cropped: true
+			is_cropped: true,
+			crop_pt: { x: 0, y: 0 }
 		}
 		Navigation.events().bindComponent(this)
 	}
@@ -20,8 +22,42 @@ export default class ImageCropScreen extends React.Component{
 	navigationButtonPressed = async ({ buttonId }) => {
 		console.log("navigationButtonPressed::", buttonId)
 		if (buttonId === "add_image_button") {
-			Auth.selected_user.posting.attach_asset(this.props.asset)
-			Navigation.pop(POSTING_SCREEN)
+			if (this.state.is_cropped) {
+				var crop_size = 0
+				var scaled_pt = { x: 0, y: 0 }
+
+				if (this.props.asset.is_landscape()) {
+					crop_size = this.props.asset.height
+					scaled_pt.x = this.state.crop_pt.x / this.state.scroll_size * crop_size
+				}
+				else {
+					crop_size = this.props.asset.width
+					scaled_pt.y = this.state.crop_pt.y / this.state.scroll_size * crop_size
+				}
+				
+				const crop_info = {
+					offset: scaled_pt,
+					size: {
+						width: crop_size,
+						height: crop_size 
+					}
+				}
+				ImageEditor.cropImage(this.props.asset.uri, crop_info).then(url => {
+					console.log("Cropped image", url)
+					var media_asset = MediaAsset.create({
+						uri: url,
+						type: this.props.asset.type,
+						width: crop_size,
+						height: crop_size
+					})
+					Auth.selected_user.posting.attach_asset(media_asset)
+					Navigation.pop(POSTING_SCREEN)
+				})
+			}
+			else {
+				Auth.selected_user.posting.attach_asset(this.props.asset)
+				Navigation.pop(POSTING_SCREEN)
+			}
 		}
 	}
   
@@ -36,6 +72,9 @@ export default class ImageCropScreen extends React.Component{
 							<View style={{ flex: 1, flexDirection: "row" }}>
 								<ScrollView style={{ width: "100%", height: scroll_size, backgroundColor: "#000" }} bounces={ false } contentContainerStyle={{ width: asset.scale_width_for_height(scroll_size), height: scroll_size }} onLayout={(e) => {
 									this.setState({ scroll_size: e.nativeEvent.layout.width })
+								}} scrollEventThrottle={ 50 } onScroll={(e) => {
+									console.log("on scroll", e.nativeEvent.contentOffset.x, e.nativeEvent.contentOffset.y)
+									this.setState({ crop_pt: e.nativeEvent.contentOffset })
 								}}>
 									<Image source={{ uri: asset.uri }} style={{ width: asset.scale_width_for_height(scroll_size), height: scroll_size, resizeMode: "contain" }} />
 								</ScrollView>
@@ -44,6 +83,9 @@ export default class ImageCropScreen extends React.Component{
 							<View style={{ flex: 1, flexDirection: "row" }}>
 								<ScrollView style={{ width: "100%", height: scroll_size, backgroundColor: "#000" }} bounces={ false } contentContainerStyle={{ width: scroll_size, height: asset.scale_height_for_width(scroll_size) }} onLayout={(e) => {
 									this.setState({ scroll_size: e.nativeEvent.layout.width })
+								}} scrollEventThrottle={ 50 } onScroll={(e) => {
+									console.log("on scroll", e.nativeEvent.contentOffset.x, e.nativeEvent.contentOffset.y)
+									this.setState({ crop_pt: e.nativeEvent.contentOffset })
 								}}>
 									<Image source={{ uri: asset.uri }} style={{ width: scroll_size, height: asset.scale_height_for_width(scroll_size), resizeMode: "contain" }} />
 								</ScrollView>
