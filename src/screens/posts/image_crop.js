@@ -70,7 +70,7 @@ export default class ImageCropScreen extends React.Component{
 					(
 						asset.is_landscape() ? 
 							<View style={{ flex: 1, flexDirection: "row" }}>
-								<ScrollView style={{ width: "100%", height: scroll_size, backgroundColor: "#000" }} bounces={ false } contentContainerStyle={{ width: asset.scale_width_for_height(scroll_size), height: scroll_size }} onLayout={(e) => {
+								<ScrollView style={{ width: "100%", height: scroll_size, backgroundColor: App.theme_crop_background_color() }} bounces={ false } contentContainerStyle={{ width: asset.scale_width_for_height(scroll_size), height: scroll_size }} onLayout={(e) => {
 									this.setState({ scroll_size: e.nativeEvent.layout.width })
 								}} scrollEventThrottle={ 50 } onScroll={(e) => {
 									console.log("on scroll", e.nativeEvent.contentOffset.x, e.nativeEvent.contentOffset.y)
@@ -81,7 +81,7 @@ export default class ImageCropScreen extends React.Component{
 							</View>
 						:
 							<View style={{ flex: 1, flexDirection: "row" }}>
-								<ScrollView style={{ width: "100%", height: scroll_size, backgroundColor: "#000" }} bounces={ false } contentContainerStyle={{ width: scroll_size, height: asset.scale_height_for_width(scroll_size) }} onLayout={(e) => {
+								<ScrollView style={{ width: "100%", height: scroll_size, backgroundColor: App.theme_crop_background_color() }} bounces={ false } contentContainerStyle={{ width: scroll_size, height: asset.scale_height_for_width(scroll_size) }} onLayout={(e) => {
 									this.setState({ scroll_size: e.nativeEvent.layout.width })
 								}} scrollEventThrottle={ 50 } onScroll={(e) => {
 									console.log("on scroll", e.nativeEvent.contentOffset.x, e.nativeEvent.contentOffset.y)
@@ -93,7 +93,7 @@ export default class ImageCropScreen extends React.Component{
 					)
 				:
 					<View style={{ flex: 1, flexDirection: "row" }}>
-						<ScrollView style={{ width: "100%", height: scroll_size, backgroundColor: "#000" }} bounces={ false } contentContainerStyle={{ width: scroll_size, height: scroll_size }} onLayout={(e) => {
+						<ScrollView style={{ width: "100%", height: scroll_size, backgroundColor: App.theme_crop_background_color() }} bounces={ false } contentContainerStyle={{ width: scroll_size, height: scroll_size }} onLayout={(e) => {
 							this.setState({ scroll_size: e.nativeEvent.layout.width })
 						}}>
 							<Image source={{ uri: asset.uri }} style={{ width: scroll_size, height: scroll_size, resizeMode: "contain" }} />
@@ -105,7 +105,7 @@ export default class ImageCropScreen extends React.Component{
 					<View style={{ flex: 1, flexDirection: "row" }}>
 						<TouchableOpacity
 							key={ "toggle_square" }
-							style={{ height: 34, paddingLeft: 14, paddingRight: 14, marginTop: 40, marginBottom: 20, marginLeft: 12, marginRight: 12, flexDirection: "row", alignItems: "center", justifyContent: "center", backgroundColor: (is_cropped ? App.theme_button_background_color() : App.theme_button_disabled_background_color()), borderRadius: 25 }}
+							style={{ height: 34, paddingLeft: 14, paddingRight: 14, marginTop: 40, marginBottom: 20, marginLeft: 12, marginRight: 12, flexDirection: "row", alignItems: "center", justifyContent: "center", backgroundColor: (is_cropped ? App.theme_crop_button_background_color() : App.theme_button_disabled_background_color()), borderRadius: 25 }}
 							onPress={() => {
 								this.setState({ is_cropped: !is_cropped })
 							}}
