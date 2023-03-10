@@ -5,6 +5,8 @@ const FS = require("react-native-fs")
 export default MediaAsset = types.model('MediaAsset', {
 	uri: types.identifier,
 	type: types.maybe(types.string),
+	width: types.optional(types.number, 0),
+	height: types.optional(types.number, 0),
 	is_uploading: types.optional(types.boolean, false),
 	did_upload: types.optional(types.boolean, false),
 	remote_url: types.maybe(types.string),
@@ -37,7 +39,9 @@ export default MediaAsset = types.model('MediaAsset', {
 
 		var new_asset = MediaAsset.create({
 			uri: "file://" + new_path,
-			type: self.type
+			type: self.type,
+			width: self.width,
+			height: self.height
 		})
 
 		var promise = FS.copyFile(self.uri, new_path).then((result) => {
@@ -60,15 +64,23 @@ export default MediaAsset = types.model('MediaAsset', {
 	},
 	
 	is_landscape() {
-		return true
+		return self.width > self.height
+	},
+
+	is_portrait() {
+		return self.height > self.width
 	},
 	
-	scale_width_for_height(height) {
-		return 600
+	is_square() {
+		return self.width == self.height
 	},
 	
-	scale_height_for_height(width) {
-		return 600
+	scale_width_for_height(new_height) {
+		return self.width / self.height * new_height
+	},
+	
+	scale_height_for_width(new_width) {
+		return self.height / self.width * new_width
 	}
   
 }))
