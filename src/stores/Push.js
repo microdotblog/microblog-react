@@ -40,10 +40,6 @@ export default Push = types.model('Push', {
 
 		if (Platform.OS === 'ios') {
 			PushNotificationIOS.requestPermissions()
-			
-			if (__DEV__) {
-				Push.set_token("TEST")
-			}
 		}
 	}),
 	
