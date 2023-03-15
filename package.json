@@ -27,7 +27,7 @@
     "mobx-react": "^7.2.0",
     "mobx-state-tree": "^5.0.3",
     "react": "18.2.0",
-    "react-native": "^0.71.0",
+    "react-native": "0.71.4",
     "react-native-actions-sheet": "^0.8.10",
     "react-native-device-info": "^8.4.9",
     "react-native-fast-image": "^8.5.11",
