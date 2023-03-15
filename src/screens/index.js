@@ -936,9 +936,11 @@ export const postsScreen = (component_id) => {
   return Navigation.push(component_id, options);
 }
 
-export const postsDestinationBottomSheet = (close = false) => {
+export const postsDestinationBottomSheet = (close = false, type = null) => {
   if(!close){
-    return SheetManager.show("posts_destination_menu")
+    return SheetManager.show("posts_destination_menu", {
+      payload: { type: type }
+    })
   }
   SheetManager.hide("posts_destination_menu")
 }

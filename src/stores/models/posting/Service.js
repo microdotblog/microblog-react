@@ -78,9 +78,13 @@ export default Service = types.model('Service', {
   
   set_active_destination: flow(function* (destination, type = null) { 
     if(destination){
-      self.config.set_selected_posts_destination(destination)
-      if(type !== null && type === "posts"){
+      if(type === "posts"){
+        self.config.set_selected_posts_destination(destination)// TODO: Probably rewrite this too so it's more generic.
         self.check_for_posts_for_destination(destination)
+      }
+      else if(type === "pages"){
+        // DO THE SAME AS ABOVE
+        self.config.set_selected_posts_destination(destination)
       }
     }
   }),

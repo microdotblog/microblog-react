@@ -34,7 +34,7 @@ export default class PagesScreen extends React.Component{
           width: '100%',
           backgroundColor: App.theme_input_background_color(),
         }}>
-        <TouchableOpacity onPress={() => postsDestinationBottomSheet()}>
+        <TouchableOpacity onPress={() => postsDestinationBottomSheet(false, "pages")}>
           <Text style={{color: App.theme_text_color(), fontWeight: "500", fontSize: 16}}>
             {config.posts_destination()?.name}
           </Text>
