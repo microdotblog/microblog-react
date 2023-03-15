@@ -18,7 +18,7 @@ export default class PostsScreen extends React.Component{
   }
   
   componentDidAppear(){
-    Auth.selected_user.posting?.selected_service?.upate_posts_for_active_posts_destination()
+    Auth.selected_user.posting?.selected_service?.upate_posts_for_active_destination()
   }
   
   _return_header = () => {

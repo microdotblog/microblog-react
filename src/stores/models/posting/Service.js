@@ -69,7 +69,7 @@ export default Service = types.model('Service', {
     }
   }),
   
-  upate_posts_for_active_posts_destination: flow(function* () {
+  upate_posts_for_active_destination: flow(function* () {
     const active_destination = self.config.posts_destination()
     if(active_destination){
       self.check_for_posts_for_destination(active_destination)
@@ -110,7 +110,7 @@ export default Service = types.model('Service', {
     const status = yield MicroPubApi.delete_post(self.service_object(), post.url)
     if(status !== DELETE_ERROR){
       App.show_toast("Post was deleted.")
-      self.upate_posts_for_active_posts_destination()
+      self.upate_posts_for_active_destination()
     }
     else{
       Alert.alert("Whoops", "Could not delete post. Please try again.")
@@ -122,7 +122,7 @@ export default Service = types.model('Service', {
     const status = yield MicroPubApi.publish_draft(self.service_object(), post.content, post.url, post.name)
     if(status !== DELETE_ERROR){
       App.show_toast("Post was published.")
-      self.upate_posts_for_active_posts_destination()
+      self.upate_posts_for_active_destination()
     }
     else{
       Alert.alert("Error Publishing", "Could not publish the draft. Please try again.")
