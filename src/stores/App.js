@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen, settingsScreen, postsScreen } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen, settingsScreen, postsScreen, pagesScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
@@ -226,6 +226,8 @@ export default App = types.model('App', {
         return repliesScreen(self.current_screen_id)
       case "Posts":
         return postsScreen(self.current_screen_id)
+      case "Pages":
+        return pagesScreen(self.current_screen_id)
     }
     console.log("App:navigate_to_screen_from_menu:index", screen, tab_index, self.current_screen_id, should_pop)
     if(tab_index != null){

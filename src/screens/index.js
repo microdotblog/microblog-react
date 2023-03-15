@@ -28,6 +28,7 @@ import ReplyEditScreen from "./replies/edit";
 import SettingsScreen from "./settings/settings";
 import PostsScreen from "./posts/posts";
 import EditPostScreen from "./posts/edit";
+import PagesScreen from "./pages/pages"
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -52,6 +53,7 @@ export const REPLY_EDIT_SCREEN = 'microblog.ReplyEditScreen';
 export const SETTINGS_SCREEN = 'microblog.modal.SettingsScreen';
 export const POSTS_SCREEN = 'microblog.PostsScreen';
 export const EDIT_POST_SCREEN = 'microblog.EditPostScreen';
+export const PAGES_SCREEN = 'microblog.PagesScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -113,6 +115,7 @@ Screens.set(REPLY_EDIT_SCREEN, ReplyEditScreen);
 Screens.set(SETTINGS_SCREEN, SettingsScreen);
 Screens.set(POSTS_SCREEN, PostsScreen);
 Screens.set(EDIT_POST_SCREEN, EditPostScreen);
+Screens.set(PAGES_SCREEN, PagesScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
@@ -978,4 +981,34 @@ export const editPostScreen = (post) => {
       }],
     }
   });
+}
+
+export const pagesScreen = (component_id) => {
+  const options = {
+    component: {
+      id: PAGES_SCREEN,
+      name: PAGES_SCREEN,
+      options: {
+        topBar: {
+          title: {
+            text: "Pages"
+          },
+          rightButtons: [
+            {
+              id: 'refresh_indicator',
+              text: 'refresh',
+              component: {
+                name: REFRESH_ACTIVITY,
+                passProps: {
+                  type: "pages"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  };
+
+  return Navigation.push(component_id, options);
 }
