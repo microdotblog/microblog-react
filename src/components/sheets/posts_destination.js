@@ -28,7 +28,7 @@ export default class PostsDestinationMenu extends React.Component{
       return(
         <TouchableOpacity
           key={destination.uid}
-          onPress={() => selected_service.set_active_posts_dettination(destination)}
+          onPress={() => selected_service.set_active_posts_destination(destination)}
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
