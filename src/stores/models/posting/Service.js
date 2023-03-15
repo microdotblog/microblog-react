@@ -76,10 +76,12 @@ export default Service = types.model('Service', {
     }
   }),
   
-  set_active_posts_destination: flow(function* (destination) { 
+  set_active_destination: flow(function* (destination, type = null) { 
     if(destination){
       self.config.set_selected_posts_destination(destination)
-      self.check_for_posts_for_destination(destination)
+      if(type !== null && type === "posts"){
+        self.check_for_posts_for_destination(destination)
+      }
     }
   }),
   
