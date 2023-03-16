@@ -5,7 +5,7 @@ import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
 import { Navigation } from 'react-native-navigation';
-import PostCell from '../../components/cells/post_cell';
+import PageCell from '../../components/cells/page_cell';
 import { postsDestinationBottomSheet } from '..'
 import { SheetProvider } from "react-native-actions-sheet";
 
@@ -43,35 +43,35 @@ export default class PagesScreen extends React.Component{
     )
   }
   
-  // _key_extractor = (item) => item.uid;
-  // 
-  // render_post_item = ({ item }) => {
-  //   return(
-  //     <PostCell key={item.uid} post={item} />
-  //   )
-  // }
+  _key_extractor = (item) => item.uid;
   
-  // _return_posts_list = () => {
-  //   const { selected_service } = Auth.selected_user.posting
-  //   const { config } = selected_service
-  //   return(
-  //     <FlatList
-  //       data={config.posts_for_destination()}
-  //       extraData={config.posts_for_destination().length && !selected_service.is_loading_posts}
-  //       keyExtractor={this._key_extractor}
-  //       renderItem={this.render_post_item}
-  //       style={{
-  //         backgroundColor: App.theme_background_color_secondary()
-  //       }}
-  //       refreshControl={
-  //         <RefreshControl
-  //           refreshing={false}
-  //           onRefresh={() => selected_service.check_for_posts_for_destination(config.posts_destination())}
-  //         />
-  //       }
-  //     />
-  //   )
-  // }
+  render_page_item = ({ item }) => {
+    return(
+      <PageCell key={item.uid} page={item} />
+    )
+  }
+  
+  _return_pages_list = () => {
+    const { selected_service } = Auth.selected_user.posting
+    const { config } = selected_service
+    return(
+      <FlatList
+        data={config.pages_for_destination()}
+        extraData={config.pages_for_destination().length && !selected_service.is_loading_pages}
+        keyExtractor={this._key_extractor}
+        renderItem={this.render_page_item}
+        style={{
+          backgroundColor: App.theme_background_color_secondary()
+        }}
+        refreshControl={
+          <RefreshControl
+            refreshing={false}
+            onRefresh={() => selected_service.check_for_pages_for_destination(config.pages_destination())}
+          />
+        }
+      />
+    )
+  }
   
   render() {
     return (
@@ -81,7 +81,7 @@ export default class PagesScreen extends React.Component{
             Auth.is_logged_in() && !Auth.is_selecting_user ?
               <>
               {this._return_header()}
-              {/* {this._return_posts_list()} */}
+              {this._return_pages_list()}
               </>
             :
             <LoginMessage title="Pages" />

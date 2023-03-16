@@ -141,7 +141,7 @@ export default Service = types.model('Service', {
       const data = yield MicroPubApi.get_pages(self.service_object(), destination.uid)
       console.log("Endpoint:check_for_pages_for_destination:pages", data?.items?.length)
       if(data?.items != null && data.items?.length > 0){
-        //destination.set_posts(data.items)
+        destination.set_pages(data.items)
       }
       self.is_loading_pages = false
     }
