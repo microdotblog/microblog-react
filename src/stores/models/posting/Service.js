@@ -12,7 +12,8 @@ export default Service = types.model('Service', {
   username: types.maybeNull(types.string),
   is_microblog: types.optional(types.boolean, false),
   config: types.maybeNull(Config),
-  is_loading_posts: types.optional(types.boolean, false)
+  is_loading_posts: types.optional(types.boolean, false),
+  is_loading_pages: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -83,8 +84,8 @@ export default Service = types.model('Service', {
         self.check_for_posts_for_destination(destination)
       }
       else if(type === "pages"){
-        // DO THE SAME AS ABOVE
         self.config.set_selected_posts_destination(destination)
+        self.check_for_pages_for_destination(destination)
       }
     }
   }),
@@ -131,7 +132,27 @@ export default Service = types.model('Service', {
     else{
       Alert.alert("Error Publishing", "Could not publish the draft. Please try again.")
     }
-  })
+  }),
+  
+  check_for_pages_for_destination: flow(function* (destination) { 
+    if(destination){
+      self.is_loading_pages = true
+      console.log("Endpoint:check_for_pages_for_destination", destination.uid)
+      const data = yield MicroPubApi.get_pages(self.service_object(), destination.uid)
+      console.log("Endpoint:check_for_pages_for_destination:pages", data?.items?.length)
+      if(data?.items != null && data.items?.length > 0){
+        //destination.set_posts(data.items)
+      }
+      self.is_loading_pages = false
+    }
+  }),
+  
+  upate_pages_for_active_destination: flow(function* () {
+    const active_destination = self.config.posts_destination()
+    if(active_destination){
+      self.check_for_pages_for_destination(active_destination)
+    }
+  }),
   
 }))
 .views(self => ({
