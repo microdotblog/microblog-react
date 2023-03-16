@@ -132,20 +132,25 @@ export default class PostCell extends React.Component{
           }
           <Text style={{color: App.theme_text_color(), fontSize: 15}}>{page.plain_text_content()}</Text>
           { page.images_from_content()?.length > 0 && this._render_images() }
-          {
-            Platform.OS === "android" &&
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginTop: 20
-              }}
-            >
-            <TouchableOpacity onPress={this._trigger_delete} style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text style={{color: "rgb(239,68,68)", fontSize: 15}}>Delete...</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: 20
+            }}
+          >
+            <TouchableOpacity onPress={() => App.handle_url_from_webview(page.url)}>
+              <Text style={{color: "gray", fontSize: 12}}>
+              {page.nice_local_published_date()}
+              </Text>
             </TouchableOpacity>
-            </View>
-          }
+            {
+              Platform.OS === "android" &&
+              <TouchableOpacity onPress={this._trigger_delete} style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={{color: "rgb(239,68,68)", fontSize: 15}}>Delete...</Text>
+              </TouchableOpacity>
+            }
+          </View>
         </TouchableOpacity>
       </Swipeable>
     )
