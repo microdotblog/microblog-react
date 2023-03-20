@@ -75,6 +75,7 @@ export default class MenuNavigation extends React.Component{
           Platform.OS === 'ios' ? symbol = "gearshape" : image = SettingsIcon
         break;
         case "replies":
+          Platform.OS === 'ios' ? symbol = "bubble.left" :
           svg = `
           <svg fill="currentColor" viewBox="0 0 30 30" width="30px" height="30px">
           <path d="M 8 3 C 6.895 3 6 3.895 6 5 L 23 5 C 24.657 5 26 6.343 26 8 L 26 21 C 27.105 21 28 20.105 28 19 L 28 5 C 28 3.895 27.105 3 26 3 L 8 3 z M 4 7 C 2.895 7 2 7.895 2 9 L 2 23 C 2 24.105 2.895 25 4 25 L 7 25 L 7 28 A 1 1 0 0 0 8 29 A 1 1 0 0 0 8.8378906 28.542969 L 11.498047 25 L 22 25 C 23.105 25 24 24.105 24 23 L 24 9 C 24 7.895 23.105 7 22 7 L 4 7 z"></path>
@@ -82,6 +83,7 @@ export default class MenuNavigation extends React.Component{
           `
         break;
         case "posts":
+          Platform.OS === 'ios' ? symbol = "doc" :
           svg = `
           <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="30px" height="30px">
           <path d="M24,4H6C4.895,4,4,4.895,4,6v18c0,1.105,0.895,2,2,2h18c1.105,0,2-0.895,2-2V6C26,4.895,25.105,4,24,4z M17,20H9 c-0.552,0-1-0.448-1-1c0-0.552,0.448-1,1-1h8c0.552,0,1,0.448,1,1C18,19.552,17.552,20,17,20z M21,16H9c-0.552,0-1-0.448-1-1 c0-0.552,0.448-1,1-1h12c0.552,0,1,0.448,1,1C22,15.552,21.552,16,21,16z M21,12H9c-0.552,0-1-0.448-1-1c0-0.552,0.448-1,1-1h12 c0.552,0,1,0.448,1,1C22,11.552,21.552,12,21,12z"></path>
@@ -89,6 +91,7 @@ export default class MenuNavigation extends React.Component{
           `
         break;
         case "pages":
+          Platform.OS === 'ios' ? symbol = "rectangle.stack" :
           svg = `
           <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="30px" height="30px">
           <path d="M 14 4 C 12.895 4 12 4.895 12 6 L 12 24 C 12 25.105 12.895 26 14 26 L 24 26 C 25.105 26 26 25.105 26 24 L 26 6 C 26 4.895 25.105 4 24 4 L 14 4 z M 8.984375 4.9863281 A 1.0001 1.0001 0 0 0 8 6 L 8 24 A 1.0001 1.0001 0 1 0 10 24 L 10 6 A 1.0001 1.0001 0 0 0 8.984375 4.9863281 z M 4.984375 5.9863281 A 1.0001 1.0001 0 0 0 4 7 L 4 23 A 1.0001 1.0001 0 1 0 6 23 L 6 7 A 1.0001 1.0001 0 0 0 4.984375 5.9863281 z"></path>
@@ -96,6 +99,7 @@ export default class MenuNavigation extends React.Component{
           `
         break;
         case "uploads":
+          Platform.OS === 'ios' ? symbol = "photo.on.rectangle" :
           svg = `
           <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="30px" height="30px">
           <path d="M 4 5 C 2.895 5 2 5.895 2 7 L 2 23 C 2 24.105 2.895 25 4 25 L 26 25 C 27.105 25 28 24.105 28 23 L 28 7 C 28 5.895 27.105 5 26 5 L 4 5 z M 23 8 C 24.105 8 25 8.895 25 10 C 25 11.105 24.105 12 23 12 C 21.895 12 21 11.105 21 10 C 21 8.895 21.895 8 23 8 z M 9 12.001953 C 9.61925 12.001953 10.238437 12.238437 10.710938 12.710938 L 13.972656 15.972656 L 15 17 L 16.15625 18.15625 C 16.57825 18.57825 17.259641 18.574344 17.681641 18.152344 C 18.104641 17.730344 18.104641 17.044094 17.681641 16.621094 L 16.529297 15.470703 L 17.289062 14.710938 C 18.234063 13.765937 19.765937 13.765937 20.710938 14.710938 L 25 19 L 25 22 L 5 22 L 5 15 L 7.2890625 12.710938 C 7.7615625 12.238437 8.38075 12.001953 9 12.001953 z"></path>
