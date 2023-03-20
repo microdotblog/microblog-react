@@ -97,7 +97,7 @@ export default class PostToolbar extends React.Component{
 						</TouchableOpacity>
 					}
 					{
-						!posting.post_title &&
+						!posting.post_title && !this.props.hide_count &&
 						<Text
 							style={{
 								fontWeight: '400',
