@@ -61,7 +61,8 @@ export default class PagesScreen extends React.Component{
         keyExtractor={this._key_extractor}
         renderItem={this.render_page_item}
         style={{
-          backgroundColor: App.theme_background_color_secondary()
+          backgroundColor: App.theme_background_color_secondary(),
+          width: "100%"
         }}
         refreshControl={
           <RefreshControl
