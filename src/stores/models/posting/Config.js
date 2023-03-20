@@ -21,6 +21,9 @@ export default Config = types.model('Config', {
       if(default_destination){
         self.selected_posts_destination = default_destination.uid
       }
+      else if(self.destination.length > 0){
+        self.selected_posts_destination = self.destination[self.destination.length - 1]?.uid
+      }
     },
     
     set_selected_posts_destination(destination){

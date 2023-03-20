@@ -57,7 +57,7 @@ export default class PostsScreen extends React.Component{
     return(
       <FlatList
         data={config.posts_for_destination()}
-        extraData={config.posts_for_destination().length && !selected_service.is_loading_posts}
+        extraData={config.posts_for_destination()?.length && !selected_service.is_loading_posts}
         keyExtractor={this._key_extractor}
         renderItem={this.render_post_item}
         style={{
