@@ -3,7 +3,6 @@ import Service from './posting/Service';
 import { blog_services } from './../enums/blog_services';
 import { Alert, Platform, Linking } from 'react-native';
 import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
-import MicroBlogApi, { API_ERROR } from '../../api/MicroBlogApi';
 import { launchImageLibrary } from 'react-native-image-picker';
 import MediaAsset from './posting/MediaAsset'
 import App from '../App'

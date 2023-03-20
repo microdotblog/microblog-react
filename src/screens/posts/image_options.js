@@ -10,7 +10,7 @@ export default class ImageOptionsScreen extends React.Component{
   
   _handle_image_remove = (image, index) => {
     const { posting } = Auth.selected_user
-    const existing_index = posting.post_images.findIndex(file => file.uri === image.uri)
+    const existing_index = posting.post_assets?.findIndex(file => file.uri === image.uri)
     if (existing_index > -1) {
       Alert.alert(
         "Remove image",
@@ -22,7 +22,7 @@ export default class ImageOptionsScreen extends React.Component{
           },
           {
             text: "Remove",
-            onPress: () => { Navigation.popToRoot(this.props.componentId) ; posting.remove_image(index) },
+            onPress: () => { Navigation.popToRoot(this.props.componentId) ; posting.remove_asset(index) },
             style: 'destructive'
           },
         ],
