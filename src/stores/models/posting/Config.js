@@ -34,7 +34,8 @@ export default Config = types.model('Config', {
 .views(self => ({
   
   active_destination(){
-    return self.destination != null && self.destination.length > 0 ? self.destination.find(destination => destination['microblog-default']) : null
+    const destination = self.destination?.find(destination => destination['microblog-default'])
+    return self.destination != null && self.destination.length > 0 ? destination ? destination : self.destination[self.destination.length - 1] : null
   },
   
   has_multiple_destinations(){
