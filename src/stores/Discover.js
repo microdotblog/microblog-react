@@ -87,6 +87,10 @@ export default Discover = types.model('Discover', {
 	
 	topic_by_slug(slug){
 		return self.tagmoji.find(topic => topic.name === slug)
+	},
+	
+	sanitised_search_query(){
+		return self.search_query.replace(/(%20|\s)/g, "+")
 	}
 
 }))
