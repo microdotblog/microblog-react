@@ -75,6 +75,14 @@ export default Posting = types.model('Posting', {
     self.post_url = post.url
   }),
   
+  hydrate_page_edit: flow(function* (page) {
+    console.log("hydrate_page_edit", page)
+    self.is_editing_post = true
+    self.post_title = page.name != "" ? page.name : null
+    self.post_text = page.content
+    self.post_url = page.url
+  }),
+  
   afterCreate: flow(function* () {
     self.hydrate()
   }),

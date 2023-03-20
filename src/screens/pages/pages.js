@@ -5,12 +5,12 @@ import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
 import { Navigation } from 'react-native-navigation';
-import PostCell from '../../components/cells/post_cell';
+import PageCell from '../../components/cells/page_cell';
 import { postsDestinationBottomSheet } from '..'
 import { SheetProvider } from "react-native-actions-sheet";
 
 @observer
-export default class PostsScreen extends React.Component{
+export default class PagesScreen extends React.Component{
   
   constructor (props) {
     super(props)
@@ -18,7 +18,7 @@ export default class PostsScreen extends React.Component{
   }
   
   componentDidAppear(){
-    Auth.selected_user.posting?.selected_service?.upate_posts_for_active_destination()
+    Auth.selected_user.posting?.selected_service?.upate_pages_for_active_destination()
   }
   
   _return_header = () => {
@@ -34,7 +34,7 @@ export default class PostsScreen extends React.Component{
           width: '100%',
           backgroundColor: App.theme_input_background_color(),
         }}>
-        <TouchableOpacity onPress={() => postsDestinationBottomSheet(false, "posts")}>
+        <TouchableOpacity onPress={() => postsDestinationBottomSheet(false, "pages")}>
           <Text style={{color: App.theme_text_color(), fontWeight: "500", fontSize: 16}}>
             {config.posts_destination()?.name}
           </Text>
@@ -45,28 +45,28 @@ export default class PostsScreen extends React.Component{
   
   _key_extractor = (item) => item.uid;
   
-  render_post_item = ({ item }) => {
+  render_page_item = ({ item }) => {
     return(
-      <PostCell key={item.uid} post={item} />
+      <PageCell key={item.uid} page={item} />
     )
   }
   
-  _return_posts_list = () => {
+  _return_pages_list = () => {
     const { selected_service } = Auth.selected_user.posting
     const { config } = selected_service
     return(
       <FlatList
-        data={config.posts_for_destination()}
-        extraData={config.posts_for_destination()?.length && !selected_service.is_loading_posts}
+        data={config.pages_for_destination()}
+        extraData={config.pages_for_destination()?.length && !selected_service.is_loading_pages}
         keyExtractor={this._key_extractor}
-        renderItem={this.render_post_item}
+        renderItem={this.render_page_item}
         style={{
           backgroundColor: App.theme_background_color_secondary()
         }}
         refreshControl={
           <RefreshControl
             refreshing={false}
-            onRefresh={() => selected_service.check_for_posts_for_destination(config.posts_destination())}
+            onRefresh={() => selected_service.check_for_pages_for_destination(config.pages_destination())}
           />
         }
       />
@@ -81,10 +81,10 @@ export default class PostsScreen extends React.Component{
             Auth.is_logged_in() && !Auth.is_selecting_user ?
               <>
               {this._return_header()}
-              {this._return_posts_list()}
+              {this._return_pages_list()}
               </>
             :
-            <LoginMessage title="Posts" />
+            <LoginMessage title="Pages" />
           }
         </View>
       </SheetProvider>

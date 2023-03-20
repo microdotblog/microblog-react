@@ -28,6 +28,8 @@ import ReplyEditScreen from "./replies/edit";
 import SettingsScreen from "./settings/settings";
 import PostsScreen from "./posts/posts";
 import EditPostScreen from "./posts/edit";
+import PagesScreen from "./pages/pages"
+import EditPageScreen from "./pages/edit"
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -52,6 +54,8 @@ export const REPLY_EDIT_SCREEN = 'microblog.ReplyEditScreen';
 export const SETTINGS_SCREEN = 'microblog.modal.SettingsScreen';
 export const POSTS_SCREEN = 'microblog.PostsScreen';
 export const EDIT_POST_SCREEN = 'microblog.EditPostScreen';
+export const PAGES_SCREEN = 'microblog.PagesScreen';
+export const EDIT_PAGE_SCREEN = 'microblog.EditPageScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -113,6 +117,8 @@ Screens.set(REPLY_EDIT_SCREEN, ReplyEditScreen);
 Screens.set(SETTINGS_SCREEN, SettingsScreen);
 Screens.set(POSTS_SCREEN, PostsScreen);
 Screens.set(EDIT_POST_SCREEN, EditPostScreen);
+Screens.set(PAGES_SCREEN, PagesScreen);
+Screens.set(EDIT_PAGE_SCREEN, EditPageScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
@@ -933,9 +939,11 @@ export const postsScreen = (component_id) => {
   return Navigation.push(component_id, options);
 }
 
-export const postsDestinationBottomSheet = (close = false) => {
+export const postsDestinationBottomSheet = (close = false, type = null) => {
   if(!close){
-    return SheetManager.show("posts_destination_menu")
+    return SheetManager.show("posts_destination_menu", {
+      payload: { type: type }
+    })
   }
   SheetManager.hide("posts_destination_menu")
 }
@@ -954,6 +962,76 @@ export const editPostScreen = (post) => {
             topBar: {
               title: {
                 text: 'Edit Post',
+              },
+              leftButtons: [
+                {
+                  id: 'back_button',
+                  text: 'Back',
+                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
+                },
+              ],
+              rightButtons: [
+                {
+                  id: 'post_button',
+                  text: 'Update',
+                  color: '#f80'
+                }
+              ]
+            },
+            layout: {
+              backgroundColor: App.theme_background_color()
+            }
+          }
+        },
+      }],
+    }
+  });
+}
+
+export const pagesScreen = (component_id) => {
+  const options = {
+    component: {
+      id: PAGES_SCREEN,
+      name: PAGES_SCREEN,
+      options: {
+        topBar: {
+          title: {
+            text: "Pages"
+          },
+          rightButtons: [
+            {
+              id: 'refresh_indicator',
+              text: 'refresh',
+              component: {
+                name: REFRESH_ACTIVITY,
+                passProps: {
+                  type: "pages"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  };
+
+  return Navigation.push(component_id, options);
+}
+
+export const editPageScreen = (page) => {
+  Auth.selected_user?.posting.hydrate_page_edit(page)
+  return Navigation.showModal({
+    stack: {
+      id: EDIT_PAGE_SCREEN,
+      name: EDIT_PAGE_SCREEN,
+      children: [ {
+        component: {
+          id: EDIT_PAGE_SCREEN,
+          name: EDIT_PAGE_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                text: 'Edit Page',
               },
               leftButtons: [
                 {

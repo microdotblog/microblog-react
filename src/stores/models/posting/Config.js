@@ -21,6 +21,9 @@ export default Config = types.model('Config', {
       if(default_destination){
         self.selected_posts_destination = default_destination.uid
       }
+      else if(self.destination.length > 0){
+        self.selected_posts_destination = self.destination[self.destination.length - 1]?.uid
+      }
     },
     
     set_selected_posts_destination(destination){
@@ -31,7 +34,8 @@ export default Config = types.model('Config', {
 .views(self => ({
   
   active_destination(){
-    return self.destination != null && self.destination.length > 0 ? self.destination.find(destination => destination['microblog-default']) : null
+    const destination = self.destination?.find(destination => destination['microblog-default'])
+    return self.destination != null && self.destination.length > 0 ? destination ? destination : self.destination[self.destination.length - 1] : null
   },
   
   has_multiple_destinations(){
@@ -48,6 +52,14 @@ export default Config = types.model('Config', {
   
   posts_for_destination(){
     return this.posts_destination()?.posts
-  }
+  },
+  
+  pages_destination(){
+    return self.destination != null && self.destination.length ? self.destination.find(destination => destination.uid === self.selected_posts_destination) : null
+  },
+  
+  pages_for_destination(){
+    return this.pages_destination()?.pages
+  },
   
 }))

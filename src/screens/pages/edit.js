@@ -21,7 +21,7 @@ export default class PostEditScreen extends React.Component{
       const sent = await Auth.selected_user.posting.send_update_post()
       if(sent){
         this._dismiss()
-        Auth.selected_user.posting.selected_service.upate_posts_for_active_destination()
+        Auth.selected_user.posting.selected_service.upate_pages_for_active_destination()
       }
     }
     else{
@@ -50,38 +50,34 @@ export default class PostEditScreen extends React.Component{
     const { posting } = Auth.selected_user
     return(
       <View style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
-        {
-          posting.post_text_length() > posting.max_post_length() || posting.post_title ?
-          <TextInput
-            placeholder="Title"
-            placeholderTextColor={App.theme_placeholder_text_color()}
-            style={{
-              fontSize: 18,
-              justifyContent: 'flex-start',
-              alignItems: 'flex-start',
-              padding: 8,
-              marginBottom: 4,
-              fontWeight: '700',
-              borderColor: App.theme_border_color(),
-              borderBottomWidth: .5,
-              color: App.theme_text_color()
-            }}
-            editable={!posting.is_sending_post}
-            multiline={false}
-            scrollEnabled={false}
-            returnKeyType={'default'}
-            keyboardType={'default'}
-            autoFocus={false}
-            autoCorrect={true}
-            clearButtonMode={'while-editing'}
-            enablesReturnKeyAutomatically={true}
-            underlineColorAndroid={'transparent'}
-            value={posting.post_title}
-            onChangeText={(text) => !posting.is_sending_post ? posting.set_post_title(text) : null}
-            inputAccessoryViewID={this.input_accessory_view_id}
-          />
-          : null
-        }
+        <TextInput
+          placeholder="Title"
+          placeholderTextColor={App.theme_placeholder_text_color()}
+          style={{
+            fontSize: 18,
+            justifyContent: 'flex-start',
+            alignItems: 'flex-start',
+            padding: 8,
+            marginBottom: 4,
+            fontWeight: '700',
+            borderColor: App.theme_border_color(),
+            borderBottomWidth: .5,
+            color: App.theme_text_color()
+          }}
+          editable={!posting.is_sending_post}
+          multiline={false}
+          scrollEnabled={false}
+          returnKeyType={'default'}
+          keyboardType={'default'}
+          autoFocus={false}
+          autoCorrect={true}
+          clearButtonMode={'while-editing'}
+          enablesReturnKeyAutomatically={true}
+          underlineColorAndroid={'transparent'}
+          value={posting.post_title}
+          onChangeText={(text) => !posting.is_sending_post ? posting.set_post_title(text) : null}
+          inputAccessoryViewID={this.input_accessory_view_id}
+        />
         {
           this._input_outer_view(
             <TextInput
@@ -125,11 +121,11 @@ export default class PostEditScreen extends React.Component{
         {
           Platform.OS === 'ios' ?
             <InputAccessoryView nativeID={this.input_accessory_view_id}>
-              <PostToolbar componentId={this.props.componentId} is_post_edit />
+              <PostToolbar componentId={this.props.componentId} is_post_edit hide_count />
             </InputAccessoryView>
           :  
           <>
-            <PostToolbar componentId={this.props.componentId} is_post_edit />
+            <PostToolbar componentId={this.props.componentId} is_post_edit hide_count />
           </>
         }
         {

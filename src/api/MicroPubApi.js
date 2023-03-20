@@ -307,6 +307,23 @@ class MicroPubApi {
 			});
 		return post;
 	}
+	
+	async get_pages(service, destination = null) {
+		console.log('MicroPubApi:get_pages');
+		const config = axios
+			.get(service.endpoint, {
+				headers: { Authorization: `Bearer ${service.token}` },
+				params: { q: "source", "mp-destination": destination, "mp-channel": "pages" }
+			})
+			.then(response => {
+				return response.data;
+			})
+			.catch(error => {
+				console.log(error);
+				return FETCH_ERROR;
+			});
+		return config;
+	}
 
 }
 

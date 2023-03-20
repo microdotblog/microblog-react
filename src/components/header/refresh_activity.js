@@ -8,7 +8,17 @@ import Auth from './../../stores/Auth';
 export default class RefreshActivity extends React.Component{
   
   render() {
-    const is_loading = this.props.type === "posts" ? Auth.selected_user.posting.selected_service.is_loading_posts : Replies.is_loading
+    let is_loading = false
+    switch(this.props.type){
+      case "posts":
+        is_loading = Auth.selected_user.posting.selected_service.is_loading_posts
+        break;
+      case "pages":
+        is_loading = Auth.selected_user.posting.selected_service.is_loading_pages
+        break;
+      default:
+      is_loading = Replies.is_loading
+    }
     return(
       <ActivityIndicator style={{ marginRight: Platform.OS === "android" ? 8 : 0 }} color="#f80" animating={is_loading}  />
     )

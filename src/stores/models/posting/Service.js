@@ -12,7 +12,8 @@ export default Service = types.model('Service', {
   username: types.maybeNull(types.string),
   is_microblog: types.optional(types.boolean, false),
   config: types.maybeNull(Config),
-  is_loading_posts: types.optional(types.boolean, false)
+  is_loading_posts: types.optional(types.boolean, false),
+  is_loading_pages: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -69,17 +70,23 @@ export default Service = types.model('Service', {
     }
   }),
   
-  upate_posts_for_active_posts_destination: flow(function* () {
+  upate_posts_for_active_destination: flow(function* () {
     const active_destination = self.config.posts_destination()
     if(active_destination){
       self.check_for_posts_for_destination(active_destination)
     }
   }),
   
-  set_active_posts_dettination: flow(function* (destination) { 
+  set_active_destination: flow(function* (destination, type = null) { 
     if(destination){
-      self.config.set_selected_posts_destination(destination)
-      self.check_for_posts_for_destination(destination)
+      if(type === "posts"){
+        self.config.set_selected_posts_destination(destination)// TODO: Probably rewrite this too so it's more generic.
+        self.check_for_posts_for_destination(destination)
+      }
+      else if(type === "pages"){
+        self.config.set_selected_posts_destination(destination)
+        self.check_for_pages_for_destination(destination)
+      }
     }
   }),
   
@@ -108,7 +115,7 @@ export default Service = types.model('Service', {
     const status = yield MicroPubApi.delete_post(self.service_object(), post.url)
     if(status !== DELETE_ERROR){
       App.show_toast("Post was deleted.")
-      self.upate_posts_for_active_posts_destination()
+      self.upate_posts_for_active_destination()
     }
     else{
       Alert.alert("Whoops", "Could not delete post. Please try again.")
@@ -120,12 +127,32 @@ export default Service = types.model('Service', {
     const status = yield MicroPubApi.publish_draft(self.service_object(), post.content, post.url, post.name)
     if(status !== DELETE_ERROR){
       App.show_toast("Post was published.")
-      self.upate_posts_for_active_posts_destination()
+      self.upate_posts_for_active_destination()
     }
     else{
       Alert.alert("Error Publishing", "Could not publish the draft. Please try again.")
     }
-  })
+  }),
+  
+  check_for_pages_for_destination: flow(function* (destination) { 
+    if(destination){
+      self.is_loading_pages = true
+      console.log("Endpoint:check_for_pages_for_destination", destination.uid)
+      const data = yield MicroPubApi.get_pages(self.service_object(), destination.uid)
+      console.log("Endpoint:check_for_pages_for_destination:pages", data?.items?.length)
+      if(data?.items != null && data.items?.length > 0){
+        destination.set_pages(data.items)
+      }
+      self.is_loading_pages = false
+    }
+  }),
+  
+  upate_pages_for_active_destination: flow(function* () {
+    const active_destination = self.config.posts_destination()
+    if(active_destination){
+      self.check_for_pages_for_destination(active_destination)
+    }
+  }),
   
 }))
 .views(self => ({
