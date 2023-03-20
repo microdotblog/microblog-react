@@ -30,6 +30,7 @@ import PostsScreen from "./posts/posts";
 import EditPostScreen from "./posts/edit";
 import PagesScreen from "./pages/pages"
 import EditPageScreen from "./pages/edit"
+import UploadsScreen from "./uploads/uploads";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -56,6 +57,7 @@ export const POSTS_SCREEN = 'microblog.PostsScreen';
 export const EDIT_POST_SCREEN = 'microblog.EditPostScreen';
 export const PAGES_SCREEN = 'microblog.PagesScreen';
 export const EDIT_PAGE_SCREEN = 'microblog.EditPageScreen';
+export const UPLOADS_SCREEN = 'microbloog.UploadsScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -119,6 +121,7 @@ Screens.set(POSTS_SCREEN, PostsScreen);
 Screens.set(EDIT_POST_SCREEN, EditPostScreen);
 Screens.set(PAGES_SCREEN, PagesScreen);
 Screens.set(EDIT_PAGE_SCREEN, EditPageScreen);
+Screens.set(UPLOADS_SCREEN, UploadsScreen);
 
 // SET UP COMPONENTS
 Screens.set(PROFILE_IMAGE, ProfileImage)
@@ -1056,4 +1059,34 @@ export const editPageScreen = (page) => {
       }],
     }
   });
+}
+
+export const uploadsScreen = (component_id) => {
+  const options = {
+    component: {
+      id: UPLOADS_SCREEN,
+      name: UPLOADS_SCREEN,
+      options: {
+        topBar: {
+          title: {
+            text: "Uploads"
+          },
+          rightButtons: [
+            {
+              id: 'refresh_indicator',
+              text: 'refresh',
+              component: {
+                name: REFRESH_ACTIVITY,
+                passProps: {
+                  type: "uploads"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  };
+
+  return Navigation.push(component_id, options);
 }
