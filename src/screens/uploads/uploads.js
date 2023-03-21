@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, FlatList, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, RefreshControl, TouchableOpacity, Dimensions } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
 import { Navigation } from 'react-native-navigation';
-//import PostCell from '../../components/cells/post_cell';
 import { postsDestinationBottomSheet } from '..'
 import { SheetProvider } from "react-native-actions-sheet";
+import UploadCell from '../../components/cells/upload_cell'
 
 @observer
 export default class UploadsScreen extends React.Component{
@@ -43,36 +43,37 @@ export default class UploadsScreen extends React.Component{
     )
   }
   
-  // _key_extractor = (item) => item.uid;
-  // 
-  // render_post_item = ({ item }) => {
-  //   return(
-  //     <PostCell key={item.uid} post={item} />
-  //   )
-  // }
+  _key_extractor = (item) => item.url;
   
-  // _return_posts_list = () => {
-  //   const { selected_service } = Auth.selected_user.posting
-  //   const { config } = selected_service
-  //   return(
-  //     <FlatList
-  //       data={config.posts_for_destination()}
-  //       extraData={config.posts_for_destination()?.length && !selected_service.is_loading_posts}
-  //       keyExtractor={this._key_extractor}
-  //       renderItem={this.render_post_item}
-  //       style={{
-  //         backgroundColor: App.theme_background_color_secondary(),
-  //         width: "100%"
-  //       }}
-  //       refreshControl={
-  //         <RefreshControl
-  //           refreshing={false}
-  //           onRefresh={() => selected_service.check_for_posts_for_destination(config.posts_destination())}
-  //         />
-  //       }
-  //     />
-  //   )
-  // }
+  render_upload_item = ({ item }) => {
+    return(
+      <UploadCell key={item.url} upload={item} />
+    )
+  }
+  
+  _return_uploads_list = () => {
+    const { selected_service } = Auth.selected_user.posting
+    const { config } = selected_service
+    return(
+      <FlatList
+        data={config.uploads_for_destination()}
+        extraData={config.uploads_for_destination()?.length && !selected_service.is_loading_uploads}
+        keyExtractor={this._key_extractor}
+        renderItem={this.render_upload_item}
+        style={{
+          backgroundColor: App.theme_background_color_secondary(),
+          width: "100%"
+        }}
+        numColumns={Math.floor(Dimensions.get("screen")?.width / 195)}
+        refreshControl={
+          <RefreshControl
+            refreshing={false}
+            onRefresh={() => selected_service.check_for_uploads_for_destination(config.posts_destination())}
+          />
+        }
+      />
+    )
+  }
   
   render() {
     return (
@@ -81,7 +82,8 @@ export default class UploadsScreen extends React.Component{
           {
             Auth.is_logged_in() && !Auth.is_selecting_user ?
               <>
-              {this._return_header()}
+                {this._return_header()}
+                {this._return_uploads_list()}
               </>
             :
             <LoginMessage title="Uploads" />
