@@ -11,7 +11,7 @@ export default Post = types.model('Upload', {
 		copy_html_to_clipboard() {
 			const html = `<img src="${ self.url }" />`
 			Clipboard.setString(html)
-			Toast.showWithGravity("Imagee HTML copied", Toast.SHORT, Toast.CENTER)
+			Toast.showWithGravity("Image HTML copied", Toast.SHORT, Toast.CENTER)
 		},
 
 		copy_link_to_clipboard() {
