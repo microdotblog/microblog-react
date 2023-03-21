@@ -15,7 +15,8 @@ export default class UploadCell extends React.Component {
 					padding: 15,
 					backgroundColor: App.theme_background_color_secondary()
 				}}
-			//onPress={() => editPageScreen(page)}
+				onPress={() => upload.copy_link_to_clipboard()}
+				onLongPress={() => upload.copy_html_to_clipboard()}
 			>
 				<FastImage
 					key={upload.url}
