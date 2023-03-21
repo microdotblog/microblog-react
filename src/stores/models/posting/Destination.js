@@ -1,6 +1,7 @@
 import { types } from 'mobx-state-tree';
 import Post from "./Post";
 import Page from './Page';
+import Upload from './Upload'
 
 export default Destination = types.model('Destination', {
 	uid: types.identifier,
@@ -10,7 +11,8 @@ export default Destination = types.model('Destination', {
 	"microblog-title": types.maybeNull(types.string),
 	categories: types.optional(types.array(types.string), []),
 	posts: types.optional(types.array(Post), []),
-	pages: types.optional(types.array(Page), [])
+	pages: types.optional(types.array(Page), []),
+	uploads: types.optional(types.array(Upload), [])
 })
 .actions(self => ({
 
@@ -72,5 +74,24 @@ export default Destination = types.model('Destination', {
 		console.log("Destination:set_pages:got_pages", pages.length)
 		self.pages = pages // We could append to the list: [...self.posts, ...posts]
 	},
+
+	set_uploads(entries) {
+		console.log("Destination:set_uploads", entries.length)
+		const uploads = entries.reduce((acc, entry) => {
+			// MAYBE MAKE THIS MORE GENERIC? DRY.
+			const url = entry.url || ""
+			const published = entry.published || ""
+			const upload = {
+				url: url,
+				published: published
+			}
+			if (url === "") {
+				return acc;
+			}
+			return [...acc, upload]
+		}, [])
+		console.log("Destination:set_uploads:got_uploads", uploads.length)
+		self.uploads = uploads // We could append to the list: [...self.posts, ...posts]
+	}
 
 }))

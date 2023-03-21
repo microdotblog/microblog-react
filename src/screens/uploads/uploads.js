@@ -17,9 +17,9 @@ export default class UploadsScreen extends React.Component{
     Navigation.events().bindComponent(this)
   }
   
-  // componentDidAppear(){
-  //   Auth.selected_user.posting?.selected_service?.upate_posts_for_active_destination()
-  // }
+  componentDidAppear(){
+    Auth.selected_user.posting?.selected_service?.upate_uploads_for_active_destination()
+  }
   
   _return_header = () => {
     const { config } = Auth.selected_user.posting.selected_service

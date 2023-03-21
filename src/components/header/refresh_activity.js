@@ -16,6 +16,9 @@ export default class RefreshActivity extends React.Component{
       case "pages":
         is_loading = Auth.selected_user.posting.selected_service.is_loading_pages
         break;
+      case "uploads":
+        is_loading = Auth.selected_user.posting.selected_service.is_loading_uploads
+        break;
       default:
       is_loading = Replies.is_loading
     }
