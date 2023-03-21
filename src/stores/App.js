@@ -125,6 +125,8 @@ export default App = types.model('App', {
     if (screen_id === "DISCOVER_SCREEN") {
       Discover.shuffle_random_emoji()
     }
+
+    self.last_active_time = new Date()
   }),
   
   set_previous_screen_name_and_id: flow(function* () {
