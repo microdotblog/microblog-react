@@ -88,6 +88,10 @@ export default Service = types.model('Service', {
         self.config.set_selected_posts_destination(destination)
         self.check_for_pages_for_destination(destination)
       }
+      else if(type === "uploads"){
+        self.config.set_selected_posts_destination(destination)
+        self.check_for_uploads_for_destination(destination)
+      }
     }
   }),
   
