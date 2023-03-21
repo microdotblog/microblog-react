@@ -64,6 +64,9 @@ export default class UploadsScreen extends React.Component{
           backgroundColor: App.theme_background_color_secondary(),
           width: "100%"
         }}
+        contentContainerStyle={{
+          alignItems: 'center'
+        }}
         numColumns={Math.floor(Dimensions.get("screen")?.width / 195)}
         refreshControl={
           <RefreshControl
