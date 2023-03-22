@@ -5,6 +5,7 @@ import App from '../../stores/App'
 import FastImage from 'react-native-fast-image'
 import { SvgXml } from 'react-native-svg';
 import { SFSymbol } from "react-native-sfsymbols";
+import { MenuView } from '@react-native-menu/menu';
 
 @observer
 export default class UploadCell extends React.Component {
@@ -13,13 +14,32 @@ export default class UploadCell extends React.Component {
 		const { upload } = this.props
 		const dimension = (Dimensions.get("screen")?.width / 3) - 10
 		return (
-			<TouchableOpacity
+			<MenuView
 				style={{
 					padding: 5,
 					backgroundColor: App.theme_background_color_secondary()
 				}}
-				onPress={() => upload.copy_link_to_clipboard()}
-				onLongPress={() => upload.copy_html_to_clipboard()}
+				onPressAction={({ nativeEvent }) => {
+					const event_id = nativeEvent.event
+					if (event_id === "copy_link") {
+						upload.copy_link_to_clipboard()
+					}
+					else if (event_id === "copy_html") {
+						upload.copy_html_to_clipboard()
+					}
+					else if (event_id === "copy_markdown") {
+						upload.copy_markdown_to_clipboard()
+					}
+					else if (event_id === "open_in_browser") {
+						App.open_url(upload.url)
+					}
+				}}
+				actions={[
+					{ title: "Copy Link", id: "copy_link" },
+					{ title: "Copy HTML", id: "copy_html" },
+					{ title: "Copy Markdown", id: "copy_markdown" },
+					{ title: "Open in Browser", id: "open_in_browser"}
+				]}
 			>
 				{
 					upload.is_video() ?
@@ -106,7 +126,7 @@ export default class UploadCell extends React.Component {
 							/>
 				}
 				
-			</TouchableOpacity>
+			</MenuView>
 		)
 	}
 
