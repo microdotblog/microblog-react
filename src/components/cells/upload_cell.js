@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { TouchableOpacity } from 'react-native'
+import { TouchableOpacity, Dimensions } from 'react-native'
 import App from '../../stores/App'
 import FastImage from 'react-native-fast-image'
 
@@ -9,10 +9,11 @@ export default class UploadCell extends React.Component {
 
 	render() {
 		const { upload } = this.props
+		const dimension = (Dimensions.get("screen")?.width / 3) - 10
 		return (
 			<TouchableOpacity
 				style={{
-					padding: 15,
+					padding: 5,
 					backgroundColor: App.theme_background_color_secondary()
 				}}
 				onPress={() => upload.copy_link_to_clipboard()}
@@ -26,7 +27,7 @@ export default class UploadCell extends React.Component {
 						cache: FastImage.cacheControl.web
 					}}
 					resizeMode={FastImage.resizeMode.cover}
-					style={{ width: 165, height: 165, borderRadius: 2 }}
+					style={{ width: dimension, height: dimension }}
 				/>
 			</TouchableOpacity>
 		)

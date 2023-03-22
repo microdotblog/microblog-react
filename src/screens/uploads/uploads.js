@@ -67,7 +67,7 @@ export default class UploadsScreen extends React.Component{
         contentContainerStyle={{
           alignItems: 'center'
         }}
-        numColumns={Math.floor(Dimensions.get("screen")?.width / 195)}
+        numColumns={3}
         refreshControl={
           <RefreshControl
             refreshing={false}
