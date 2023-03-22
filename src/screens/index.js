@@ -95,40 +95,40 @@ import { theme_options } from "../utils/navigation"
 import App from "../stores/App"
 import Auth from "../stores/Auth"
 
-// Set up screens
-export const Screens = new Map();
-Screens.set(TIMELINE_SCREEN, TimelineScreen);
-Screens.set(MENTIONS_SCREEN, MentionsScreen);
-Screens.set(DISCOVER_SCREEN, DiscoverScreen);
-Screens.set(LOGIN_SCREEN, LoginScreen);
-Screens.set(PROFILE_SCREEN, ProfileScreen);
-Screens.set(CONVERSATION_SCREEN, ConversationScreen);
-Screens.set(BOOKMARKS_SCREEN, BookmarksScreen);
-Screens.set(FOLLOWING_SCREEN, FollowingScreen);
-Screens.set(POSTING_SCREEN, PostingScreen);
-Screens.set(DISCOVER_TOPIC_SCREEN, DiscoverTopicScreen);
-Screens.set(POSTING_OPTIONS_SCREEN, PostingOptionsScreen);
-Screens.set(REPLY_SCREEN, ReplyScreen);
-Screens.set(BOOKMARK_SCREEN, BookmarkScreen);
-Screens.set(ADD_BOOKMARK_SCREEN, AddBookmarkScreen);
-Screens.set(HELP_SCREEN, HelpScreen)
-Screens.set(IMAGE_OPTIONS_SCREEN, ImageOptionsScreen);
-Screens.set(IMAGE_CROP_SCREEN, ImageCropScreen);
-Screens.set(REPLIES_SCREEN, RepliesScreen);
-Screens.set(REPLY_EDIT_SCREEN, ReplyEditScreen);
-Screens.set(SETTINGS_SCREEN, SettingsScreen);
-Screens.set(POSTS_SCREEN, PostsScreen);
-Screens.set(EDIT_POST_SCREEN, EditPostScreen);
-Screens.set(PAGES_SCREEN, PagesScreen);
-Screens.set(EDIT_PAGE_SCREEN, EditPageScreen);
-Screens.set(UPLOADS_SCREEN, UploadsScreen);
-
-// SET UP COMPONENTS
-Screens.set(PROFILE_IMAGE, ProfileImage)
-Screens.set(NEW_POST_BUTTON, NewPostButton)
-Screens.set(SCREEN_TITLE, ScreenTitle)
-Screens.set(REFRESH_ACTIVITY, RefreshActivity)
-Screens.set(TAB, Tab)
+// Set up screens & components
+export const Screens = {
+  [ TIMELINE_SCREEN ]: TimelineScreen,
+  [ MENTIONS_SCREEN ]: MentionsScreen,
+  [ DISCOVER_SCREEN ]: DiscoverScreen,
+  [ LOGIN_SCREEN ]: LoginScreen,
+  [ PROFILE_SCREEN ]: ProfileScreen,
+  [ CONVERSATION_SCREEN ]: ConversationScreen,
+  [ BOOKMARKS_SCREEN ]: BookmarksScreen,
+  [ FOLLOWING_SCREEN ]: FollowingScreen,
+  [ POSTING_SCREEN ]: PostingScreen,
+  [ DISCOVER_TOPIC_SCREEN ]: DiscoverTopicScreen,
+  [ POSTING_OPTIONS_SCREEN ]: PostingOptionsScreen,
+  [ REPLY_SCREEN ]: ReplyScreen,
+  [ BOOKMARK_SCREEN ]: BookmarkScreen,
+  [ ADD_BOOKMARK_SCREEN ]: AddBookmarkScreen,
+  [ HELP_SCREEN ]: HelpScreen,
+  [ IMAGE_OPTIONS_SCREEN ]: ImageOptionsScreen,
+  [ IMAGE_CROP_SCREEN ]: ImageCropScreen,
+  [ REPLIES_SCREEN ]: RepliesScreen,
+  [ REPLY_EDIT_SCREEN ]: ReplyEditScreen,
+  [ SETTINGS_SCREEN ]: SettingsScreen,
+  [ POSTS_SCREEN ]: PostsScreen,
+  [ EDIT_POST_SCREEN ]: EditPostScreen,
+  [ PAGES_SCREEN ]: PagesScreen,
+  [ EDIT_PAGE_SCREEN ]: EditPageScreen,
+  [ UPLOADS_SCREEN ]: UploadsScreen,
+  // COMPONENTS
+  [ PROFILE_IMAGE ]: ProfileImage,
+  [ NEW_POST_BUTTON ]: NewPostButton,
+  [ SCREEN_TITLE ]: ScreenTitle,
+  [ REFRESH_ACTIVITY ]: RefreshActivity,
+  [ TAB ]: Tab
+}
 
 export const startApp = () => {
 

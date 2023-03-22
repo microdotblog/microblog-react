@@ -5,11 +5,11 @@ import Reply from '../stores/Reply'
 import Replies from '../stores/Replies'
 import { Screens, replyScreen } from './../screens';
 
-Screens.forEach((ScreenComponent, key) => 
-Navigation.registerComponent(key, () => (props) => (
-  <ScreenComponent {...props} />
-)
-));
+Object.entries(Screens).forEach(([ key, ScreenComponent ]) => {
+  Navigation.registerComponent(key, () => (props) => (
+    <ScreenComponent {...props} />
+  ))
+})
 
 Navigation.events().registerComponentDidAppearListener(({ componentName, componentId }) => {
   console.log("registerComponentDidAppearListener", componentName, componentId)
