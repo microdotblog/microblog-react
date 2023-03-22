@@ -3,7 +3,6 @@ import { observer } from 'mobx-react'
 import { TouchableOpacity, Dimensions, View, Platform } from 'react-native'
 import App from '../../stores/App'
 import FastImage from 'react-native-fast-image'
-import Video from 'react-native-video';
 import { SvgXml } from 'react-native-svg';
 import { SFSymbol } from "react-native-sfsymbols";
 
@@ -25,8 +24,14 @@ export default class UploadCell extends React.Component {
 				{
 					upload.is_video() ?
 						<View style={{position: 'relative'}}> 
-							<Video
-								source={{ uri: upload.url }}
+							<FastImage
+								key={upload.url}
+								source={{
+									uri: upload.poster,
+									priority: FastImage.priority.normal,
+									cache: FastImage.cacheControl.web
+								}}
+								resizeMode={FastImage.resizeMode.cover}
 								style={{
 									width: dimension,
 									height: dimension,
@@ -34,14 +39,6 @@ export default class UploadCell extends React.Component {
 									borderColor: App.theme_placeholder_text_color(),
 									borderRadius: 5
 								}}
-								resizeMode="cover"
-								posterResizeMode="cover"
-								repeat={true}
-								muted={true}
-								ignoreSilentSwitch={"obey"}
-								paused={true}
-								disableFocus={true}
-								controls={false}
 							/>
 							{
 								Platform.OS === 'ios' ?
@@ -50,7 +47,7 @@ export default class UploadCell extends React.Component {
 										color={App.theme_text_color()}
 										size={20}
 										multicolor={false}
-										style={{ position: 'absolute', right: 20, bottom: 20 }}
+										style={{ position: 'absolute', right: 20, bottom: 15 }}
 									/>
 									:
 									<SvgXml
@@ -58,7 +55,7 @@ export default class UploadCell extends React.Component {
 										width={24}
 										height={24}
 										fill={App.theme_text_color()}
-										style={{ position: 'absolute', right: 8, bottom: 8 }}
+										style={{ position: 'absolute', right: 5, bottom: 5 }}
 									/>
 							}
 						</View>
