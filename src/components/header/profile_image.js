@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Auth from './../../stores/Auth';
 import { menuBottomSheet, profileScreen } from './../../screens'
@@ -16,15 +16,21 @@ export default class ProfileImage extends React.Component{
           onPress={() => menuBottomSheet()}
           onLongPress={() => profileScreen(Auth.selected_user.username, App.current_screen_id)}
         >
-          <FastImage
-            source={{
-              uri: `${Auth.selected_user.avatar}?v=${App.now()}`,
-              priority: FastImage.priority.normal,
-              cache: FastImage.cacheControl.web
-            }}
-            resizeMode={FastImage.resizeMode.contain}
-            style={{ width: 28, height: 28, borderRadius: 50 }}
-          />
+          {
+            Auth.selected_user.avatar != null && Auth.selected_user.avatar !== "" ?
+            <FastImage
+              source={{
+                uri: `${Auth.selected_user.avatar}?v=${App.now()}`,
+                priority: FastImage.priority.normal,
+                cache: FastImage.cacheControl.web
+              }}
+              resizeMode={FastImage.resizeMode.contain}
+              style={{ width: 28, height: 28, borderRadius: 50 }}
+            />
+            :
+            <View style={{ width: 28, height: 28, borderRadius: 50, backgroundColor: App.theme_border_color() }}></View>
+          }
+          
         </TouchableOpacity>
       )
     }

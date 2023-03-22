@@ -30,7 +30,8 @@ export default class MenuNavigation extends React.Component{
     this.manage_menu = [
       "Posts",
       "Replies",
-      "Pages"
+      "Pages",
+      "Uploads"
     ]
     
     this.extras_menu = [

@@ -61,5 +61,13 @@ export default Config = types.model('Config', {
   pages_for_destination(){
     return this.pages_destination()?.pages
   },
+
+  uploads_destination(){
+    return self.destination != null && self.destination.length ? self.destination.find(destination => destination.uid === self.selected_posts_destination) : null
+  },
+
+  uploads_for_destination() {
+    return this.uploads_destination()?.uploads
+  }
   
 }))

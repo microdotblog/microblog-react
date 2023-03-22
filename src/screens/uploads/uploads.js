@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, FlatList, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, RefreshControl, TouchableOpacity, Dimensions } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
 import { Navigation } from 'react-native-navigation';
-import PageCell from '../../components/cells/page_cell';
 import { postsDestinationBottomSheet } from '..'
 import { SheetProvider } from "react-native-actions-sheet";
+import UploadCell from '../../components/cells/upload_cell'
 
 @observer
-export default class PagesScreen extends React.Component{
+export default class UploadsScreen extends React.Component{
   
   constructor (props) {
     super(props)
@@ -18,7 +18,7 @@ export default class PagesScreen extends React.Component{
   }
   
   componentDidAppear(){
-    Auth.selected_user.posting?.selected_service?.upate_pages_for_active_destination()
+    Auth.selected_user.posting?.selected_service?.upate_uploads_for_active_destination()
   }
   
   _return_header = () => {
@@ -34,7 +34,7 @@ export default class PagesScreen extends React.Component{
           width: '100%',
           backgroundColor: App.theme_input_background_color(),
         }}>
-        <TouchableOpacity onPress={() => postsDestinationBottomSheet(false, "pages")}>
+        <TouchableOpacity onPress={() => postsDestinationBottomSheet(false, "uploads")}>
           <Text style={{color: App.theme_text_color(), fontWeight: "500", fontSize: 16}}>
             {config.posts_destination()?.name}
           </Text>
@@ -43,31 +43,32 @@ export default class PagesScreen extends React.Component{
     )
   }
   
-  _key_extractor = (item) => item.uid;
+  _key_extractor = (item) => item.url;
   
-  render_page_item = ({ item }) => {
+  render_upload_item = ({ item }) => {
     return(
-      <PageCell key={item.uid} page={item} />
+      <UploadCell key={item.url} upload={item} />
     )
   }
   
-  _return_pages_list = () => {
+  _return_uploads_list = () => {
     const { selected_service } = Auth.selected_user.posting
     const { config } = selected_service
     return(
       <FlatList
-        data={config.pages_for_destination()}
-        extraData={config.pages_for_destination()?.length && !selected_service.is_loading_pages}
+        data={config.uploads_for_destination()}
+        extraData={config.uploads_for_destination()?.length && !selected_service.is_loading_uploads}
         keyExtractor={this._key_extractor}
-        renderItem={this.render_page_item}
+        renderItem={this.render_upload_item}
         style={{
           backgroundColor: App.theme_background_color_secondary(),
           width: "100%"
         }}
+        numColumns={3}
         refreshControl={
           <RefreshControl
             refreshing={false}
-            onRefresh={() => selected_service.check_for_pages_for_destination(config.pages_destination())}
+            onRefresh={() => selected_service.check_for_uploads_for_destination(config.posts_destination())}
           />
         }
       />
@@ -81,11 +82,11 @@ export default class PagesScreen extends React.Component{
           {
             Auth.is_logged_in() && !Auth.is_selecting_user ?
               <>
-              {this._return_header()}
-              {this._return_pages_list()}
+                {this._return_header()}
+                {this._return_uploads_list()}
               </>
             :
-            <LoginMessage title="Pages" />
+            <LoginMessage title="Uploads" />
           }
         </View>
       </SheetProvider>

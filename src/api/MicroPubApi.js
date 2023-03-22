@@ -324,6 +324,23 @@ class MicroPubApi {
 			});
 		return config;
 	}
+	
+	async get_uploads(service, destination = null) {
+		console.log('MicroPubApi:get_uploads');
+		const config = axios
+			.get(service.media_endpoint, {
+				headers: { Authorization: `Bearer ${service.token}` },
+				params: { q: "source", "mp-destination": destination }
+			})
+			.then(response => {
+				return response.data;
+			})
+			.catch(error => {
+				console.log(error);
+				return FETCH_ERROR;
+			});
+		return config;
+	}
 
 }
 

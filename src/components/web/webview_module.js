@@ -89,7 +89,7 @@ export default class WebViewModule extends React.Component{
       onMessage={(event) => {
         App.handle_web_view_message(event.nativeEvent.data)
       }}
-      style={{ flex: 1, backgroundColor: App.theme_background_color(), ...Platform.select({android: { height: scroll_view_height }}) }}
+      style={{ flex: 1, height: scroll_view_height, backgroundColor: App.theme_background_color() }}
       renderLoading={() => <WebLoadingViewModule loading_text={this.props.loading_text} />}
       renderError={(name, code, description) => <WebErrorViewModule error_name={description} /> }
       injectedJavaScript={Platform.OS === 'ios' ? `const meta = document.createElement('meta'); meta.setAttribute('content', 'width=width, initial-scale=${App.web_font_scale()}'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);` : null}

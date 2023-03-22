@@ -13,7 +13,8 @@ export default Service = types.model('Service', {
   is_microblog: types.optional(types.boolean, false),
   config: types.maybeNull(Config),
   is_loading_posts: types.optional(types.boolean, false),
-  is_loading_pages: types.optional(types.boolean, false)
+  is_loading_pages: types.optional(types.boolean, false),
+  is_loading_uploads: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -87,6 +88,10 @@ export default Service = types.model('Service', {
         self.config.set_selected_posts_destination(destination)
         self.check_for_pages_for_destination(destination)
       }
+      else if(type === "uploads"){
+        self.config.set_selected_posts_destination(destination)
+        self.check_for_uploads_for_destination(destination)
+      }
     }
   }),
   
@@ -151,6 +156,26 @@ export default Service = types.model('Service', {
     const active_destination = self.config.posts_destination()
     if(active_destination){
       self.check_for_pages_for_destination(active_destination)
+    }
+  }),
+  
+  upate_uploads_for_active_destination: flow(function* () {
+    const active_destination = self.config.posts_destination()
+    if(active_destination){
+      self.check_for_uploads_for_destination(active_destination)
+    }
+  }),
+  
+  check_for_uploads_for_destination: flow(function* (destination) { 
+    if(destination){
+      self.is_loading_uploads = true
+      console.log("Endpoint:check_for_uploads_for_destination", destination.uid)
+      const data = yield MicroPubApi.get_uploads(self.service_object(), destination.uid)
+      console.log("Endpoint:check_for_uploads_for_destination:posts", data?.items?.length)
+      if(data?.items != null && data.items?.length > 0){
+        destination.set_uploads(data.items)
+      }
+      self.is_loading_uploads = false
     }
   }),
   
