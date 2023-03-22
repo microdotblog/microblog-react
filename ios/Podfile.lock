@@ -346,6 +346,8 @@ PODS:
     - React-RCTImage
   - react-native-image-picker (4.10.3):
     - React-Core
+  - react-native-menu (0.7.3):
+    - React
   - react-native-netinfo (9.3.7):
     - React-Core
   - react-native-sensitive-info (5.5.8):
@@ -565,6 +567,7 @@ DEPENDENCIES:
   - "react-native-cookies (from `../node_modules/@react-native-cookies/cookies`)"
   - "react-native-image-editor (from `../node_modules/@react-native-community/image-editor`)"
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
+  - "react-native-menu (from `../node_modules/@react-native-menu/menu`)"
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-sensitive-info (from `../node_modules/react-native-sensitive-info`)
   - react-native-sfsymbols (from `../node_modules/react-native-sfsymbols`)
@@ -667,6 +670,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/image-editor"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
+  react-native-menu:
+    :path: "../node_modules/@react-native-menu/menu"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-sensitive-info:
@@ -769,6 +774,7 @@ SPEC CHECKSUMS:
   react-native-cookies: f54fcded06bb0cda05c11d86788020b43528a26c
   react-native-image-editor: 9361a215c3991cafbe5e7f28cbbad6e72c9c2705
   react-native-image-picker: 60f4246eb5bb7187fc15638a8c1f13abd3820695
+  react-native-menu: 9d7d6f819cc7fa14a15cf86888c53f3240d86f1b
   react-native-netinfo: 2517ad504b3d303e90d7a431b0fcaef76d207983
   react-native-sensitive-info: 400c6e3d27945e15c8cddb5b4b92233c85ee06f8
   react-native-sfsymbols: bd3a0d3eab185e80b571bae60753dcf5a0d57967
