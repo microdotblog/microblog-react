@@ -27,7 +27,13 @@ export default class UploadCell extends React.Component {
 						cache: FastImage.cacheControl.web
 					}}
 					resizeMode={FastImage.resizeMode.cover}
-					style={{ width: dimension, height: dimension }}
+					style={{
+						width: dimension,
+						height: dimension,
+						borderWidth: upload.is_video() ? 2 : 0,
+						borderColor: App.theme_placeholder_text_color(),
+						borderRadius: 5
+					}}
 				/>
 			</TouchableOpacity>
 		)
