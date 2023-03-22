@@ -13,6 +13,9 @@ export default Post = types.model('Upload', {
 			if (self.is_video()) {
 				html = `<video controls src="${ self.url }"></video>`
 			}
+			else if (self.is_audio()) {
+				html = `<audio controls src="${ self.url }"></audio>`
+			}
 			Clipboard.setString(html)
 			Toast.showWithGravity("HTML copied", Toast.SHORT, Toast.CENTER)
 		},
@@ -36,5 +39,8 @@ export default Post = types.model('Upload', {
 		},
 		is_video() {
 			return self.url.endsWith(".mp4") || self.url.endsWith(".mov") || self.url.endsWith(".m4v") || self.url.endsWith(".webm") || self.url.endsWith(".ogv") || self.url.endsWith(".ogg") || self.url.endsWith(".avi") || self.url.endsWith(".wmv") || self.url.endsWith(".flv") || self.url.endsWith(".swf")
+		},
+		is_audio() {
+			return self.url.endsWith(".mp3") || self.url.endsWith(".wav") || self.url.endsWith(".ogg") || self.url.endsWith(".flac") || self.url.endsWith(".m4a") || self.url.endsWith(".aac") || self.url.endsWith(".wma")
 		}
 	}))
