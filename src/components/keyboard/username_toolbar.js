@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity, Image, Platform, ScrollView } from 'react-native';
-import Auth from '../../stores/Auth';
 import App from '../../stores/App';
-import { SFSymbol } from 'react-native-sfsymbols';
 
 @observer
 export default class UsernameToolbar extends React.Component{
@@ -21,7 +19,7 @@ export default class UsernameToolbar extends React.Component{
 						...Platform.select({
 							android: {
 								position: 'absolute',
-								bottom: 0,
+								bottom: 40,
 								right: 0,
 								left: 0,
 							}
