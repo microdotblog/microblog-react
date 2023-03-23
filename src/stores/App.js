@@ -445,11 +445,10 @@ export default App = types.model('App', {
     const options = theme_options({})
     // We set default options here so that any new screen, that might not be in the stack, will pick them up.
     Navigation.setDefaultOptions(options)
-    Screens.forEach((_screen, key) => {
+    Object.entries(Screens).forEach(([ key ]) => {
       if (key != null &&
         !key.includes("microblog.component") &&
-        key !== "__initBottomSheet__")
-      {
+        key !== "__initBottomSheet__") {
         console.log("App:update_navigation_screens:screen", key)
         Navigation.mergeOptions(key, options)
       }
