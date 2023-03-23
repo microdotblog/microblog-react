@@ -1,11 +1,15 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { TouchableOpacity, Dimensions, View, Platform } from 'react-native'
+import { Dimensions, View, Platform } from 'react-native'
 import App from '../../stores/App'
 import FastImage from 'react-native-fast-image'
 import { SvgXml } from 'react-native-svg';
 import { SFSymbol } from "react-native-sfsymbols";
 import { MenuView } from '@react-native-menu/menu';
+import LinkIcon from './../../assets/icons/link.png'
+import CodeIcon from './../../assets/icons/code.png'
+import TextIcon from './../../assets/icons/rtt.png'
+import BrowserIcon from './../../assets/icons/web.png'
 
 @observer
 export default class UploadCell extends React.Component {
@@ -35,10 +39,38 @@ export default class UploadCell extends React.Component {
 					}
 				}}
 				actions={[
-					{ title: "Copy Link", id: "copy_link" },
-					{ title: "Copy HTML", id: "copy_html" },
-					{ title: "Copy Markdown", id: "copy_markdown" },
-					{ title: "Open in Browser", id: "open_in_browser"}
+					{
+						title: "Copy Link",
+						id: "copy_link",
+						image: Platform.select({
+							ios: 'link',
+							android: LinkIcon,
+						})
+					},
+					{
+						title: "Copy HTML",
+						id: "copy_html",
+						image: Platform.select({
+							ios: 'curlybraces',
+							android: CodeIcon,
+						})
+					},
+					{
+						title: "Copy Markdown",
+						id: "copy_markdown",
+						image: Platform.select({
+							ios: 'textformat',
+							android: TextIcon,
+						})
+					},
+					{
+						title: "Open in Browser",
+						id: "open_in_browser",
+						image: Platform.select({
+							ios: 'safari',
+							android: BrowserIcon,
+						})
+					}
 				]}
 			>
 				{
