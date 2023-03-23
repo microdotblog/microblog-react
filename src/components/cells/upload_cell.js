@@ -11,6 +11,13 @@ import Auth from '../../stores/Auth'
 @observer
 export default class UploadCell extends React.Component {
 
+	constructor (props) {
+		super(props)
+		this.state = {
+			did_load: false
+		}
+	}
+
 	render() {
 		const { upload } = this.props
 		const dimension = (Dimensions.get("screen")?.width / 3) - 10
@@ -93,7 +100,7 @@ export default class UploadCell extends React.Component {
 								style={{
 									width: dimension,
 									height: dimension,
-									borderWidth: upload.is_video() || upload.is_audio() ? 2 : 0,
+									borderWidth: 2,
 									borderColor: App.theme_placeholder_text_color(),
 									borderRadius: 5
 								}}
@@ -157,9 +164,12 @@ export default class UploadCell extends React.Component {
 								style={{
 									width: dimension,
 									height: dimension,
-									borderWidth: upload.is_video() || upload.is_audio() ? 2 : 0,
+									borderWidth: upload.is_video() || upload.is_audio() || !this.state.did_load ? 2 : 0,
 									borderColor: App.theme_placeholder_text_color(),
 									borderRadius: 5
+								}}
+								onLoadEnd={() => {
+									this.setState({ did_load: true })
 								}}
 							/>
 				}
