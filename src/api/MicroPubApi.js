@@ -352,8 +352,9 @@ class MicroPubApi {
 		console.log("MicroBlogApi:MicroPub:delete_upload:PARAMS", params)
 		
 		const upload = axios
-			.post(service.media_endpoint, params ,{
-				headers: { Authorization: `Bearer ${service.token}` }
+			.post(service.media_endpoint, "" ,{
+				headers: { Authorization: `Bearer ${ service.token }` },
+				params: params
 			})
 			.then(response => {
 				return true;
