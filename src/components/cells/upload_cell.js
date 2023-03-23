@@ -6,6 +6,7 @@ import FastImage from 'react-native-fast-image'
 import { SvgXml } from 'react-native-svg';
 import { SFSymbol } from "react-native-sfsymbols";
 import { MenuView } from '@react-native-menu/menu';
+import Auth from '../../stores/Auth'
 
 @observer
 export default class UploadCell extends React.Component {
@@ -32,6 +33,9 @@ export default class UploadCell extends React.Component {
 					}
 					else if (event_id === "open_in_browser") {
 						App.open_url(upload.url)
+					}
+					else if (event_id === "delete") {
+						Auth.selected_user.posting.selected_service?.trigger_upload_delete(upload)
 					}
 				}}
 				actions={[
@@ -62,6 +66,16 @@ export default class UploadCell extends React.Component {
 						image: Platform.select({
 							ios: 'safari'
 						})
+					},
+					{
+						title: "Delete...",
+						id: "delete",
+						image: Platform.select({
+							ios: 'trash'
+						}),
+						attributes: {
+							destructive: true
+						}
 					}
 				]}
 			>

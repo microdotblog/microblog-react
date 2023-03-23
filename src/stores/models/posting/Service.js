@@ -178,6 +178,38 @@ export default Service = types.model('Service', {
       self.is_loading_uploads = false
     }
   }),
+
+  trigger_upload_delete(upload) {
+    console.log("Destination:trigger_upload_delete", upload)
+    Alert.alert(
+      "Delete upload?",
+      "Are you sure you want to delete this upload?",
+      [
+        {
+          text: "Cancel",
+          style: 'cancel',
+        },
+        {
+          text: "Delete",
+          onPress: () => self.delete_upload(upload),
+          style: 'destructive'
+        },
+      ],
+      {cancelable: false},
+    )
+  },
+
+  delete_upload: flow(function* (upload) {
+    console.log("Destination:delete_upload", upload)
+    const status = yield MicroPubApi.delete_upload(self.service_object(), upload.url)
+    if(status !== DELETE_ERROR){
+      App.show_toast("Upload was deleted.")
+      self.upate_uploads_for_active_destination()
+    }
+    else{
+      Alert.alert("Whoops", "Could not delete upload. Please try again.")
+    }
+  }),
   
 }))
 .views(self => ({
@@ -192,7 +224,8 @@ export default Service = types.model('Service', {
       username: self.username,
       token: this.credentials()?.token,
       destination: self.config?.active_destination()?.uid,
-      media_endpoint: self.config?.media_endpoint()
+      media_endpoint: self.config?.media_endpoint(),
+      temporary_destination: self.config?.temporary_destination()?.uid,
     }
   }
   

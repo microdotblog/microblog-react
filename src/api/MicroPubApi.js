@@ -342,6 +342,41 @@ class MicroPubApi {
 		return config;
 	}
 
+	async delete_upload(service, url) {
+		console.log('MicroBlogApi:MicroPub:delete_upload', url);
+		const params = {
+			"action": "delete",
+			"url": url,
+			"mp-destination": service.temporary_destination
+		}
+		console.log("MicroBlogApi:MicroPub:delete_upload:PARAMS", params)
+		
+		const upload = axios
+			.post(service.media_endpoint, params ,{
+				headers: { Authorization: `Bearer ${service.token}` }
+			})
+			.then(response => {
+				return true;
+			})
+			.catch(error => {
+				console.log("MicroBlogApi:delete_upload:ERROR", error.response.status, error.response.data);
+				if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
+					Alert.alert(
+						"Something went wrong.",
+						`${error.response.data.error_description}. Try again later.`,
+					)
+				}
+				else {
+					Alert.alert(
+						"Something went wrong.",
+						`Please try again later.`,
+					)
+				}
+				return DELETE_ERROR;
+			});
+		return upload;
+	}
+
 }
 
 export default new MicroPubApi()

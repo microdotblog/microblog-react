@@ -45,6 +45,10 @@ export default Config = types.model('Config', {
   media_endpoint(){
     return self["media-endpoint"] != null ? self["media-endpoint"] : null
   },
+
+  temporary_destination() {
+    return self.destination != null && self.destination.length ? self.destination.find(destination => destination.uid === self.selected_posts_destination) : null
+  },
   
   posts_destination(){
     return self.destination != null && self.destination.length ? self.destination.find(destination => destination.uid === self.selected_posts_destination) : null
