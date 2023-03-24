@@ -36,18 +36,36 @@ export default class ImageOptionsScreen extends React.Component{
     const { image, index } = this.props
     return(
       <KeyboardAvoidingView behavior={"position"} style={{ flex: 1, height: "100%" }}>
-        <ScrollView style={{ padding: 15 }}>
+        <ScrollView style={{ padding: 15 }} contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', width: "100%" }}>
           <View
             style={{
               position: 'relative',
               justifyContent: 'center',
               alignItems: 'center',
+              width: 250,
+              height: 250,
+              backgroundColor: '#E5E7EB'
             }}
           >
-            <Image source={{ uri: image.remote_url ? image.remote_url : image.uri }} style={{ width: 250, height: 250, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
+            <Image source={{ uri: image.remote_url ? image.remote_url : image.uri }} style={{ width: 250, height: 250, borderRadius: 5 }} />
             {
               image.is_uploading ?
-                <ActivityIndicator color="#f80" size={"large"} style={{position: 'absolute'}} />
+                <>
+                  <ActivityIndicator color="#f80" size={"large"} style={{ position: 'absolute' }} />
+                  <View
+                    style={{
+                      width: `${ image.progress }%`,
+                      height: 5,
+                      backgroundColor: App.theme_accent_color(),
+                      position: 'absolute',
+                      left: 0,
+                      bottom: 0,
+                      borderBottomLeftRadius: 5,
+                      borderBottomRightRadius: image.progress === 100 ? 5 : 0,
+                      zIndex: 2
+                    }}
+                  />
+                </>
               : null
             }
           </View>
@@ -62,7 +80,8 @@ export default class ImageOptionsScreen extends React.Component{
               color: App.theme_text_color(),
               marginVertical: 25,
               borderRadius: 5,
-              backgroundColor: App.theme_button_background_color()
+              backgroundColor: App.theme_button_background_color(),
+              width: "100%",
             }}
             editable={!posting.is_sending_post}
             multiline={true}
@@ -77,17 +96,23 @@ export default class ImageOptionsScreen extends React.Component{
             value={image.alt_text}
             onChangeText={(text) => !posting.is_sending_post ? image.set_alt_text(text) : null}
           />
-          <TouchableOpacity
-            onPress={() => this._handle_image_remove(image, index)}
-            key={image.uri}
+          <View
             style={{
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', width: "100%", justifyContent: 'center' }}>
-              <Text style={{color: 'red'}}>{image.is_uploading ? "Cancel upload & remove image..." : "Remove image..."}</Text>
-            </View>
-          </TouchableOpacity>
+              width: "100%",
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => this._handle_image_remove(image, index)}
+              key={image.uri}
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', width: "100%", justifyContent: 'center' }}>
+                <Text style={{color: 'red'}}>{image.is_uploading ? "Cancel upload & remove image..." : "Remove image..."}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     )
