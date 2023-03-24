@@ -126,7 +126,13 @@ class MicroPubApi {
 		
 		const upload = axios
 			.post(service.media_endpoint, data, {
-				headers: { Authorization: `Bearer ${service.token}` },
+				headers: { Authorization: `Bearer ${ service.token }` },
+				onUploadProgress: progressEvent => {
+					const progress = Math.round(
+						(progressEvent.loaded * 100) / progressEvent.total
+					)
+					file.update_progress(progress)
+				}
 			})
 			.then(response => {
 				console.log('MicroPubApi:upload_image:response', response);

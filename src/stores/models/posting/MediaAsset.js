@@ -10,7 +10,8 @@ export default MediaAsset = types.model('MediaAsset', {
 	is_uploading: types.optional(types.boolean, false),
 	did_upload: types.optional(types.boolean, false),
 	remote_url: types.maybe(types.string),
-	alt_text: types.maybe(types.string)
+	alt_text: types.maybe(types.string),
+	progress: types.optional(types.number, 0)
 })
 .actions(self => ({
 
@@ -28,6 +29,11 @@ export default MediaAsset = types.model('MediaAsset', {
 	set_alt_text: flow(function* (text) {
 		console.log("MediaAsset:set_alt_text", text)
 		self.alt_text = text
+	}),
+
+	update_progress: flow(function* (progress) {
+		console.log("MediaAsset:update_progress", progress)
+		self.progress = progress
 	})
 
 }))

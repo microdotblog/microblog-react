@@ -38,20 +38,36 @@ export default class AssetToolbar extends React.Component{
                 <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
                 {
                   asset.is_uploading ?
-                    <View 
-                      style={{ 
-                        position: 'absolute',
-                        left: 0,
-                        right: 0,
-                        top: 0, 
-                        bottom: 0, 
-                        backgroundColor: 'rgba(0,0,0,.6)',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        borderRadius: 5
-                      }}>
-                      <ActivityIndicator color="#f80"/>
-                    </View>
+                    <>
+                      <View 
+                        style={{ 
+                          position: 'absolute',
+                          left: 0,
+                          right: 0,
+                          top: 0, 
+                          bottom: 0, 
+                          backgroundColor: 'rgba(0,0,0,.6)',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          borderRadius: 5,
+                          zIndex: 1
+                        }}>
+                        <ActivityIndicator animating={true} color="#f80"/>
+                      </View>
+                      <View
+                        style={{
+                          width: `${ asset.progress }%`,
+                          height: 5,
+                          backgroundColor: App.theme_accent_color(),
+                          position: 'absolute',
+                          left: 0,
+                          bottom: 0,
+                          borderBottomLeftRadius: 5,
+                          borderBottomRightRadius: asset.progress === 100 ? 5 : 0,
+                          zIndex: 2
+                        }}
+                      />
+                    </>
                   : null
                 }
               </TouchableOpacity>
