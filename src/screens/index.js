@@ -65,12 +65,14 @@ import NewPostButton from './../components/header/new_post';
 import ScreenTitle from "../components/header/screen_title";
 import RefreshActivity from "../components/header/refresh_activity";
 import Tab from "../components/tabs/tab";
+import NewUploadButton from "../components/header/new_upload";
 
 export const PROFILE_IMAGE = 'microblog.component.ProfileImage'
 export const NEW_POST_BUTTON = 'microblog.component.NewPostButton'
 export const SCREEN_TITLE = 'microblog.component.ScreenTitle'
 export const REFRESH_ACTIVITY = 'microblog.component.RefreshActivity'
 export const TAB = 'microblog.component.tab'
+export const NEW_UPLOAD_BUTTON = 'microblog.component.NewUploadButton'
 
 // ICONS
 import TimelineIcon from './../assets/icons/tab_bar/timeline.png';
@@ -127,7 +129,8 @@ export const Screens = {
   [ NEW_POST_BUTTON ]: NewPostButton,
   [ SCREEN_TITLE ]: ScreenTitle,
   [ REFRESH_ACTIVITY ]: RefreshActivity,
-  [ TAB ]: Tab
+  [ TAB ]: Tab,
+  [ NEW_UPLOAD_BUTTON ]: NewUploadButton,
 }
 
 export const startApp = () => {
@@ -1072,6 +1075,13 @@ export const uploadsScreen = (component_id) => {
             text: "Uploads"
           },
           rightButtons: [
+            {
+              id: 'upload_button',
+              text: 'upload',
+              component: {
+                name: NEW_UPLOAD_BUTTON
+              }
+            },
             {
               id: 'refresh_indicator',
               text: 'refresh',
