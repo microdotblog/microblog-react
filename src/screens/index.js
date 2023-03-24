@@ -1075,13 +1075,13 @@ export const uploadsScreen = (component_id) => {
             text: "Uploads"
           },
           rightButtons: [
-            {
-              id: 'upload_button',
-              text: 'upload',
-              component: {
-                name: NEW_UPLOAD_BUTTON
-              }
-            },
+            // {
+            //   id: 'upload_button',
+            //   text: 'upload',
+            //   component: {
+            //     name: NEW_UPLOAD_BUTTON
+            //   }
+            // },
             {
               id: 'refresh_indicator',
               text: 'refresh',
