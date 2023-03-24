@@ -241,6 +241,10 @@ export default Posting = types.model('Posting', {
   
   remove_asset: flow(function* (media_index) {
     console.log("Posting:remove_image:index", media_index)
+    const media = self.post_assets[ media_index ]
+    if (media.is_uploading) { 
+      yield media.cancel_upload()
+    }
     self.post_assets.splice(media_index, 1)
   }),
 

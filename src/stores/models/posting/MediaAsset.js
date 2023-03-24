@@ -1,6 +1,33 @@
 import { types, flow } from 'mobx-state-tree';
 import MicroPubApi, { POST_ERROR } from './../../../api/MicroPubApi';
 const FS = require("react-native-fs")
+import axios from 'axios';
+
+const CancelSource = types.snapshotProcessor(
+	types.custom({
+		name: "CancelSource",
+		fromSnapshot() {
+			return axios.CancelToken.source()
+		},
+		toSnapshot(value) {
+			return value
+		},
+		isTargetType(value) {
+			return value && "token" in value && "cancel" in value
+		},
+		getValidationMessage(value) {
+			return "CancelSource must be an Axios CancelToken source"
+		},
+	}),
+	{
+		preProcessor: snapshot => {
+			return snapshot
+		},
+		postProcessor: snapshot => {
+			return axios.CancelToken.source()
+		},
+	}
+)
 
 export default MediaAsset = types.model('MediaAsset', {
 	uri: types.identifier,
@@ -11,18 +38,21 @@ export default MediaAsset = types.model('MediaAsset', {
 	did_upload: types.optional(types.boolean, false),
 	remote_url: types.maybe(types.string),
 	alt_text: types.maybe(types.string),
-	progress: types.optional(types.number, 0)
+	progress: types.optional(types.number, 0),
+	cancel_source: types.maybeNull(CancelSource),
 })
 .actions(self => ({
 
 	upload: flow(function* (service_object) {
 		self.is_uploading = true
+		self.cancel_source = axios.CancelToken.source()
 		const response = yield MicroPubApi.upload_image(service_object, self)
 		console.log("MediaAsset:upload", response)
 		if (response !== POST_ERROR) {
 			self.remote_url = response.url
 			self.did_upload = true
 		}
+		self.cancel_source = null
 		self.is_uploading = false
 	}),
 	
@@ -34,6 +64,13 @@ export default MediaAsset = types.model('MediaAsset', {
 	update_progress: flow(function* (progress) {
 		console.log("MediaAsset:update_progress", progress)
 		self.progress = progress
+	}),
+
+	cancel_upload: flow(function* () {
+		if (self.cancel_source) {
+			console.log("MediaAsset:cancel_upload")
+			self.cancel_source.cancel("Upload canceled by the user.")
+		}
 	})
 
 }))

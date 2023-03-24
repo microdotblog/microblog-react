@@ -132,7 +132,8 @@ class MicroPubApi {
 						(progressEvent.loaded * 100) / progressEvent.total
 					)
 					file.update_progress(progress)
-				}
+				},
+				cancelToken: file.cancel_source.token,
 			})
 			.then(response => {
 				console.log('MicroPubApi:upload_image:response', response);
@@ -162,7 +163,10 @@ class MicroPubApi {
 			})
 			.catch(error => {
 				console.log("MicroBlogApi:send_entry:ERROR", error.response.status, error.response.data);
-				if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
+				if (axios.isCancel(error)) {
+					console.log("Request canceled:", error.message)
+				}
+				else if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
 					Alert.alert(
 						"Something went wrong.",
 						`${error.response.data.error_description}`,
