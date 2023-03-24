@@ -78,7 +78,7 @@ export default class AccountSwitcher extends React.Component{
                   width: '100%',
                   justifyContent: 'space-between',
                   marginLeft: 16,
-                  paddingBottom: index === Auth.all_users_except_current().length - 1 ? 0 : 8,
+                  paddingBottom: index === Auth.all_users_except_current().length - 1 ? 0 : 18,
                 }}
               >
                 <View 
