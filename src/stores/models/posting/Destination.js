@@ -4,6 +4,7 @@ import Page from './Page';
 import Upload from './Upload'
 import DocumentPicker from 'react-native-document-picker'
 import { launchImageLibrary } from 'react-native-image-picker';
+import TempUpload from './TempUpload'
 
 export default Destination = types.model('Destination', {
 	uid: types.identifier,
@@ -14,7 +15,8 @@ export default Destination = types.model('Destination', {
 	categories: types.optional(types.array(types.string), []),
 	posts: types.optional(types.array(Post), []),
 	pages: types.optional(types.array(Page), []),
-	uploads: types.optional(types.array(Upload), [])
+	uploads: types.optional(types.array(Upload), []),
+	temp_uploads: types.optional(types.array(TempUpload), [])
 })
 .actions(self => ({
 
