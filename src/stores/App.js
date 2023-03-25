@@ -586,7 +586,7 @@ export default App = types.model('App', {
     const now = new Date()
     const difference = Math.floor((now - self.last_active_time) / (1000 * 60))
     console.log("App:trigger_web_view_reload_after_active", now, difference, self.last_active_time)
-    if(difference >= 30){
+    if(difference >= 120){
       App.set_is_reloading_after_timeout(true)
       setTimeout(() => {
         App.set_is_reloading_after_timeout(false)

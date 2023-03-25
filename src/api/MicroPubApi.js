@@ -132,7 +132,8 @@ class MicroPubApi {
 						(progressEvent.loaded * 100) / progressEvent.total
 					)
 					file.update_progress(progress)
-				}
+				},
+				cancelToken: file.cancel_source.token,
 			})
 			.then(response => {
 				console.log('MicroPubApi:upload_image:response', response);
@@ -143,6 +144,40 @@ class MicroPubApi {
 				return POST_ERROR;
 			});
 		return upload;
+	}
+
+	async upload_media(service, file, destination) {
+		const data = new FormData()
+		// Get extenstion from file name, for example: 12345.jpg
+		const extenstion = file.uri.split('.').pop()
+		data.append("file", {
+			name: `media.${extenstion}`,
+			type: file.type,
+			uri: file.uri,
+		})
+		data.append("mp-destination", destination)
+		console.log('MicroPubApi:upload_media', service, file, data)
+
+		const upload = axios
+			.post(service.media_endpoint, data, {
+				headers: { Authorization: `Bearer ${ service.token }` },
+				onUploadProgress: progressEvent => {
+					const progress = Math.round(
+						(progressEvent.loaded * 100) / progressEvent.total
+					)
+					file.update_progress(progress)
+				},
+				cancelToken: file.cancel_source.token,
+			})
+			.then(response => {
+				console.log('MicroPubApi:upload_media:response', response)
+				return response.data
+			})
+			.catch(error => {
+				console.log(error.response)
+				return POST_ERROR
+			})
+		return upload
 	}
 
 	async send_entry(service, entry, entry_type) {
@@ -162,7 +197,10 @@ class MicroPubApi {
 			})
 			.catch(error => {
 				console.log("MicroBlogApi:send_entry:ERROR", error.response.status, error.response.data);
-				if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
+				if (axios.isCancel(error)) {
+					console.log("Request canceled:", error.message)
+				}
+				else if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
 					Alert.alert(
 						"Something went wrong.",
 						`${error.response.data.error_description}`,

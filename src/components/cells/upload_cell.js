@@ -93,8 +93,8 @@ export default class UploadCell extends React.Component {
 								key={upload.url}
 								source={{
 									uri: upload.poster,
-									priority: FastImage.priority.normal,
-									cache: FastImage.cacheControl.web
+									priority: FastImage.priority.high,
+									cache: FastImage.cacheControl.immutable
 								}}
 								resizeMode={FastImage.resizeMode.cover}
 								style={{
@@ -158,7 +158,7 @@ export default class UploadCell extends React.Component {
 								source={{
 									uri: upload.url,
 									priority: FastImage.priority.normal,
-									cache: FastImage.cacheControl.web
+									cache: FastImage.cacheControl.immutable
 								}}
 								resizeMode={FastImage.resizeMode.cover}
 								style={{

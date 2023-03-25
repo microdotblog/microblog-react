@@ -2,7 +2,7 @@ import Clipboard from '@react-native-clipboard/clipboard'
 import { types } from 'mobx-state-tree'
 import Toast from 'react-native-simple-toast';
 
-export default Post = types.model('Upload', {
+export default Upload = types.model('Upload', {
 	url: types.identifier,
 	published: types.maybe(types.string),
 	poster: types.maybe(types.string)

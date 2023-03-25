@@ -1,7 +1,8 @@
-import { types } from 'mobx-state-tree';
+import { types, flow } from 'mobx-state-tree';
 import Post from "./Post";
 import Page from './Page';
 import Upload from './Upload'
+import TempUpload from './TempUpload'
 
 export default Destination = types.model('Destination', {
 	uid: types.identifier,
@@ -12,7 +13,8 @@ export default Destination = types.model('Destination', {
 	categories: types.optional(types.array(types.string), []),
 	posts: types.optional(types.array(Post), []),
 	pages: types.optional(types.array(Page), []),
-	uploads: types.optional(types.array(Upload), [])
+	uploads: types.optional(types.array(Upload), []),
+	temp_uploads: types.optional(types.array(TempUpload), [])
 })
 .actions(self => ({
 
@@ -94,6 +96,27 @@ export default Destination = types.model('Destination', {
 		}, [])
 		console.log("Destination:set_uploads:got_uploads", uploads.length)
 		self.uploads = uploads // We could append to the list: [...self.posts, ...posts]
-	}
+		// We want to clear out any uploads that have been uploaded.
+		const temp_uploads = self.temp_uploads.filter(temp_upload => temp_upload.did_upload || temp_upload.cancelled)
+		temp_uploads.forEach(temp_upload => {
+			self.temp_uploads.remove(temp_upload)
+		})
+	},
+
+	upload_media: flow(function* (media, service) {
+		console.log("Destination:upload_media", media, service.service_object())
+		const temp_upload = TempUpload.create(media)
+		self.temp_uploads.push(temp_upload)
+		const result = yield temp_upload.upload(service.service_object(), self)
+		if (result) {
+			console.log("Destination:upload_media:success", result)
+			const upload = {
+				url: temp_upload.url
+			}
+			self.uploads.unshift(upload)
+			self.temp_uploads.remove(temp_upload)
+			//service.check_for_uploads_for_destination(self)
+		}
+	})
 
 }))

@@ -3,6 +3,8 @@ import Tokens from './../../Tokens';
 import MicroPubApi, { DELETE_ERROR } from './../../../api/MicroPubApi';
 import Config from './Config';
 import { Alert } from 'react-native';
+import DocumentPicker from 'react-native-document-picker'
+import { launchImageLibrary } from 'react-native-image-picker';
 
 export default Service = types.model('Service', {
   id: types.identifier,
@@ -26,7 +28,7 @@ export default Service = types.model('Service', {
       if(config){
         self.config = config
         self.config.hydrate_default_destination()
-        self.check_for_categories()
+        //self.check_for_categories()
       }
     }
   }),
@@ -210,6 +212,48 @@ export default Service = types.model('Service', {
       Alert.alert("Whoops", "Could not delete upload. Please try again.")
     }
   }),
+
+  pick_file: flow(function* (destination) {
+    console.log("Destination:pick_file", destination.uid)
+    DocumentPicker.pick({
+      type: [ DocumentPicker.types.audio, DocumentPicker.types.images ],
+      allowMultiSelection: true
+    })
+      .then((res) => {
+        console.log("Destination:pick_file:res", res)
+        res.forEach((asset) => {
+          console.log("Destination:pick_file:asset", asset)
+          destination.upload_media(asset, self)
+        })
+      })
+      .catch((err) => {
+        // TODO: SHOW ERROR MESSAGES IF APPLICABLE
+        if (!DocumentPicker.isCancel(err)) {
+          console.log("Destination:pick_file:err", err)
+        }
+      })
+  }),
+
+  pick_image: flow(function* (destination) {
+    console.log("Destination:pick_image", destination.uid)
+    launchImageLibrary({
+      title: 'Select an asset',
+      selectionLimit: 0,
+    }, (res) => {
+      console.log("Destination:pick_image:res", res)
+      if (res.error) {
+        // TODO: SHOW ERROR MESSAGES IF APPLICABLE
+        console.log("Destination:pick_image:err", res.error)
+      }
+      else {
+        console.log("Destination:pick_image:res", res)
+        res.assets.forEach((asset) => {
+          console.log("Destination:pick_image:asset", asset)
+          destination.upload_media(asset, self)
+        })
+      }
+    })
+  })
   
 }))
 .views(self => ({
