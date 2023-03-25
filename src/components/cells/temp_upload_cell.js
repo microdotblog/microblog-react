@@ -47,7 +47,7 @@ export default class TempUploadCell extends React.Component {
 					}}
 				>
 					{
-						upload.is_audio() ?
+						upload.is_audio() || upload.is_video() ?
 							<View style={{
 								width: dimension,
 								height: dimension,
@@ -60,14 +60,16 @@ export default class TempUploadCell extends React.Component {
 								{
 									Platform.OS === 'ios' ?
 										<SFSymbol
-											name="waveform"
+											name={upload.is_audio() ? "waveform" : "film"}
 											color={App.theme_text_color()}
 											size={20}
 											multicolor={false}
 										/>
 										:
 										<SvgXml
-											xml={`<svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48"><path d="M285 816V336h60v480h-60Zm165 160V176h60v800h-60ZM120 656V496h60v160h-60Zm495 160V336h60v480h-60Zm165-160V496h60v160h-60Z"/></svg>`}
+											xml={upload.is_audio() ?
+												`<svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48"><path d="M285 816V336h60v480h-60Zm165 160V176h60v800h-60ZM120 656V496h60v160h-60Zm495 160V336h60v480h-60Zm165-160V496h60v160h-60Z"/></svg>` : `<svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48"><path d="m140 256 74 152h130l-74-152h89l74 152h130l-74-152h89l74 152h130l-74-152h112q24 0 42 18t18 42v520q0 24-18 42t-42 18H140q-24 0-42-18t-18-42V316q0-24 18-42t42-18Zm0 212v368h680V468H140Zm0 0v368-368Z"/></svg>`
+											}
 											width={24}
 											height={24}
 											fill={App.theme_text_color()}

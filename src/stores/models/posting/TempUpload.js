@@ -74,7 +74,8 @@ export default TempUpload = types.model('TempUpload', {
 	}))
 	.views(self => ({
 		is_video() {
-			return self.uri?.endsWith(".mp4") || self.uri?.endsWith(".mov") || self.uri?.endsWith(".m4v") || self.uri?.endsWith(".webm") || self.uri?.endsWith(".ogv") || self.uri?.endsWith(".ogg") || self.uri?.endsWith(".avi") || self.uri?.endsWith(".wmv") || self.uri?.endsWith(".flv") || self.uri?.endsWith(".swf")
+			const uri = self.uri?.toLowerCase()
+			return uri?.endsWith(".mp4") || uri?.endsWith(".mov") || uri?.endsWith(".m4v") || uri?.endsWith(".webm") || uri?.endsWith(".ogv") || uri?.endsWith(".ogg") || uri?.endsWith(".avi") || uri?.endsWith(".wmv") || uri?.endsWith(".flv") || uri?.endsWith(".swf")
 		},
 		is_audio() {
 			return self.uri?.endsWith(".mp3") || self.uri?.endsWith(".wav") || self.uri?.endsWith(".ogg") || self.uri?.endsWith(".flac") || self.uri?.endsWith(".m4a") || self.uri?.endsWith(".aac") || self.uri?.endsWith(".wma")
