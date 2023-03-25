@@ -34,6 +34,13 @@ export default TempUpload = types.model('TempUpload', {
 			self.progress = progress
 		}),
 
+		cancel_upload: flow(function* () {
+			if (self.cancel_source) {
+				console.log("MediaAsset:cancel_upload")
+				self.cancel_source.cancel("Upload canceled by the user.")
+			}
+		}),
+
 		copy_html_to_clipboard() {
 			let html = `<img src="${ self.url }" />`
 			if (self.is_video()) {
