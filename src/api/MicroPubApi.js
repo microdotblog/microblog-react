@@ -146,14 +146,16 @@ class MicroPubApi {
 		return upload;
 	}
 
-	async upload_media(service, file) {
+	async upload_media(service, file, destination) {
 		const data = new FormData()
+		// Get extenstion from file name, for example: 12345.jpg
+		const extenstion = file.uri.split('.').pop()
 		data.append("file", {
-			name: file.name,
+			name: `media.${extenstion}`,
 			type: file.type,
-			uri: file.uri
+			uri: file.uri,
 		})
-		data.append("mp-destination", service.temporary_destination)
+		data.append("mp-destination", destination)
 		console.log('MicroPubApi:upload_media', service, file, data)
 
 		const upload = axios

@@ -2,33 +2,7 @@ import Clipboard from '@react-native-clipboard/clipboard'
 import { types, flow } from 'mobx-state-tree'
 import Toast from 'react-native-simple-toast'
 import axios from 'axios'
-import MicroPubApi from '../../../api/MicroPubApi'
-
-const CancelSource = types.snapshotProcessor(
-	types.custom({
-		name: "CancelSource",
-		fromSnapshot() {
-			return axios.CancelToken.source()
-		},
-		toSnapshot(value) {
-			return value
-		},
-		isTargetType(value) {
-			return value && "token" in value && "cancel" in value
-		},
-		getValidationMessage(value) {
-			return "CancelSource must be an Axios CancelToken source"
-		},
-	}),
-	{
-		preProcessor: snapshot => {
-			return snapshot
-		},
-		postProcessor: snapshot => {
-			return axios.CancelToken.source()
-		},
-	}
-)
+import MicroPubApi, { POST_ERROR } from '../../../api/MicroPubApi'
 
 export default TempUpload = types.model('TempUpload', {
 	uri: types.identifier,
@@ -38,20 +12,26 @@ export default TempUpload = types.model('TempUpload', {
 	poster: types.maybe(types.string),
 	is_uploading: types.optional(types.boolean, false),
 	progress: types.optional(types.number, 0),
-	cancel_source: types.maybeNull(CancelSource),
+	did_upload: types.optional(types.boolean, false),
 })
 	.actions(self => ({
 
-		upload: flow(function* (service_object) {
+		upload: flow(function* (service_object, destination) {
+			console.log("TempUpload:upload", service_object, destination.uri)
 			self.is_uploading = true
 			self.cancel_source = axios.CancelToken.source()
-			const response = yield MicroPubApi.upload_image(service_object, self)
-			console.log("MediaAsset:upload", response)
+			const response = yield MicroPubApi.upload_media(service_object, self, destination.uri)
+			console.log("TempUpload:upload", response)
 			if (response !== POST_ERROR) {
 				self.did_upload = true
 			}
 			self.cancel_source = null
 			self.is_uploading = false
+		}),
+
+		update_progress: flow(function* (progress) {
+			console.log("TempUpload:update_progress", progress)
+			self.progress = progress
 		}),
 
 		copy_html_to_clipboard() {

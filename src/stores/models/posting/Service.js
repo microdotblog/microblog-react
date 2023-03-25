@@ -220,7 +220,7 @@ export default Service = types.model('Service', {
     })
       .then((res) => {
         console.log("Destination:pick_file:res", res)
-        destination.upload_media(res)
+        destination.upload_media(res, self.service_object())
       })
       .catch((err) => {
         // TODO: SHOW ERROR MESSAGES IF APPLIABLE
@@ -244,7 +244,7 @@ export default Service = types.model('Service', {
         console.log("Destination:pick_image:res", res)
         res.assets.forEach((asset) => {
           console.log("Destination:pick_image:asset", asset)
-          destination.upload_media(asset)
+          destination.upload_media(asset, self.service_object())
         })
       }
     })
