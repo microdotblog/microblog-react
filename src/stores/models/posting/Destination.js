@@ -111,7 +111,8 @@ export default Destination = types.model('Destination', {
 		if (result) {
 			console.log("Destination:upload_media:success", result)
 			const upload = {
-				url: temp_upload.url
+				url: temp_upload.url,
+				poster: temp_upload.poster,
 			}
 			self.uploads.unshift(upload)
 			self.temp_uploads.remove(temp_upload)
