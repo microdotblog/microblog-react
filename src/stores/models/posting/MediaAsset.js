@@ -3,32 +3,6 @@ import MicroPubApi, { POST_ERROR } from './../../../api/MicroPubApi';
 const FS = require("react-native-fs")
 import axios from 'axios';
 
-const CancelSource = types.snapshotProcessor(
-	types.custom({
-		name: "CancelSource",
-		fromSnapshot() {
-			return axios.CancelToken.source()
-		},
-		toSnapshot(value) {
-			return value
-		},
-		isTargetType(value) {
-			return value && "token" in value && "cancel" in value
-		},
-		getValidationMessage(value) {
-			return "CancelSource must be an Axios CancelToken source"
-		},
-	}),
-	{
-		preProcessor: snapshot => {
-			return snapshot
-		},
-		postProcessor: snapshot => {
-			return axios.CancelToken.source()
-		},
-	}
-)
-
 export default MediaAsset = types.model('MediaAsset', {
 	uri: types.identifier,
 	type: types.maybe(types.string),
@@ -38,8 +12,7 @@ export default MediaAsset = types.model('MediaAsset', {
 	did_upload: types.optional(types.boolean, false),
 	remote_url: types.maybe(types.string),
 	alt_text: types.maybe(types.string),
-	progress: types.optional(types.number, 0),
-	cancel_source: types.maybeNull(CancelSource),
+	progress: types.optional(types.number, 0)
 })
 .actions(self => ({
 
