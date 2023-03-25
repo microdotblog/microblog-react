@@ -216,7 +216,7 @@ export default Service = types.model('Service', {
   pick_file: flow(function* (destination) {
     console.log("Destination:pick_file", destination.uid)
     DocumentPicker.pick({
-      type: [ DocumentPicker.types.audio, DocumentPicker.types.images ],
+      type: [ DocumentPicker.types.audio, DocumentPicker.types.images, DocumentPicker.types.video ],
       allowMultiSelection: true
     })
       .then((res) => {
