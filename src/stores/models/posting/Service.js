@@ -215,12 +215,15 @@ export default Service = types.model('Service', {
 
   pick_file: flow(function* (destination) {
     console.log("Destination:pick_file", destination.uid)
-    DocumentPicker.pickSingle({
+    DocumentPicker.pick({
       type: [ DocumentPicker.types.audio, DocumentPicker.types.images ],
     })
       .then((res) => {
         console.log("Destination:pick_file:res", res)
-        destination.upload_media(res, self)
+        res.forEach((asset) => {
+          console.log("Destination:pick_file:asset", asset)
+          destination.upload_media(asset, self)
+        })
       })
       .catch((err) => {
         // TODO: SHOW ERROR MESSAGES IF APPLICABLE
@@ -233,7 +236,8 @@ export default Service = types.model('Service', {
   pick_image: flow(function* (destination) {
     console.log("Destination:pick_image", destination.uid)
     launchImageLibrary({
-      title: 'Select an asset'
+      title: 'Select an asset',
+      selectionLimit: 0,
     }, (res) => {
       console.log("Destination:pick_image:res", res)
       if (res.error) {
