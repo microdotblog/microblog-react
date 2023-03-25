@@ -8,6 +8,7 @@ import { Navigation } from 'react-native-navigation';
 import { postsDestinationBottomSheet } from '..'
 import { SheetProvider } from "react-native-actions-sheet";
 import UploadCell from '../../components/cells/upload_cell'
+import TempUploadCell from '../../components/cells/temp_upload_cell'
 
 @observer
 export default class UploadsScreen extends React.Component{
@@ -74,15 +75,52 @@ export default class UploadsScreen extends React.Component{
       />
     )
   }
+
+  _temp_key_extractor = (item) => item.uri;
+
+  render_temporary_upload_item = ({ item }) => {
+    return (
+      <TempUploadCell key={item.uri} upload={item} />
+    )
+  }
+
+  _return_temp_uploads_list = () => {
+    const { selected_service } = Auth.selected_user.posting
+    const { config } = selected_service
+    const dimension = (Dimensions.get("screen")?.width / 3) + 5
+    if (config.temp_uploads_for_destination()?.length) {
+      return (
+        <FlatList
+          data={config.temp_uploads_for_destination()}
+          extraData={config.temp_uploads_for_destination()?.length && !selected_service.is_loading_uploads}
+          keyExtractor={this._temp_key_extractor}
+          renderItem={this.render_temporary_upload_item}
+          style={{
+            width: "100%",
+            minHeight: dimension,
+            borderBottomColor: App.theme_border_color(),
+            borderBottomWidth: 2,
+            paddingBottom: 10,
+            marginBottom: 10
+          }}
+          horizontal={true}
+        />
+      )
+    }
+    else {
+      return null
+    }
+  }
   
   render() {
     return (
       <SheetProvider>
-        <View style={{ flex: 1, alignItems: 'center' }}>
+        <View style={{ flex: 1, alignItems: 'center', backgroundColor: App.theme_background_color_secondary() }}>
           {
             Auth.is_logged_in() && !Auth.is_selecting_user ?
               <>
                 {this._return_header()}
+                {this._return_temp_uploads_list()}
                 {this._return_uploads_list()}
               </>
             :

@@ -72,6 +72,10 @@ export default Config = types.model('Config', {
 
   uploads_for_destination() {
     return this.uploads_destination()?.uploads
+  },
+
+  temp_uploads_for_destination() {
+    return this.uploads_destination()?.temp_uploads
   }
   
 }))
