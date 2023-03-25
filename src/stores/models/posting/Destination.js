@@ -97,17 +97,22 @@ export default Destination = types.model('Destination', {
 		console.log("Destination:set_uploads:got_uploads", uploads.length)
 		self.uploads = uploads // We could append to the list: [...self.posts, ...posts]
 		// We want to clear out any uploads that have been uploaded.
-		const temp_uploads = self.temp_uploads.filter(temp_upload => temp_upload.did_upload)
+		const temp_uploads = self.temp_uploads.filter(temp_upload => temp_upload.did_upload || temp_upload.cancelled)
 		temp_uploads.forEach(temp_upload => {
 			self.temp_uploads.remove(temp_upload)
 		})
 	},
 
-	upload_media: flow(function* (media, service_object) {
-		console.log("Destination:upload_media", media, service_object)
+	upload_media: flow(function* (media, service) {
+		console.log("Destination:upload_media", media, service.service_object())
 		const temp_upload = TempUpload.create(media)
 		self.temp_uploads.push(temp_upload)
-		yield temp_upload.upload(service_object, self)
+		const result = yield temp_upload.upload(service.service_object(), self)
+		if (result) {
+			console.log("Destination:upload_media:success", result)
+			service.check_for_uploads_for_destination(self)
+			self.temp_uploads.remove(temp_upload)
+		}
 	})
 
 }))

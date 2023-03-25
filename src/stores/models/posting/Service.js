@@ -220,10 +220,10 @@ export default Service = types.model('Service', {
     })
       .then((res) => {
         console.log("Destination:pick_file:res", res)
-        destination.upload_media(res, self.service_object())
+        destination.upload_media(res, self)
       })
       .catch((err) => {
-        // TODO: SHOW ERROR MESSAGES IF APPLIABLE
+        // TODO: SHOW ERROR MESSAGES IF APPLICABLE
         if (!DocumentPicker.isCancel(err)) {
           console.log("Destination:pick_file:err", err)
         }
@@ -237,14 +237,14 @@ export default Service = types.model('Service', {
     }, (res) => {
       console.log("Destination:pick_image:res", res)
       if (res.error) {
-        // TODO: SHOW ERROR MESSAGES IF APPLIABLE
+        // TODO: SHOW ERROR MESSAGES IF APPLICABLE
         console.log("Destination:pick_image:err", res.error)
       }
       else {
         console.log("Destination:pick_image:res", res)
         res.assets.forEach((asset) => {
           console.log("Destination:pick_image:asset", asset)
-          destination.upload_media(asset, self.service_object())
+          destination.upload_media(asset, self)
         })
       }
     })

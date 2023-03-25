@@ -13,6 +13,7 @@ export default TempUpload = types.model('TempUpload', {
 	is_uploading: types.optional(types.boolean, false),
 	progress: types.optional(types.number, 0),
 	did_upload: types.optional(types.boolean, false),
+	cancelled: types.optional(types.boolean, false),
 })
 	.actions(self => ({
 
@@ -26,6 +27,7 @@ export default TempUpload = types.model('TempUpload', {
 				self.did_upload = true
 				if(response.url) {
 					self.url = response.url
+					self.copy_link_to_clipboard()
 				}
 			}
 			self.cancel_source = null
@@ -42,6 +44,7 @@ export default TempUpload = types.model('TempUpload', {
 			if (self.cancel_source) {
 				console.log("MediaAsset:cancel_upload")
 				self.cancel_source.cancel("Upload canceled by the user.")
+				self.cancelled = true
 			}
 		}),
 
@@ -71,9 +74,9 @@ export default TempUpload = types.model('TempUpload', {
 	}))
 	.views(self => ({
 		is_video() {
-			return self.url?.endsWith(".mp4") || self.url?.endsWith(".mov") || self.url?.endsWith(".m4v") || self.url?.endsWith(".webm") || self.url?.endsWith(".ogv") || self.url?.endsWith(".ogg") || self.url?.endsWith(".avi") || self.url?.endsWith(".wmv") || self.url?.endsWith(".flv") || self.url?.endsWith(".swf")
+			return self.uri?.endsWith(".mp4") || self.uri?.endsWith(".mov") || self.uri?.endsWith(".m4v") || self.uri?.endsWith(".webm") || self.uri?.endsWith(".ogv") || self.uri?.endsWith(".ogg") || self.uri?.endsWith(".avi") || self.uri?.endsWith(".wmv") || self.uri?.endsWith(".flv") || self.uri?.endsWith(".swf")
 		},
 		is_audio() {
-			return self.url?.endsWith(".mp3") || self.url?.endsWith(".wav") || self.url?.endsWith(".ogg") || self.url?.endsWith(".flac") || self.url?.endsWith(".m4a") || self.url?.endsWith(".aac") || self.url?.endsWith(".wma")
+			return self.uri?.endsWith(".mp3") || self.uri?.endsWith(".wav") || self.uri?.endsWith(".ogg") || self.uri?.endsWith(".flac") || self.uri?.endsWith(".m4a") || self.uri?.endsWith(".aac") || self.uri?.endsWith(".wma")
 		}
 	}))

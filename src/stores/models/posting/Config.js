@@ -75,7 +75,7 @@ export default Config = types.model('Config', {
   },
 
   temp_uploads_for_destination() {
-    return this.uploads_destination()?.temp_uploads
+    return this.uploads_destination()?.temp_uploads.filter(upload => !upload.cancelled).reverse()
   }
   
 }))

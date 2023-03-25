@@ -87,7 +87,7 @@ export default class UploadsScreen extends React.Component{
   _return_temp_uploads_list = () => {
     const { selected_service } = Auth.selected_user.posting
     const { config } = selected_service
-    const dimension = (Dimensions.get("screen")?.width / 3) + 5
+    const dimension = (Dimensions.get("screen")?.width / 4) + 5
     if (config.temp_uploads_for_destination()?.length) {
       return (
         <FlatList
