@@ -3,6 +3,8 @@ import Tokens from './../../Tokens';
 import MicroPubApi, { DELETE_ERROR } from './../../../api/MicroPubApi';
 import Config from './Config';
 import { Alert } from 'react-native';
+import DocumentPicker from 'react-native-document-picker'
+import { launchImageLibrary } from 'react-native-image-picker';
 
 export default Service = types.model('Service', {
   id: types.identifier,
@@ -26,7 +28,7 @@ export default Service = types.model('Service', {
       if(config){
         self.config = config
         self.config.hydrate_default_destination()
-        self.check_for_categories()
+        //self.check_for_categories()
       }
     }
   }),
@@ -210,6 +212,41 @@ export default Service = types.model('Service', {
       Alert.alert("Whoops", "Could not delete upload. Please try again.")
     }
   }),
+
+  pick_file: flow(function* (destination) {
+    console.log("Destination:pick_file", destination.uid)
+    DocumentPicker.pickSingle({
+      type: [ DocumentPicker.types.audio, DocumentPicker.types.images ],
+    })
+      .then((res) => {
+        console.log("Destination:pick_file:res", res)
+        //self.upload_file(res)
+      })
+      .catch((err) => {
+        if (DocumentPicker.isCancel(err)) {
+          console.log("Destination:pick_file:cancelled")
+        } else {
+          console.log("Destination:pick_file:err", err)
+        }
+      })
+  }),
+
+  pick_image: flow(function* (destination) {
+    console.log("Destination:pick_image", destination.uid)
+    launchImageLibrary({
+      title: 'Select an asset'
+    }, (res) => {
+      console.log("Destination:pick_image:res", res)
+      if (res.didCancel) {
+        console.log("Destination:pick_image:cancelled")
+      } else if (res.error) {
+        console.log("Destination:pick_image:err", res.error)
+      } else {
+        console.log("Destination:pick_image:res", res)
+        //self.upload_file(res)
+      }
+    })
+  })
   
 }))
 .views(self => ({

@@ -12,16 +12,17 @@ export default class NewUploadButton extends React.Component {
 
 	render() {
 		if (Auth.selected_user != null && Auth.selected_user.posting?.posting_enabled()) {
+			const { config } = Auth.selected_user.posting.selected_service
 			return (
 				<MenuView
 					onPressAction={({ nativeEvent }) => {
 						const event_id = nativeEvent.event
 						if (event_id === 'upload_media') {
 							console.log('upload_media')
-							Auth.selected_user.posting.selected_service?.config?.temporary_destination()?.pick_image()
+							Auth.selected_user.posting.selected_service?.pick_image(config?.temporary_destination())
 						} else if (event_id === 'upload_file') {
 							console.log('upload_file')
-							Auth.selected_user.posting.selected_service?.config?.temporary_destination()?.pick_file()
+							Auth.selected_user.posting.selected_service?.pick_file(config?.temporary_destination())
 						}
 					}}
 					actions={[

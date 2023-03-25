@@ -31,7 +31,9 @@ const CancelSource = types.snapshotProcessor(
 )
 
 export default TempUpload = types.model('TempUpload', {
-	url: types.identifier,
+	uri: types.identifier,
+	type: types.maybe(types.string),
+	url: types.maybe(types.string),
 	published: types.maybe(types.string),
 	poster: types.maybe(types.string),
 	is_uploading: types.optional(types.boolean, false),
