@@ -110,8 +110,12 @@ export default Destination = types.model('Destination', {
 		const result = yield temp_upload.upload(service.service_object(), self)
 		if (result) {
 			console.log("Destination:upload_media:success", result)
-			service.check_for_uploads_for_destination(self)
+			const upload = {
+				url: temp_upload.url
+			}
+			self.uploads.unshift(upload)
 			self.temp_uploads.remove(temp_upload)
+			//service.check_for_uploads_for_destination(self)
 		}
 	})
 

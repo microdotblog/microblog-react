@@ -27,7 +27,7 @@ export default TempUpload = types.model('TempUpload', {
 				self.did_upload = true
 				if(response.url) {
 					self.url = response.url
-					self.copy_link_to_clipboard()
+					//self.copy_link_to_clipboard()
 				}
 			}
 			self.cancel_source = null
