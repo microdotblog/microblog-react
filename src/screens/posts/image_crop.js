@@ -5,7 +5,7 @@ import { Navigation } from 'react-native-navigation';
 import { Screens, POSTING_SCREEN } from '../../screens';
 import CheckmarkIcon from '../../assets/icons/checkmark.png';
 import ImageEditor from "@react-native-community/image-editor";
-import { Mayfair, Invert } from "react-native-image-filter-kit";
+import { Mayfair, Sepia, Grayscale } from "react-native-image-filter-kit";
 
 @observer
 export default class ImageCropScreen extends React.Component{
@@ -63,6 +63,36 @@ export default class ImageCropScreen extends React.Component{
 		}
 	}
   
+	_filter_view = (asset, filter, margin_right = 0) => {
+		const box_style = { width: 120, height: 120, marginTop: 25, marginLeft: 25, marginRight: margin_right };
+		return (
+			<TouchableOpacity onPress={() => {
+				}}>
+				<View>
+					{ filter == "Normal" ?
+						<Image source={{ uri: asset.uri }} style={ box_style } />
+					: null }
+					{ filter == "Mayfair" ?
+						<Mayfair image={
+							<Image source={{ uri: asset.uri }} style={ box_style } />
+						}/>
+					: null }
+					{ filter == "Sepia" ?
+						<Sepia image={
+							<Image source={{ uri: asset.uri }} style={ box_style } />
+						}/>
+					: null }
+					{ filter == "Grayscale" ?
+						<Grayscale image={
+							<Image source={{ uri: asset.uri }} style={ box_style } />
+						}/>
+					: null }
+					<Text style={{ color: App.theme_button_text_color(), paddingLeft: 25, marginTop: 12, marginRight: margin_right, textAlign: "center" }}>{ filter }</Text>
+				</View>
+			</TouchableOpacity>			
+		)
+	}
+  
 	render() {
 		const { scroll_size, is_cropped } = this.state
 		const { asset } = this.props
@@ -78,9 +108,7 @@ export default class ImageCropScreen extends React.Component{
 									console.log("on scroll", e.nativeEvent.contentOffset.x, e.nativeEvent.contentOffset.y)
 									this.setState({ crop_pt: e.nativeEvent.contentOffset })
 								}}>
-									<Invert image={
-										<Image source={{ uri: asset.uri }} style={{ width: asset.scale_width_for_height(scroll_size), height: scroll_size, resizeMode: "contain" }} />
-									}/>
+									<Image source={{ uri: asset.uri }} style={{ width: asset.scale_width_for_height(scroll_size), height: scroll_size, resizeMode: "contain" }} />
 								</ScrollView>
 							</View>
 						:
@@ -123,11 +151,11 @@ export default class ImageCropScreen extends React.Component{
 				: null }
 
 				<View style={{ flexDirection: "row" }}>
-					<ScrollView style={{ width: "100%", height: 200, backgroundColor: "#DEDEDE" }} bounces={ false }>
-						<TouchableOpacity onPress={() => {
-						}}>
-							<Image source={{ uri: asset.uri }} style={{ width: 150, height: 150, margin: 25 }} />
-						</TouchableOpacity>
+					<ScrollView style={{ width: "100%", height: 200, backgroundColor: App.theme_filters_background_color() }} bounces={ false } horizontal={ true }>
+						{ this._filter_view(asset, "Normal") }
+						{ this._filter_view(asset, "Mayfair") }
+						{ this._filter_view(asset, "Sepia") }
+						{ this._filter_view(asset, "Grayscale", 25) }
 					</ScrollView>
 				</View>
 			</View>
