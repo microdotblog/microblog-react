@@ -1,13 +1,56 @@
 import Clipboard from '@react-native-clipboard/clipboard'
-import { types } from 'mobx-state-tree'
+import { types, flow } from 'mobx-state-tree'
 import Toast from 'react-native-simple-toast';
+import axios from 'axios';
+import MicroPubApi from '../../../api/MicroPubApi'
+
+const CancelSource = types.snapshotProcessor(
+	types.custom({
+		name: "CancelSource",
+		fromSnapshot() {
+			return axios.CancelToken.source()
+		},
+		toSnapshot(value) {
+			return value
+		},
+		isTargetType(value) {
+			return value && "token" in value && "cancel" in value
+		},
+		getValidationMessage(value) {
+			return "CancelSource must be an Axios CancelToken source"
+		},
+	}),
+	{
+		preProcessor: snapshot => {
+			return snapshot
+		},
+		postProcessor: snapshot => {
+			return axios.CancelToken.source()
+		},
+	}
+)
 
 export default Post = types.model('Upload', {
 	url: types.identifier,
 	published: types.maybe(types.string),
-	poster: types.maybe(types.string)
+	poster: types.maybe(types.string),
+	is_uploading: types.optional(types.boolean, false),
+	progress: types.optional(types.number, 0),
+	cancel_source: types.maybeNull(CancelSource),
 })
 	.actions(self => ({
+
+		upload: flow(function* (service_object) {
+			self.is_uploading = true
+			self.cancel_source = axios.CancelToken.source()
+			const response = yield MicroPubApi.upload_image(service_object, self)
+			console.log("MediaAsset:upload", response)
+			if (response !== POST_ERROR) {
+				self.did_upload = true
+			}
+			self.cancel_source = null
+			self.is_uploading = false
+		}),
 
 		copy_html_to_clipboard() {
 			let html = `<img src="${ self.url }" />`

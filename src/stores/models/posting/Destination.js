@@ -1,7 +1,9 @@
-import { types } from 'mobx-state-tree';
+import { types, flow } from 'mobx-state-tree';
 import Post from "./Post";
 import Page from './Page';
 import Upload from './Upload'
+import DocumentPicker from 'react-native-document-picker'
+import { launchImageLibrary } from 'react-native-image-picker';
 
 export default Destination = types.model('Destination', {
 	uid: types.identifier,
@@ -94,6 +96,41 @@ export default Destination = types.model('Destination', {
 		}, [])
 		console.log("Destination:set_uploads:got_uploads", uploads.length)
 		self.uploads = uploads // We could append to the list: [...self.posts, ...posts]
-	}
+	},
+
+	pick_file() {
+		console.log("Destination:pick_file")
+		DocumentPicker.pickSingle({
+			type: [DocumentPicker.types.audio, DocumentPicker.types.images],
+		})
+		.then((res) => {
+			console.log("Destination:pick_file:res", res)
+			//self.upload_file(res)
+		})
+		.catch((err) => {
+			if (DocumentPicker.isCancel(err)) {
+				console.log("Destination:pick_file:cancelled")
+			} else {
+				console.log("Destination:pick_file:err", err)
+			}
+		})
+	},
+
+	pick_image: flow(function* () { 
+		console.log("Destination:pick_image")
+		launchImageLibrary({
+			title: 'Select an asset'
+		}, (res) => {
+			console.log("Destination:pick_image:res", res)
+			if (res.didCancel) {
+				console.log("Destination:pick_image:cancelled")
+			} else if (res.error) {
+				console.log("Destination:pick_image:err", res.error)
+			} else {
+				console.log("Destination:pick_image:res", res)
+				//self.upload_file(res)
+			}
+		})
+	})
 
 }))

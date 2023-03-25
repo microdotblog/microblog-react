@@ -1,8 +1,7 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { TouchableOpacity, Image, Platform } from 'react-native'
+import { Image, Platform } from 'react-native'
 import Auth from './../../stores/Auth'
-import { postingScreen } from './../../screens'
 import App from '../../stores/App'
 import { SFSymbol } from "react-native-sfsymbols"
 import { MenuView } from '@react-native-menu/menu';
@@ -17,7 +16,13 @@ export default class NewUploadButton extends React.Component {
 				<MenuView
 					onPressAction={({ nativeEvent }) => {
 						const event_id = nativeEvent.event
-						console.log(event_id)
+						if (event_id === 'upload_media') {
+							console.log('upload_media')
+							Auth.selected_user.posting.selected_service?.config?.temporary_destination()?.pick_image()
+						} else if (event_id === 'upload_file') {
+							console.log('upload_file')
+							Auth.selected_user.posting.selected_service?.config?.temporary_destination()?.pick_file()
+						}
 					}}
 					actions={[
 						{
