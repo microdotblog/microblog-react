@@ -220,12 +220,11 @@ export default Service = types.model('Service', {
     })
       .then((res) => {
         console.log("Destination:pick_file:res", res)
-        //self.upload_file(res)
+        destination.upload_media(res)
       })
       .catch((err) => {
-        if (DocumentPicker.isCancel(err)) {
-          console.log("Destination:pick_file:cancelled")
-        } else {
+        // TODO: SHOW ERROR MESSAGES IF APPLIABLE
+        if (!DocumentPicker.isCancel(err)) {
           console.log("Destination:pick_file:err", err)
         }
       })
@@ -237,13 +236,16 @@ export default Service = types.model('Service', {
       title: 'Select an asset'
     }, (res) => {
       console.log("Destination:pick_image:res", res)
-      if (res.didCancel) {
-        console.log("Destination:pick_image:cancelled")
-      } else if (res.error) {
+      if (res.error) {
+        // TODO: SHOW ERROR MESSAGES IF APPLIABLE
         console.log("Destination:pick_image:err", res.error)
-      } else {
+      }
+      else {
         console.log("Destination:pick_image:res", res)
-        //self.upload_file(res)
+        res.assets.forEach((asset) => {
+          console.log("Destination:pick_image:asset", asset)
+          destination.upload_media(asset)
+        })
       }
     })
   })

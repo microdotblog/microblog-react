@@ -98,8 +98,8 @@ export default Destination = types.model('Destination', {
 		self.uploads = uploads // We could append to the list: [...self.posts, ...posts]
 	},
 
-	set_temp_upload(entry) {
-		console.log("Destination:set_temp_upload", entry)
+	upload_media(media) {
+		console.log("Destination:upload_media", media)
 		//self.temp_uploads = [entry]
 	}
 
