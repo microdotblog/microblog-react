@@ -7,19 +7,74 @@ import CheckmarkIcon from '../../assets/icons/checkmark.png';
 import ImageEditor from "@react-native-community/image-editor";
 import { Mayfair, Sepia, Grayscale } from "react-native-image-filter-kit";
 
+class FilterThumbnail extends React.Component {
+	constructor(props) {
+		super(props)
+
+		this.asset = props.asset
+		this.filter = props.filter
+		this.marginRight = props.marginRight
+		this.filteredURI = null
+	}
+	
+	_save_image = (nativeEvent) => {
+		console.log("save image:", nativeEvent.uri)
+		this.filteredURI = nativeEvent.uri
+	}
+	
+	render() {
+		const asset = this.asset
+		const filter = this.filter
+		const margin_right = this.marginRight
+		const box_style = { width: 120, height: 120, marginTop: 25, marginLeft: 25, marginRight: margin_right };
+
+		return (
+			<TouchableOpacity onPress={() => {
+				console.log("select filter:", filter)
+			}}>
+				<View>
+					{ filter == "Normal" ?
+						<Image source={{ uri: asset.uri }} style={ box_style } />
+					: null }
+					{ filter == "Mayfair" ?
+						<Mayfair extractImageEnabled={true} onExtractImage={({ nativeEvent }) => {
+							this._save_image(nativeEvent)
+						}} image={
+							<Image source={{ uri: asset.uri }} style={ box_style } />
+						}/>
+					: null }
+					{ filter == "Sepia" ?
+						<Sepia image={
+							<Image source={{ uri: asset.uri }} style={ box_style } />
+						}/>
+					: null }
+					{ filter == "Grayscale" ?
+						<Grayscale image={
+							<Image source={{ uri: asset.uri }} style={ box_style } />
+						}/>
+					: null }
+					<Text style={{ color: App.theme_button_text_color(), paddingLeft: 25, marginTop: 12, marginRight: margin_right, textAlign: "center" }}>{ filter }</Text>
+				</View>
+			</TouchableOpacity>			
+		)
+	}
+}	
+
 @observer
 export default class ImageCropScreen extends React.Component{
 	
 	constructor (props) {
 		super(props)
+		
 		this.state = {
 			scroll_size: 0,
 			is_cropped: true,
 			crop_pt: { x: 0, y: 0 }
 		}
+		
 		Navigation.events().bindComponent(this)
 	}
-
+	
 	navigationButtonPressed = async ({ buttonId }) => {
 		console.log("navigationButtonPressed::", buttonId)
 		if (buttonId === "add_image_button") {
@@ -63,39 +118,10 @@ export default class ImageCropScreen extends React.Component{
 		}
 	}
   
-	_filter_view = (asset, filter, margin_right = 0) => {
-		const box_style = { width: 120, height: 120, marginTop: 25, marginLeft: 25, marginRight: margin_right };
-		return (
-			<TouchableOpacity onPress={() => {
-				}}>
-				<View>
-					{ filter == "Normal" ?
-						<Image source={{ uri: asset.uri }} style={ box_style } />
-					: null }
-					{ filter == "Mayfair" ?
-						<Mayfair image={
-							<Image source={{ uri: asset.uri }} style={ box_style } />
-						}/>
-					: null }
-					{ filter == "Sepia" ?
-						<Sepia image={
-							<Image source={{ uri: asset.uri }} style={ box_style } />
-						}/>
-					: null }
-					{ filter == "Grayscale" ?
-						<Grayscale image={
-							<Image source={{ uri: asset.uri }} style={ box_style } />
-						}/>
-					: null }
-					<Text style={{ color: App.theme_button_text_color(), paddingLeft: 25, marginTop: 12, marginRight: margin_right, textAlign: "center" }}>{ filter }</Text>
-				</View>
-			</TouchableOpacity>			
-		)
-	}
-  
 	render() {
 		const { scroll_size, is_cropped } = this.state
 		const { asset } = this.props
+		
 		return (
 			<View style={{ flexDirection: "column" }}>
 				{ is_cropped ? 
@@ -152,10 +178,10 @@ export default class ImageCropScreen extends React.Component{
 
 				<View style={{ flexDirection: "row" }}>
 					<ScrollView style={{ width: "100%", height: 200, backgroundColor: App.theme_filters_background_color() }} bounces={ false } horizontal={ true }>
-						{ this._filter_view(asset, "Normal") }
-						{ this._filter_view(asset, "Mayfair") }
-						{ this._filter_view(asset, "Sepia") }
-						{ this._filter_view(asset, "Grayscale", 25) }
+						<FilterThumbnail asset={asset} filter="Normal" marginRight={0} />
+						<FilterThumbnail asset={asset} filter="Mayfair" marginRight={0} />
+						<FilterThumbnail asset={asset} filter="Sepia" marginRight={0} />
+						<FilterThumbnail asset={asset} filter="Grayscale" marginRight={25} />
 					</ScrollView>
 				</View>
 			</View>
