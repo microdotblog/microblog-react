@@ -104,12 +104,12 @@ export default class ImageCropScreen extends React.Component{
 				var crop_size = 0
 				var scaled_pt = { x: 0, y: 0 }
 
-				if (this.props.asset.is_landscape()) {
-					crop_size = this.props.asset.height
+				if (this.asset.is_landscape()) {
+					crop_size = this.asset.height
 					scaled_pt.x = this.state.crop_pt.x / this.state.scroll_size * crop_size
 				}
 				else {
-					crop_size = this.props.asset.width
+					crop_size = this.asset.width
 					scaled_pt.y = this.state.crop_pt.y / this.state.scroll_size * crop_size
 				}
 				
@@ -120,12 +120,12 @@ export default class ImageCropScreen extends React.Component{
 						height: crop_size 
 					}
 				}
-				ImageEditor.cropImage(this.props.asset.uri, crop_info).then(url => {
+				ImageEditor.cropImage(this.asset.uri, crop_info).then(url => {
 					console.log("Cropped image", url)
-					this.props.asset.delete_file()
+					this.asset.delete_file()
 					var media_asset = MediaAsset.create({
 						uri: url,
-						type: this.props.asset.type,
+						type: this.asset.type,
 						width: crop_size,
 						height: crop_size
 					})
@@ -134,7 +134,7 @@ export default class ImageCropScreen extends React.Component{
 				})
 			}
 			else {
-				Auth.selected_user.posting.attach_asset(this.props.asset)
+				Auth.selected_user.posting.attach_asset(this.asset)
 				Navigation.pop(POSTING_SCREEN)
 			}
 		}
