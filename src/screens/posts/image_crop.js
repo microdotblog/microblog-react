@@ -227,8 +227,8 @@ export default class ImageCropScreen extends React.Component{
 					</View>
 				: null }
 
-				<View style={{ flexDirection: "row" }}>
-					<ScrollView style={{ width: "100%", height: 175, backgroundColor: App.theme_filters_background_color() }} bounces={ false } horizontal={ true }>
+				<View style={{ flexDirection: "row", height: "100%", backgroundColor: App.theme_filters_background_color() }}>
+					<ScrollView style={{ width: "100%", height: 180 }} bounces={ false } horizontal={ true }>
 						<FilterThumbnail asset={asset} filter="Original" select={this.onSelectFilter} is_selected={this.isSelectedFilter} />
 						<FilterThumbnail asset={asset} filter="Mayfair" select={this.onSelectFilter} is_selected={this.isSelectedFilter} />
 						<FilterThumbnail asset={asset} filter="Warm" select={this.onSelectFilter} is_selected={this.isSelectedFilter} />
