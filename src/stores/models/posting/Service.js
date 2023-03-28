@@ -247,10 +247,12 @@ export default Service = types.model('Service', {
       }
       else {
         console.log("Destination:pick_image:res", res)
-        res.assets.forEach((asset) => {
-          console.log("Destination:pick_image:asset", asset)
-          destination.upload_media(asset, self)
-        })
+        if (res.assets?.length > 0) {
+          res.assets.forEach((asset) => {
+            console.log("Destination:pick_image:asset", asset)
+            destination.upload_media(asset, self)
+          })
+        }
       }
     })
   })
