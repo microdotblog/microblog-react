@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { ScrollView, View, Text, Image, TouchableOpacity } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import { Screens, POSTING_SCREEN } from '../../screens';
+import MediaAsset from '../../stores/models/posting/MediaAsset';
 import CheckmarkIcon from '../../assets/icons/checkmark.png';
 import ImageEditor from "@react-native-community/image-editor";
 import { Mayfair, Sepia, Grayscale } from "react-native-image-filter-kit";
@@ -13,47 +14,62 @@ class FilterThumbnail extends React.Component {
 
 		this.asset = props.asset
 		this.filter = props.filter
-		this.marginRight = props.marginRight
+		this.selectHandler = props.select
+		this.isSelectedHandler = props.is_selected
+		this.currentFilter = "Normal"
 		this.filteredURI = null
+		
+		this.onSaveImage = this.onSaveImage.bind(this)
 	}
 	
-	_save_image = (nativeEvent) => {
-		console.log("save image:", nativeEvent.uri)
+	onSaveImage({nativeEvent}) {
+		console.log("save image:", this.filter, nativeEvent.uri)
 		this.filteredURI = nativeEvent.uri
 	}
 	
 	render() {
 		const asset = this.asset
 		const filter = this.filter
-		const margin_right = this.marginRight
-		const box_style = { width: 120, height: 120, marginTop: 25, marginLeft: 25, marginRight: margin_right };
+		const box_style = { width: 120, height: 120, marginTop: 12, marginLeft: 12, marginRight: 12, borderRadius: 5 }
+		const selected_box_style = { ...box_style, borderWidth: 2, borderColor: "#FF8800" }
 
 		return (
 			<TouchableOpacity onPress={() => {
-				console.log("select filter:", filter)
+				this.currentFilter = filter
+				if (this.filteredURI == null) {
+					this.selectHandler(filter, null)
+				}
+				else {
+					var new_asset = MediaAsset.create({
+						uri: this.filteredURI,
+						type: asset.type,
+						width: asset.width,
+						height: asset.height
+					})
+					
+					this.selectHandler(filter, new_asset)
+				}
 			}}>
 				<View>
 					{ filter == "Normal" ?
-						<Image source={{ uri: asset.uri }} style={ box_style } />
+						<Image source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style }/>
 					: null }
 					{ filter == "Mayfair" ?
-						<Mayfair extractImageEnabled={true} onExtractImage={({ nativeEvent }) => {
-							this._save_image(nativeEvent)
-						}} image={
-							<Image source={{ uri: asset.uri }} style={ box_style } />
+						<Mayfair extractImageEnabled={true} onExtractImage={this.onSaveImage} image={
+							<Image source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
 						}/>
 					: null }
 					{ filter == "Sepia" ?
-						<Sepia image={
-							<Image source={{ uri: asset.uri }} style={ box_style } />
+						<Sepia extractImageEnabled={true} onExtractImage={this.onSaveImage} image={
+							<Image source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
 						}/>
 					: null }
 					{ filter == "Grayscale" ?
-						<Grayscale image={
-							<Image source={{ uri: asset.uri }} style={ box_style } />
+						<Grayscale extractImageEnabled={true} onExtractImage={this.onSaveImage} image={
+							<Image source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
 						}/>
 					: null }
-					<Text style={{ color: App.theme_button_text_color(), paddingLeft: 25, marginTop: 12, marginRight: margin_right, textAlign: "center" }}>{ filter }</Text>
+					<Text style={{ color: App.theme_button_text_color(), paddingLeft: 12, marginTop: 12, marginRight: 12, textAlign: "center" }}>{ filter }</Text>
 				</View>
 			</TouchableOpacity>			
 		)
@@ -66,11 +82,17 @@ export default class ImageCropScreen extends React.Component{
 	constructor (props) {
 		super(props)
 		
+		this.asset = props.asset	
+		this.originalAsset = props.asset
 		this.state = {
+			current_filter: "Normal",
 			scroll_size: 0,
 			is_cropped: true,
 			crop_pt: { x: 0, y: 0 }
 		}
+		
+		this.onSelectFilter = this.onSelectFilter.bind(this)
+		this.isSelectedFilter = this.isSelectedFilter.bind(this)
 		
 		Navigation.events().bindComponent(this)
 	}
@@ -118,9 +140,23 @@ export default class ImageCropScreen extends React.Component{
 		}
 	}
   
+  	onSelectFilter(filter, new_asset) {
+		if (new_asset != null) {
+			this.asset = new_asset
+		}
+		else {
+			this.asset = this.originalAsset
+		}
+		this.setState({ current_filter: filter })
+	}
+	
+	isSelectedFilter(filter) {
+		return (this.state.current_filter == filter)
+	}
+  
 	render() {
 		const { scroll_size, is_cropped } = this.state
-		const { asset } = this.props
+		const asset = this.asset
 		
 		return (
 			<View style={{ flexDirection: "column" }}>
@@ -177,11 +213,11 @@ export default class ImageCropScreen extends React.Component{
 				: null }
 
 				<View style={{ flexDirection: "row" }}>
-					<ScrollView style={{ width: "100%", height: 200, backgroundColor: App.theme_filters_background_color() }} bounces={ false } horizontal={ true }>
-						<FilterThumbnail asset={asset} filter="Normal" marginRight={0} />
-						<FilterThumbnail asset={asset} filter="Mayfair" marginRight={0} />
-						<FilterThumbnail asset={asset} filter="Sepia" marginRight={0} />
-						<FilterThumbnail asset={asset} filter="Grayscale" marginRight={25} />
+					<ScrollView style={{ width: "100%", height: 175, backgroundColor: App.theme_filters_background_color() }} bounces={ false } horizontal={ true }>
+						<FilterThumbnail asset={asset} filter="Normal" select={this.onSelectFilter} is_selected={this.isSelectedFilter} />
+						<FilterThumbnail asset={asset} filter="Mayfair" select={this.onSelectFilter} is_selected={this.isSelectedFilter} />
+						<FilterThumbnail asset={asset} filter="Sepia" select={this.onSelectFilter} is_selected={this.isSelectedFilter} />
+						<FilterThumbnail asset={asset} filter="Grayscale" select={this.onSelectFilter} is_selected={this.isSelectedFilter} />
 					</ScrollView>
 				</View>
 			</View>
