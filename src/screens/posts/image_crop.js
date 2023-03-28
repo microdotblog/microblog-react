@@ -6,7 +6,7 @@ import { Screens, POSTING_SCREEN } from '../../screens';
 import MediaAsset from '../../stores/models/posting/MediaAsset';
 import CheckmarkIcon from '../../assets/icons/checkmark.png';
 import ImageEditor from "@react-native-community/image-editor";
-import { Mayfair, Sepia, Grayscale } from "react-native-image-filter-kit";
+import { Mayfair, Warm, Cool, Sepia, Vintage, Grayscale } from "react-native-image-filter-kit";
 
 class FilterThumbnail extends React.Component {
 	constructor(props) {
@@ -16,7 +16,7 @@ class FilterThumbnail extends React.Component {
 		this.filter = props.filter
 		this.selectHandler = props.select
 		this.isSelectedHandler = props.is_selected
-		this.currentFilter = "Normal"
+		this.currentFilter = "Original"
 		this.filteredURI = null
 		
 		this.onSaveImage = this.onSaveImage.bind(this)
@@ -51,7 +51,7 @@ class FilterThumbnail extends React.Component {
 				}
 			}}>
 				<View>
-					{ filter == "Normal" ?
+					{ filter == "Original" ?
 						<Image source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style }/>
 					: null }
 					{ filter == "Mayfair" ?
@@ -59,8 +59,23 @@ class FilterThumbnail extends React.Component {
 							<Image source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
 						}/>
 					: null }
+					{ filter == "Warm" ?
+						<Warm extractImageEnabled={true} onExtractImage={this.onSaveImage} image={
+							<Image source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
+						}/>
+					: null }
+					{ filter == "Cool" ?
+						<Cool extractImageEnabled={true} onExtractImage={this.onSaveImage} image={
+							<Image source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
+						}/>
+					: null }
 					{ filter == "Sepia" ?
 						<Sepia extractImageEnabled={true} onExtractImage={this.onSaveImage} image={
+							<Image source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
+						}/>
+					: null }
+					{ filter == "Vintage" ?
+						<Vintage extractImageEnabled={true} onExtractImage={this.onSaveImage} image={
 							<Image source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
 						}/>
 					: null }
@@ -85,7 +100,7 @@ export default class ImageCropScreen extends React.Component{
 		this.asset = props.asset	
 		this.originalAsset = props.asset
 		this.state = {
-			current_filter: "Normal",
+			current_filter: "Original",
 			scroll_size: 0,
 			is_cropped: true,
 			crop_pt: { x: 0, y: 0 }
@@ -214,9 +229,12 @@ export default class ImageCropScreen extends React.Component{
 
 				<View style={{ flexDirection: "row" }}>
 					<ScrollView style={{ width: "100%", height: 175, backgroundColor: App.theme_filters_background_color() }} bounces={ false } horizontal={ true }>
-						<FilterThumbnail asset={asset} filter="Normal" select={this.onSelectFilter} is_selected={this.isSelectedFilter} />
+						<FilterThumbnail asset={asset} filter="Original" select={this.onSelectFilter} is_selected={this.isSelectedFilter} />
 						<FilterThumbnail asset={asset} filter="Mayfair" select={this.onSelectFilter} is_selected={this.isSelectedFilter} />
+						<FilterThumbnail asset={asset} filter="Warm" select={this.onSelectFilter} is_selected={this.isSelectedFilter} />
+						<FilterThumbnail asset={asset} filter="Cool" select={this.onSelectFilter} is_selected={this.isSelectedFilter} />
 						<FilterThumbnail asset={asset} filter="Sepia" select={this.onSelectFilter} is_selected={this.isSelectedFilter} />
+						<FilterThumbnail asset={asset} filter="Vintage" select={this.onSelectFilter} is_selected={this.isSelectedFilter} />
 						<FilterThumbnail asset={asset} filter="Grayscale" select={this.onSelectFilter} is_selected={this.isSelectedFilter} />
 					</ScrollView>
 				</View>
