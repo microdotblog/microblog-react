@@ -6,6 +6,7 @@ import MicroPubApi, { POST_ERROR } from '../../../api/MicroPubApi'
 
 export default TempUpload = types.model('TempUpload', {
 	uri: types.identifier,
+	name: types.maybe(types.string),
 	type: types.maybe(types.string),
 	url: types.maybe(types.string),
 	published: types.maybe(types.string),
