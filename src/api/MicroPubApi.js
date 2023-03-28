@@ -1,4 +1,4 @@
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import axios from 'axios';
 
 export const FETCH_ERROR = 2
@@ -148,10 +148,13 @@ class MicroPubApi {
 
 	async upload_media(service, file, destination) {
 		const data = new FormData()
-		// Get extenstion from file name, for example: 12345.jpg
-		const extenstion = file.uri.split('.').pop()
+		// Get extension from file name, for example: 12345.jpg
+		let extension = file.uri.split('.').pop()
+		if (Platform.OS === "android" && file.name != null && file.name !== "") {
+			extension = file.name.split('.').pop()
+		}
 		data.append("file", {
-			name: `media.${extenstion}`,
+			name: `media.${extension.toLowerCase()}`,
 			type: file.type,
 			uri: file.uri,
 		})
