@@ -11,6 +11,7 @@
 		0221AB2A29D42C1500838597 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0221AB2829D42C1500838597 /* MainInterface.storyboard */; };
 		0221AB2E29D42C1500838597 /* MicroBlog_Share.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0221AB2429D42C1500838597 /* MicroBlog_Share.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		0221AB3529D42CE500838597 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0221AB3429D42CE500838597 /* ShareViewController.swift */; };
+		0221AB3829D4327B00838597 /* ReactShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0221AB3729D4327B00838597 /* ReactShareViewController.swift */; };
 		0251EE462716191A00B475D5 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0251EE452716191A00B475D5 /* File.swift */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -62,6 +63,7 @@
 		0221AB3329D42CE400838597 /* MicroBlog_Share-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MicroBlog_Share-Bridging-Header.h"; sourceTree = "<group>"; };
 		0221AB3429D42CE500838597 /* ShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ShareViewController.swift; path = "../../node_modules/react-native-share-menu/ios/ShareViewController.swift"; sourceTree = "<group>"; };
 		0221AB3629D4307300838597 /* MicroBlog_Share.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MicroBlog_Share.entitlements; sourceTree = "<group>"; };
+		0221AB3729D4327B00838597 /* ReactShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReactShareViewController.swift; path = "../../node_modules/react-native-share-menu/ios/ReactShareViewController.swift"; sourceTree = "<group>"; };
 		0251EE442716191900B475D5 /* MicroBlog_RN-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MicroBlog_RN-Bridging-Header.h"; sourceTree = "<group>"; };
 		0251EE452716191A00B475D5 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		02F5714D28C028CD0055509F /* MicroBlog_RN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = MicroBlog_RN.entitlements; path = MicroBlog_RN/MicroBlog_RN.entitlements; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 		0221AB2529D42C1500838597 /* MicroBlog_Share */ = {
 			isa = PBXGroup;
 			children = (
+				0221AB3729D4327B00838597 /* ReactShareViewController.swift */,
 				0221AB3629D4307300838597 /* MicroBlog_Share.entitlements */,
 				0221AB3429D42CE500838597 /* ShareViewController.swift */,
 				0221AB2829D42C1500838597 /* MainInterface.storyboard */,
@@ -247,6 +250,7 @@
 				0221AB2129D42C1500838597 /* Frameworks */,
 				0221AB2229D42C1500838597 /* Resources */,
 				D572F074048A4620BADC6827 /* [CP] Copy Pods Resources */,
+				0221AB3929D433D300838597 /* Bundle React Native code and images */,
 			);
 			buildRules = (
 			);
@@ -364,6 +368,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+		};
+		0221AB3929D433D300838597 /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle React Native code and images";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export NODE_BINARY=node\nexport ENTRY_FILE=index.share.js\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		1D94A7CAF2DACC71C0B05595 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -550,6 +572,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0221AB3829D4327B00838597 /* ReactShareViewController.swift in Sources */,
 				0221AB3529D42CE500838597 /* ShareViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
