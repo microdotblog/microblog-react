@@ -67,4 +67,5 @@ end
 target 'MicroBlog_Share' do
   use_react_native!(:flipper_configuration => flipper_config)
   pod 'RNShareMenu', :path => '../node_modules/react-native-share-menu'
+  pod 'react-native-sensitive-info', path: "../node_modules/react-native-sensitive-info"
 end

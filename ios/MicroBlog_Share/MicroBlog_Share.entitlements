@@ -6,5 +6,9 @@
 	<array>
 		<string>group.blog.micro.ios</string>
 	</array>
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)blog.micro.ios</string>
+	</array>
 </dict>
 </plist>
