@@ -61,6 +61,7 @@
 		0221AB2B29D42C1500838597 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0221AB3329D42CE400838597 /* MicroBlog_Share-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MicroBlog_Share-Bridging-Header.h"; sourceTree = "<group>"; };
 		0221AB3429D42CE500838597 /* ShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ShareViewController.swift; path = "../../node_modules/react-native-share-menu/ios/ShareViewController.swift"; sourceTree = "<group>"; };
+		0221AB3629D4307300838597 /* MicroBlog_Share.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MicroBlog_Share.entitlements; sourceTree = "<group>"; };
 		0251EE442716191900B475D5 /* MicroBlog_RN-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MicroBlog_RN-Bridging-Header.h"; sourceTree = "<group>"; };
 		0251EE452716191A00B475D5 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		02F5714D28C028CD0055509F /* MicroBlog_RN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = MicroBlog_RN.entitlements; path = MicroBlog_RN/MicroBlog_RN.entitlements; sourceTree = "<group>"; };
@@ -131,6 +132,7 @@
 		0221AB2529D42C1500838597 /* MicroBlog_Share */ = {
 			isa = PBXGroup;
 			children = (
+				0221AB3629D4307300838597 /* MicroBlog_Share.entitlements */,
 				0221AB3429D42CE500838597 /* ShareViewController.swift */,
 				0221AB2829D42C1500838597 /* MainInterface.storyboard */,
 				0221AB2B29D42C1500838597 /* Info.plist */,
@@ -653,6 +655,7 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = MicroBlog_Share/MicroBlog_Share.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -694,6 +697,7 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = MicroBlog_Share/MicroBlog_Share.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
