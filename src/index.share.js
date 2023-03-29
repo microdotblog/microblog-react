@@ -1,14 +1,6 @@
-import { AppRegistry, View, Text } from "react-native"
-
-ShareMenuModuleComponent = () => {
-	return (
-		<View>
-			<Text>Hello</Text>
-		</View>
-	)
-}
+import { AppRegistry } from "react-native"
+import ShareScreen from "./screens/share"
 
 AppRegistry.registerComponent(
-	"ShareMenuModuleComponent",
-	() => ShareMenuModuleComponent
+	"ShareMenuModuleComponent", () => ShareScreen
 )
