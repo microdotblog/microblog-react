@@ -21,13 +21,19 @@ export default Share = types.model('Share', {
 			})
 			setTimeout(() => {
 				self.trigger_loading(false)
-			}, 5000)
+			}, 2000)
 		}),
 
 		trigger_loading: flow(function* (is_loading = true) {
 			console.log('Share:trigger_loading', is_loading)
 			self.is_loading = is_loading
+		}),
+
+		open_in_app: flow(function* () {
+			console.log('Share:open_in_app')
+			ShareMenuReactView.continueInApp()
 		})
+
 			
 	}))
 	.views(self => ({
