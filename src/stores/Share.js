@@ -17,7 +17,7 @@ export default Share = types.model('Share', {
 			const store = yield AsyncStorage.getItem('Share')
 			if (store) {
 				applySnapshot(self, JSON.parse(store))
-				self.is_loading = false
+				self.is_loading = true
 				self.share_type = "text"
 			}
 			yield Tokens.hydrate()
