@@ -15,6 +15,7 @@ import Settings from "./Settings"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Contact from './models/posting/Contact'
 import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
+import ShareMenu from 'react-native-share-menu'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -104,6 +105,12 @@ export default App = types.model('App', {
       else if(value?.includes('/post?text=') && Auth.is_logged_in()){
         App.navigate_to_screen("post", value)
       }
+    })
+    ShareMenu.addNewShareListener((share) => {
+      console.log("App:set_up_url_listener:share", share)
+    })
+    ShareMenu.getInitialShare((share) => { 
+      console.log("App:set_up_url_listener:getInitialShare", share)
     })
   }),
 
