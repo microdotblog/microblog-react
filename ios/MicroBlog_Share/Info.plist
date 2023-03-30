@@ -5,7 +5,7 @@
 	<key>HostAppBundleIdentifier</key>
 	<string>blog.micro.ios</string>
 	<key>HostAppURLScheme</key>
-	<string>blog.micro.ios</string>
+	<string>microblog://</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionAttributes</key>
