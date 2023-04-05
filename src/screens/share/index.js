@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { View, TextInput, ActivityIndicator, Button, KeyboardAvoidingView } from 'react-native'
+import { View, TextInput, ActivityIndicator, Button, KeyboardAvoidingView, Text } from 'react-native'
 import Share from '../../stores/Share'
 
 @observer
@@ -38,6 +38,9 @@ export default class ShareScreen extends React.Component {
 								underlineColorAndroid={'transparent'}
 							/>
 							<Button title="Open in App" onPress={Share.open_in_app} />
+							<Text>Users: {Share.users.length}</Text>
+							<Text>Selected User: {Share.selected_user?.username}</Text>
+							<Text>Is Logged In: {Share.is_logged_in() ? "Yes" : "No"}</Text>
 						</KeyboardAvoidingView>
 				}
 			</View>
