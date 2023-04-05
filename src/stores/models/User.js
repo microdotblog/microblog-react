@@ -4,6 +4,7 @@ import Posting from './Posting';
 import FastImage from 'react-native-fast-image';
 import Muting from './Muting'
 import Push from '../Push'
+import App from '../App'
 
 export default User = types.model('User', {
     username: types.identifier,
@@ -30,16 +31,18 @@ export default User = types.model('User', {
       else {
         self.posting.hydrate()
       }
-      if (self.muting == null) {
-        self.muting = Muting.create({username: self.username})
-      }
-      else {
-        self.muting.hydrate()
-      }
-      if(!self.did_complete_auto_register_push){
-        self.push_enabled = yield Push.register_token(self.token())
-        if(self.push_enabled){
-          self.did_complete_auto_register_push = true
+      if (!App.is_share_extension) {
+        if (self.muting == null) {
+          self.muting = Muting.create({username: self.username})
+        }
+        else {
+          self.muting.hydrate()
+        }
+        if(!self.did_complete_auto_register_push){
+          self.push_enabled = yield Push.register_token(self.token())
+          if(self.push_enabled){
+            self.did_complete_auto_register_push = true
+          }
         }
       }
       self.toggling_push = false
@@ -63,6 +66,16 @@ export default User = types.model('User', {
       let did_unregister = yield Push.unregister_user_from_push(self.token())
       self.push_enabled = !did_unregister
     }),
+
+    fetch_data: flow(function* () {
+      console.log("User:fetch_data", self.username)
+      if(self.posting == null){
+        self.posting = Posting.create({username: self.username})
+      }
+      else {
+        self.posting.hydrate()
+      }
+    })
     
   }))
   .views(self => ({

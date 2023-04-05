@@ -1,21 +1,22 @@
 import { types, flow, applySnapshot } from 'mobx-state-tree'
 import { ShareMenuReactView } from "react-native-share-menu";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ShareApi, { LOGIN_ERROR, LOGIN_TOKEN_INVALID, LOGIN_INCORRECT } from "../api/ShareApi"
+import MicroBlogApi, { LOGIN_ERROR, LOGIN_TOKEN_INVALID, LOGIN_INCORRECT } from "../api/MicroBlogApi"
 import Tokens from "./Tokens";
-import ShareUser from "./models/share/ShareUser";
+import User from './models/User';
 
 export default Share = types.model('Share', {
 	is_loading: types.optional(types.boolean, false),
 	share_type: types.optional(types.string, "text"),
-	users: types.optional(types.array(ShareUser), []),
-	selected_user: types.maybeNull(types.reference(ShareUser)),
+	users: types.optional(types.array(User), []),
+	selected_user: types.maybeNull(types.reference(User)),
 	theme: types.optional(types.string, "light"),
 })
 	.actions(self => ({
 
 		hydrate: flow(function* () {
 			console.log('Share:hydrate', self)
+			yield App.prep_and_hydrate_share_extension()
 			self.trigger_loading()
 			const store = yield AsyncStorage.getItem('Share')
 			if (store) {
@@ -63,10 +64,10 @@ export default Share = types.model('Share', {
 					}
 				}
 				else{
-					const login = yield ShareApi.login_with_token(account_with_token.token)
+					const login = yield MicroBlogApi.login_with_token(account_with_token.token)
 					if(login !== LOGIN_ERROR && login !== LOGIN_INCORRECT && login !== LOGIN_TOKEN_INVALID){
 						console.log("Share:login_account:login", login)
-						const new_user = ShareUser.create(login)
+						const new_user = User.create(login)
 						self.users.push(new_user)
 						self.selected_user = new_user
 					}

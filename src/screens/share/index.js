@@ -1,8 +1,9 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { View, TextInput, ActivityIndicator, Button, KeyboardAvoidingView, Text } from 'react-native'
+import { View, TextInput, ActivityIndicator, Button, KeyboardAvoidingView } from 'react-native'
 import Share from '../../stores/Share'
 import ShareDevComponent from '../../components/share/dev'
+import App from '../../stores/App'
 
 @observer
 export default class ShareScreen extends React.Component {
@@ -14,7 +15,7 @@ export default class ShareScreen extends React.Component {
 
 	render() {
 		return (
-			<View style={{flex: 1, justifyContent: "center"}}>
+			<View style={{flex: 1, justifyContent: "center", backgroundColor: App.theme_background_color()}}>
 				{
 					Share.is_loading ?
 						<ActivityIndicator color={Share.theme_accent_color()} size="large" />

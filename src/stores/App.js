@@ -43,7 +43,8 @@ export default App = types.model('App', {
   found_users: types.optional(types.array(Contact), []),
   current_autocomplete: types.optional(types.string, ""),
   is_reloading_after_timeout: types.optional(types.boolean, false),
-  last_active_time: types.maybeNull(types.Date)
+  last_active_time: types.maybeNull(types.Date),
+  is_share_extension: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -76,6 +77,12 @@ export default App = types.model('App', {
         }
       })
     })
+  }),
+
+  prep_and_hydrate_share_extension: flow(function* () {
+    console.log("App:prep_and_hydrate_share_extension")
+    self.is_share_extension = true
+    yield App.set_current_initial_theme()
   }),
 
   set_is_loading: flow(function* (loading) {
