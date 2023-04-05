@@ -15,7 +15,7 @@ export default class ShareScreen extends React.Component {
 
 	render() {
 		return (
-			<View style={{flex: 1, justifyContent: "center", backgroundColor: App.theme_background_color()}}>
+			<View style={{flex: 1, justifyContent: "center", backgroundColor: App.theme_background_color(), padding: 5}}>
 				{
 					Share.is_loading ?
 						<ActivityIndicator color={Share.theme_accent_color()} size="large" />
