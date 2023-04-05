@@ -57,7 +57,9 @@ export default Share = types.model('Share', {
 				const existing_user = self.users.find(u => u.username === account_with_token.username)
 				if(existing_user){
 					// TODO: UPDATE USER
-					self.selected_user = existing_user
+					if (self.selected_user == null) {
+						self.selected_user = existing_user
+					}
 				}
 				else{
 					const login = yield ShareApi.login_with_token(account_with_token.token)
@@ -69,6 +71,11 @@ export default Share = types.model('Share', {
 					}
 				}
 			}
+		}),
+
+		select_user: flow(function* (user) {
+			console.log("Share:select_user", user)
+			self.selected_user = user
 		})
 
 	}))
