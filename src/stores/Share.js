@@ -10,6 +10,9 @@ export default Share = types.model('Share', {
 	share_type: types.optional(types.string, "text"),
 	users: types.optional(types.array(ShareUser), []),
 	selected_user: types.maybeNull(types.reference(ShareUser)),
+	max_characters_allowed: types.optional(types.number, 300),
+	enforce_max_characters: types.optional(types.boolean, false),
+	theme: types.optional(types.string, "light"),
 })
 	.actions(self => ({
 
@@ -76,6 +79,7 @@ export default Share = types.model('Share', {
 		select_user: flow(function* (user) {
 			console.log("Share:select_user", user)
 			self.selected_user = user
+			user.fetch_data()
 		})
 
 	}))

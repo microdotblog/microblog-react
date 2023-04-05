@@ -32,6 +32,23 @@ class ShareApi {
       });
     return login
   }
+
+  async get_config(service) {
+		console.log('ShareApi:get_config', service.username);
+		const config = axios
+			.get(service.endpoint, {
+				headers: { Authorization: `Bearer ${service.token}` },
+				params: { q: "config" }
+			})
+			.then(response => {
+				return response.data;
+			})
+			.catch(error => {
+				console.log(error);
+				return FETCH_ERROR;
+			});
+		return config;
+	}
   
 }
 
