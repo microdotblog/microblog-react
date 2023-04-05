@@ -1,4 +1,4 @@
-import { types, flow, onSnapshot, applySnapshot } from 'mobx-state-tree'
+import { types, flow, applySnapshot } from 'mobx-state-tree'
 import { ShareMenuReactView } from "react-native-share-menu";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ShareApi, { LOGIN_ERROR, LOGIN_TOKEN_INVALID, LOGIN_INCORRECT } from "../api/ShareApi"
@@ -10,8 +10,6 @@ export default Share = types.model('Share', {
 	share_type: types.optional(types.string, "text"),
 	users: types.optional(types.array(ShareUser), []),
 	selected_user: types.maybeNull(types.reference(ShareUser)),
-	max_characters_allowed: types.optional(types.number, 300),
-	enforce_max_characters: types.optional(types.boolean, false),
 	theme: types.optional(types.string, "light"),
 })
 	.actions(self => ({
@@ -92,5 +90,3 @@ export default Share = types.model('Share', {
 		}
 	}))
 	.create()
-
-onSnapshot(Share, snapshot => { AsyncStorage.setItem('Share', JSON.stringify(snapshot)), console.log("SNAPSHOT:::SHARE") });

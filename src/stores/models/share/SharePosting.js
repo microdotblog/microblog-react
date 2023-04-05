@@ -4,12 +4,12 @@ import { blog_services } from './../../enums/blog_services';
 //import MediaAsset from './../posting/MediaAsset'
 import md from 'markdown-it';
 import Share from '../../Share'
-import ShareService from './ShareService'
+import Service from '../posting/Service'
 const parser = md({ html: true });
 
 export default SharePosting = types.model('SharePosting', {
   username: types.identifier,
-  service: types.maybeNull(ShareService),
+  service: types.maybeNull(Service),
   post_text: types.optional(types.string, ""),
   post_title: types.maybeNull(types.string),
   is_sending_post: types.optional(types.boolean, false),
@@ -33,7 +33,7 @@ export default SharePosting = types.model('SharePosting', {
       const blog_service = blog_services["microblog"]
       if(blog_service){
         console.log("Posting:hydrate:blog_service", blog_service)
-        const new_service = ShareService.create({
+        const new_service = Service.create({
           id: `endpoint_${blog_service.name}-${self.username}` ,
           name: blog_service.name,
           url: blog_service.url,
