@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { View, Button, Text } from 'react-native'
+import { View, Text, Image, TouchableOpacity } from 'react-native'
 import Share from '../../stores/Share'
 
 @observer
@@ -23,7 +23,10 @@ export default class ShareDevComponent extends React.Component {
 						Share.users.map((user, index) => {
 							return (
 								<View key={index}>
-								<Button title={user.username} onPress={() => Share.select_user(user)} />
+									<TouchableOpacity onPress={() => Share.select_user(user)}>
+										<Image source={{ uri: user.avatar }} style={{ width: 50, height: 50, borderRadius: 50 }} />
+										<Text>{user.username}</Text>
+									</TouchableOpacity>
 								</View>
 								)
 							})
@@ -35,4 +38,3 @@ export default class ShareDevComponent extends React.Component {
 			)
 		}
 }
-		
