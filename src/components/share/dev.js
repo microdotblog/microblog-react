@@ -18,7 +18,13 @@ export default class ShareDevComponent extends React.Component {
 					<View>
 					{
 						Share.selected_user != null &&
-						<Text style={{color: App.theme_text_color()}}>Selected User: {Share.selected_user?.username}</Text>
+						<>
+									<Text style={{ color: App.theme_text_color() }}>Selected User: {Share.selected_user?.username}</Text>
+									{
+										Share.selected_user?.selected_service?.config?.active_destination() != null &&
+										<Text style={{ color: App.theme_text_color() }}>Destination: {Share.selected_user?.selected_service?.config?.active_destination()?.name}</Text>
+									}
+						</>
 					}
 					{
 						Share.users.map((user, index) => {
@@ -31,7 +37,8 @@ export default class ShareDevComponent extends React.Component {
 								</View>
 								)
 							})
-						}
+					}
+							
 						</View>
 						: null
 					}

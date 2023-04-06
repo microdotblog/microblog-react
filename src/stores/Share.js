@@ -16,8 +16,8 @@ export default Share = types.model('Share', {
 
 		hydrate: flow(function* () {
 			console.log('Share:hydrate', self)
+			yield self.trigger_loading()
 			yield App.prep_and_hydrate_share_extension()
-			self.trigger_loading()
 			const store = yield AsyncStorage.getItem('Share')
 			if (store) {
 				applySnapshot(self, JSON.parse(store))

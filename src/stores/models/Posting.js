@@ -105,7 +105,7 @@ export default Posting = types.model('Posting', {
   }),
   
   send_post: flow(function* () {
-		console.log("Posting:send_post", self.post_text)
+		console.log("Posting:send_post", self.post_text, self.selected_service.service_object().destination)
     if(self.post_text === "" && self.post_assets.length === 0){
       Alert.alert(
         "Whoops...",

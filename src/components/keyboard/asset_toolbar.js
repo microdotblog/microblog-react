@@ -2,12 +2,14 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, TouchableOpacity, Image, ActivityIndicator, Platform } from 'react-native';
 import Auth from '../../stores/Auth';
+import App from '../../stores/App'
+import Share from '../../stores/Share'
 
 @observer
 export default class AssetToolbar extends React.Component{
   
   render() {
-    const { posting } = Auth.selected_user
+    const { posting } = App.is_share_extension ? Share.selected_user : Auth.selected_user
     if(posting.post_assets.length > 0){
       return(
         <View

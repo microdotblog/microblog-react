@@ -7,12 +7,13 @@ import SettingsIcon from '../../assets/icons/toolbar/settings.png';
 import { postingOptionsScreen } from '../../screens';
 import App from '../../stores/App';
 import { SFSymbol } from 'react-native-sfsymbols';
+import Share from '../../stores/Share'
 
 @observer
 export default class PostToolbar extends React.Component{
   
 	render() {
-		const { posting } = Auth.selected_user
+		const { posting } = App.is_share_extension ? Share.selected_user : Auth.selected_user
     return(
       <View
 				style={{
@@ -34,7 +35,7 @@ export default class PostToolbar extends React.Component{
 			>
 				<ScrollView keyboardShouldPersistTaps={'always'}  horizontal={true} style={{overflow: 'hidden', maxWidth: "90%"}} contentContainerStyle={{flexDirection: 'row', alignItems: 'center'}}>
 					{
-						!this.props.is_post_edit &&
+						!this.props.is_post_edit && !App.is_share_extension &&
 						<TouchableOpacity style={{minWidth: 35, marginLeft: 4, marginRight: 0}} onPress={() => posting.handle_asset_action(this.props.componentId)}>
 						{
 							Platform.OS === 'ios' ?
