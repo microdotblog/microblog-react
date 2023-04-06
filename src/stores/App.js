@@ -341,6 +341,9 @@ export default App = types.model('App', {
       else if(parts?.length >= 2 && parts[0] === "account"){
         App.open_url(url, true)
       }
+      else if (parts?.length >= 4) {
+        App.open_url(url)
+      }
       else {
         const username = url.replace('https://micro.blog/', '').replace('http://micro.blog/', '')
         App.navigate_to_screen("user", username)
