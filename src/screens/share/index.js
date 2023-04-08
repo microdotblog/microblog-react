@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { View, ActivityIndicator } from 'react-native'
+import { View, ActivityIndicator, Text, Button } from 'react-native'
 import Share from '../../stores/Share'
 import ShareDevComponent from '../../components/share/dev'
 import App from '../../stores/App'
@@ -25,7 +25,13 @@ export default class ShareScreen extends React.Component {
 					Share.is_loading ?
 						<ActivityIndicator color={Share.theme_accent_color()} size="large" />
 						:
-						<SharePostScreen />
+						Share.is_logged_in() ?
+							<SharePostScreen />
+							:
+							<View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+								<Text style={{ color: App.theme_text_color(), fontSize: 17, textAlign: "center", marginBottom: 10}}>Please login, in the app, before using the Share Extension</Text>
+								<Button title="Open App" onPress={Share.open_in_app} />
+							</View>
 				}
 				<ShareDevComponent />
 			</View>
