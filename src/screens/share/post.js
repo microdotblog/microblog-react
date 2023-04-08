@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { TextInput, Button, KeyboardAvoidingView, InputAccessoryView } from 'react-native'
+import { TextInput, Button, KeyboardAvoidingView, InputAccessoryView, ActivityIndicator, View } from 'react-native'
 import Share from '../../stores/Share'
 import App from '../../stores/App'
 import AssetToolbar from '../../components/keyboard/asset_toolbar'
@@ -60,6 +60,24 @@ export default class SharePostScreen extends React.Component {
 					</InputAccessoryView>
 					<Button title="Send post" onPress={Share.selected_user?.posting.send_post} />
 					<Button title="Open in App" onPress={Share.open_in_app} />
+					{
+						Share.selected_user?.posting.is_sending_post ?
+						<View 
+							style={{ 
+								position: 'absolute',
+								top: 0,
+								bottom:0,
+								width: '100%',
+								justifyContent: 'center',
+								alignItems: 'center',
+								backgroundColor: App.theme_opacity_background_color(),
+								zIndex: 10
+							}} 
+						>
+							<ActivityIndicator color="#f80" size={'large'} />
+						</View>
+						: null
+					}
 				</KeyboardAvoidingView>
 				: null
 		)

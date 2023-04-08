@@ -17,8 +17,7 @@ export default class ShareScreen extends React.Component {
 		return (
 			<View style={{
 				flex: 1,
-				backgroundColor: App.theme_background_color(),
-				padding: 8
+				backgroundColor: App.theme_background_color()
 			}}>
 				{
 					Share.is_loading ?

@@ -33,7 +33,6 @@ export default Share = types.model('Share', {
 					yield self.login_account(user_data)
 				}
 			}
-			yield self.set_data()
 			self.trigger_loading(false)
 		}),
 
@@ -54,16 +53,34 @@ export default Share = types.model('Share', {
 			let data = data_array[ 0 ].data
 			let mime_type = data_array[ 0 ].mimeType
 			console.log('Share:set_data:data', data, mime_type)
+			if (self.selected_user) {
+				if (mime_type === "image/jpeg" || mime_type === "image/png") {
+					self.share_type = "image"
+				}
+				if (self.share_type === "text") {
+					const text = data.startsWith("http://") || data.startsWith("https://") ? `[](${data})` : `> ${data}`
+					Share.selected_user?.posting.set_post_text(text)
+				}
+				else if (self.share_type === "image") {
+					const image_data = {
+						uri: data,
+						type: mime_type,
+						mime: mime_type
+					}
+					Share.selected_user?.posting.create_and_attach_asset(image_data)
+				}
+			}
 		}),
 		
 		login_account: flow(function* (account_with_token = null) {
-			console.log("Share:login_account", account_with_token)
+			console.log("Share:login_account")
 			if(account_with_token){
 				const existing_user = self.users.find(u => u.username === account_with_token.username)
 				if(existing_user){
 					// TODO: UPDATE USER
 					if (self.selected_user == null) {
 						self.selected_user = existing_user
+						yield self.set_data()
 					}
 				}
 				else{
@@ -73,6 +90,7 @@ export default Share = types.model('Share', {
 						const new_user = User.create(login)
 						self.users.push(new_user)
 						self.selected_user = new_user
+						yield self.set_data()
 					}
 				}
 			}
@@ -90,6 +108,7 @@ export default Share = types.model('Share', {
 			if (self.toolbar_select_user_open) {
 				self.toolbar_select_user_open = false
 			}
+			yield self.set_data()
 		}),
 
 		toggle_select_user: flow(function* () {

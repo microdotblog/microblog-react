@@ -216,6 +216,11 @@ export default Posting = types.model('Posting', {
       })
     }
   }),
+
+  create_and_attach_asset: flow(function* (asset) {
+    const media_asset = MediaAsset.create(asset)
+    self.attach_asset(media_asset)
+  }),
   
   attach_asset: flow(function* (asset) {
     self.post_assets.push(asset)
@@ -345,10 +350,10 @@ export default Posting = types.model('Posting', {
 
   upload_assets: flow(function* () {
     console.log("Posting:upload_assets")
-    for (const asset of self.post_assets.filter(asset => !asset.is_uploaded)) {
+    for (const asset of self.post_assets.filter(asset => !asset.did_upload)) {
       yield asset.upload(self.selected_service.service_object())
     }
-    return self.post_assets.every(asset => asset.is_uploaded)
+    return self.post_assets.every(asset => asset.did_upload)
   })
   
 }))
