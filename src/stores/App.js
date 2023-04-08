@@ -459,6 +459,7 @@ export default App = types.model('App', {
 
   update_navigation_screens: flow(function* () {
     console.log("App:update_navigation_screens")
+    if(self.is_share_extension) return
     const options = theme_options({})
     // We set default options here so that any new screen, that might not be in the stack, will pick them up.
     Navigation.setDefaultOptions(options)
@@ -696,6 +697,9 @@ export default App = types.model('App', {
   },
   theme_filters_background_color() {
     return self.theme === "dark" ? "#374151" : "#e5e5e5"    
+  },
+  theme_selected_button_color() {
+    return self.theme === "dark" ? "#1c2028" : "#F9FAFB"
   },
   should_reload_web_view() {
     // When it returns true, this will trigger a reload of the webviews

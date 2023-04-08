@@ -9,11 +9,6 @@ import SharePostScreen from './post'
 @observer
 export default class ShareScreen extends React.Component {
 
-	constructor(props) {
-		super(props)
-    this.input_accessory_view_id = "input_toolbar";
-  }
-
 	componentDidMount() {
 		console.log('ShareScreen:componentDidMount')
 		Share.hydrate()
