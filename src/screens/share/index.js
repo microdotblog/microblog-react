@@ -2,7 +2,6 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import { View, ActivityIndicator, Text, Button } from 'react-native'
 import Share from '../../stores/Share'
-import ShareDevComponent from '../../components/share/dev'
 import App from '../../stores/App'
 import SharePostScreen from './post'
 
@@ -33,7 +32,6 @@ export default class ShareScreen extends React.Component {
 								<Button title="Open App" onPress={Share.open_in_app} />
 							</View>
 				}
-				<ShareDevComponent />
 			</View>
 		)
 	}
