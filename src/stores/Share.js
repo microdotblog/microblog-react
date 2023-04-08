@@ -94,6 +94,11 @@ export default Share = types.model('Share', {
 		toggle_select_user: flow(function* () {
 			console.log("Share:toggle_select_user")
 			self.toolbar_select_user_open = !self.toolbar_select_user_open
+		}),
+
+		toggle_select_destination: flow(function* () {
+			console.log("Share:toggle_select_destination")
+			self.toolbar_select_destination_open = !self.toolbar_select_destination_open
 		})
 
 	}))
@@ -103,6 +108,13 @@ export default Share = types.model('Share', {
 		},
 		is_logged_in(){
 			return self.users.length && self.selected_user != null && self.selected_user.token() != null
+		},
+		sorted_users() {
+			return self.users.slice().sort((a, b) => {
+				const a_is_selected = Share.selected_user?.username === a.username;
+				const b_is_selected = Share.selected_user?.username === b.username;
+				return b_is_selected - a_is_selected;
+			})
 		}
 	}))
 	.create()

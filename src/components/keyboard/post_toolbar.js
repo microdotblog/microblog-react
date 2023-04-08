@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, Image, Platform, ScrollView } from 'react-native';
-import Auth from '../../stores/Auth';
-import PhotoLibrary from '../../assets/icons/toolbar/photo_library.png';
-import SettingsIcon from '../../assets/icons/toolbar/settings.png';
-import { postingOptionsScreen } from '../../screens';
-import App from '../../stores/App';
-import { SFSymbol } from 'react-native-sfsymbols';
+import { observer } from 'mobx-react'
+import * as React from 'react'
+import { Image, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { SFSymbol } from 'react-native-sfsymbols'
+import PhotoLibrary from '../../assets/icons/toolbar/photo_library.png'
+import SettingsIcon from '../../assets/icons/toolbar/settings.png'
+import { postingOptionsScreen } from '../../screens'
+import App from '../../stores/App'
+import Auth from '../../stores/Auth'
 import Share from '../../stores/Share'
 
 @observer
@@ -18,7 +18,7 @@ export default class PostToolbar extends React.Component{
 				<View style={{ backgroundColor: App.theme_section_background_color(), padding: 5 }}>
 					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} style={{ overflow: 'hidden', maxWidth: "90%" }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}>
 						{
-							Share.users.map((user, index) => {
+							Share.sorted_users().map((user, index) => {
 								const is_selected_user = Share.selected_user?.username == user.username
 								return (
 									<TouchableOpacity key={index} onPress={() => Share.select_user(user)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 5, borderRadius: 5, backgroundColor: is_selected_user ? App.theme_selected_button_color() : App.theme_section_background_color(), marginRight: 5 }}>
@@ -34,11 +34,35 @@ export default class PostToolbar extends React.Component{
 		}
 		return false
 	}
+
+	_render_destinations() {
+		const { posting } = App.is_share_extension ? Share.selected_user : Auth.selected_user
+		if (App.is_share_extension && Share.selected_user != null && posting.selected_service?.config?.active_destination() != null && posting.selected_service?.config?.destination?.length > 1 && Share.toolbar_select_destination_open) {
+			return (
+				<View style={{ backgroundColor: App.theme_section_background_color(), padding: 5 }}>
+					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} style={{ overflow: 'hidden', maxWidth: "90%" }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}>
+						{
+							posting.selected_service?.config?.sorted_destinations().map((destination, index) => {
+								const is_selected_destination = posting.selected_service?.config?.active_destination()?.uid == destination.uid
+								return (
+									<TouchableOpacity key={index} onPress={() => { posting.selected_service?.config?.set_default_destination(destination); Share.toggle_select_destination() }} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 5, borderRadius: 5, backgroundColor: is_selected_destination ? App.theme_selected_button_color() : App.theme_section_background_color(), marginRight: 5 }}>
+										<Text style={{ color: App.theme_text_color(), fontWeight: is_selected_destination ? 600 : 300 }}>{destination.name}</Text>
+									</TouchableOpacity>
+								)
+							})
+						}
+					</ScrollView>
+				</View>
+			)
+		}
+		return null
+	}
   
 	render() {
 		const { posting } = App.is_share_extension ? Share.selected_user : Auth.selected_user
 		return (
 			<>
+				{this._render_destinations()}
 				{this._render_users_select()}
 				<View
 					style={{
@@ -58,7 +82,7 @@ export default class PostToolbar extends React.Component{
 						alignItems: 'center'
 					}}
 				>
-					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} style={{ overflow: 'hidden', maxWidth: "90%" }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}>
+					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} style={{ overflow: 'hidden', maxWidth: App.is_share_extension ? "85%" : "90%" }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}>
 						{
 							App.is_share_extension && Share.selected_user != null &&
 							<TouchableOpacity onPress={Share.toggle_select_user} style={{marginRight: 4}}>
@@ -92,7 +116,7 @@ export default class PostToolbar extends React.Component{
 						</TouchableOpacity>
 						{
 							!this.props.is_post_edit && posting.selected_service?.config?.active_destination() != null && posting.selected_service?.config?.destination?.length > 1 ?
-							<TouchableOpacity style={{marginLeft: 8, marginRight: 8}} onPress={() => postingOptionsScreen(this.props.componentId)}>
+							<TouchableOpacity style={{marginLeft: 8, marginRight: 8}} onPress={() => App.is_share_extension ? Share.toggle_select_destination() : postingOptionsScreen(this.props.componentId)}>
 								<Text style={{ fontSize: 16, fontWeight: '500', textAlign: 'center', color: App.theme_text_color() }}>
 									{posting.selected_service.config.active_destination().name}
 								</Text>
@@ -103,15 +127,15 @@ export default class PostToolbar extends React.Component{
 					<View
 						style={{
 							position: 'absolute',
-							right: 8,
-							bottom: 9,
+							right: App.is_share_extension ? 2 : 8,
+							bottom: App.is_share_extension ? -4 : 9,
 							flexDirection: 'row',
 							alignItems: 'center',
 							backgroundColor: App.theme_section_background_color(),
 						}}
 					>
 						{
-							!this.props.is_post_edit &&
+							!this.props.is_post_edit && !App.is_share_extension &&
 							<TouchableOpacity
 								onPress={() => postingOptionsScreen(this.props.componentId)}
 							>

@@ -76,6 +76,14 @@ export default Config = types.model('Config', {
 
   temp_uploads_for_destination() {
     return this.uploads_destination()?.temp_uploads.filter(upload => !upload.cancelled).reverse()
+  },
+
+  sorted_destinations() {
+    return self.destination.slice().sort((a, b) => {
+      const a_is_default = a["microblog-default"];
+      const b_is_default = b["microblog-default"];
+      return b_is_default - a_is_default;
+    });
   }
   
 }))
