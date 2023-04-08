@@ -33,11 +33,7 @@ export default Share = types.model('Share', {
 					yield self.login_account(user_data)
 				}
 			}
-			const share_data = yield ShareMenuReactView.data()
-			console.log('Share:hydrate:data', share_data)
-			if (share_data) {
-				yield self.set_data(share_data)
-			}
+			yield self.set_data()
 			self.trigger_loading(false)
 		}),
 
@@ -51,8 +47,13 @@ export default Share = types.model('Share', {
 			ShareMenuReactView.continueInApp()
 		}),
 
-		set_data: flow(function* (data) {
-			console.log('Share:set_data', data)
+		set_data: flow(function* () {
+			const share_data = yield ShareMenuReactView.data()
+			console.log('Share:set_data', share_data)
+			let data_array = share_data.data
+			let data = data_array[ 0 ].data
+			let mime_type = data_array[ 0 ].mimeType
+			console.log('Share:set_data:data', data, mime_type)
 		}),
 		
 		login_account: flow(function* (account_with_token = null) {
