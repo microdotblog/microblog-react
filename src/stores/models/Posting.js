@@ -217,7 +217,9 @@ export default Posting = types.model('Posting', {
   
   attach_asset: flow(function* (asset) {
     self.post_assets.push(asset)
-    asset.upload(self.selected_service.service_object())
+    if (!App.is_share_extension) {
+      asset.upload(self.selected_service.service_object())
+    }
   }),
 
   asset_action: flow(function* (asset, index) {
