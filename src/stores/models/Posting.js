@@ -128,8 +128,10 @@ export default Posting = types.model('Posting', {
       return false
     }
     else if (App.is_share_extension && self.post_assets.length > 0) {
+      self.is_sending_post = true
       const upload_success = yield self.upload_assets()
       if (!upload_success) {
+        self.is_sending_post = false
         Alert.alert(
           "Whoops...",
           "We couldn't upload your media. Please try again."
@@ -343,7 +345,7 @@ export default Posting = types.model('Posting', {
 
   upload_assets: flow(function* () {
     console.log("Posting:upload_assets")
-    for (const asset of self.post_assets) {
+    for (const asset of self.post_assets.filter(asset => !asset.is_uploaded)) {
       yield asset.upload(self.selected_service.service_object())
     }
     return self.post_assets.every(asset => asset.is_uploaded)
