@@ -29,9 +29,9 @@ export default Share = types.model('Share', {
 			const data = yield Tokens.hydrate(true)
 			if(data?.tokens){
 				console.log('Share:hydrate:tokens', data.tokens)
-				data.tokens.forEach(async (data) => {
-					await self.login_account(data)
-				})
+				for (const user_data of data.tokens) {
+					yield self.login_account(user_data)
+				}
 			}
 			const share_data = yield ShareMenuReactView.data()
 			console.log('Share:hydrate:data', share_data)
