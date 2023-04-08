@@ -16,7 +16,7 @@ export default class PostToolbar extends React.Component{
 		if (App.is_share_extension && Share.users.length > 1 && Share.toolbar_select_user_open) {
 			return (
 				<View style={{ backgroundColor: App.theme_section_background_color(), padding: 5 }}>
-					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} style={{ overflow: 'hidden', maxWidth: "90%" }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}>
+					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} style={{ overflow: 'hidden', maxWidth: "100%" }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}>
 						{
 							Share.sorted_users().map((user, index) => {
 								const is_selected_user = Share.selected_user?.username == user.username
@@ -40,7 +40,7 @@ export default class PostToolbar extends React.Component{
 		if (App.is_share_extension && Share.selected_user != null && posting.selected_service?.config?.active_destination() != null && posting.selected_service?.config?.destination?.length > 1 && Share.toolbar_select_destination_open) {
 			return (
 				<View style={{ backgroundColor: App.theme_section_background_color(), padding: 5 }}>
-					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} style={{ overflow: 'hidden', maxWidth: "90%" }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}>
+					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} style={{ overflow: 'hidden', maxWidth: "100%" }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}>
 						{
 							posting.selected_service?.config?.sorted_destinations().map((destination, index) => {
 								const is_selected_destination = posting.selected_service?.config?.active_destination()?.uid == destination.uid
