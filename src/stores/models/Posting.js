@@ -120,12 +120,22 @@ export default Posting = types.model('Posting', {
       )
       return false
     }
-    if(self.post_assets.filter(image => image.is_uploading)?.length > 0){
+    if(!App.is_share_extension && self.post_assets.filter(image => image.is_uploading)?.length > 0){
       Alert.alert(
         "Whoops...",
         "We're still uploading your media. Please wait and try again."
       )
       return false
+    }
+    else if (App.is_share_extension && self.post_assets.length > 0) {
+      const upload_success = yield self.upload_assets()
+      if (!upload_success) {
+        Alert.alert(
+          "Whoops...",
+          "We couldn't upload your media. Please try again."
+        )
+        return false
+      }
     }
     self.is_sending_post = true
     const post_success = yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
@@ -327,6 +337,14 @@ export default Posting = types.model('Posting', {
     self.post_categories = []
     self.is_editing_post = false
     self.post_url = null
+  }),
+
+  upload_assets: flow(function* () {
+    console.log("Posting:upload_assets")
+    for (const asset of self.post_assets) {
+      yield asset.upload(self.selected_service.service_object())
+    }
+    return self.post_assets.every(asset => asset.is_uploaded)
   })
   
 }))
