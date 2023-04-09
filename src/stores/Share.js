@@ -7,12 +7,11 @@ import User from './models/User';
 import string_checker from '../utils/string_checker'
 
 export default Share = types.model('Share', {
-	is_loading: types.optional(types.boolean, false),
+	is_loading: types.optional(types.boolean, true),
 	share_type: types.optional(types.string, "text"),
 	share_data: types.optional(types.string, ""),
 	users: types.optional(types.array(User), []),
 	selected_user: types.maybeNull(types.reference(User)),
-	theme: types.optional(types.string, "light"),
 	toolbar_select_user_open: types.optional(types.boolean, false),
 	toolbar_select_destination_open: types.optional(types.boolean, false)
 })
@@ -33,9 +32,13 @@ export default Share = types.model('Share', {
 			if (data?.tokens) {
 				console.log('Share:hydrate:tokens', data.tokens)
 				for (const user_data of data.tokens) {
-					yield self.login_account(user_data)
+					const existing_user = self.users.find(u => u.username === user_data.username)
+					if (existing_user == null) {
+						yield self.login_account(user_data)
+					}
 				}
 			}
+			yield self.set_data()
 			self.trigger_loading(false)
 		}),
 
@@ -84,10 +87,10 @@ export default Share = types.model('Share', {
 			if (account_with_token) {
 				const existing_user = self.users.find(u => u.username === account_with_token.username)
 				if (existing_user) {
+					console.log("Share:login_account:existing_user", existing_user, self.selected_user)
 					// TODO: UPDATE USER
-					if (self.selected_user == null) {
+					if (self.selected_user == null || self.selected_user.username !== existing_user.username) {
 						self.selected_user = existing_user
-						yield self.set_data()
 					}
 				}
 				else {
@@ -97,7 +100,6 @@ export default Share = types.model('Share', {
 						const new_user = User.create(login)
 						self.users.push(new_user)
 						self.selected_user = new_user
-						yield self.set_data()
 					}
 				}
 			}
@@ -132,7 +134,7 @@ export default Share = types.model('Share', {
 			console.log("Share:save_as_bookmark")
 			const saved = yield self.selected_user.posting.add_bookmark(self.share_data)
 			if (saved) {
-				ShareMenuReactView.dismissExtension("Saved as bookmark.")
+				ShareMenuReactView.dismissExtension()
 			}
 			else {
 				ShareMenuReactView.dismissExtension("Something went wrong. Please try again.")
