@@ -1,6 +1,7 @@
 import { types, flow, applySnapshot } from 'mobx-state-tree'
 import { ShareMenuReactView } from "react-native-share-menu";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Clipboard from '@react-native-clipboard/clipboard';
 import MicroBlogApi, { LOGIN_ERROR, LOGIN_TOKEN_INVALID, LOGIN_INCORRECT } from "../api/MicroBlogApi"
 import Tokens from "./Tokens";
 import User from './models/User';
@@ -10,6 +11,18 @@ export default Share = types.model('Share', {
 	is_loading: types.optional(types.boolean, true),
 	share_type: types.optional(types.string, "text"),
 	share_data: types.optional(types.string, ""),
+	share_text: types.optional(types.string, ""),
+	share_image_data: types.maybeNull(types.model("ShareImageData", {
+		uri: types.string,
+		type: types.string,
+		mime: types.string
+	})),
+	text_selection: types.optional(
+    types.model('Selection', {
+      start: types.optional(types.number, 0),
+      end: types.optional(types.number, 0),
+    }), {start: 0, end: 0}
+  ),
 	users: types.optional(types.array(User), []),
 	selected_user: types.maybeNull(types.reference(User)),
 	toolbar_select_user_open: types.optional(types.boolean, false),
@@ -27,6 +40,8 @@ export default Share = types.model('Share', {
 				self.is_loading = true
 				self.share_type = "text"
 				self.share_data = ""
+				self.share_text = ""
+				self.share_image_data = null
 			}
 			const data = yield Tokens.hydrate(true)
 			if (data?.tokens) {
@@ -60,25 +75,29 @@ export default Share = types.model('Share', {
 			let mime_type = data_array[ 0 ].mimeType
 			self.share_data = data
 			console.log('Share:set_data:data', data, mime_type)
-			if (self.selected_user) {
-				if (mime_type === "image/jpeg" || mime_type === "image/png") {
-					self.share_type = "image"
+			if (mime_type === "image/jpeg" || mime_type === "image/png") {
+				self.share_type = "image"
+			}
+			if (self.share_type === "text") {
+				const text = data.startsWith("http://") || data.startsWith("https://") ? `[](${ data })` : `> ${ data }`
+				self.share_text = text
+				self.users.forEach(user => {
+					user.posting.set_post_text(self.share_text)
+				})
+			}
+			else if (self.share_type === "image") {
+				const image_data = {
+					uri: data,
+					type: mime_type,
+					mime: mime_type
 				}
-				if (self.share_type === "text") {
-					const text = data.startsWith("http://") || data.startsWith("https://") ? `[](${ data })` : `> ${ data }`
-					Share.selected_user?.posting.set_post_text(text)
-				}
-				else if (self.share_type === "image") {
-					const image_data = {
-						uri: data,
-						type: mime_type,
-						mime: mime_type
-					}
-					Share.selected_user?.posting.create_and_attach_asset(image_data)
-				}
-				else {
-					// TODO?: Not supported
-				}
+				self.share_image_data = image_data
+				self.users.forEach(user => {
+					user.posting.create_and_attach_asset(image_data)
+				})
+			}
+			else {
+				// TODO?: Not supported
 			}
 		}),
 		
@@ -109,7 +128,6 @@ export default Share = types.model('Share', {
 			console.log("Share:select_user", user)
 			if (self.selected_user !== user) {
 				self.selected_user = user
-				user.fetch_data()
 			}
 			else {
 				self.selected_user?.fetch_data()
@@ -117,7 +135,6 @@ export default Share = types.model('Share', {
 			if (self.toolbar_select_user_open) {
 				self.toolbar_select_user_open = false
 			}
-			yield self.set_data()
 		}),
 
 		toggle_select_user: flow(function* () {
@@ -150,7 +167,54 @@ export default Share = types.model('Share', {
 			else {
 				ShareMenuReactView.dismissExtension("Something went wrong. Please try again.")
 			}
-		})
+		}),
+
+		set_post_text: flow(function* (text) {
+			console.log("Share:set_post_text", text)
+			self.share_text = text
+			self.users.forEach(user => {
+				user.posting.set_post_text(text)
+			})
+		}),
+
+		handle_text_action: flow(function* (action) {
+			console.log("Share:handle_text_action", action)
+			const is_link = action === "[]"
+			if (is_link) {
+				action = "[]()"
+				let has_web_url = null
+				let url = null
+				if (Platform.OS === "ios") {
+					has_web_url = yield Clipboard.hasWebURL()
+				}
+				else {
+					url = yield Clipboard.getString()
+					has_web_url = yield Linking.canOpenURL(url)
+					// I'm using this as a fallback, as Android sometimes doesn't know that it can open a URL.
+					if (!has_web_url) {
+						has_web_url = url.startsWith("http://") || url.startsWith("https://")
+					}
+				}
+				if (has_web_url) {
+					if (url === null) {
+						url = yield Clipboard.getString()
+					}
+					action = `[](${ url })`
+					self.share_text = self.share_text.InsertTextStyle(action, self.text_selection, true, url)
+				}
+				else {
+					self.share_text = self.share_text.InsertTextStyle(action, self.text_selection, true)
+				}
+			}
+			else {
+				self.share_text = self.share_text.InsertTextStyle(action, self.text_selection, is_link)
+			}
+			self.set_post_text(self.share_text)
+		}),
+
+		set_text_selection: flow(function* (selection) {
+			self.text_selection = selection
+		}),
 
 	}))
 	.views(self => ({

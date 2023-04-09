@@ -105,13 +105,13 @@ export default class PostToolbar extends React.Component{
 							}
 							</TouchableOpacity>
 						}
-						<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("**")}>
+						<TouchableOpacity style={{minWidth: 35}} onPress={() => App.is_share_extension ? Share.handle_text_action("**") : posting.handle_text_action("**")}>
 							<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"**"}</Text>
 						</TouchableOpacity>
-						<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("_")}>
+						<TouchableOpacity style={{minWidth: 35}} onPress={() => App.is_share_extension ? Share.handle_text_action("_") : posting.handle_text_action("_")}>
 							<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"_"}</Text>
 						</TouchableOpacity>
-						<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.handle_text_action("[]")}>
+						<TouchableOpacity style={{minWidth: 35}} onPress={() => App.is_share_extension ? Share.handle_text_action("[]") : posting.handle_text_action("[]")}>
 							<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"[ ]"}</Text>
 						</TouchableOpacity>
 						{

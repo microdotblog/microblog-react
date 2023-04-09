@@ -64,6 +64,11 @@ export default Posting = types.model('Posting', {
     self.is_sending_post = false
     self.is_adding_bookmark = false
     self.is_editing_post = false
+
+    if (App.is_share_extension) {
+      self.post_text = ""
+    }
+
   }),
   
   hydrate_post_edit: flow(function* (post) {

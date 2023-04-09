@@ -47,10 +47,10 @@ export default class SharePostScreen extends React.Component {
 						clearButtonMode={'while-editing'}
 						enablesReturnKeyAutomatically={true}
 						underlineColorAndroid={'transparent'}
-						value={Share.selected_user?.posting.post_text}
-						onChangeText={(text) => !Share.selected_user?.posting.is_sending_post ? Share.selected_user?.posting.set_post_text_from_typing(text) : null}
+						value={Share.share_text}
+						onChangeText={(text) => !Share.selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null}
 						onSelectionChange={({ nativeEvent: { selection } }) => {
-							Share.selected_user?.posting.set_text_selection(selection)
+							Share.set_text_selection(selection)
 						}}
 						inputAccessoryViewID={this.input_accessory_view_id}
 					/>
