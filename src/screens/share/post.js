@@ -58,10 +58,14 @@ export default class SharePostScreen extends React.Component {
 						<AssetToolbar />
 						<PostToolbar />
 					</InputAccessoryView>
-					<Button title="Send post" onPress={Share.selected_user?.posting.send_post} />
-					<Button title="Open in App" onPress={Share.open_in_app} />
+					<Button title="Send post" onPress={Share.send_post} />
 					{
-						Share.selected_user?.posting.is_sending_post ?
+						Share.can_save_as_bookmark() &&
+						<Button title="Save as bookmark" onPress={Share.save_as_bookmark} />
+					}
+					{/* <Button title="Open in App" onPress={Share.open_in_app} /> */}
+					{
+						Share.selected_user?.posting.is_sending_post || Share.selected_user?.posting.is_adding_bookmark ?
 						<View 
 							style={{ 
 								position: 'absolute',
