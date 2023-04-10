@@ -223,8 +223,12 @@ export default Posting = types.model('Posting', {
   }),
 
   create_and_attach_asset: flow(function* (asset) {
-    const media_asset = MediaAsset.create(asset)
-    self.attach_asset(media_asset)
+    console.log("Posting:create_and_attach_asset", asset)
+    const existing_asset = self.post_assets.find(file => file.uri === asset.uri)
+    if(existing_asset == null){
+      const media_asset = MediaAsset.create(asset)
+      self.attach_asset(media_asset)
+    }
   }),
   
   attach_asset: flow(function* (asset) {
