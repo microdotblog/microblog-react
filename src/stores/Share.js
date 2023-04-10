@@ -216,6 +216,10 @@ export default Share = types.model('Share', {
 			self.text_selection = selection
 		}),
 
+		close: flow(function* () {
+			ShareMenuReactView.dismissExtension()
+		})
+
 	}))
 	.views(self => ({
 		is_logged_in(){
