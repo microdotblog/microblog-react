@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { TextInput, KeyboardAvoidingView, InputAccessoryView } from 'react-native'
+import { TextInput, KeyboardAvoidingView, InputAccessoryView, View, Text } from 'react-native'
 import Share from '../../stores/Share'
 import App from '../../stores/App'
 import AssetToolbar from '../../components/keyboard/asset_toolbar'
@@ -18,6 +18,12 @@ export default class SharePostScreen extends React.Component {
 		return (
 			Share.is_logged_in() && Share.selected_user?.posting != null ?
 				<KeyboardAvoidingView behavior={'padding'}>
+					{
+						Share.error_message != null &&
+						<View style={{ backgroundColor: App.theme_error_background_color(), padding: 8 }}>
+							<Text style={{ color: App.theme_error_text_color(), fontWeight: "600" }}>{Share.error_message}</Text>
+						</View>
+					}
 					<TextInput
 						placeholderTextColor="lightgrey"
 						style={{

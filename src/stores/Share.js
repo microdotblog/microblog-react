@@ -26,7 +26,8 @@ export default Share = types.model('Share', {
 	users: types.optional(types.array(User), []),
 	selected_user: types.maybeNull(types.reference(User)),
 	toolbar_select_user_open: types.optional(types.boolean, false),
-	toolbar_select_destination_open: types.optional(types.boolean, false)
+	toolbar_select_destination_open: types.optional(types.boolean, false),
+	error_message: types.maybeNull(types.string),
 })
 	.actions(self => ({
 
@@ -42,6 +43,7 @@ export default Share = types.model('Share', {
 				self.share_data = ""
 				self.share_text = ""
 				self.share_image_data = null
+				self.error_message = null
 			}
 			const data = yield Tokens.hydrate(true)
 			if (data?.tokens) {
@@ -149,23 +151,25 @@ export default Share = types.model('Share', {
 
 		save_as_bookmark: flow(function* () {
 			console.log("Share:save_as_bookmark")
+			Share.clear_error_message()
 			const saved = yield self.selected_user.posting.add_bookmark(self.share_data)
 			if (saved) {
 				ShareMenuReactView.dismissExtension()
 			}
 			else {
-				ShareMenuReactView.dismissExtension("Something went wrong. Please try again.")
+				self.error_message = "Something went wrong, trying to save your bookmark. Please try again."
 			}
 		}),
 
 		send_post: flow(function* () {
 			console.log("Share:send_post")
+			Share.clear_error_message()
 			const sent = yield self.selected_user.posting.send_post()
 			if (sent) {
 				ShareMenuReactView.dismissExtension()
 			}
 			else {
-				ShareMenuReactView.dismissExtension("Something went wrong. Please try again.")
+				self.error_message = "Something went wrong, trying to send your post. Please try again."
 			}
 		}),
 
@@ -218,6 +222,10 @@ export default Share = types.model('Share', {
 
 		close: flow(function* () {
 			ShareMenuReactView.dismissExtension()
+		}),
+
+		clear_error_message: flow(function* () {
+			self.error_message = null
 		})
 
 	}))

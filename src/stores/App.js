@@ -701,6 +701,12 @@ export default App = types.model('App', {
   theme_selected_button_color() {
     return self.theme === "dark" ? "#1c2028" : "#F9FAFB"
   },
+  theme_error_background_color() {
+    return self.theme === "dark" ? "#a94442" : "#f2dede"
+  },
+  theme_error_text_color() {
+    return self.theme === "dark" ? "#f2dede" : "#a94442"
+  },
   should_reload_web_view() {
     // When it returns true, this will trigger a reload of the webviews
     return self.is_switching_theme || self.is_changing_font_scale || self.is_reloading_after_timeout
