@@ -1,7 +1,6 @@
 import { types, flow, applySnapshot } from 'mobx-state-tree'
 import { ShareMenuReactView } from "react-native-share-menu";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Clipboard from '@react-native-clipboard/clipboard';
 import MicroBlogApi, { LOGIN_ERROR, LOGIN_TOKEN_INVALID, LOGIN_INCORRECT } from "../api/MicroBlogApi"
 import Tokens from "./Tokens";
 import User from './models/User';
@@ -185,29 +184,12 @@ export default Share = types.model('Share', {
 			const is_link = action === "[]"
 			if (is_link) {
 				action = "[]()"
-				let has_web_url = null
 				let url = null
-				if (Platform.OS === "ios") {
-					has_web_url = yield Clipboard.hasWebURL()
-				}
-				else {
-					url = yield Clipboard.getString()
-					has_web_url = yield Linking.canOpenURL(url)
-					// I'm using this as a fallback, as Android sometimes doesn't know that it can open a URL.
-					if (!has_web_url) {
-						has_web_url = url.startsWith("http://") || url.startsWith("https://")
-					}
-				}
-				if (has_web_url) {
-					if (url === null) {
-						url = yield Clipboard.getString()
-					}
+				if (self.can_save_as_bookmark() && self.share_text === self.share_data) {
+					url = self.share_data
 					action = `[](${ url })`
-					self.share_text = self.share_text.InsertTextStyle(action, self.text_selection, true, url)
 				}
-				else {
-					self.share_text = self.share_text.InsertTextStyle(action, self.text_selection, true)
-				}
+				self.share_text = self.share_text.InsertTextStyle(action, self.text_selection, true, url)
 			}
 			else {
 				self.share_text = self.share_text.InsertTextStyle(action, self.text_selection, is_link)
