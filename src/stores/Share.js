@@ -81,8 +81,7 @@ export default Share = types.model('Share', {
 				self.share_type = "image"
 			}
 			if (self.share_type === "text") {
-				const text = data.startsWith("http://") || data.startsWith("https://") ? `[](${ data })` : `> ${ data }`
-				self.share_text = text
+				self.share_text = data
 				self.users.forEach(user => {
 					user.posting.set_post_text(self.share_text)
 				})
@@ -234,7 +233,7 @@ export default Share = types.model('Share', {
 			return self.users.length && self.selected_user != null && self.selected_user.token() != null
 		},
 		can_save_as_bookmark() {
-			return self.share_type === "text" && self.share_data.length > 0 && (self.share_data.startsWith("http://") || self.share_data.startsWith("https://")) && string_checker._validate_url(self.share_data)
+			return self.share_type === "text" && self.share_text.length > 0 && (self.share_text.startsWith("http://") || self.share_text.startsWith("https://")) && string_checker._validate_url(self.share_text)
 		},
 		sorted_users() {
 			return self.users.slice().sort((a, b) => {
