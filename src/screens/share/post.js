@@ -24,6 +24,14 @@ export default class SharePostScreen extends React.Component {
 							<Text style={{ color: App.theme_error_text_color(), fontWeight: "600" }}>{Share.error_message}</Text>
 						</View>
 					}
+					{
+						Share.can_save_as_bookmark() &&
+							<View style={{ backgroundColor: App.theme_section_background_color(), padding: 8 }}>
+								<Text style={{ color: App.theme_text_color(), fontWeight: "500" }}>
+									You can save this URL as a bookmark or keep editing to create a new post.
+								</Text>
+							</View>
+					}
 					<TextInput
 						placeholderTextColor="lightgrey"
 						style={{
