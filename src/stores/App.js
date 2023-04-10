@@ -41,7 +41,6 @@ export default App = types.model('App', {
   guidelines_url: types.optional(types.string, "https://help.micro.blog/t/community-guidelines/39"),
   found_users: types.optional(types.array(Contact), []),
   current_autocomplete: types.optional(types.string, ""),
-  is_reloading_after_timeout: types.optional(types.boolean, false),
   last_active_time: types.maybeNull(types.Date)
 })
 .actions(self => ({
@@ -416,7 +415,6 @@ export default App = types.model('App', {
     console.log("App:set_up_appearance_listener")
     AppState.addEventListener("change", nextAppState => {
       if (nextAppState === "active") {
-        App.trigger_web_view_reload_after_active()
         const colorScheme = Appearance.getColorScheme()
         if (self.theme !== colorScheme){
           App.change_current_theme(colorScheme)
@@ -581,24 +579,6 @@ export default App = types.model('App', {
     App.found_users = []
     App.current_autocomplete = ""
   }),
-  
-  trigger_web_view_reload_after_active: flow(function* () {
-    const now = new Date()
-    const difference = Math.floor((now - self.last_active_time) / (1000 * 60))
-    console.log("App:trigger_web_view_reload_after_active", now, difference, self.last_active_time)
-    if(difference >= 120){
-      App.set_is_reloading_after_timeout(true)
-      setTimeout(() => {
-        App.set_is_reloading_after_timeout(false)
-      }, 200)
-    }
-    self.last_active_time = now
-  }),
-  
-  set_is_reloading_after_timeout: flow(function* (is_loading = false) {
-    console.log("App:set_is_reloading_after_timeout", is_loading)
-    self.is_reloading_after_timeout = is_loading
-  }),
 
 }))
 .views(self => ({
@@ -682,7 +662,7 @@ export default App = types.model('App', {
   },
   should_reload_web_view() {
     // When it returns true, this will trigger a reload of the webviews
-    return self.is_switching_theme || self.is_changing_font_scale || self.is_reloading_after_timeout
+    return self.is_switching_theme || self.is_changing_font_scale
   },
   now() {
     let now = new Date()
