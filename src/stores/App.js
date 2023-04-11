@@ -15,7 +15,7 @@ import Settings from "./Settings"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Contact from './models/posting/Contact'
 import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
-import ShareMenu from 'react-native-share-menu'
+// import ShareMenu from 'react-native-share-menu'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -42,8 +42,6 @@ export default App = types.model('App', {
   guidelines_url: types.optional(types.string, "https://help.micro.blog/t/community-guidelines/39"),
   found_users: types.optional(types.array(Contact), []),
   current_autocomplete: types.optional(types.string, ""),
-  is_reloading_after_timeout: types.optional(types.boolean, false),
-  last_active_time: types.maybeNull(types.Date),
   is_share_extension: types.optional(types.boolean, false)
 })
 .actions(self => ({
@@ -57,7 +55,6 @@ export default App = types.model('App', {
 
     self.current_screen_name = TIMELINE_SCREEN
     self.current_screen_id = TIMELINE_SCREEN
-    self.last_active_time = new Date()
     
     Push.hydrate()
     Settings.hydrate()
@@ -113,12 +110,12 @@ export default App = types.model('App', {
         App.navigate_to_screen("post", value)
       }
     })
-    ShareMenu.addNewShareListener((share) => {
-      console.log("App:set_up_url_listener:share", share)
-    })
-    ShareMenu.getInitialShare((share) => { 
-      console.log("App:set_up_url_listener:getInitialShare", share)
-    })
+    // ShareMenu.addNewShareListener((share) => {
+    //   console.log("App:set_up_url_listener:share", share)
+    // })
+    // ShareMenu.getInitialShare((share) => { 
+    //   console.log("App:set_up_url_listener:getInitialShare", share)
+    // })
   }),
 
   set_current_screen_name_and_id: flow(function* (screen_name, screen_id) {
@@ -139,8 +136,6 @@ export default App = types.model('App', {
     if (screen_id === "DISCOVER_SCREEN") {
       Discover.shuffle_random_emoji()
     }
-
-    self.last_active_time = new Date()
   }),
   
   set_previous_screen_name_and_id: flow(function* () {
@@ -433,7 +428,6 @@ export default App = types.model('App', {
     console.log("App:set_up_appearance_listener")
     AppState.addEventListener("change", nextAppState => {
       if (nextAppState === "active") {
-        App.trigger_web_view_reload_after_active()
         const colorScheme = Appearance.getColorScheme()
         if (self.theme !== colorScheme){
           App.change_current_theme(colorScheme)
@@ -599,24 +593,6 @@ export default App = types.model('App', {
     App.found_users = []
     App.current_autocomplete = ""
   }),
-  
-  trigger_web_view_reload_after_active: flow(function* () {
-    const now = new Date()
-    const difference = Math.floor((now - self.last_active_time) / (1000 * 60))
-    console.log("App:trigger_web_view_reload_after_active", now, difference, self.last_active_time)
-    if(difference >= 120){
-      App.set_is_reloading_after_timeout(true)
-      setTimeout(() => {
-        App.set_is_reloading_after_timeout(false)
-      }, 200)
-    }
-    self.last_active_time = now
-  }),
-  
-  set_is_reloading_after_timeout: flow(function* (is_loading = false) {
-    console.log("App:set_is_reloading_after_timeout", is_loading)
-    self.is_reloading_after_timeout = is_loading
-  }),
 
 }))
 .views(self => ({
@@ -709,7 +685,7 @@ export default App = types.model('App', {
   },
   should_reload_web_view() {
     // When it returns true, this will trigger a reload of the webviews
-    return self.is_switching_theme || self.is_changing_font_scale || self.is_reloading_after_timeout
+    return self.is_switching_theme || self.is_changing_font_scale
   },
   now() {
     let now = new Date()
