@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Tokens from './../stores/Tokens';
 import Auth from './../stores/Auth';
 import Settings from './../stores/Settings';
+import Share from '../stores/Share'
 
 function debounce(func, wait) {
 	let timeout
@@ -23,4 +24,5 @@ onSnapshot(Auth, debounce(
 		AsyncStorage.setItem('Auth', JSON.stringify(snapshot));
 		console.log("SNAPSHOT:::AUTH")
 	}, debounce_ms ))
-onSnapshot(Settings, snapshot => { AsyncStorage.setItem('Settings', JSON.stringify(snapshot)), console.log("SNAPSHOT:::SETTINGS") });
+onSnapshot(Settings, snapshot => { AsyncStorage.setItem('Settings', JSON.stringify(snapshot)), console.log("SNAPSHOT:::SETTINGS") })
+onSnapshot(Share, snapshot => { AsyncStorage.setItem('Share', JSON.stringify(snapshot)), console.log("SNAPSHOT:::SHARE") });

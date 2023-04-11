@@ -5,6 +5,7 @@ import Config from './Config';
 import { Alert } from 'react-native';
 import DocumentPicker from 'react-native-document-picker'
 import { launchImageLibrary } from 'react-native-image-picker';
+import App from '../../App'
 
 export default Service = types.model('Service', {
   id: types.identifier,
@@ -28,7 +29,9 @@ export default Service = types.model('Service', {
       if(config){
         self.config = config
         self.config.hydrate_default_destination()
-        //self.check_for_categories()
+        if(App.is_share_extension){
+          self.check_for_categories()
+        }
       }
     }
   }),

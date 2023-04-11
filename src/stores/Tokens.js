@@ -7,12 +7,15 @@ export default Tokens = types.model('Tokens', {
 })
 .actions(self => ({
 
-  hydrate: flow(function* () {
+  hydrate: flow(function* (return_data = false) {
     console.log("Tokens:hydrate")
     const data = yield SFInfo.getItem('Tokens', {})
     if (data) {
       applySnapshot(self, JSON.parse(data))
       console.log("Tokens:hydrate:with_data")
+    }
+    if(return_data){
+      return JSON.parse(data)
     }
   }),
   

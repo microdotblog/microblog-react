@@ -160,7 +160,6 @@ export default class PostingScreen extends React.Component{
           </View>
           : null
         }
-        
       </View>
     )
   }

@@ -6,6 +6,7 @@ import axios from 'axios';
 export default MediaAsset = types.model('MediaAsset', {
 	uri: types.identifier,
 	type: types.maybe(types.string),
+	mime: types.maybe(types.string),
 	width: types.optional(types.number, 0),
 	height: types.optional(types.number, 0),
 	is_uploading: types.optional(types.boolean, false),

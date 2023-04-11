@@ -15,6 +15,7 @@ import Settings from "./Settings"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Contact from './models/posting/Contact'
 import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
+// import ShareMenu from 'react-native-share-menu'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -41,7 +42,7 @@ export default App = types.model('App', {
   guidelines_url: types.optional(types.string, "https://help.micro.blog/t/community-guidelines/39"),
   found_users: types.optional(types.array(Contact), []),
   current_autocomplete: types.optional(types.string, ""),
-  last_active_time: types.maybeNull(types.Date)
+  is_share_extension: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -54,7 +55,6 @@ export default App = types.model('App', {
 
     self.current_screen_name = TIMELINE_SCREEN
     self.current_screen_id = TIMELINE_SCREEN
-    self.last_active_time = new Date()
     
     Push.hydrate()
     Settings.hydrate()
@@ -74,6 +74,12 @@ export default App = types.model('App', {
         }
       })
     })
+  }),
+
+  prep_and_hydrate_share_extension: flow(function* () {
+    console.log("App:prep_and_hydrate_share_extension")
+    self.is_share_extension = true
+    yield App.set_current_initial_theme()
   }),
 
   set_is_loading: flow(function* (loading) {
@@ -104,6 +110,12 @@ export default App = types.model('App', {
         App.navigate_to_screen("post", value)
       }
     })
+    // ShareMenu.addNewShareListener((share) => {
+    //   console.log("App:set_up_url_listener:share", share)
+    // })
+    // ShareMenu.getInitialShare((share) => { 
+    //   console.log("App:set_up_url_listener:getInitialShare", share)
+    // })
   }),
 
   set_current_screen_name_and_id: flow(function* (screen_name, screen_id) {
@@ -124,8 +136,6 @@ export default App = types.model('App', {
     if (screen_id === "DISCOVER_SCREEN") {
       Discover.shuffle_random_emoji()
     }
-
-    self.last_active_time = new Date()
   }),
   
   set_previous_screen_name_and_id: flow(function* () {
@@ -326,6 +336,9 @@ export default App = types.model('App', {
       else if(parts?.length >= 2 && parts[0] === "account"){
         App.open_url(url, true)
       }
+      else if (parts?.length >= 4) {
+        App.open_url(url)
+      }
       else {
         const username = url.replace('https://micro.blog/', '').replace('http://micro.blog/', '')
         App.navigate_to_screen("user", username)
@@ -440,6 +453,7 @@ export default App = types.model('App', {
 
   update_navigation_screens: flow(function* () {
     console.log("App:update_navigation_screens")
+    if(self.is_share_extension) return
     const options = theme_options({})
     // We set default options here so that any new screen, that might not be in the stack, will pick them up.
     Navigation.setDefaultOptions(options)
@@ -659,6 +673,15 @@ export default App = types.model('App', {
   },
   theme_filters_background_color() {
     return self.theme === "dark" ? "#374151" : "#e5e5e5"    
+  },
+  theme_selected_button_color() {
+    return self.theme === "dark" ? "#1c2028" : "#F9FAFB"
+  },
+  theme_error_background_color() {
+    return self.theme === "dark" ? "#a94442" : "#f2dede"
+  },
+  theme_error_text_color() {
+    return self.theme === "dark" ? "#f2dede" : "#a94442"
   },
   should_reload_web_view() {
     // When it returns true, this will trigger a reload of the webviews

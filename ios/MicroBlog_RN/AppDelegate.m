@@ -5,6 +5,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTLinkingManager.h>
 #import <RNCPushNotificationIOS.h>
+#import <RNShareMenu/ShareMenuManager.h>
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -40,6 +41,7 @@ static void InitializeFlipper(UIApplication *application) {
   return YES;
 }
 
+
 - (NSArray<id<RCTBridgeModule>> *)extraModulesForBridge:(RCTBridge *)bridge {
   return [ReactNativeNavigation extraModulesForBridge:bridge];
 }
@@ -57,7 +59,7 @@ static void InitializeFlipper(UIApplication *application) {
             openURL:(NSURL *)url
             options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
-  return [RCTLinkingManager application:application openURL:url options:options];
+  return [ShareMenuManager application:application openURL:url options:options];
 }
 
 // Required to register for notifications
