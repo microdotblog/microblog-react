@@ -80,7 +80,7 @@ export default Share = types.model('Share', {
 				self.share_type = "image"
 			}
 			if (self.share_type === "text") {
-				self.share_text = data
+				self.share_text = string_checker._validate_url(data) ? data : `> ${data}`
 				self.users.forEach(user => {
 					user.posting.set_post_text(self.share_text)
 				})
