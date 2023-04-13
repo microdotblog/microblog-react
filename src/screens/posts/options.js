@@ -72,41 +72,6 @@ export default class PostingOptionsScreen extends React.Component{
 					}
 					</View>
 				</View>
-				
-				{/* Blogs */}
-				<View style={{ marginBottom: 25 }}>
-					<Text style={{ fontSize: 16, fontWeight: '500', marginBottom: 5, color: App.theme_text_color() }}>Choose a default microblog to post to:</Text>
-					<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
-					{
-						posting.selected_service.config.destination.map((destination) => {
-							const is_selected_blog = posting.selected_service.config.active_destination() === destination
-							return(
-								<TouchableOpacity
-									key={destination.uid}
-									onPress={() => {
-										posting.selected_service.config.set_default_destination(destination);
-										posting.remove_post_categories()
-									}}
-									style={{
-										padding: 8,
-										marginBottom: 5,
-									}}
-								>
-									<Text style={ is_selected_blog ? { fontWeight: '500', color: App.theme_button_text_color() } : { color: App.theme_button_text_color() }}>
-										{destination.name}
-										{
-											is_selected_blog ?
-												<Text style={{ color: App.theme_button_text_color() }}> (default) <Image source={CheckmarkIcon} style={{ width: 15, height: 15, tintColor: App.theme_button_text_color() }} /></Text>
-											: null
-										}
-									</Text>
-								</TouchableOpacity>
-							)
-						}
-						)
-					}
-					</View>
-				</View>
       </ScrollView>
     )
   }

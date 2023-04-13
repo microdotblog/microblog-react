@@ -588,7 +588,6 @@ export const tagmojiBottomSheet = (close = false) => {
 }
 
 export const discoverTopicScreen = (topic, component_id) => {
-  console.log("Screens:discoverTopicScreen", topic, component_id);
   const options = {
     component: {
       id: 'DISCOVER_TOPIC_SCREEN',
@@ -619,7 +618,6 @@ export const discoverTopicScreen = (topic, component_id) => {
 }
 
 export const postingOptionsScreen = (component_id) => {
-  console.log("Screens:discoverTopicScreen", component_id);
   const options = {
     component: {
       id: POSTING_OPTIONS_SCREEN,
@@ -627,7 +625,7 @@ export const postingOptionsScreen = (component_id) => {
 			options: {
 				topBar: {
 					title: {
-            text: "Posting options & blogs"
+            text: "Posting options"
           },
 				}
 			}
