@@ -25,7 +25,6 @@ export default Share = types.model('Share', {
 	users: types.optional(types.array(User), []),
 	selected_user: types.maybeNull(types.reference(User)),
 	toolbar_select_user_open: types.optional(types.boolean, false),
-	toolbar_select_destination_open: types.optional(types.boolean, false),
 	error_message: types.maybeNull(types.string),
 })
 	.actions(self => ({
@@ -140,11 +139,6 @@ export default Share = types.model('Share', {
 		toggle_select_user: flow(function* () {
 			console.log("Share:toggle_select_user")
 			self.toolbar_select_user_open = !self.toolbar_select_user_open
-		}),
-
-		toggle_select_destination: flow(function* () {
-			console.log("Share:toggle_select_destination")
-			self.toolbar_select_destination_open = !self.toolbar_select_destination_open
 		}),
 
 		save_as_bookmark: flow(function* () {
