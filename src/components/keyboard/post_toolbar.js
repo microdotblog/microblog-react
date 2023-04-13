@@ -37,7 +37,7 @@ export default class PostToolbar extends React.Component{
 
 	_render_destinations() {
 		const { posting } = App.is_share_extension ? Share.selected_user : Auth.selected_user
-		if (App.is_share_extension && Share.selected_user != null && posting.selected_service?.config?.active_destination() != null && posting.selected_service?.config?.destination?.length > 1 && Share.toolbar_select_destination_open) {
+		if (posting?.selected_service?.config?.active_destination() != null && posting?.selected_service?.config?.destination?.length > 1 && App.toolbar_select_destination_open) {
 			return (
 				<View style={{ backgroundColor: App.theme_section_background_color(), padding: 5 }}>
 					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} style={{ overflow: 'hidden', maxWidth: "100%" }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -45,7 +45,7 @@ export default class PostToolbar extends React.Component{
 							posting.selected_service?.config?.sorted_destinations().map((destination, index) => {
 								const is_selected_destination = posting.selected_service?.config?.active_destination()?.uid == destination.uid
 								return (
-									<TouchableOpacity key={index} onPress={() => { posting.selected_service?.config?.set_default_destination(destination); Share.toggle_select_destination() }} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 5, borderRadius: 5, backgroundColor: is_selected_destination ? App.theme_selected_button_color() : App.theme_section_background_color(), marginRight: 5 }}>
+									<TouchableOpacity key={index} onPress={() => { posting.selected_service?.config?.set_default_destination(destination); App.toggle_select_destination() }} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 5, borderRadius: 5, backgroundColor: is_selected_destination ? App.theme_selected_button_color() : App.theme_section_background_color(), marginRight: 5 }}>
 										<Text style={{ color: App.theme_text_color(), fontWeight: is_selected_destination ? 600 : 300 }}>{destination.name}</Text>
 									</TouchableOpacity>
 								)
@@ -116,7 +116,7 @@ export default class PostToolbar extends React.Component{
 						</TouchableOpacity>
 						{
 							!this.props.is_post_edit && posting.selected_service?.config?.active_destination() != null && posting.selected_service?.config?.destination?.length > 1 ?
-							<TouchableOpacity style={{marginLeft: 8, marginRight: 8}} onPress={() => App.is_share_extension ? Share.toggle_select_destination() : postingOptionsScreen(this.props.componentId)}>
+							<TouchableOpacity style={{marginLeft: 8, marginRight: 8}} onPress={() => App.toggle_select_destination()}>
 								<Text style={{ fontSize: 16, fontWeight: '500', textAlign: 'center', color: App.theme_text_color() }}>
 									{posting.selected_service.config.active_destination().name}
 								</Text>
@@ -153,7 +153,7 @@ export default class PostToolbar extends React.Component{
 							</TouchableOpacity>
 						}
 						{
-							!posting.post_title && !this.props.hide_count &&
+							!posting.post_title && !this.props.hide_count && ((!App.toolbar_select_destination_open && !App.is_share_extension ) || App.is_share_extension) &&
 							<Text
 								style={{
 									fontWeight: '400',

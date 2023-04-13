@@ -42,7 +42,8 @@ export default App = types.model('App', {
   guidelines_url: types.optional(types.string, "https://help.micro.blog/t/community-guidelines/39"),
   found_users: types.optional(types.array(Contact), []),
   current_autocomplete: types.optional(types.string, ""),
-  is_share_extension: types.optional(types.boolean, false)
+  is_share_extension: types.optional(types.boolean, false),
+	toolbar_select_destination_open: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -592,6 +593,11 @@ export default App = types.model('App', {
     }
     App.found_users = []
     App.current_autocomplete = ""
+  }),
+
+  toggle_select_destination: flow(function* () {
+    console.log("App:toggle_select_destination")
+    self.toolbar_select_destination_open = !self.toolbar_select_destination_open
   }),
 
 }))
