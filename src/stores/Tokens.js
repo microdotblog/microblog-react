@@ -15,7 +15,7 @@ export default Tokens = types.model('Tokens', {
       console.log("Tokens:hydrate:with_data")
     }
     if(return_data){
-      return JSON.parse(data)
+      return data ? JSON.parse(data) : null
     }
   }),
   
