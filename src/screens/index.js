@@ -625,7 +625,7 @@ export const postingOptionsScreen = (component_id) => {
 			options: {
 				topBar: {
 					title: {
-            text: "Posting options"
+            text: "Posting Options"
           },
 				}
 			}
