@@ -7,6 +7,9 @@ import App from '../../stores/App';
 import PostToolbar from '../../components/keyboard/post_toolbar';
 import AssetToolbar from '../../components/keyboard/asset_toolbar';
 import UsernameToolbar from '../../components/keyboard/username_toolbar';
+import { requireNativeComponent } from 'react-native';
+
+module.exports = requireNativeComponent("MBHighlightingTextView");
 
 @observer
 export default class PostingScreen extends React.Component{
@@ -90,9 +93,10 @@ export default class PostingScreen extends React.Component{
         }
         {
           this._input_outer_view(
-            <TextInput
+            <MBHighlightingTextView
               placeholderTextColor="lightgrey"
               style={{
+                height: 300,
                 fontSize: 18,
                 justifyContent: 'flex-start',
                 alignItems: 'flex-start',
