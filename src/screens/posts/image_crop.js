@@ -115,17 +115,23 @@ export default class ImageCropScreen extends React.Component{
 	navigationButtonPressed = async ({ buttonId }) => {
 		console.log("navigationButtonPressed::", buttonId)
 		if (buttonId === "add_image_button") {
-			if (this.state.is_cropped) {
+			if (this.state.is_cropped && !this.asset.is_square()) {
 				var crop_size = 0
 				var scaled_pt = { x: 0, y: 0 }
 
 				if (this.asset.is_landscape()) {
 					crop_size = this.asset.height
 					scaled_pt.x = this.state.crop_pt.x / this.state.scroll_size * crop_size
+					if (scaled_pt.x < 0) {
+						scaled_pt.x = 0
+					}
 				}
 				else {
 					crop_size = this.asset.width
 					scaled_pt.y = this.state.crop_pt.y / this.state.scroll_size * crop_size
+					if (scaled_pt.y < 0) {
+						scaled_pt.y = 0
+					}
 				}
 				
 				const crop_info = {
