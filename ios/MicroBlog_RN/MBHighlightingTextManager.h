@@ -8,11 +8,14 @@
 #import <Foundation/Foundation.h>
 #import <React/RCTViewManager.h>
 
+@class MBHighlightingTextView;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MBHighlightingTextManager : RCTViewManager <UITextViewDelegate>
 
 @property (strong, nonatomic) id textStorage;
+@property (strong, nonatomic) MBHighlightingTextView* textView;
 
 @end
 

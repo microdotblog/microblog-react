@@ -48,9 +48,9 @@ RCT_CUSTOM_VIEW_PROPERTY(inputAccessoryViewID, NSString, MBHighlightingTextView)
   [self.textStorage addLayoutManager:text_layout];
 
   // make the view (should we use UIScreen.mainScreen.bounds?)
-  MBHighlightingTextView* text_view = [[MBHighlightingTextView alloc] initWithFrame:r textContainer:text_container];
-  text_view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-  text_view.delegate = self;
+  self.textView = [[MBHighlightingTextView alloc] initWithFrame:r textContainer:text_container];
+  self.textView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+  self.textView.delegate = self;
   
   // background color
   BOOL darkmode = NO;
@@ -58,19 +58,19 @@ RCT_CUSTOM_VIEW_PROPERTY(inputAccessoryViewID, NSString, MBHighlightingTextView)
     darkmode = UITraitCollection.currentTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark;
   }
   if (darkmode) {
-    text_view.backgroundColor = [UIColor blackColor];
+    self.textView.backgroundColor = [UIColor blackColor];
   }
   else {
-    text_view.backgroundColor = [UIColor whiteColor];
+    self.textView.backgroundColor = [UIColor whiteColor];
   }
   
   // default text
   NSString* s = @"";
   NSAttributedString* attr_s = [[NSAttributedString alloc] initWithString:s attributes:@{}];
-  text_view.attributedText = attr_s;
+  self.textView.attributedText = attr_s;
   [self.textStorage setAttributedString:attr_s];
 
-  return text_view;
+  return self.textView;
 }
 
 - (void) textViewDidChange:(UITextView *)textView

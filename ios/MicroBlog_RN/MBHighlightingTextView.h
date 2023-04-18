@@ -12,8 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MBHighlightingTextView : UITextView
 
-@property (nonatomic, copy) RCTBubblingEventBlock onChangeText;
-@property (nonatomic, copy) RCTBubblingEventBlock onSelectionChange;
+@property (copy, nonatomic) RCTBubblingEventBlock onChangeText;
+@property (copy, nonatomic) RCTBubblingEventBlock onSelectionChange;
+@property (strong, nonatomic) UIView* reactAccessoryView;
 
 - (void) callTextChanged:(NSString *)text;
 - (void) callSelectionChanged;
