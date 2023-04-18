@@ -23,4 +23,15 @@
   NSLog(@"didSetProps %@", changedProps);
 }
 
+- (void) callTextChanged:(NSString *)text
+{
+  if (self.onChangeText) {
+    self.onChangeText(@{ @"text": text });
+  }
+}
+
+- (void) callSelectionChanged
+{
+}
+
 @end

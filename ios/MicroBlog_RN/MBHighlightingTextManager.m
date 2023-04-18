@@ -15,8 +15,8 @@
 
 RCT_EXPORT_MODULE(MBHighlightingTextView)
 
-//RCT_EXPORT_VIEW_PROPERTY(onChangeText, RCTBubblingEventBlock)
-//RCT_EXPORT_VIEW_PROPERTY(onSelectionChange, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onChangeText, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onSelectionChange, RCTBubblingEventBlock)
 
 RCT_CUSTOM_VIEW_PROPERTY(inputAccessoryViewID, NSString, MBHighlightingTextView)
 {
@@ -76,6 +76,8 @@ RCT_CUSTOM_VIEW_PROPERTY(inputAccessoryViewID, NSString, MBHighlightingTextView)
 - (void) textViewDidChange:(UITextView *)textView
 {
   NSLog (@"textViewDidChange");
+  MBHighlightingTextView* v = (MBHighlightingTextView *)textView;
+  [v callTextChanged:textView.text];
 }
 
 - (void) textViewDidChangeSelection:(UITextView *)textView
