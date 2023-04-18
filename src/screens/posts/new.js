@@ -7,17 +7,7 @@ import App from '../../stores/App';
 import PostToolbar from '../../components/keyboard/post_toolbar';
 import AssetToolbar from '../../components/keyboard/asset_toolbar';
 import UsernameToolbar from '../../components/keyboard/username_toolbar';
-import { requireNativeComponent } from 'react-native';
-
-const MBHighlightingTextView = requireNativeComponent("MBHighlightingTextView");
-
-class HighlightingText extends React.Component {
-  render() {
-    return (
-      <MBHighlightingTextView {...this.props} />
-    )
-  }
-}
+import HighlightingText from '../../components/text/highlighting_text';
 
 @observer
 export default class PostingScreen extends React.Component{
