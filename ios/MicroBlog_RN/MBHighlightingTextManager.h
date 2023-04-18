@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MBHighlightingTextManager : RCTViewManager
+@interface MBHighlightingTextManager : RCTViewManager <UITextViewDelegate>
 
 @property (strong, nonatomic) id textStorage;
 

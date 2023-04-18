@@ -14,8 +14,13 @@
   self = [super init];
   if (self) {
   }
-  
+
   return self;
+}
+
+- (void) didSetProps: (NSArray<NSString *> *)changedProps
+{
+  NSLog(@"didSetProps %@", changedProps);
 }
 
 @end

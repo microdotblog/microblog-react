@@ -9,7 +9,15 @@ import AssetToolbar from '../../components/keyboard/asset_toolbar';
 import UsernameToolbar from '../../components/keyboard/username_toolbar';
 import { requireNativeComponent } from 'react-native';
 
-module.exports = requireNativeComponent("MBHighlightingTextView");
+const MBHighlightingTextView = requireNativeComponent("MBHighlightingTextView");
+
+class HighlightingText extends React.Component {
+  render() {
+    return (
+      <MBHighlightingTextView {...this.props} />
+    )
+  }
+}
 
 @observer
 export default class PostingScreen extends React.Component{
@@ -93,7 +101,8 @@ export default class PostingScreen extends React.Component{
         }
         {
           this._input_outer_view(
-            <MBHighlightingTextView
+            <HighlightingText
+              hello="hi"
               placeholderTextColor="lightgrey"
               style={{
                 height: 300,
