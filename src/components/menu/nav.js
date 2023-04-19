@@ -20,32 +20,25 @@ export default class MenuNavigation extends React.Component{
   constructor(props){
     super(props)
 
-    this.social_menu = [
-      "Timeline",
-      "Mentions",
-      "Bookmarks",
-      "Discover"
-    ]
-
     this.manage_menu = [
       "Posts",
-      "Replies",
       "Pages",
       "Uploads"
     ]
     
     this.extras_menu = [
+      "Replies",
       "Settings",
       "Help"
     ]
   }
 
-  _render_menu_items = () => {
-    return this.social_menu.map(item => {
+  _render_secondary_menu_items = (items = []) => {
+    return items.map(item => {
       let image = null
       let symbol = null
       let svg = null
-      switch(item.toLowerCase()){
+      switch (item.toLowerCase()) {
         case "timeline":
           Platform.OS === 'ios' ? symbol = "bubble.left.and.bubble.right" : image = Timeline
         break;
@@ -58,17 +51,6 @@ export default class MenuNavigation extends React.Component{
         case "bookmarks":
           Platform.OS === 'ios' ? symbol = "star" : image = Bookmarks
         break;
-      }
-      return this._return_nav_item(item, image, symbol, svg)
-    })
-  }
-
-  _render_secondary_menu_items = (items = []) => {
-    return items.map(item => {
-      let image = null
-      let symbol = null
-      let svg = null
-      switch(item.toLowerCase()){
         case "help":
           Platform.OS === 'ios' ? symbol = "questionmark.circle" : image = Help
         break;
@@ -118,14 +100,14 @@ export default class MenuNavigation extends React.Component{
         onPress={() => App.navigate_to_screen_from_menu(item)}
         key={item}
         style={{ 
-          width: '49%',
+          width: '100%',
           padding: 8,
           paddingHorizontal: 16,
           borderRadius: 20,
           backgroundColor: App.theme_button_background_color(),
           marginBottom: 8,
           flexDirection: 'row',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         {
@@ -165,11 +147,10 @@ export default class MenuNavigation extends React.Component{
             borderColor: App.theme_alt_border_color(),
             borderBottomWidth: 1,
             justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            flexDirection: 'row'
+            flexDirection: 'column'
           }}
         >
-          {this._render_menu_items()}
+          {this._render_secondary_menu_items(this.manage_menu)}
           <View style={{
             paddingTop: 15,
             marginTop: 10,
@@ -177,19 +158,7 @@ export default class MenuNavigation extends React.Component{
             borderColor: App.theme_alt_border_color(),
             borderTopWidth: 1,
             width: '100%',
-            flexWrap: 'wrap',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-            {this._render_secondary_menu_items(this.manage_menu)}
-          </View>
-          <View style={{
-            paddingTop: 15,
-            marginTop: 10,
-            paddingBottom: 5,
-            width: '100%',
-            flexWrap: 'wrap',
-            flexDirection: 'row',
+            flexDirection: 'column',
             justifyContent: 'space-between',
           }}>
             {this._render_secondary_menu_items(this.extras_menu)}
