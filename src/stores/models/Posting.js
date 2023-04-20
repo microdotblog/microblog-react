@@ -216,8 +216,17 @@ export default Posting = types.model('Posting', {
     if (result.assets) {
       result.assets.forEach((asset) => {
         console.log("Posting:handle_image_action:asset", asset)
-        const media_asset = MediaAsset.create(asset)
-        imageCropScreen(media_asset, component_id)
+
+        // disabling the crop screen for 3.0, will bring back in 3.1
+        if (false) {
+          const media_asset = MediaAsset.create(asset)
+          imageCropScreen(media_asset, component_id)
+        }
+        else {
+          const media_asset = MediaAsset.create(asset)
+          self.post_assets.push(media_asset)
+          media_asset.upload(self.selected_service.service_object())
+        }
       })
     }
   }),
