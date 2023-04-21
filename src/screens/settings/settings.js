@@ -93,11 +93,56 @@ export default class SettingsScreen extends React.Component{
 			</View>
 		)
 	}
+
+	_render_posting_settings = () => {
+		return(
+			<View style={{marginTop: 15}}>
+				<Text style={{ fontWeight: "500", marginBottom: 10, marginTop: 15, marginLeft: 10, color: App.theme_text_color() }}>Post Options</Text>
+				<Text style={{ fontWeight: "300", marginBottom: 10, marginLeft: 10, color: App.theme_text_color() }}>When writing a new blog post, post to:</Text>
+				<View style={{ paddingHorizontal: 12, backgroundColor: App.theme_settings_group_background_color(), borderRadius: 8}}>
+					{
+						Auth.users.map((user, index) => {
+							return(
+								<View
+									key={`user-${user.username}-${index}`}
+									style={{ 
+										width: "100%", 
+										flexDirection: "row", 
+										justifyContent: "space-between", 
+										alignItems: "center", 
+										paddingVertical: 10,
+										borderBottomWidth: Auth.users.length - 1 !== index ? 1 : 0, 
+										borderColor: App.theme_border_color()
+									}}
+								>
+									<View style={{flexDirection: "row", alignItems: "center"}}>
+										<FastImage
+											source={{
+												uri: `${user.avatar}?v=${App.now()}`,
+												priority: FastImage.priority.normal,
+												cache: FastImage.cacheControl.web
+											}}
+											resizeMode={FastImage.resizeMode.contain}
+											style={{ width: 24, height: 24, borderRadius: 50, marginRight: 8 }}
+										/>
+									</View>
+									<View style={{flexDirection: "row"}}>
+										<Text>{ user.posting?.selected_service?.description() }</Text>
+									</View>
+								</View>
+							)
+						})
+					}
+				</View>
+			</View>
+		)
+	}
 	
   render() {
     return(
 			<ScrollView style={{ flex: 1, padding: 15, backgroundColor: App.theme_background_color() }}>
 				{this._render_browser_settings()}
+				{this._render_posting_settings()}
 				{this._render_push_settings()}
       </ScrollView>
     )

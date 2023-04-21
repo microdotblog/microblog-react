@@ -1,10 +1,10 @@
-import { types, flow } from 'mobx-state-tree';
-import Tokens from './../../Tokens';
-import MicroPubApi, { DELETE_ERROR } from './../../../api/MicroPubApi';
-import Config from './Config';
-import { Alert } from 'react-native';
+import { types, flow } from 'mobx-state-tree'
+import Tokens from './../../Tokens'
+import MicroPubApi, { DELETE_ERROR } from './../../../api/MicroPubApi'
+import Config from './Config'
+import { Alert } from 'react-native'
 import DocumentPicker from 'react-native-document-picker'
-import { launchImageLibrary } from 'react-native-image-picker';
+import { launchImageLibrary } from 'react-native-image-picker'
 import App from '../../App'
 
 export default Service = types.model('Service', {
@@ -276,6 +276,10 @@ export default Service = types.model('Service', {
       media_endpoint: self.config?.media_endpoint(),
       temporary_destination: self.config?.temporary_destination()?.uid,
     }
+  },
+
+  description() {
+    return self.name === "Micro.blog" ? "Micro.blog hosted weblog" : "WordPress or compatible weblog"
   }
   
 }))
