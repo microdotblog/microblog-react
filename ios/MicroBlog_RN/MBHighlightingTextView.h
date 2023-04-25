@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) UIView* reactAccessoryView;
 
 - (void) callTextChanged:(NSString *)text;
-- (void) callSelectionChanged;
+- (void) callSelectionChanged:(UITextRange *)range;
 
 @end
 

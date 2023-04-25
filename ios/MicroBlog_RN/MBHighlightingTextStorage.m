@@ -94,7 +94,7 @@
 
 - (void) processBold
 {
-  UIFont* bold_font = [UIFont boldSystemFontOfSize:17];
+  UIFont* bold_font = [UIFont boldSystemFontOfSize:18];
 	NSRange current_r = NSMakeRange (0, 0);
 	BOOL is_bold = NO;
 	for (NSInteger i = 0; i < self.string.length; i++) {
@@ -125,7 +125,7 @@
 
 - (void) processItalic
 {
-  UIFont* italic_font = [UIFont italicSystemFontOfSize:17];
+  UIFont* italic_font = [UIFont italicSystemFontOfSize:18];
 	NSRange current_r = NSMakeRange (0, 0);
 	BOOL is_italic = NO;
 	BOOL is_link = NO;
@@ -328,7 +328,7 @@
 
 - (void) processHeaders
 {
-  UIFont* header_font = [UIFont boldSystemFontOfSize:17];
+  UIFont* header_font = [UIFont boldSystemFontOfSize:18];
 	UIColor* header_c = [UIColor blueColor];
 	NSRange current_r = NSMakeRange (0, 0);
 	BOOL is_header = NO;
@@ -472,7 +472,7 @@
 {
 	// clear fonts and colors
 	NSRange paragraph_r = NSMakeRange (0, self.string.length);
-  UIFont* normal_font = [UIFont systemFontOfSize:17];
+  UIFont* normal_font = [UIFont systemFontOfSize:18];
 	UIColor* c = [UIColor blackColor];
 	if (@available(iOS 11, *)) {
 		c = [UIColor colorNamed:@"color_editing_paragraph"];

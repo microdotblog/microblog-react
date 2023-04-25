@@ -20,7 +20,16 @@
   return self;
 }
 
-- (void) didSetProps: (NSArray<NSString *> *)changedProps
+- (void) finishSetup
+{
+  if (self.inputAccessoryView == nil) {
+    [self becomeFirstResponder];
+    self.inputAccessoryView = [self.reactAccessoryView inputAccessoryView];
+    [self reloadInputViews];
+  }
+}
+
+- (void) didSetProps:(NSArray<NSString *> *)changedProps
 {
   NSLog(@"didSetProps %@", changedProps);
 }
@@ -66,6 +75,8 @@
     if (v) {
       NSLog(@"found accessory view");
       self.reactAccessoryView = v;
+      
+      [self performSelector:@selector(finishSetup) withObject:nil afterDelay:0.5];
     }
   }
 }
@@ -74,17 +85,22 @@
 {
   if (self.onChangeText) {
     self.onChangeText(@{ @"text": text });
-    if (self.inputAccessoryView == nil) {
-      self.inputAccessoryView = [self.reactAccessoryView inputAccessoryView];
-      if ([self isFirstResponder]) {
-        [self reloadInputViews];
-      }
-    }
   }
 }
 
-- (void) callSelectionChanged
+- (void) callSelectionChanged:(UITextRange *)range
 {
+  if (self.onSelectionChange) {
+    NSInteger start = [self offsetFromPosition:self.beginningOfDocument toPosition:range.start];
+    NSInteger end = [self offsetFromPosition:self.beginningOfDocument toPosition:range.end];
+
+    self.onSelectionChange(@{
+      @"selection": @{
+        @"start": @(start),
+        @"end": @(end)
+      }
+    });
+  }
 }
 
 @end

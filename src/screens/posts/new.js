@@ -92,7 +92,6 @@ export default class PostingScreen extends React.Component{
         {
           this._input_outer_view(
             <HighlightingText
-              hello="hi"
               placeholderTextColor="lightgrey"
               style={{
                 height: 300,

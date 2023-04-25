@@ -26,6 +26,24 @@ RCT_CUSTOM_VIEW_PROPERTY(inputAccessoryViewID, NSString, MBHighlightingTextView)
   }
 }
 
+RCT_CUSTOM_VIEW_PROPERTY(fontSize, NSNumber, MBHighlightingTextView)
+{
+  if (json) {
+    NSInteger font_size = [RCTConvert NSInteger:json];
+    NSLog(@"fontSize = %ld", (long)font_size);
+  }
+}
+
+RCT_CUSTOM_VIEW_PROPERTY(value, NSString, MBHighlightingTextView)
+{
+  if (json) {
+    NSString* new_text = [RCTConvert NSString:json];
+    if (self.textView.text != new_text) {
+      self.textView.text = new_text;
+    }
+  }
+}
+
 - (UIView *) view
 {
   if (UIAccessibilityIsVoiceOverRunning()) {
@@ -83,6 +101,9 @@ RCT_CUSTOM_VIEW_PROPERTY(inputAccessoryViewID, NSString, MBHighlightingTextView)
 - (void) textViewDidChangeSelection:(UITextView *)textView
 {
   NSLog (@"textViewDidChangeSelection");
+  MBHighlightingTextView* v = (MBHighlightingTextView *)textView;
+  UITextRange* range = textView.selectedTextRange;
+  [v callSelectionChanged:range];
 }
 
 @end
