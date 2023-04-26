@@ -37,9 +37,11 @@ RCT_CUSTOM_VIEW_PROPERTY(fontSize, NSNumber, MBHighlightingTextView)
 RCT_CUSTOM_VIEW_PROPERTY(value, NSString, MBHighlightingTextView)
 {
   if (json) {
-    NSString* new_text = [RCTConvert NSString:json];
-    if (self.textView.text != new_text) {
-      self.textView.text = new_text;
+    if (!self.isTyping) {
+      NSString* new_text = [RCTConvert NSString:json];
+      if (![[self.textStorage string] isEqualToString:new_text]) {
+        self.textView.text = new_text;
+      }
     }
   }
 }
@@ -93,14 +95,19 @@ RCT_CUSTOM_VIEW_PROPERTY(value, NSString, MBHighlightingTextView)
 
 - (void) textViewDidChange:(UITextView *)textView
 {
-  NSLog (@"textViewDidChange");
+  // hacky, keep track of whether we're changing text from typing
+  self.isTyping = YES;
+  [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:NO block:^(NSTimer* timer) {
+    self.isTyping = NO;
+  }];
+  
+  // callback to JS
   MBHighlightingTextView* v = (MBHighlightingTextView *)textView;
   [v callTextChanged:textView.text];
 }
 
 - (void) textViewDidChangeSelection:(UITextView *)textView
 {
-  NSLog (@"textViewDidChangeSelection");
   MBHighlightingTextView* v = (MBHighlightingTextView *)textView;
   UITextRange* range = textView.selectedTextRange;
   [v callSelectionChanged:range];

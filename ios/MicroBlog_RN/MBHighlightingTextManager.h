@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (strong, nonatomic) id textStorage;
 @property (strong, nonatomic) MBHighlightingTextView* textView;
+@property (assign) BOOL isTyping;
 
 @end
 
