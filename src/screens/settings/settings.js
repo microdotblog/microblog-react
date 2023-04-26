@@ -6,6 +6,7 @@ import FastImage from 'react-native-fast-image';
 import App from '../../stores/App'
 import Auth from '../../stores/Auth';
 import Settings from '../../stores/Settings';
+import UserPostingSettings from '../../components/settings/user_posting'
 
 @observer
 export default class SettingsScreen extends React.Component{
@@ -103,33 +104,7 @@ export default class SettingsScreen extends React.Component{
 					{
 						Auth.users.map((user, index) => {
 							return(
-								<View
-									key={`user-${user.username}-${index}`}
-									style={{ 
-										width: "100%", 
-										flexDirection: "row", 
-										justifyContent: "space-between", 
-										alignItems: "center", 
-										paddingVertical: 10,
-										borderBottomWidth: Auth.users.length - 1 !== index ? 1 : 0, 
-										borderColor: App.theme_border_color()
-									}}
-								>
-									<View style={{flexDirection: "row", alignItems: "center"}}>
-										<FastImage
-											source={{
-												uri: `${user.avatar}?v=${App.now()}`,
-												priority: FastImage.priority.normal,
-												cache: FastImage.cacheControl.web
-											}}
-											resizeMode={FastImage.resizeMode.contain}
-											style={{ width: 24, height: 24, borderRadius: 50, marginRight: 8 }}
-										/>
-									</View>
-									<View style={{flexDirection: "row"}}>
-										<Text>{ user.posting?.selected_service?.description() }</Text>
-									</View>
-								</View>
+								<UserPostingSettings user={user} index={index} key={`user-${user.username}-${index}`} />
 							)
 						})
 					}
