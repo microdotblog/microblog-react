@@ -22,10 +22,17 @@
 
 - (void) finishSetup
 {
-  if (self.inputAccessoryView == nil) {
-    [self becomeFirstResponder];
-    self.inputAccessoryView = [self.reactAccessoryView inputAccessoryView];
-    [self reloadInputViews];
+  UIView* root = [self findRootView];
+  UIView* v = [self findAccessoryViewFromView:root withNativeID:@"input_toolbar"];
+  if (v) {
+    NSLog(@"found accessory view");
+    self.reactAccessoryView = v;
+
+    if (self.inputAccessoryView == nil) {
+      [self becomeFirstResponder];
+      self.inputAccessoryView = [self.reactAccessoryView inputAccessoryView];
+      [self reloadInputViews];
+    }
   }
 }
 
@@ -69,15 +76,10 @@
 {
   [super didMoveToSuperview];
   
+  NSLog(@"didMoveToSuperview");
+
   if (self.superview != nil) {
-    UIView* root = [self findRootView];
-    UIView* v = [self findAccessoryViewFromView:root withNativeID:@"input_toolbar"];
-    if (v) {
-      NSLog(@"found accessory view");
-      self.reactAccessoryView = v;
-      
-      [self performSelector:@selector(finishSetup) withObject:nil afterDelay:0.5];
-    }
+    [self performSelector:@selector(finishSetup) withObject:nil afterDelay:0.5];
   }
 }
 
