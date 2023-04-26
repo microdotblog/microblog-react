@@ -88,6 +88,7 @@ RCT_CUSTOM_VIEW_PROPERTY(value, NSString, MBHighlightingTextView)
   NSString* s = @"";
   NSAttributedString* attr_s = [[NSAttributedString alloc] initWithString:s attributes:@{}];
   self.textView.attributedText = attr_s;
+  self.textView.textContainerInset = UIEdgeInsetsMake (8, 5, 8, 5);
   [self.textStorage setAttributedString:attr_s];
 
   return self.textView;
