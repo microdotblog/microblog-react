@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, ScrollView, Switch, Platform, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, Switch, Platform, ActivityIndicator, KeyboardAvoidingView } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import FastImage from 'react-native-fast-image';
 import App from '../../stores/App'

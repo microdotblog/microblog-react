@@ -656,6 +656,9 @@ export default App = types.model('App', {
   theme_input_contrast_background_color() {
     return self.theme === "dark" ? "#171c24" : "#f2f2f2"
   },
+  theme_input_contrast_alt_background_color() {
+    return self.theme === "dark" ? "#171c24" : "#F9FAFB"
+  },
   theme_opacity_background_color() {
     return self.theme === "dark" ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.6)"
   },
