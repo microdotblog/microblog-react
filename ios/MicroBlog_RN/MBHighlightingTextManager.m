@@ -78,7 +78,7 @@ RCT_CUSTOM_VIEW_PROPERTY(value, NSString, MBHighlightingTextView)
     darkmode = UITraitCollection.currentTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark;
   }
   if (darkmode) {
-    self.textView.backgroundColor = [UIColor blackColor];
+    self.textView.backgroundColor = [UIColor colorWithRed:0.11 green:0.15 blue:0.19 alpha:1.0];
   }
   else {
     self.textView.backgroundColor = [UIColor whiteColor];
