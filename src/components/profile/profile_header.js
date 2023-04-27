@@ -69,7 +69,10 @@ export default class ProfileHeader extends React.Component{
           </TouchableOpacity>
           <View style={{ marginLeft: 15 }}>
             <Text style={{ fontWeight: '700', fontSize: 18, marginBottom: 2, color: App.theme_text_color() }}>{profile.author.name}</Text>
-            <Text style={{ fontWeight: '300', color: App.theme_text_color() }}>@{profile._microblog.username}</Text>
+            {
+              profile._microblog?.pronouns &&
+                <Text style={{ fontWeight: '300', color: App.theme_text_color() }}>{profile._microblog.pronouns}</Text>
+            }
             {
               profile.author.url != null ?
               <TouchableOpacity style={{ marginTop: 2 }} onPress={() => App.open_url(profile.author.url)}>
