@@ -18,6 +18,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1A0BE3A767EBFBE2B004B9B6 /* libPods-MicroBlog_RN-MicroBlog_Share.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18BA970F10DF9F5128EAD26F /* libPods-MicroBlog_RN-MicroBlog_Share.a */; };
 		4970147ECD8D667444CD6521 /* libPods-MicroBlog_RN.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2015B252530B34FC3BEC448 /* libPods-MicroBlog_RN.a */; };
+		4B06FCA829FABD0800E97371 /* UIScrollViewDelegate+Zooming.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B06FCA729FABD0800E97371 /* UIScrollViewDelegate+Zooming.m */; };
 		4B1233D429ECCC0100174307 /* MBHighlightingTextManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1233D329ECCC0100174307 /* MBHighlightingTextManager.m */; };
 		4B1233D729ECD7D200174307 /* MBHighlightingTextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1233D529ECD7D200174307 /* MBHighlightingTextStorage.m */; };
 		4B1233D829ECD7D200174307 /* MBHighlightingTextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1233D529ECD7D200174307 /* MBHighlightingTextStorage.m */; };
@@ -83,6 +84,8 @@
 		180CEE6E0247B6F51B90ED99 /* Pods-MicroBlog_RN.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MicroBlog_RN.release.xcconfig"; path = "Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN.release.xcconfig"; sourceTree = "<group>"; };
 		18BA970F10DF9F5128EAD26F /* libPods-MicroBlog_RN-MicroBlog_Share.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MicroBlog_RN-MicroBlog_Share.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		45D0EFC168DB5879384762FB /* Pods-MicroBlog_RN-MicroBlog_RNTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MicroBlog_RN-MicroBlog_RNTests.debug.xcconfig"; path = "Target Support Files/Pods-MicroBlog_RN-MicroBlog_RNTests/Pods-MicroBlog_RN-MicroBlog_RNTests.debug.xcconfig"; sourceTree = "<group>"; };
+		4B06FCA629FABD0800E97371 /* UIScrollViewDelegate+Zooming.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "UIScrollViewDelegate+Zooming.h"; path = "MicroBlog_RN/UIScrollViewDelegate+Zooming.h"; sourceTree = "<group>"; };
+		4B06FCA729FABD0800E97371 /* UIScrollViewDelegate+Zooming.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "UIScrollViewDelegate+Zooming.m"; path = "MicroBlog_RN/UIScrollViewDelegate+Zooming.m"; sourceTree = "<group>"; };
 		4B1233D229ECCC0100174307 /* MBHighlightingTextManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MBHighlightingTextManager.h; path = MicroBlog_RN/MBHighlightingTextManager.h; sourceTree = "<group>"; };
 		4B1233D329ECCC0100174307 /* MBHighlightingTextManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MBHighlightingTextManager.m; path = MicroBlog_RN/MBHighlightingTextManager.m; sourceTree = "<group>"; };
 		4B1233D529ECD7D200174307 /* MBHighlightingTextStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBHighlightingTextStorage.m; path = MicroBlog_RN/MBHighlightingTextStorage.m; sourceTree = "<group>"; };
@@ -169,6 +172,8 @@
 				4B1233D329ECCC0100174307 /* MBHighlightingTextManager.m */,
 				4B1233D629ECD7D200174307 /* MBHighlightingTextStorage.h */,
 				4B1233D529ECD7D200174307 /* MBHighlightingTextStorage.m */,
+				4B06FCA629FABD0800E97371 /* UIScrollViewDelegate+Zooming.h */,
+				4B06FCA729FABD0800E97371 /* UIScrollViewDelegate+Zooming.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
@@ -609,6 +614,7 @@
 				4B1233D729ECD7D200174307 /* MBHighlightingTextStorage.m in Sources */,
 				4B1233D429ECCC0100174307 /* MBHighlightingTextManager.m in Sources */,
 				0251EE462716191A00B475D5 /* File.swift in Sources */,
+				4B06FCA829FABD0800E97371 /* UIScrollViewDelegate+Zooming.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
