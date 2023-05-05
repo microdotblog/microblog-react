@@ -11,8 +11,6 @@ export const DELETE_ERROR = 7
 export const RSD_NOT_FOUND = 8
 export const BLOG_ID_NOT_FOUND = "not_found"
 
-const xmlrpc = require("davexmlrpc")
-
 class XMLRPCApi {
 
 	async discover_rsd_endpoint(url) {
