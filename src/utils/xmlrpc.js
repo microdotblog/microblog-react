@@ -57,6 +57,54 @@ class XMLRPC {
 		return params_as_xml
 	}
 
+	decode_value(value) {
+		var result = null
+		
+		if (value["string"] != null) {
+			result = value["string"]
+		}
+		else if (value["int"] != null) {
+			result = value["int"]
+		}
+		else if (value["i4"] != null) {
+			result = value["i4"]
+		}
+		else if (value["boolean"] != null) {
+			result = value["boolean"]
+		}
+		else if (value["dateTime.iso8601"]) {
+			result = Date.parse(value["dateTime.iso8601"])
+		}
+		else if (value["array"] != null) {
+			result = []
+			const values = value["array"]["data"]["value"]
+			if (values != undefined) {
+				if (Array.isArray(values)) {
+					for (let v of values) {
+						result.push(this.decode_value(v))
+					}
+				}
+				else {
+					// because of JSON conversion, array could be just single item
+					result.push(this.decode_value(values))
+				}
+			}
+		}
+		else if (value["struct"] != null) {
+			result = {}
+			const members = value["struct"]["member"]
+			for (let m of members) {
+				result[m["name"]] = this.decode_value(m["value"])
+			}
+		}
+		
+		return result
+	}
+
+	from_json(object) {
+		return this.decode_value(object["methodResponse"]["params"]["param"]["value"])
+	}
+
 	async request(url, method, params = {}) {
 		const headers = {
 			"Content-Type": "application/xml"

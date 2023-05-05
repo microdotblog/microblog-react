@@ -53,7 +53,7 @@ async function xmlRpcCall(url, methodName, params) {
 			throw new Error(error_s)
 		}
 
-		return jsonResponse
+		return xmlrpc.from_json(jsonResponse)
 	} catch (err) {
 		console.error('Error in XML-RPC call:', err)
 		throw err
@@ -129,7 +129,7 @@ class XMLRPCApi {
 		const params = [ blog_id, username, password ]
 		console.log("XMLRPCApi:check_credentials_and_get_recent_posts", url, blog_id, username)
 		
-		const xmlData = xmlRpcCall(url, verb, params)
+		const response = xmlRpcCall(url, verb, params)
 		.then(data => {
 			console.log('Data received:', data)
 			return true
@@ -138,7 +138,7 @@ class XMLRPCApi {
 			console.error('Error in XML-RPC call:', err);
 			return false
 		})
-		return xmlData
+		return response
 	}
   
   async get_config(service) {
