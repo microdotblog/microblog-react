@@ -9,6 +9,9 @@ export const POST_OK = 5
 export const NO_AUTH = 6
 export const DELETE_ERROR = 7
 export const RSD_NOT_FOUND = 8
+export const BLOG_ID_NOT_FOUND = "not_found"
+
+const xmlrpc = require("davexmlrpc")
 
 class XMLRPCApi {
 
@@ -40,6 +43,36 @@ class XMLRPCApi {
 				return RSD_NOT_FOUND
 			});
 		return rsd_endpoint
+	}
+	
+	async discover_preferred_blog(url) {
+		console.log('XMLRPCApi:discover_preferred_blog', url);
+		const data = axios
+			.get(url)
+			.then(response => {
+				const parser = new DOMParser()
+				const xmlDoc = parser.parseFromString(response.data, 'text/xml')
+				const apis = xmlDoc.getElementsByTagName('api')
+				let blog_id
+				for (let i = 0; i < apis.length; i++) {
+					const api = apis[i];
+					if (api.getAttribute('preferred') === 'true') {
+						blog_id = api.getAttribute('blogID')
+						break;
+					}
+				}
+				console.log(blog_id)
+				if (blog_id != null) {
+					return blog_id
+				} else {
+					return BLOG_ID_NOT_FOUND
+				}
+			})
+			.catch(error => {
+				console.log(error)
+				return BLOG_ID_NOT_FOUND
+			});
+		return data
 	}
   
   async get_config(service) {
