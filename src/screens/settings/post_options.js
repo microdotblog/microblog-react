@@ -89,6 +89,8 @@ export default class PostOptionsSettingsScreen extends React.Component{
                     placeholderTextColor={App.theme_placeholder_text_color()}
                     autoCapitalize="none"
                     autoCorrect={false}
+                    onChangeText={(text) => Services.set_username(text)}
+                    value={Services.temp_username}
                   />
                   <Text style={{fontWeight: "500", marginBottom: 12}}>Password:</Text>
                   <TextInput
@@ -105,6 +107,8 @@ export default class PostOptionsSettingsScreen extends React.Component{
                     autoCapitalize="none"
                     autoCorrect={false}
                     secureTextEntry={true}
+                    onChangeText={(text) => Services.set_password(text)}
+                    value={Services.temp_password}
                   />
                 </View>
                 : null
@@ -121,8 +125,8 @@ export default class PostOptionsSettingsScreen extends React.Component{
                     <Button
                       title={"Save credentials"}
                       color={App.theme_accent_color()}
-                      onPress={Services.setup_new_service}
-                      disabled={!Services.can_set_up_credentials()}
+                      onPress={Services.check_credentials_and_proceed_setup}
+                      disabled={!Services.can_set_up_credentials() || !Services.has_credentials()}
                     />
                   </>
                   :

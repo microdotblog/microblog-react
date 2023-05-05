@@ -8,7 +8,10 @@ export default Services = types.model('Services', {
   current_username: types.optional(types.string, ""),
   xml_endpoint: types.optional(types.string, ""),
   blog_id: types.optional(types.string, ""),
-  show_credentials: types.optional(types.boolean, false)
+  show_credentials: types.optional(types.boolean, false),
+  checking_credentials: types.optional(types.boolean, false),
+  temp_username: types.optional(types.string, ""),// We don't save the Services model in Async, so this is all temp data
+  temp_password: types.optional(types.string, "")// We don't save the Services model in Async, so this is all temp data
 })
 .actions(self => ({
   
@@ -36,7 +39,8 @@ export default Services = types.model('Services', {
   setup_new_service: flow(function* () {
     console.log("Services:setup_new_service", self.current_url)
     self.is_setting_up = true
-    // For now, let's just figure out XMLRPC endpoint
+    // For now, let's just figure out XMLRPC endpoint.
+    // We should offer MicroPub first as default though
     const rsd_link = yield XMLRPCApi.discover_rsd_endpoint(self.current_url)
     console.log("Services:setup_new_service:rsd_link", rsd_link)
     if(rsd_link !== RSD_NOT_FOUND){
@@ -60,6 +64,20 @@ export default Services = types.model('Services', {
     console.log("Service:self", self)
   }),
   
+  set_username: flow(function* (text) {
+    console.log("Services:set_username", text)
+    self.temp_username = text
+  }),
+  
+  set_password: flow(function* (text) {
+    console.log("Services:set_password")
+    self.temp_password = text
+  }),
+  
+  check_credentials_and_proceed_setup: flow(function* () {
+    console.log("Services:check_credentials")
+  })
+  
 }))
 .views((self) => ({
   
@@ -77,6 +95,10 @@ export default Services = types.model('Services', {
     // Let's check that we have a Blog ID and endpoint
     return self.xml_endpoint != "" && self.blog_id != ""
   },
+  
+  has_credentials(){
+    return self.temp_password != "" && self.temp_username != ""
+  }
   
 }))
 .create({})
