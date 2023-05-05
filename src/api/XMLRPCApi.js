@@ -12,12 +12,11 @@ export const NO_AUTH = 6
 export const DELETE_ERROR = 7
 export const RSD_NOT_FOUND = 8
 export const BLOG_ID_NOT_FOUND = "not_found"
+export const XML_ERROR = 9
 
 async function xmlRpcCall(url, methodName, params) {
 
 	const xmlPayload = xmlrpc.make_request(methodName, params)
-		
-	console.log("PAYLOAD", xmlPayload)
 
 	try {
 		const response = await fetch(url, {
@@ -38,9 +37,8 @@ async function xmlRpcCall(url, methodName, params) {
 		
 		const parser = new XMLParser(options)
 		const xmlResponse = await response.text()
-		console.log("Got xmlResponse", xmlResponse)
 		const jsonResponse = parser.parse(xmlResponse)
-		console.log("Got jsonResponse", JSON.stringify(jsonResponse))
+		//console.log("Got jsonResponse", JSON.stringify(jsonResponse))
 
 		if (jsonResponse["methodResponse"]["fault"] != null) {
 			const error_members = jsonResponse["methodResponse"]["fault"]["value"]["struct"]["member"]
@@ -131,8 +129,15 @@ class XMLRPCApi {
 			return true
 		})
 		.catch(err => {
-			console.error('Error in XML-RPC call:', err);
-			return false
+			console.error('XMLRPCApi:error', err)
+			// Check if error is incorrect password/username
+			if(err?.toString()?.includes("username or password")){
+				Alert.alert("Whoops. Your username or password is wrong. Try again.")
+			}
+			else{
+				Alert.alert("Whoops, and error occured. Try again.")
+			}
+			return XML_ERROR
 		})
 		return response
 	}
