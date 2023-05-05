@@ -58,8 +58,8 @@ export const POSTS_SCREEN = 'microblog.PostsScreen';
 export const EDIT_POST_SCREEN = 'microblog.EditPostScreen';
 export const PAGES_SCREEN = 'microblog.PagesScreen';
 export const EDIT_PAGE_SCREEN = 'microblog.EditPageScreen';
-export const UPLOADS_SCREEN = 'microbloog.UploadsScreen';
-export const POST_OPTIONS_SETTINGS_SCREEN = 'microblog.PostOptionsSettingsScreen';
+export const UPLOADS_SCREEN = 'microblog.UploadsScreen';
+export const POST_OPTIONS_SETTINGS_SCREEN = 'microblog.modal.PostOptionsSettingsScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
