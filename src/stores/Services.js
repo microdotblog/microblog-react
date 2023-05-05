@@ -39,9 +39,16 @@ export default Services = types.model('Services', {
   setup_new_service: flow(function* () {
     console.log("Services:setup_new_service", self.current_url)
     self.is_setting_up = true
+    
+    // assume HTTPS if no scheme
+    var discover_url = self.current_url
+    if (!discover_url.includes("http")) {
+      discover_url = "https://" + discover_url
+    }
+  
     // For now, let's just figure out XMLRPC endpoint.
     // We should offer MicroPub first as default though
-    const rsd_link = yield XMLRPCApi.discover_rsd_endpoint(self.current_url)
+    const rsd_link = yield XMLRPCApi.discover_rsd_endpoint(discover_url)
     console.log("Services:setup_new_service:rsd_link", rsd_link)
     if(rsd_link !== RSD_NOT_FOUND){
       // OK, so we found the RSD link, now we need to get the preferred blog ID
