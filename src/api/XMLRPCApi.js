@@ -2,7 +2,7 @@ import { Alert, Platform } from 'react-native';
 import axios from 'axios';
 import { DOMParser } from "@xmldom/xmldom";
 import { Buffer } from 'buffer';
-import parser from 'fast-xml-parser';
+import { XMLParser } from 'fast-xml-parser';
 
 export const FETCH_ERROR = 2
 export const POST_ERROR = 3
@@ -40,26 +40,22 @@ async function xmlRpcCall(url, methodName, params) {
 			},
 			body: xmlPayload,
 		})
-
+		
+		const options = {
+			// ignoreAttributes: false,
+			// ignoreNameSpace: false,
+			// allowBooleanAttributes: false,
+			// trimValues: true,
+			// allowBooleanAttributes: true
+		}
+		
+		const parser = new XMLParser(options)
 		const xmlResponse = await response.text()
-		// const jsonResponse = parser.parse(xmlResponse, {
-		// 	attributeNamePrefix: '@_',
-		// 	attrNodeName: 'attr',
-		// 	textNodeName: '#text',
-		// 	ignoreAttributes: false,
-		// 	ignoreNameSpace: false,
-		// 	allowBooleanAttributes: false,
-		// 	parseNodeValue: true,
-		// 	parseAttributeValue: true,
-		// 	trimValues: true,
-		// 	cdataTagName: '__cdata',
-		// 	cdataPositionChar: '\\c',
-		// 	parseTrueNumberOnly: false,
-		// 	arrayMode: false,
-		// 	stopNodes: ['parse-me-as-string'],
-		// })
+		console.log("Got xmlResponse", xmlResponse)
+		const jsonResponse = parser.parse(xmlResponse)
+		console.log("Got jsonResponse", jsonResponse)
 
-		return xmlResponse
+		return jsonResponse
 	} catch (err) {
 		console.error('Error in XML-RPC call:', err)
 		throw err
