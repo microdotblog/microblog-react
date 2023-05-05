@@ -13,58 +13,60 @@ export const DELETE_ERROR = 7
 export const RSD_NOT_FOUND = 8
 export const BLOG_ID_NOT_FOUND = "not_found"
 
-class XMLRPCApi {
-	
-	async xmlRpcCall(url, methodName, params) {
-		// Due to React Native's limitations, we need to add this polyfill
-		global.Buffer = global.Buffer || Buffer;
-	
-		// Build the XML-RPC request payload
-		const xmlParams = params.map(param => `<value>${param}</value>`).join('')
-		const xmlPayload = `
-			<?xml version="1.0"?>
-			<methodCall>
-				<methodName>${methodName}</methodName>
-				<params>
-					<param>
-						${xmlParams}
-					</param>
-				</params>
-			</methodCall>`
-	
-		try {
-			const response = await fetch(url, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'text/xml',
-				},
-				body: xmlPayload,
-			})
-	
-			const xmlResponse = await response.text();
-			const jsonResponse = parser.parse(xmlResponse, {
-				attributeNamePrefix: '@_',
-				attrNodeName: 'attr',
-				textNodeName: '#text',
-				ignoreAttributes: false,
-				ignoreNameSpace: false,
-				allowBooleanAttributes: false,
-				parseNodeValue: true,
-				parseAttributeValue: true,
-				trimValues: true,
-				cdataTagName: '__cdata',
-				cdataPositionChar: '\\c',
-				parseTrueNumberOnly: false,
-				arrayMode: false,
-				stopNodes: ['parse-me-as-string'],
-			})
-	
-			return jsonResponse
-		} catch (err) {
-			console.error('Error in XML-RPC call:', err)
-			throw err
-		}
+async function xmlRpcCall(url, methodName, params) {
+	// Due to React Native's limitations, we need to add this polyfill
+	global.Buffer = global.Buffer || Buffer;
+
+	// Build the XML-RPC request payload
+	const xmlParams = params.map(param => `<value>${param}</value>`).join('')
+	const xmlPayload = `
+		<?xml version="1.0"?>
+		<methodCall>
+			<methodName>${methodName}</methodName>
+			<params>
+				<param>
+					${xmlParams}
+				</param>
+			</params>
+		</methodCall>`
+		
+	console.log("PAYLOAD", xmlPayload)
+
+	try {
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'text/xml',
+			},
+			body: xmlPayload,
+		})
+
+		const xmlResponse = await response.text()
+		// const jsonResponse = parser.parse(xmlResponse, {
+		// 	attributeNamePrefix: '@_',
+		// 	attrNodeName: 'attr',
+		// 	textNodeName: '#text',
+		// 	ignoreAttributes: false,
+		// 	ignoreNameSpace: false,
+		// 	allowBooleanAttributes: false,
+		// 	parseNodeValue: true,
+		// 	parseAttributeValue: true,
+		// 	trimValues: true,
+		// 	cdataTagName: '__cdata',
+		// 	cdataPositionChar: '\\c',
+		// 	parseTrueNumberOnly: false,
+		// 	arrayMode: false,
+		// 	stopNodes: ['parse-me-as-string'],
+		// })
+
+		return xmlResponse
+	} catch (err) {
+		console.error('Error in XML-RPC call:', err)
+		throw err
 	}
+}
+
+class XMLRPCApi {
 
 	async discover_rsd_endpoint(url) {
 		console.log('XMLRPCApi:discover_rsd_endpoint', url);
@@ -131,15 +133,18 @@ class XMLRPCApi {
 		// However, for now, let's just have the recent_posts one to check for credentials
 		const verb = "metaWeblog.getRecentPosts"
 		const params = [ blog_id, username, password ]
+		console.log("XMLRPCApi:check_credentials_and_get_recent_posts", url, blog_id, username)
 		
-		this.xmlRpcCall(url, verb, params)
+		const xmlData = xmlRpcCall(url, verb, params)
 		.then(data => {
-			console.log('Data received:', data);
+			console.log('Data received:', data)
+			return true
 		})
 		.catch(err => {
 			console.error('Error in XML-RPC call:', err);
-		});
-		return false
+			return false
+		})
+		return xmlData
 	}
   
   async get_config(service) {

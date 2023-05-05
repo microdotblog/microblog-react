@@ -76,6 +76,10 @@ export default Services = types.model('Services', {
   
   check_credentials_and_proceed_setup: flow(function* () {
     console.log("Services:check_credentials")
+    self.checking_credentials = true
+    const data = yield XMLRPCApi.check_credentials_and_get_recent_posts(self.xml_endpoint, self.blog_id, self.temp_username, self.temp_password)
+    console.log("Services:check_credentials:data", data)
+    self.checking_credentials = false
   })
   
 }))
