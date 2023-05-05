@@ -3,6 +3,7 @@ import axios from 'axios';
 import { DOMParser } from "@xmldom/xmldom";
 import { Buffer } from 'buffer';
 import { XMLParser } from 'fast-xml-parser';
+import xmlrpc from '../utils/xmlrpc';
 
 export const FETCH_ERROR = 2
 export const POST_ERROR = 3
@@ -18,17 +19,7 @@ async function xmlRpcCall(url, methodName, params) {
 	global.Buffer = global.Buffer || Buffer;
 
 	// Build the XML-RPC request payload
-	const xmlParams = params.map(param => `<value>${param}</value>`).join('')
-	const xmlPayload = `
-		<?xml version="1.0"?>
-		<methodCall>
-			<methodName>${methodName}</methodName>
-			<params>
-				<param>
-					${xmlParams}
-				</param>
-			</params>
-		</methodCall>`
+	const xmlPayload = xmlrpc.make_request(methodName, params)
 		
 	console.log("PAYLOAD", xmlPayload)
 
