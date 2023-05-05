@@ -74,7 +74,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
               {
                 Services.show_credentials ?
                 <View style={{ padding: 12, borderRadius: 8, backgroundColor: App.theme_settings_group_background_color(), marginBottom: 12 }}>
-                  <Text style={{fontWeight: "500", marginBottom: 12}}>Username:</Text>
+                  <Text style={{fontWeight: "500", marginBottom: 12, color: App.theme_text_color()}}>Username:</Text>
                   <TextInput
                     style={{
                       backgroundColor: App.theme_input_contrast_alt_background_color(),
@@ -92,7 +92,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
                     onChangeText={(text) => Services.set_username(text)}
                     value={Services.temp_username}
                   />
-                  <Text style={{fontWeight: "500", marginBottom: 12}}>Password:</Text>
+                  <Text style={{fontWeight: "500", marginBottom: 12, color: App.theme_text_color()}}>Password:</Text>
                   <TextInput
                     style={{
                       backgroundColor: App.theme_input_contrast_alt_background_color(),
