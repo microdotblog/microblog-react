@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { ScrollView, View, Text, TextInput, TouchableOpacity, Button, Keyboard } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Button, Keyboard, KeyboardAvoidingView } from 'react-native';
 import App from '../../stores/App'
 import Services from '../../stores/Services'
 
@@ -22,7 +22,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
   render() {
     const { user } = this.props
     return(
-      <ScrollView style={{ flex: 1, padding: 15, backgroundColor: App.theme_background_color() }}>
+      <KeyboardAvoidingView behavior="position" style={{ flex: 1, padding: 15, backgroundColor: App.theme_background_color() }}>
         <View style={{ flexDirection: "column", marginTop: 12 }}>
           <Text style={{ marginBottom: 20, color: App.theme_text_color() }}>When writing a new blog post for @{user.username}, post to:</Text>
           <TouchableOpacity style={{flexDirection: "row", alignItems: "center", marginBottom: 12}}>
@@ -137,7 +137,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
             </View>
           </View>
         </View>
-      </ScrollView>
+      </KeyboardAvoidingView>
     )
   }
   
