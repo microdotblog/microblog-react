@@ -34,7 +34,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
                 borderRadius: 50,
                 marginRight: 8
             }} />
-            <Text style={{ color: App.theme_text_color(), fontSize: 16, fontWeight: user.posting?.selected_service?.is_microblog ? "500" : "300" }}>Micro.blog hosted weblog</Text>
+            <Text style={{ color: App.theme_text_color(), fontSize: 16, fontWeight: user.posting?.selected_service?.is_microblog ? "500" : "300" }}>Micro.blog hosted blog</Text>
           </TouchableOpacity>
           <View style={{ flexDirection: "column" }}>
             <TouchableOpacity onPress={this._handle_alternative_site_tap} style={{ flexDirection: "row", alignItems: "center" }}>
@@ -46,9 +46,9 @@ export default class PostOptionsSettingsScreen extends React.Component{
                   borderRadius: 50,
                   marginRight: 8
               }} />
-              <Text style={{ color: App.theme_text_color(), fontSize: 16, fontWeight: user.posting?.selected_service?.is_microblog ? "500" : "300" }}>WordPress or compatible weblog</Text>
+              <Text style={{ color: App.theme_text_color(), fontSize: 16, fontWeight: user.posting?.selected_service?.is_microblog ? "500" : "300" }}>WordPress or compatible blog</Text>
             </TouchableOpacity>
-            <Text style={{ color: App.theme_text_color(), marginTop: 20 }}>Enter a URL to set up another blog. We'll continue to post to a Micro.blog hosted weblog until setup is complete:</Text>
+            <Text style={{ color: App.theme_text_color(), marginTop: 20 }}>Enter a URL to set up an external blog. We'll continue to post to a Micro.blog hosted blog until setup is complete:</Text>
             <View style={{ flexDirection: "column", marginTop: 12 }}>
               <TextInput
                 ref={this.input_ref}
@@ -118,12 +118,12 @@ export default class PostOptionsSettingsScreen extends React.Component{
                   Services.show_credentials ?
                   <>
                     <Button
-                      title="Cancel set up"
+                      title="Cancel"
                       color={App.theme_error_text_color()}
                       onPress={Services.clear}
                     />
                     <Button
-                      title={"Save credentials"}
+                      title={"Sign In"}
                       color={App.theme_accent_color()}
                       onPress={Services.check_credentials_and_proceed_setup}
                       disabled={!Services.can_set_up_credentials() || !Services.has_credentials()}
@@ -131,7 +131,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
                   </>
                   :
                   <Button
-                    title={Services.should_show_set_up() ? "Set up..." : "Remove custom blog..."}
+                    title={Services.should_show_set_up() ? "Set Up..." : "Remove Blog..."}
                     color={Services.should_show_set_up() ? App.theme_accent_color() : App.theme_error_text_color()}
                     onPress={Services.setup_new_service}
                     disabled={!Services.can_set_up() || Services.is_setting_up}
