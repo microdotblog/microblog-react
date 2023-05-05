@@ -1,7 +1,6 @@
 import { Alert, Platform } from 'react-native';
 import axios from 'axios';
 import { DOMParser } from "@xmldom/xmldom";
-import { Buffer } from 'buffer';
 import { XMLParser } from 'fast-xml-parser';
 import xmlrpc from '../utils/xmlrpc';
 
@@ -15,10 +14,7 @@ export const RSD_NOT_FOUND = 8
 export const BLOG_ID_NOT_FOUND = "not_found"
 
 async function xmlRpcCall(url, methodName, params) {
-	// Due to React Native's limitations, we need to add this polyfill
-	global.Buffer = global.Buffer || Buffer;
 
-	// Build the XML-RPC request payload
 	const xmlPayload = xmlrpc.make_request(methodName, params)
 		
 	console.log("PAYLOAD", xmlPayload)

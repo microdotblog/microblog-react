@@ -23,7 +23,6 @@
     "@react-native-menu/menu": "^0.7.3",
     "@xmldom/xmldom": "xmldom/xmldom",
     "axios": "^0.22.0",
-    "buffer": "^6.0.3",
     "fast-xml-parser": "^4.2.2",
     "markdown-it": "^13.0.1",
     "mobx": "^6.3.3",
