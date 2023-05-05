@@ -44,7 +44,14 @@ async function xmlRpcCall(url, methodName, params) {
 		const xmlResponse = await response.text()
 		console.log("Got xmlResponse", xmlResponse)
 		const jsonResponse = parser.parse(xmlResponse)
-		console.log("Got jsonResponse", jsonResponse)
+		console.log("Got jsonResponse", JSON.stringify(jsonResponse))
+
+		if (jsonResponse["methodResponse"]["fault"] != null) {
+			const error_members = jsonResponse["methodResponse"]["fault"]["value"]["struct"]["member"]
+			const error_s = error_members[error_members.length - 1]["value"]["string"]
+			console.log("Fault error:", error_s)
+			throw new Error(error_s)
+		}
 
 		return jsonResponse
 	} catch (err) {
