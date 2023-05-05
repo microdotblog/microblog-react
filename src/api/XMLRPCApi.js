@@ -1,6 +1,8 @@
 import { Alert, Platform } from 'react-native';
 import axios from 'axios';
 import { DOMParser } from "@xmldom/xmldom";
+import { Buffer } from 'buffer';
+import parser from 'fast-xml-parser';
 
 export const FETCH_ERROR = 2
 export const POST_ERROR = 3
@@ -12,14 +14,65 @@ export const RSD_NOT_FOUND = 8
 export const BLOG_ID_NOT_FOUND = "not_found"
 
 class XMLRPCApi {
+	
+	async xmlRpcCall(url, methodName, params) {
+		// Due to React Native's limitations, we need to add this polyfill
+		global.Buffer = global.Buffer || Buffer;
+	
+		// Build the XML-RPC request payload
+		const xmlParams = params.map(param => `<value>${param}</value>`).join('')
+		const xmlPayload = `
+			<?xml version="1.0"?>
+			<methodCall>
+				<methodName>${methodName}</methodName>
+				<params>
+					<param>
+						${xmlParams}
+					</param>
+				</params>
+			</methodCall>`
+	
+		try {
+			const response = await fetch(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'text/xml',
+				},
+				body: xmlPayload,
+			})
+	
+			const xmlResponse = await response.text();
+			const jsonResponse = parser.parse(xmlResponse, {
+				attributeNamePrefix: '@_',
+				attrNodeName: 'attr',
+				textNodeName: '#text',
+				ignoreAttributes: false,
+				ignoreNameSpace: false,
+				allowBooleanAttributes: false,
+				parseNodeValue: true,
+				parseAttributeValue: true,
+				trimValues: true,
+				cdataTagName: '__cdata',
+				cdataPositionChar: '\\c',
+				parseTrueNumberOnly: false,
+				arrayMode: false,
+				stopNodes: ['parse-me-as-string'],
+			})
+	
+			return jsonResponse
+		} catch (err) {
+			console.error('Error in XML-RPC call:', err)
+			throw err
+		}
+	}
 
 	async discover_rsd_endpoint(url) {
 		console.log('XMLRPCApi:discover_rsd_endpoint', url);
 		const rsd_endpoint = axios
 			.get(url)
 			.then(response => {
-				const parser = new DOMParser()
-				const doc = parser.parseFromString(response.data, "text/html")
+				const dom_parser = new DOMParser()
+				const doc = dom_parser.parseFromString(response.data, "text/html")
 				const head = doc.getElementsByTagName('head')[0]
 				const links = head.getElementsByTagName('link')
 				let rsd_link
@@ -48,8 +101,8 @@ class XMLRPCApi {
 		const data = axios
 			.get(url)
 			.then(response => {
-				const parser = new DOMParser()
-				const xmlDoc = parser.parseFromString(response.data, 'text/xml')
+				const dom_parser = new DOMParser()
+				const xmlDoc = dom_parser.parseFromString(response.data, 'text/xml')
 				const apis = xmlDoc.getElementsByTagName('api')
 				let blog_id
 				for (let i = 0; i < apis.length; i++) {
@@ -71,6 +124,22 @@ class XMLRPCApi {
 				return BLOG_ID_NOT_FOUND
 			});
 		return data
+	}
+	
+	async check_credentials_and_get_recent_posts(url, blog_id, username, password){
+		// We should keep all other XML stuff generic and just pass in terms,
+		// However, for now, let's just have the recent_posts one to check for credentials
+		const verb = "metaWeblog.getRecentPosts"
+		const params = [ blog_id, username, password ]
+		
+		this.xmlRpcCall(url, verb, params)
+		.then(data => {
+			console.log('Data received:', data);
+		})
+		.catch(err => {
+			console.error('Error in XML-RPC call:', err);
+		});
+		return false
 	}
   
   async get_config(service) {

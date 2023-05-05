@@ -71,12 +71,69 @@ export default class PostOptionsSettingsScreen extends React.Component{
                 onSubmitEditing={() => {Services.setup_new_service(); Keyboard.dismiss()}}
                 value={Services.current_url}
               />
-              <Button
-                title={Services.should_show_set_up() ? "Set up..." : "Remove custom blog..."}
-                color={Services.should_show_set_up() ? App.theme_accent_color() : App.theme_error_text_color()}
-                onPress={Services.setup_new_service}
-                disabled={!Services.can_set_up() || Services.is_setting_up}
-              />
+              {
+                Services.show_credentials ?
+                <View style={{ padding: 12, borderRadius: 8, backgroundColor: App.theme_settings_group_background_color(), marginBottom: 12 }}>
+                  <Text style={{fontWeight: "500", marginBottom: 12}}>Username:</Text>
+                  <TextInput
+                    style={{
+                      backgroundColor: App.theme_input_contrast_alt_background_color(),
+                      padding: 12,
+                      borderRadius: 8,
+                      color: App.theme_text_color(),
+                      fontSize: 16,
+                      fontWeight: "300",
+                      marginBottom: 12
+                    }}
+                    placeholder="Username"
+                    placeholderTextColor={App.theme_placeholder_text_color()}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                  <Text style={{fontWeight: "500", marginBottom: 12}}>Password:</Text>
+                  <TextInput
+                    style={{
+                      backgroundColor: App.theme_input_contrast_alt_background_color(),
+                      padding: 12,
+                      borderRadius: 8,
+                      color: App.theme_text_color(),
+                      fontSize: 16,
+                      fontWeight: "300"
+                    }}
+                    placeholder="Password"
+                    placeholderTextColor={App.theme_placeholder_text_color()}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    secureTextEntry={true}
+                  />
+                </View>
+                : null
+              }
+              <View style={{flexDirection: "row", justifyContent: Services.show_credentials ? "space-between" : "center"}}>
+                {
+                  Services.show_credentials ?
+                  <>
+                    <Button
+                      title="Cancel set up"
+                      color={App.theme_error_text_color()}
+                      onPress={Services.clear}
+                    />
+                    <Button
+                      title={"Save credentials"}
+                      color={App.theme_accent_color()}
+                      onPress={Services.setup_new_service}
+                      disabled={!Services.can_set_up_credentials()}
+                    />
+                  </>
+                  :
+                  <Button
+                    title={Services.should_show_set_up() ? "Set up..." : "Remove custom blog..."}
+                    color={Services.should_show_set_up() ? App.theme_accent_color() : App.theme_error_text_color()}
+                    onPress={Services.setup_new_service}
+                    disabled={!Services.can_set_up() || Services.is_setting_up}
+                  />
+                }
+              </View>
             </View>
           </View>
         </View>

@@ -25,6 +25,7 @@ export default Services = types.model('Services', {
     self.current_url = ""
     self.xml_endpoint = ""
     self.blog_id = ""
+    self.show_credentials = false
   }),
   
   set_url: flow(function* (text) {
@@ -46,6 +47,7 @@ export default Services = types.model('Services', {
       if(blog_id !== BLOG_ID_NOT_FOUND){
         // We found a blog id, nice!
         self.blog_id = blog_id
+        self.show_credentials = true
       }
       else{
         // TODO: show an error
@@ -73,7 +75,7 @@ export default Services = types.model('Services', {
   
   can_set_up_credentials(){
     // Let's check that we have a Blog ID and endpoint
-    return this.can_set_up() && self.xml_endpoint != "" && self.blog_id != ""
+    return self.xml_endpoint != "" && self.blog_id != ""
   },
   
 }))
