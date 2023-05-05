@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { ScrollView, View, Text, TextInput, TouchableOpacity, Button } from 'react-native';
 import App from '../../stores/App'
+import Services from '../../stores/Services'
 
 @observer
 export default class PostOptionsSettingsScreen extends React.Component{
@@ -66,12 +67,15 @@ export default class PostOptionsSettingsScreen extends React.Component{
                 autoCapitalize="none"
                 autoCorrect={false}
                 returnKeyType="go"
+                onChangeText={(text) => Services.set_url(text)}
+                //onSubmitEditing={() => {Login.trigger_login(); Keyboard.dismiss()}}
+                value={Services.current_url}
               />
               <Button
-                title="Set up..."
-                color="#f80"
+                title={Services.should_show_set_up() ? "Set up..." : "Remove custom blog..."}
+                color={Services.should_show_set_up() ? App.theme_accent_color() : App.theme_error_text_color()}
                 //onPress={}
-                //disabled={!Login.can_submit()}
+                disabled={!Services.can_set_up()}
               />
             </View>
           </View>
