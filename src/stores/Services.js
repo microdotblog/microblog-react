@@ -94,7 +94,8 @@ export default Services = types.model('Services', {
   
   can_set_up(){
     // We want to check if the URL is a URL
-    return StringChecker._validate_url(self.current_url)
+    // return StringChecker._validate_url(self.current_url)
+    return self.current_url.length > 0
   },
   
   should_show_set_up(){
