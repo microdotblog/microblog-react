@@ -1,5 +1,6 @@
 import { Alert, Platform } from 'react-native';
 import axios from 'axios';
+import { DOMParser } from "@xmldom/xmldom";
 
 export const FETCH_ERROR = 2
 export const POST_ERROR = 3
@@ -18,7 +19,16 @@ class XMLRPCApi {
 			.then(response => {
 				const parser = new DOMParser()
 				const doc = parser.parseFromString(response.data, "text/html")
-				const rsd_link = doc.querySelector('link[type="application/rsd+xml"]')
+				const head = doc.getElementsByTagName('head')[0]
+				const links = head.getElementsByTagName('link')
+				let rsd_link
+				for (let i = 0; i < links.length; i++) {
+					const link = links[i];
+					if (link.getAttribute('type') === 'application/rsd+xml') {
+						rsd_link = link;
+						break;
+					}
+				}
 				if (rsd_link) {
 					return rsd_link.getAttribute('href')
 				} else {

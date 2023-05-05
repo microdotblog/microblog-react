@@ -1103,8 +1103,9 @@ export const uploadsScreen = (component_id) => {
   return Navigation.push(component_id, options);
 }
 
-export const postOptionsSettingsScreen = (user, component_id) => {
+export const postOptionsSettingsScreen = async (user, component_id) => {
   console.log("Screens:postOptionsSettingsScreen", user, component_id);
+  await Services.hydrate_with_user(user)
   const options = {
     component: {
       id: POST_OPTIONS_SETTINGS_SCREEN,
