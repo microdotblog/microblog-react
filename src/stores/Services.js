@@ -3,6 +3,7 @@ import XMLRPCApi, { RSD_NOT_FOUND, BLOG_ID_NOT_FOUND, XML_ERROR } from '../api/X
 import Auth from "./Auth";
 import { blog_services } from './enums/blog_services';
 import Tokens from "./Tokens";
+import { Alert } from 'react-native';
 
 export default Services = types.model('Services', {
   is_setting_up: types.optional(types.boolean, false),
@@ -35,6 +36,9 @@ export default Services = types.model('Services', {
   
   set_url: flow(function* (text) {
     self.current_url = text
+    if(self.show_credentials){
+      self.show_credentials = false
+    }
   }),
   
   setup_new_service: flow(function* () {
@@ -61,12 +65,9 @@ export default Services = types.model('Services', {
         self.blog_id = blog_id
         self.show_credentials = true
       }
-      else{
-        // TODO: show an error
-      }
     }
     else{
-      // TODO: show an error
+      Alert.alert("Sorry, we could not find the XML-RPC endpoint or Micropub API for your weblog.")
     }
     self.is_setting_up = false
   }),

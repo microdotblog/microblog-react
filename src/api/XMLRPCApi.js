@@ -49,7 +49,7 @@ async function xmlRpcCall(url, methodName, params) {
 
 		return xmlrpc.from_json(jsonResponse)
 	} catch (err) {
-		console.error('Error in XML-RPC call:', err)
+		console.log('Error in XML-RPC call:', err)
 		throw err
 	}
 }
@@ -76,12 +76,6 @@ class XMLRPCApi {
 				if (rsd_link) {
 					return rsd_link.getAttribute('href')
 				} else {
-					if(err?.toString()?.includes("username or password")){
-						Alert.alert("Whoops. Your username or password is wrong. Please try again.")
-					}
-					else{
-						Alert.alert("Whoops, an error occured trying to find the endpoint. Please try again.")
-					}
 					return RSD_NOT_FOUND
 				}
 			})
@@ -141,7 +135,7 @@ class XMLRPCApi {
 			return true
 		})
 		.catch(err => {
-			console.error('XMLRPCApi:error', err)
+			console.log('XMLRPCApi:error', err)
 			// Check if error is incorrect password/username
 			if(err?.toString()?.includes("username or password")){
 				Alert.alert("Whoops. Your username or password is wrong. Please try again.")

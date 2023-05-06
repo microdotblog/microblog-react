@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TextInput, TouchableOpacity, Button, Keyboard, KeyboardAvoidingView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Button, Keyboard, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
 import App from '../../stores/App'
 import Services from '../../stores/Services'
 
@@ -91,6 +91,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
                     autoCorrect={false}
                     onChangeText={(text) => Services.set_username(text)}
                     value={Services.temp_username}
+                    editable={!Services.checking_credentials}
                   />
                   <Text style={{fontWeight: "500", marginBottom: 12, color: App.theme_text_color()}}>Password:</Text>
                   <TextInput
@@ -109,6 +110,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
                     secureTextEntry={true}
                     onChangeText={(text) => Services.set_password(text)}
                     value={Services.temp_password}
+                    editable={!Services.checking_credentials}
                   />
                 </View>
                 : null
@@ -122,20 +124,32 @@ export default class PostOptionsSettingsScreen extends React.Component{
                       color={App.theme_error_text_color()}
                       onPress={Services.clear}
                     />
-                    <Button
-                      title={"Sign In"}
-                      color={App.theme_accent_color()}
-                      onPress={Services.check_credentials_and_proceed_setup}
-                      disabled={!Services.can_set_up_credentials() || !Services.has_credentials()}
-                    />
+                    <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                      <Button
+                        title={"Sign In"}
+                        color={App.theme_accent_color()}
+                        onPress={Services.check_credentials_and_proceed_setup}
+                        disabled={!Services.can_set_up_credentials() || !Services.has_credentials() || Services.checking_credentials}
+                      />
+                      {
+                        Services.checking_credentials &&
+                        <ActivityIndicator style={{ marginLeft: 8 }} color={App.theme_accent_color()} />
+                      }
+                    </View>
                   </>
                   :
+                  <>
                   <Button
                     title={Services.should_show_set_up() ? "Set Up..." : "Remove Blog..."}
                     color={Services.should_show_set_up() ? App.theme_accent_color() : App.theme_error_text_color()}
                     onPress={Services.setup_new_service}
                     disabled={!Services.can_set_up() || Services.is_setting_up}
                   />
+                  {
+                    Services.is_setting_up &&
+                    <ActivityIndicator style={{marginLeft: 8}} color={App.theme_accent_color()} />
+                  }
+                  </>
                 }
               </View>
             </View>
