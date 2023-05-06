@@ -1,6 +1,8 @@
 import { types, flow } from 'mobx-state-tree';
-import StringChecker from '../utils/string_checker';
-import XMLRPCApi, { RSD_NOT_FOUND, BLOG_ID_NOT_FOUND } from '../api/XMLRPCApi';
+import XMLRPCApi, { RSD_NOT_FOUND, BLOG_ID_NOT_FOUND, XML_ERROR } from '../api/XMLRPCApi';
+import Auth from "./Auth";
+import { blog_services } from './enums/blog_services';
+import Tokens from "./Tokens";
 
 export default Services = types.model('Services', {
   is_setting_up: types.optional(types.boolean, false),
@@ -18,7 +20,7 @@ export default Services = types.model('Services', {
   hydrate_with_user: flow(function* (user = null) {
     console.log("Services:hydrate_with_user", user)
     self.current_username = user.username
-    self.current_url = ""
+    self.current_url = "" // TODO: Fetch all services for user and populate
     self.xml_endpoint = ""
     self.blog_id = ""
   }),
@@ -32,7 +34,6 @@ export default Services = types.model('Services', {
   }),
   
   set_url: flow(function* (text) {
-    console.log("Services:set_url", text)
     self.current_url = text
   }),
   
@@ -68,16 +69,13 @@ export default Services = types.model('Services', {
       // TODO: show an error
     }
     self.is_setting_up = false
-    console.log("Service:self", self)
   }),
   
   set_username: flow(function* (text) {
-    console.log("Services:set_username", text)
     self.temp_username = text
   }),
   
   set_password: flow(function* (text) {
-    console.log("Services:set_password")
     self.temp_password = text
   }),
   
@@ -86,6 +84,24 @@ export default Services = types.model('Services', {
     self.checking_credentials = true
     const data = yield XMLRPCApi.check_credentials_and_get_recent_posts(self.xml_endpoint, self.blog_id, self.temp_username, self.temp_password)
     console.log("Services:check_credentials:data", JSON.stringify(data))
+    if(data !== XML_ERROR){
+      // If we got this far, let's go ahead and add a new service for the user
+      const user = Auth.user_from_username(self.current_username)
+      console.log("Services:check_credentials_and_proceed_setup:user", user)
+      if(user && user?.posting != null){
+        // We've got a user and posting, now let's set up the service
+        const service = yield user.posting?.create_new_service(blog_services["xmlrpc"], self.current_url, self.xml_endpoint, self.temp_username, self.blog_id)
+        console.log("Services:check_credentials_and_proceed_setup:service", service)
+        if(service){
+          // Now that we have a service, let's save a token
+          const token = yield Tokens.create_new_service_token(self.temp_username, self.temp_password, service.id)
+          console.log("Services:check_credentials_and_proceed_setup:token", token != null)
+          if(token != null){
+            // Now we have a saved token! Let's set the service as the active one.
+          }
+        }
+      }
+    }
     self.checking_credentials = false
   })
   
@@ -93,8 +109,6 @@ export default Services = types.model('Services', {
 .views((self) => ({
   
   can_set_up(){
-    // We want to check if the URL is a URL
-    // return StringChecker._validate_url(self.current_url)
     return self.current_url.length > 0
   },
   

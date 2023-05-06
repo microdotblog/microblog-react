@@ -1,4 +1,4 @@
-import { types, flow } from 'mobx-state-tree';
+import { types, flow, destroy } from 'mobx-state-tree';
 import Service from './posting/Service';
 import { blog_services } from './../enums/blog_services';
 import { Alert, Platform, Linking } from 'react-native';
@@ -372,6 +372,29 @@ export default Posting = types.model('Posting', {
       yield asset.upload(self.selected_service.service_object())
     }
     return self.post_assets.every(asset => asset.did_upload)
+  }),
+  
+  create_new_service: flow(function* (blog_service, name, endpoint, username, blog_id = null) {
+    console.log("Posting:create_new_service", blog_service, endpoint, username)
+    const service_id = `endpoint_${blog_service.name}-${username}-${name}`
+    const existing_service = self.services.find(s => s.id === service_id)
+    if(existing_service != null){
+      destroy(existing_service)
+    }
+    const new_service = Service.create({
+      id: service_id,
+      name: name,
+      url: endpoint,
+      username: username,
+      type: blog_service.type,
+      is_microblog: false,
+      blog_id: blog_id
+    })
+    if(new_service){
+      self.services.push(new_service)
+      return new_service
+    }
+    return false
   })
   
 }))

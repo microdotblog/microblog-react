@@ -129,6 +129,10 @@ export default Auth = types.model('Auth', {
   
   all_users_except_current(){
     return self.users.filter(u => u.username !== self.selected_user.username)
+  },
+  
+  user_from_username(username){
+    return self.users.find(u => u.username === username)
   }
   
 }))
