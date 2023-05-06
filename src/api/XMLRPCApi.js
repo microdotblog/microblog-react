@@ -76,11 +76,23 @@ class XMLRPCApi {
 				if (rsd_link) {
 					return rsd_link.getAttribute('href')
 				} else {
+					if(err?.toString()?.includes("username or password")){
+						Alert.alert("Whoops. Your username or password is wrong. Please try again.")
+					}
+					else{
+						Alert.alert("Whoops, an error occured trying to find the endpoint. Please try again.")
+					}
 					return RSD_NOT_FOUND
 				}
 			})
 			.catch(error => {
 				console.log(error)
+				if(error?.toString()?.includes("Network error")){
+					Alert.alert("Whoops. There was an error connecting to the URL. Please check the url and try again.")
+				}
+				else{
+					Alert.alert("Whoops, an error occured trying to connect. Please try again.")
+				}
 				return RSD_NOT_FOUND
 			});
 		return rsd_endpoint
@@ -132,10 +144,10 @@ class XMLRPCApi {
 			console.error('XMLRPCApi:error', err)
 			// Check if error is incorrect password/username
 			if(err?.toString()?.includes("username or password")){
-				Alert.alert("Whoops. Your username or password is wrong. Try again.")
+				Alert.alert("Whoops. Your username or password is wrong. Please try again.")
 			}
 			else{
-				Alert.alert("Whoops, and error occured. Try again.")
+				Alert.alert("Whoops, an error occured. Please try again.")
 			}
 			return XML_ERROR
 		})
