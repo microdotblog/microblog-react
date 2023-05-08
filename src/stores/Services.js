@@ -1,6 +1,6 @@
 import { types, flow } from 'mobx-state-tree';
 import XMLRPCApi, { RSD_NOT_FOUND, BLOG_ID_NOT_FOUND, XML_ERROR } from '../api/XMLRPCApi';
-import MicroPubApi, { MICROPUB_NOT_FOUND } from '../api/MicroPubApi';
+import MicroPubApi, { MICROPUB_NOT_FOUND, FETCH_ERROR, NO_AUTH } from '../api/MicroPubApi';
 import Auth from "./Auth";
 import { blog_services } from './enums/blog_services';
 import Tokens from "./Tokens";
@@ -151,8 +151,18 @@ export default Services = types.model('Services', {
     console.log("Services:check_micropub_credentials_and_proceed_setup", url)
     self.checking_credentials = true
     if(url != null){
-      const data = yield MicroPubApi.verify_code(self, url)
-      console.log("Services:check_micropub_credentials_and_proceed_setup:data", data)
+      const token = yield MicroPubApi.verify_code(self, url)
+      console.log("Services:check_micropub_credentials_and_proceed_setup:data", self.micropub_endpoint)
+      if(token !== NO_AUTH && token !== FETCH_ERROR && self.micropub_endpoint){
+        // Now that we have a token, let's try and get the config
+        const temp_service_object = {
+          endpoint: self.micropub_endpoint,
+          token: token
+        }
+        const config = yield MicroPubApi.get_config(temp_service_object)
+        console.log("Services:check_micropub_credentials_and_proceed_setup:config", config)
+        
+      }
     }
     self.checking_credentials = false
   })
