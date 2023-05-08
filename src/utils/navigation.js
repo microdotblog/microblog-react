@@ -3,6 +3,7 @@ import { Navigation } from "react-native-navigation"
 import App from '../stores/App'
 import Reply from '../stores/Reply'
 import Replies from '../stores/Replies'
+import Services from '../stores/Services'
 import { Screens, replyScreen } from './../screens';
 
 Object.entries(Screens).forEach(([ key, ScreenComponent ]) => {
@@ -19,6 +20,13 @@ Navigation.events().registerComponentDidAppearListener(({ componentName, compone
     default:
       App.set_current_screen_name_and_id(componentName, componentId)
       break;
+  }
+})
+
+Navigation.events().registerComponentDidDisappearListener(({ componentName, componentId }) => {
+  console.log("registerComponentDidDisappearListener", componentName, componentId)
+  if(componentName === "microblog.modal.PostOptionsSettingsScreen"){
+    Services.clear(true)
   }
 })
 

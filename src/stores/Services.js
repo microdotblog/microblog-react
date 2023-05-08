@@ -6,6 +6,8 @@ import { blog_services } from './enums/blog_services';
 import Tokens from "./Tokens";
 import { Alert, Linking } from 'react-native';
 
+let listener  = null;
+
 export default Services = types.model('Services', {
   is_setting_up: types.optional(types.boolean, false),
   current_url: types.optional(types.string, ""),
@@ -32,18 +34,21 @@ export default Services = types.model('Services', {
     self.auth_endpoint = ""
     self.token_endpoint = ""
     self.blog_id = ""
+    console.log("Services:hydrate_with_user:listener", listener)
+    if(listener == null){
+      listener = Linking.addEventListener('url', (event) => {
+        console.log("Services:hydrate_event_listener:event", event)
+        if(event?.url && event?.url.includes('/indieauth') && Auth.is_logged_in()){
+          // auth code will come back like microblog://indieauth?code=ABCDE&state=12345
+          console.log("Micropub:Opened app with IndieAuth")
+          Services.check_micropub_credentials_and_proceed_setup(event?.url)
+        }
+      })
+    }
     
-    Linking.addEventListener('url', (event) => {
-      console.log("Services:hydrate_event_listener:event", event)
-      if(event?.url && event?.url.includes('/indieauth') && Auth.is_logged_in()){
-        // auth code will come back like microblog://indieauth?code=ABCDE&state=12345
-        console.log("Micropub:Opened app with IndieAuth")
-        Services.check_micropub_credentials_and_proceed_setup(event?.url)
-      }
-    })
   }),
   
-  clear: flow(function* () {
+  clear: flow(function* (clear_listener = false) {
     console.log("Services:clear")
     self.current_url = ""
     self.xml_endpoint = ""
@@ -52,6 +57,10 @@ export default Services = types.model('Services', {
     self.token_endpoint = ""
     self.blog_id = ""
     self.show_credentials = false
+    
+    if(clear_listener && listener != null){
+      listener.remove()
+    }
   }),
   
   set_url: flow(function* (text) {
