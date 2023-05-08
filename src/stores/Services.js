@@ -11,11 +11,15 @@ export default Services = types.model('Services', {
   current_url: types.optional(types.string, ""),
   current_username: types.optional(types.string, ""),
   xml_endpoint: types.optional(types.string, ""),
+  micropub_endpoint: types.optional(types.string, ""),
+  auth_endpoint: types.optional(types.string, ""),
+  token_endpoint: types.optional(types.string, ""),
   blog_id: types.optional(types.string, ""),
   show_credentials: types.optional(types.boolean, false),
   checking_credentials: types.optional(types.boolean, false),
   temp_username: types.optional(types.string, ""),// We don't save the Services model in Async, so this is all temp data
-  temp_password: types.optional(types.string, "")// We don't save the Services model in Async, so this is all temp data
+  temp_password: types.optional(types.string, ""),// We don't save the Services model in Async, so this is all temp data
+  temp_micropub_token: types.optional(types.string, "")
 })
 .actions(self => ({
   
@@ -24,6 +28,9 @@ export default Services = types.model('Services', {
     self.current_username = user.username
     self.current_url = "" // TODO: Fetch all services for user and populate
     self.xml_endpoint = ""
+    self.micropub_endpoint = ""
+    self.auth_endpoint = ""
+    self.token_endpoint = ""
     self.blog_id = ""
   }),
   
@@ -31,6 +38,9 @@ export default Services = types.model('Services', {
     console.log("Services:clear")
     self.current_url = ""
     self.xml_endpoint = ""
+    self.micropub_endpoint = ""
+    self.auth_endpoint = ""
+    self.token_endpoint = ""
     self.blog_id = ""
     self.show_credentials = false
   }),
@@ -56,6 +66,9 @@ export default Services = types.model('Services', {
     const micropub_endpoints = yield MicroPubApi.discover_micropub_endpoints(discover_url)
     if (micropub_endpoints !== MICROPUB_NOT_FOUND) {
       console.log("Micropub: Found endpoints:", micropub_endpoints)
+      self.micropub_endpoint = micropub_endpoints["micropub"]
+      self.auth_endpoint = micropub_endpoints["auth"]
+      self.token_endpoint = micropub_endpoints["token"]
       let auth_url = MicroPubApi.make_auth_url(discover_url, micropub_endpoints["auth"])
       console.log("Micropub: Make auth:", auth_url)
       Linking.openURL(auth_url)

@@ -73,6 +73,40 @@ class MicroPubApi {
 		return new_url
 	}
 
+	async verify_code(service, auth_url) {		
+		const regex = /[?&]code=([^&]+)/
+		const match = regex.exec(auth_url)
+		if (match) {			
+			const auth_code = match[1];
+			console.log("Micropub: Got code:", auth_code);
+			console.log("Micropub: Sending to", service.token_endpoint)
+			var params_s = ""
+			params_s = params_s + "client_id=" + encodeURIComponent("https://micro.blog/")
+			params_s = params_s	+ "&code=" + encodeURIComponent(auth_code)
+			const verify_response = axios
+				.post(service.token_endpoint, params_s, {
+					headers: {
+						"Content-type": "application/x-www-form-urlencoded",
+						"Accept": "application/json"
+					}
+				})
+				.then(response => {
+					const access_token = response.data["access_token"]
+					console.log("Micropub: Got access token:", access_token)
+					service.temp_micropub_token = access_token
+					return access_token
+				})
+				.catch(error => {
+					console.log(error)
+					return FETCH_ERROR;
+				});
+			return verify_response
+		}
+		else {
+			return NO_AUTH
+		}
+	}
+
 	async get_config(service) {
 		console.log('MicroPubApi:get_config', service.username);
 		const config = axios
