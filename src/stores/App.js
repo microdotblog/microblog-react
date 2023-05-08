@@ -99,6 +99,9 @@ export default App = types.model('App', {
       else if(event?.url && event?.url.includes('/post?text=') && Auth.is_logged_in()){
         App.navigate_to_screen("post", event.url)
       }
+      else if(event?.url && event?.url.includes('/indieauth')){
+        return
+      }
       else if (event?.url) {
         self.handle_url(event?.url)
       }
