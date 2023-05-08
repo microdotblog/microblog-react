@@ -1,5 +1,6 @@
 import { Alert, Platform } from 'react-native';
 import axios from 'axios';
+import { DOMParser } from "@xmldom/xmldom";
 
 export const FETCH_ERROR = 2
 export const POST_ERROR = 3
@@ -7,10 +8,72 @@ export const FETCH_OK = 4
 export const POST_OK = 5
 export const NO_AUTH = 6
 export const DELETE_ERROR = 7
+export const MICROPUB_NOT_FOUND = 8
 
 class MicroPubApi {
   
-  async get_config(service) {
+	async discover_micropub_endpoints(url) {
+		console.log('MicroPubApi:discover_micropub_endpoints', url);
+		const micropub_endpoints = axios
+			.get(url)
+			.then(response => {
+				const dom_parser = new DOMParser()
+				const doc = dom_parser.parseFromString(response.data, "text/html")
+				const head = doc.getElementsByTagName('head')[0]
+				const links = head.getElementsByTagName('link')
+				var micropub_link
+				var auth_link
+				var token_link
+				for (let i = 0; i < links.length; i++) {
+					const link = links[i];
+					if (link.getAttribute('rel') === 'micropub') {
+						micropub_link = link;
+					}
+					else if (link.getAttribute('rel') === 'authorization_endpoint') {
+						auth_link = link;
+					}
+					else if (link.getAttribute('rel') === 'token_endpoint') {
+						token_link = link;
+					}
+				}
+				if (micropub_link && auth_link && token_link) {
+					return {
+						"micropub": micropub_link.getAttribute('href'),
+						"auth": auth_link.getAttribute('href'),
+						"token": token_link.getAttribute('href')
+					}
+				} else {
+					return MICROPUB_NOT_FOUND
+				}
+			})
+			.catch(error => {
+				console.log(error)
+				if(error?.toString()?.includes("Network error")){
+					Alert.alert("Whoops. There was an error connecting to the URL. Please check the url and try again.")
+				}
+				else{
+					Alert.alert("Whoops, an error occured trying to connect. Please try again.")
+				}
+				return MICROPUB_NOT_FOUND
+			});
+		return micropub_endpoints
+	}
+
+	make_auth_url(me_url, base_auth_url) {
+		var new_url = base_auth_url		
+		var new_state = Math.floor(Math.random() * 10000).toString(); // need to store this
+		
+		new_url = new_url + "?me=" + encodeURIComponent(me_url)
+		new_url = new_url + "&redirect_uri=" + encodeURIComponent("microblog://indieauth")
+		new_url = new_url + "&client_id=" + encodeURIComponent("https://micro.blog/")
+		new_url = new_url + "&state=" + new_state
+		new_url = new_url + "&scope=" + "create"
+		new_url = new_url + "&response_type=" + "code"
+		
+		return new_url
+	}
+
+	async get_config(service) {
 		console.log('MicroPubApi:get_config', service.username);
 		const config = axios
 			.get(service.endpoint, {

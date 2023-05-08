@@ -1,9 +1,10 @@
 import { types, flow } from 'mobx-state-tree';
 import XMLRPCApi, { RSD_NOT_FOUND, BLOG_ID_NOT_FOUND, XML_ERROR } from '../api/XMLRPCApi';
+import MicroPubApi, { MICROPUB_NOT_FOUND } from '../api/MicroPubApi';
 import Auth from "./Auth";
 import { blog_services } from './enums/blog_services';
 import Tokens from "./Tokens";
-import { Alert } from 'react-native';
+import { Alert, Linking } from 'react-native';
 
 export default Services = types.model('Services', {
   is_setting_up: types.optional(types.boolean, false),
@@ -51,24 +52,33 @@ export default Services = types.model('Services', {
       discover_url = "https://" + discover_url
     }
   
-    // For now, let's just figure out XMLRPC endpoint.
-    // We should offer MicroPub first as default though
-    const rsd_link = yield XMLRPCApi.discover_rsd_endpoint(discover_url)
-    console.log("Services:setup_new_service:rsd_link", rsd_link)
-    if(rsd_link !== RSD_NOT_FOUND){
-      // OK, so we found the RSD link, now we need to get the preferred blog ID
-      self.xml_endpoint = rsd_link.replace("?rsd", "")
-      const blog_id = yield XMLRPCApi.discover_preferred_blog(rsd_link)
-      console.log("Services:setup_new_service:blog_id", blog_id)
-      if(blog_id !== BLOG_ID_NOT_FOUND){
-        // We found a blog id, nice!
-        self.blog_id = blog_id
-        self.show_credentials = true
+    // check for Micropub first, then try XML-RPC
+    const micropub_endpoints = yield MicroPubApi.discover_micropub_endpoints(discover_url)
+    if (micropub_endpoints !== MICROPUB_NOT_FOUND) {
+      console.log("Micropub: Found endpoints:", micropub_endpoints)
+      let auth_url = MicroPubApi.make_auth_url(discover_url, micropub_endpoints["auth"])
+      console.log("Micropub: Make auth:", auth_url)
+      Linking.openURL(auth_url)
+    }
+    else {
+      const rsd_link = yield XMLRPCApi.discover_rsd_endpoint(discover_url)
+      console.log("Services:setup_new_service:rsd_link", rsd_link)
+      if(rsd_link !== RSD_NOT_FOUND){
+        // OK, so we found the RSD link, now we need to get the preferred blog ID
+        self.xml_endpoint = rsd_link.replace("?rsd", "")
+        const blog_id = yield XMLRPCApi.discover_preferred_blog(rsd_link)
+        console.log("Services:setup_new_service:blog_id", blog_id)
+        if(blog_id !== BLOG_ID_NOT_FOUND){
+          // We found a blog id, nice!
+          self.blog_id = blog_id
+          self.show_credentials = true
+        }
+      }
+      else{
+        Alert.alert("Sorry, we could not find the XML-RPC endpoint or Micropub API for your weblog.")
       }
     }
-    else{
-      Alert.alert("Sorry, we could not find the XML-RPC endpoint or Micropub API for your weblog.")
-    }
+    
     self.is_setting_up = false
   }),
   
