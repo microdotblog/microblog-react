@@ -99,11 +99,6 @@ export default App = types.model('App', {
       else if(event?.url && event?.url.includes('/post?text=') && Auth.is_logged_in()){
         App.navigate_to_screen("post", event.url)
       }
-      else if(event?.url && event?.url.includes('/indieauth') && Auth.is_logged_in()){
-        // auth code will come back like microblog://indieauth?code=ABCDE&state=12345
-        console.log("Micropub: Opened app with IndieAuth")
-        MicroPubApi.verify_code(Services, event?.url)
-      }
       else if (event?.url) {
         self.handle_url(event?.url)
       }

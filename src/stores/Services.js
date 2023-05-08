@@ -32,6 +32,15 @@ export default Services = types.model('Services', {
     self.auth_endpoint = ""
     self.token_endpoint = ""
     self.blog_id = ""
+    
+    Linking.addEventListener('url', (event) => {
+      console.log("Services:hydrate_event_listener:event", event)
+      if(event?.url && event?.url.includes('/indieauth') && Auth.is_logged_in()){
+        // auth code will come back like microblog://indieauth?code=ABCDE&state=12345
+        console.log("Micropub:Opened app with IndieAuth")
+        Services.check_micropub_credentials_and_proceed_setup(event?.url)
+      }
+    })
   }),
   
   clear: flow(function* () {
@@ -125,6 +134,16 @@ export default Services = types.model('Services', {
           }
         }
       }
+    }
+    self.checking_credentials = false
+  }),
+  
+  check_micropub_credentials_and_proceed_setup: flow(function* (url) {
+    console.log("Services:check_micropub_credentials_and_proceed_setup", url)
+    self.checking_credentials = true
+    if(url != null){
+      const data = yield MicroPubApi.verify_code(self, url)
+      console.log("Services:check_micropub_credentials_and_proceed_setup:data", data)
     }
     self.checking_credentials = false
   })
