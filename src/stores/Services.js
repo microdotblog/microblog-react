@@ -161,7 +161,22 @@ export default Services = types.model('Services', {
         }
         const config = yield MicroPubApi.get_config(temp_service_object)
         console.log("Services:check_micropub_credentials_and_proceed_setup:config", config)
-        
+        if(config !== FETCH_ERROR){
+          const user = Auth.user_from_username(self.current_username)
+          console.log("Services:check_micropub_credentials_and_proceed_setup:user", user)
+          if(user && user?.posting != null){
+            const service = yield user.posting?.create_new_service(blog_services["micropub"], self.current_url, temp_service_object.endpoint, self.current_username)
+            console.log("Services:check_credentials_and_proceed_setup:service", service)
+            if(service){
+              // Now that we have a service, let's save a token
+              const new_token = yield Tokens.create_new_service_token(self.current_username, temp_service_object.token, service.id)
+              console.log("Services:check_micropub_credentials_and_proceed_setup:token", new_token != null)
+              if(new_token != null){
+                // Now we have a saved token! Let's set the service as the active one.
+              }
+            }
+          }
+        }
       }
     }
     self.checking_credentials = false
