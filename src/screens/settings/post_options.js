@@ -145,7 +145,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
                   <Button
                     title={Services.should_show_set_up() ? "Set Up..." : "Remove Blog..."}
                     color={Services.should_show_set_up() ? App.theme_accent_color() : App.theme_error_text_color()}
-                    onPress={Services.should_show_set_up() ? Services.setup_new_service : Services.remove_custom_service}
+                    onPress={Services.should_show_set_up() ? Services.setup_new_service : Services.trigger_custom_service_delete}
                     disabled={!Services.can_set_up() || Services.is_setting_up}
                   />
                   {

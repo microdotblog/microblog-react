@@ -217,6 +217,25 @@ export default Services = types.model('Services', {
     }
   }),
   
+  trigger_custom_service_delete: flow(function* () {
+    Alert.alert(
+      "Remove blog?",
+      "Are you sure you want to remove this blog?",
+      [
+        {
+          text: "Cancel",
+          style: 'cancel',
+        },
+        {
+          text: "Remove",
+          onPress: () => self.remove_custom_service(),
+          style: 'destructive'
+        },
+      ],
+      {cancelable: false},
+    );
+  }),
+  
   remove_custom_service: flow(function* () {
     console.log("Services:remove_custom_service")
     if(Services.current_user() != null && Services.current_user()?.posting != null){
