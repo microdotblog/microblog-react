@@ -30,7 +30,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
               style={{
                 width: 8,
                 height: 8,
-                backgroundColor: user.posting?.selected_service?.is_microblog ? App.theme_accent_color() : App.theme_text_color(),
+                backgroundColor: user.posting?.selected_service?.is_microblog ? App.theme_accent_color() : App.theme_input_contrast_background_color(),
                 borderRadius: 50,
                 marginRight: 8
             }} />
@@ -70,6 +70,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
                 onChangeText={(text) => Services.set_url(text)}
                 onSubmitEditing={() => {Services.setup_new_service(); Keyboard.dismiss()}}
                 value={Services.current_url}
+                editable={!Services.did_set_up_successfully}
               />
               {
                 Services.show_credentials ?
@@ -142,7 +143,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
                   <Button
                     title={Services.should_show_set_up() ? "Set Up..." : "Remove Blog..."}
                     color={Services.should_show_set_up() ? App.theme_accent_color() : App.theme_error_text_color()}
-                    onPress={Services.setup_new_service}
+                    onPress={Services.should_show_set_up() ? Services.setup_new_service : Services.remove_custom_service}
                     disabled={!Services.can_set_up() || Services.is_setting_up}
                   />
                   {

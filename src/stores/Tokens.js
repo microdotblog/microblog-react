@@ -40,6 +40,14 @@ export default Tokens = types.model('Tokens', {
     }
   }),
   
+  destroy_token_for_service_id: flow(function* (service_id) {
+    console.log("Tokens:destroy_token_for_service_id", service_id)
+    const existing_token = self.tokens.find(t => t.service_id === service_id && t.type === "service")
+    if(existing_token != null){
+      destroy(existing_token)
+    }
+  }),
+  
   create_new_service_token: flow(function* (username, password, service_id) {
     console.log("Tokens:create_new_service_token", username, service_id)
     const existing_token = self.tokens.find(t => t.service_id === service_id)

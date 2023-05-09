@@ -6,8 +6,6 @@ import { blog_services } from './enums/blog_services';
 import Tokens from "./Tokens";
 import { Alert, Linking } from 'react-native';
 
-let listener  = null;
-
 export default Services = types.model('Services', {
   is_setting_up: types.optional(types.boolean, false),
   current_url: types.optional(types.string, ""),
@@ -29,27 +27,25 @@ export default Services = types.model('Services', {
   hydrate_with_user: flow(function* (user = null) {
     console.log("Services:hydrate_with_user", user)
     self.current_username = user.username
-    self.current_url = "" // TODO: Fetch all services for user and populate
+    if(user != null && !user.posting?.selected_service?.is_microblog){
+      self.current_url = user.posting?.selected_service?.name // I know, bad property name
+      self.did_set_up_successfully = true
+    }
+    else if(user != null && user.posting?.first_custom_service()?.name){
+      self.current_url = user.posting?.first_custom_service().name
+      self.did_set_up_successfully = true
+    }
+    else{
+      self.current_url = ""
+    }
     self.xml_endpoint = ""
     self.micropub_endpoint = ""
     self.auth_endpoint = ""
     self.token_endpoint = ""
     self.blog_id = ""
-    console.log("Services:hydrate_with_user:listener", listener)
-    if(listener == null){
-      listener = Linking.addEventListener('url', (event) => {
-        console.log("Services:hydrate_event_listener:event", event)
-        if(event?.url && event?.url.includes('/indieauth') && Auth.is_logged_in()){
-          // auth code will come back like microblog://indieauth?code=ABCDE&state=12345
-          console.log("Micropub:Opened app with IndieAuth")
-          Services.check_micropub_credentials_and_proceed_setup(event?.url)
-        }
-      })
-    }
-    
   }),
   
-  clear: flow(function* (clear_listener = false) {
+  clear: flow(function* () {
     console.log("Services:clear")
     self.current_url = ""
     self.xml_endpoint = ""
@@ -59,10 +55,6 @@ export default Services = types.model('Services', {
     self.blog_id = ""
     self.show_credentials = false
     self.did_set_up_successfully = false
-    
-    if(clear_listener && listener != null){
-      listener.remove()
-    }
   }),
   
   set_url: flow(function* (text) {
@@ -209,6 +201,21 @@ export default Services = types.model('Services', {
         service.hydrate()
       }
     }
+  }),
+  
+  remove_custom_service: flow(function* () {
+    console.log("Services:remove_custom_service")
+    if(Services.current_user() != null && Services.current_user()?.posting != null){
+      if(!Services.current_user()?.posting.selected_service?.is_microblog){
+        const service = yield Services.current_user().posting.set_default_service()
+        if(service != null){
+          console.log("Services:remove_custom_service:new_service_set_up", service)
+          service.hydrate()
+        }
+      }
+      Services.current_user()?.posting.remove_custom_services()
+      self.clear()
+    }
   })
   
 }))
@@ -219,8 +226,7 @@ export default Services = types.model('Services', {
   },
   
   should_show_set_up(){
-    // TODO: Check if the user has existing credentials, if not, show the set up button
-    return true
+    return !self.did_set_up_successfully
   },
   
   can_set_up_credentials(){
@@ -230,6 +236,10 @@ export default Services = types.model('Services', {
   
   has_credentials(){
     return self.temp_password != "" && self.temp_username != ""
+  },
+  
+  current_user(){
+    return Auth.user_from_username(self.current_username)
   }
   
 }))

@@ -10,6 +10,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { imageOptionsScreen, POSTING_SCREEN } from '../../screens';
 import { imageCropScreen } from '../../screens';
 import { Navigation } from 'react-native-navigation';
+import Tokens from '../Tokens';
 import md from 'markdown-it';
 const parser = md({ html: true });
 
@@ -412,11 +413,26 @@ export default Posting = types.model('Posting', {
     return false
   }),
   
+  remove_custom_services: flow(function* () {
+    console.log("Posting:remove_custom_services")
+    const services = self.services.filter(s => !s.is_microblog)
+    if(services){
+      services.forEach((service) => {
+        Tokens.destroy_token_for_service_id(service.id)
+        destroy(service)
+      })
+    }
+  }),
+  
 }))
 .views(self => ({
   
   posting_enabled(){
     return self.username != null && self.services != null && self.selected_service && self.selected_service.credentials()?.token != null
+  },
+  
+  first_custom_service(){
+    return self.services != null && self.services.length > 1 ? self.services.find(s => !s.is_microblog) : null
   },
   
   post_text_length(){

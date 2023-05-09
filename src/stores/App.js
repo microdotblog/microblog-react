@@ -15,7 +15,7 @@ import Settings from "./Settings"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Contact from './models/posting/Contact'
 import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
-import MicroPubApi from '../api/MicroPubApi';
+import Services from './Services';
 // import ShareMenu from 'react-native-share-menu'
 
 let SCROLLING_TIMEOUT = null
@@ -99,8 +99,9 @@ export default App = types.model('App', {
       else if(event?.url && event?.url.includes('/post?text=') && Auth.is_logged_in()){
         App.navigate_to_screen("post", event.url)
       }
-      else if(event?.url && event?.url.includes('/indieauth')){
-        return
+      else if(event?.url && event?.url.includes('/indieauth') && Auth.is_logged_in()){
+        console.log("Micropub:Opened app with IndieAuth")
+        Services.check_micropub_credentials_and_proceed_setup(event?.url)
       }
       else if (event?.url) {
         self.handle_url(event?.url)
