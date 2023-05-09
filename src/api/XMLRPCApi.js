@@ -166,85 +166,50 @@ class XMLRPCApi {
 
 	async send_post(service, content, title = null, images = [], categories = [], status = null) {
 		console.log('MicroBlogApi:send_post', service, content, title, images, status);
-		const params = new FormData()
-		params.append('h', 'entry')
-		params.append('content', content)
-		if (title) {
-			params.append('name', title)
+		const verb = "metaWeblog.newPost"
+		const blog_id = 0
+		var info = {
+			title: title,
+			description: content,
+			categories: categories,
+			post_status: status
 		}
-		if (status) {
-			params.append('post-status', status)
-		}
-		if (images.length) {
-			const images_with_url = images.filter(image => image.remote_url !== null && image.did_upload)
-			if (images_with_url) {
-				// Now that we have images, we can append them to our params
-				if (images_with_url.length === 1) {
-					const first_image = images_with_url[0]
-					params.append('photo', first_image.remote_url)
-					if(first_image.alt_text != null && first_image.alt_text !== ""){
-						params.append('mp-photo-alt', first_image.alt_text)
-					}
-				}
-				else {
-					images_with_url.map((image) => {
-						params.append('photo[]', image.remote_url)
-						if(image.alt_text != null && image.alt_text !== ""){
-							params.append('mp-photo-alt[]', image.alt_text)
-						}
-					})
-				}
-			}
-		}
-		if (categories.length) {
-			categories.map((category) => {
-				params.append('category[]', category)
-			})
-		}
-		params.append('mp-destination', service.destination)
-		console.log("MicroBlogApi:send_post:FORM_DATA:PARAMS", params)
+		const username = service.temp_username
+		const password = service.temp_password
+		const params = [ blog_id, username, password, info ]
 		
-		const post = axios
-			.post(service.endpoint, params ,{
-				headers: { Authorization: `Bearer ${service.token}` }
-			})
-			.then(() => {
-				return true;
-			})
-			.catch(error => {
-				console.log("MicroBlogApi:send_post:ERROR", error.response.status, error.response.data);
-				if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
-					Alert.alert(
-						"Something went wrong.",
-						`${error.response.data.error_description}`,
-					)
-				}
-				else {
-					Alert.alert(
-						"Something went wrong.",
-						`Please try again later.`,
-					)
-				}
-				return POST_ERROR;
-			});
-		return post;
+		const response = xmlRpcCall(url, verb, params)
+		.then(data => {
+			console.log('Data received:', data)
+			return true
+		})
+		.catch(err => {
+			console.log('XMLRPCApi:error', err)
+			Alert.alert("An error occured. Please try again.")
+			return XML_ERROR
+		})
+		return response
 	}
 
 	async get_categories(service, destination = null) {
 		console.log('MicroPubApi:get_categories');
-		const config = axios
-			.get(service.endpoint, {
-				headers: { Authorization: `Bearer ${service.token}` },
-				params: { q: "category", "mp-destination": destination }
-			})
-			.then(response => {
-				return response.data;
-			})
-			.catch(error => {
-				console.log(error);
-				return FETCH_ERROR;
-			});
-		return config;
+		const verb = "metaWeblog.getCategories"
+		const blog_id = 0
+		const username = service.temp_username
+		const password = service.temp_password
+		const params = [ blog_id, username, password ]
+		
+		const response = xmlRpcCall(url, verb, params)
+		.then(data => {
+			console.log('Data received:', data)
+			return true
+		})
+		.catch(err => {
+			console.log('XMLRPCApi:error', err)
+			Alert.alert("An error occured. Please try again.")
+			return XML_ERROR
+		})
+		return response
 	}
 
 	async upload_image(service, file) {
