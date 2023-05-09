@@ -413,6 +413,14 @@ export default Posting = types.model('Posting', {
     return false
   }),
   
+  set_custom_service: flow(function* () {
+    if(self.services.length > 0 && self.first_custom_service() != null){
+      self.selected_service = self.first_custom_service()
+      return self.selected_service
+    }
+    return false
+  }),
+  
   remove_custom_services: flow(function* () {
     console.log("Posting:remove_custom_services")
     const services = self.services.filter(s => !s.is_microblog)

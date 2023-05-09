@@ -176,6 +176,7 @@ export default Services = types.model('Services', {
                   const activated = yield user.posting?.activate_new_service(service)
                   if(activated){
                     // We need to change the state of the current active one displayed on the page...
+                    self.did_set_up_successfully = true
                   }
                 }
                 else{
@@ -198,6 +199,19 @@ export default Services = types.model('Services', {
       const service = yield user.posting.set_default_service()
       if(service != null){
         console.log("Services:set_microblog_service:new_service_set_up", service)
+        service.hydrate()
+      }
+    }
+  }),
+  
+  set_custom_service: flow(function* () {
+    console.log("Services:set_custom_service")
+    const user = Auth.user_from_username(self.current_username)
+    console.log("Services:set_custom_service:user", user)
+    if(user && user?.posting != null){
+      const service = yield user.posting.set_custom_service()
+      if(service != null){
+        console.log("Services:set_custom_service:new_service_set_up", service)
         service.hydrate()
       }
     }

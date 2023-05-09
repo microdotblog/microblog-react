@@ -13,9 +13,11 @@ export default class PostOptionsSettingsScreen extends React.Component{
   }
   
   _handle_alternative_site_tap = () => {
-    // TODO: Let's highlight the input for now until we have more data
-    if(this.input_ref?.current != null){
+    if(this.input_ref?.current != null && !Services.did_set_up_successfully){
       this.input_ref?.current.focus()
+    }
+    else if(Services.did_set_up_successfully){
+      Services.set_custom_service()
     }
   }
   
@@ -46,7 +48,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
                   borderRadius: 50,
                   marginRight: 8
               }} />
-              <Text style={{ color: App.theme_text_color(), fontSize: 16, fontWeight: user.posting?.selected_service?.is_microblog ? "500" : "300" }}>WordPress or compatible blog</Text>
+              <Text style={{ color: App.theme_text_color(), fontSize: 16, fontWeight: !user.posting?.selected_service?.is_microblog ? "500" : "300" }}>WordPress or compatible blog</Text>
             </TouchableOpacity>
             <Text style={{ color: App.theme_text_color(), marginTop: 20 }}>Enter a URL to set up an external blog. We'll continue to post to a Micro.blog hosted blog until setup is complete:</Text>
             <View style={{ flexDirection: "column", marginTop: 12 }}>
