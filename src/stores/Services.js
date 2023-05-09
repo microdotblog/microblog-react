@@ -21,7 +21,8 @@ export default Services = types.model('Services', {
   checking_credentials: types.optional(types.boolean, false),
   temp_username: types.optional(types.string, ""),// We don't save the Services model in Async, so this is all temp data
   temp_password: types.optional(types.string, ""),// We don't save the Services model in Async, so this is all temp data
-  temp_micropub_token: types.optional(types.string, "")
+  temp_micropub_token: types.optional(types.string, ""),
+  did_set_up_successfully: types.optional(types.boolean, false)
 })
 .actions(self => ({
   
@@ -57,6 +58,7 @@ export default Services = types.model('Services', {
     self.token_endpoint = ""
     self.blog_id = ""
     self.show_credentials = false
+    self.did_set_up_successfully = false
     
     if(clear_listener && listener != null){
       listener.remove()
@@ -140,6 +142,10 @@ export default Services = types.model('Services', {
           console.log("Services:check_credentials_and_proceed_setup:token", token != null)
           if(token != null){
             // Now we have a saved token! Let's set the service as the active one.
+            const activated = yield user.posting?.activate_new_service(service)
+            if(activated){
+              // We need to change the state of the current active one displayed on the page...
+            }
           }
         }
       }
@@ -173,6 +179,16 @@ export default Services = types.model('Services', {
               console.log("Services:check_micropub_credentials_and_proceed_setup:token", new_token != null)
               if(new_token != null){
                 // Now we have a saved token! Let's set the service as the active one.
+                const config_is_set_up = yield service.set_initial_config(config)
+                if(config_is_set_up){
+                  const activated = yield user.posting?.activate_new_service(service)
+                  if(activated){
+                    // We need to change the state of the current active one displayed on the page...
+                  }
+                }
+                else{
+                  Alert.alert("Sorry, something went wrong setting up your Micropub endpoint. Please try again.")
+                }
               }
             }
           }
@@ -180,6 +196,19 @@ export default Services = types.model('Services', {
       }
     }
     self.checking_credentials = false
+  }),
+  
+  set_microblog_service: flow(function* () {
+    console.log("Services:set_microblog_service")
+    const user = Auth.user_from_username(self.current_username)
+    console.log("Services:set_microblog_service:user", user)
+    if(user && user?.posting != null){
+      const service = yield user.posting.set_default_service()
+      if(service != null){
+        console.log("Services:set_microblog_service:new_service_set_up", service)
+        service.hydrate()
+      }
+    }
   })
   
 }))

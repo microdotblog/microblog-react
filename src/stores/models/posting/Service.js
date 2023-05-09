@@ -23,7 +23,8 @@ export default Service = types.model('Service', {
 
   hydrate: flow(function* () {
     console.log("Endpoint:hydrate", self.id)
-    if(self.is_microblog){
+    if(self.is_microblog || self.type === "micropub"){
+      if(self.credentials()?.token == null){return}
       const config = yield MicroPubApi.get_config(self.service_object())
       console.log("Endpoint:hydrate:config", config)
       if(config){
@@ -258,13 +259,28 @@ export default Service = types.model('Service', {
         }
       }
     })
+  }),
+  
+  set_initial_config: flow(function* (config) {
+    if((self.is_microblog || self.type === "micropub") && self.credentials()?.token != null){
+      console.log("Service:set_initial_config:config", config)
+      if(config){
+        self.config = config
+        self.config.hydrate_default_destination()
+        if(App.is_share_extension){
+          self.check_for_categories()
+        }
+        return true
+      }
+    }
+    return false
   })
   
 }))
 .views(self => ({
   
   credentials() {
-    return self.name != null && self.name === "Micro.blog" && self.username != null && self.is_microblog ? Tokens.token_for_username(self.username) : null
+    return self.name != null && self.name === "Micro.blog" && self.username != null && self.is_microblog ? Tokens.token_for_username(self.username) : Tokens.token_for_service_id(self.id)
   },
   
   service_object(){

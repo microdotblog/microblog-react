@@ -25,7 +25,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
       <KeyboardAvoidingView behavior="position" style={{ flex: 1, padding: 15, backgroundColor: App.theme_background_color() }}>
         <View style={{ flexDirection: "column", marginTop: 12 }}>
           <Text style={{ marginBottom: 20, color: App.theme_text_color() }}>When writing a new blog post for @{user.username}, post to:</Text>
-          <TouchableOpacity style={{flexDirection: "row", alignItems: "center", marginBottom: 12}}>
+          <TouchableOpacity onPress={Services.set_microblog_service} style={{flexDirection: "row", alignItems: "center", marginBottom: 12}}>
             <View
               style={{
                 width: 8,

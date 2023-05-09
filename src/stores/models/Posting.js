@@ -395,7 +395,22 @@ export default Posting = types.model('Posting', {
       return new_service
     }
     return false
-  })
+  }),
+  
+  activate_new_service: flow(function* (service = null) {
+    if(service === null){return false}
+    self.selected_service = service
+    console.log("Posting:activate_new_service", service)
+    return true
+  }),
+  
+  set_default_service: flow(function* () {
+    if(self.services.length > 0){
+      self.selected_service = self.services[0]
+      return self.selected_service
+    }
+    return false
+  }),
   
 }))
 .views(self => ({
