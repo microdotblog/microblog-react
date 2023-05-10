@@ -172,18 +172,15 @@ class XMLRPCApi {
 	async send_post(service, content, title = null, images = [], categories = [], status = null) {
 		console.log('MicroBlogApi:send_post', service, content, title, images, status)
 		const verb = "metaWeblog.newPost"
-		const blog_id = service.blog_id
 		var info = {
 			title: title,
 			description: content,
 			categories: categories,
 			post_status: status
 		}
-		const username = service.username
-		const password = service.token
-		const params = [ blog_id, username, password, info ]
+		const params = [ service.blog_id, service.username, service.token, info ]
 
-		const response = xmlRpcCall(url, verb, params)
+		const response = xmlRpcCall(service.endpoint, verb, params)
 			.then(data => {
 				console.log('Data received:', data)
 				return true
