@@ -28,8 +28,13 @@ class XMLRPC {
 				result = result + "<value><struct>"
 				for (let k in param) {
 					result = result + "<member>"
-					result = result + `<name>${k}</name>`
-					result = result + this.encode_param(param[k])
+					result = result + `<name>${ k }</name>`
+					if (k === 'bits') {
+						result = result + `<value><base64>${param[k]}</base64></value>`;
+					}
+					else {
+						result = result + this.encode_param(param[k]);
+					}
 					result = result + "</member>"
 				}
 				result = result + "</struct></value>"

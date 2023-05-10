@@ -1,5 +1,6 @@
 import { types, flow } from 'mobx-state-tree';
 import MicroPubApi, { POST_ERROR } from './../../../api/MicroPubApi';
+import XMLRPCApi, { XML_ERROR } from '../../../api/XMLRPCApi';
 const FS = require("react-native-fs")
 import axios from 'axios';
 
@@ -32,6 +33,12 @@ export default MediaAsset = types.model('MediaAsset', {
 		}
 		else {
 			console.log("MediaAsset:upload:base64", self.base64 != null)
+			const response = yield XMLRPCApi.upload_image(service_object, self)
+			console.log("MediaAsset:upload", response)
+			if (response !== XML_ERROR) {
+				self.remote_url = response.link
+				self.did_upload = true
+			}
 		}
 		
 		self.is_uploading = false

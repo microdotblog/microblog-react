@@ -17,7 +17,6 @@ export const XML_ERROR = 9
 async function xmlRpcCall(url, methodName, params) {
 
 	const xmlPayload = xmlrpc.make_request(methodName, params)
-	console.log("xmlPayload:", xmlPayload)// TODO: REMOVE THIS
 
 	try {
 		const response = await fetch(url, {
@@ -219,37 +218,34 @@ class XMLRPCApi {
 	}
 
 	async upload_image(service, file) {
-		const data = new FormData()
+		const verb = "metaWeblog.newMediaObject"
 		var extension = ".jpg"
 		if (file.mime === "image/png") {
 			extension = ".png"
 		}
-		data.append("file", {
-			name: `image${ extension }`,
+		const image_data = {
+			name: `image${extension}`,
 			type: file.type,
-			uri: file.uri
-		})
-		data.append("mp-destination", service.destination)
-		console.log('MicroPubApi:upload_image', service, file, data)
+			bits: file.base64
+		}
 
-		const upload = axios
-			.post(service.media_endpoint, data, {
-				headers: { Authorization: `Bearer ${ service.token }` },
-				onUploadProgress: progressEvent => {
-					const progress = Math.round(
-						(progressEvent.loaded * 100) / progressEvent.total
-					)
-					file.update_progress(progress)
-				},
-				cancelToken: file.cancel_source.token,
+		const params = [ service.blog_id, service.username, service.token, image_data ]
+
+		const upload = xmlRpcCall(service.endpoint, verb, params)
+			.then(data => {
+				console.log('Data received:', data)
+				return data
 			})
-			.then(response => {
-				console.log('MicroPubApi:upload_image:response', response)
-				return response.data
-			})
-			.catch(error => {
-				console.log(error.response)
-				return POST_ERROR
+			.catch(err => {
+				console.log('XMLRPCApi:error', err)
+				// Check if error is incorrect password/username
+				if (err?.toString()?.includes("username or password")) {
+					Alert.alert("Whoops. Your username or password is wrong. Please try again.")
+				}
+				else {
+					Alert.alert("Whoops, an error occured. Please try again.")
+				}
+				return XML_ERROR
 			})
 		return upload
 	}
