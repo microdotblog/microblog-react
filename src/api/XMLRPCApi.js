@@ -176,7 +176,7 @@ class XMLRPCApi {
 		var info = {
 			title: title,
 			description: content,
-			//categories: categories,
+			categories: categories,
 			post_status: status
 		}
 		const params = [ service.blog_id, service.username, service.token, info ]

@@ -1,4 +1,3 @@
-import axios from 'axios';
 
 class XMLRPC {
 
@@ -101,20 +100,6 @@ class XMLRPC {
 
 	from_json(object) {
 		return this.decode_value(object["methodResponse"]["params"]["param"]["value"])
-	}
-
-	async request(url, method, params = {}) {
-		const headers = {
-			"Content-Type": "application/xml"
-		}
-		
-		var params_as_xml = this.make_request(method, params)
-		
-		axios.post(url, params_as_xml, headers).then(response => {
-			var response_xml = response.data
-			var parser = new DOMParser()
-			var doc = parser.parseFromString(response_xml)
-		})
 	}
 
 }
