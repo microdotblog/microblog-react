@@ -44,11 +44,9 @@ class XMLRPC {
 		var params_as_xml = `<?xml version=\"1.0\"?><methodCall><methodName>${method}</methodName>`
 		params_as_xml = params_as_xml + "<params>"
 		for (let obj of params) {
-			if (obj !== "" && obj !== null) {
-				params_as_xml = params_as_xml + "<param>"
-				params_as_xml = params_as_xml + this.encode_param(obj)
-				params_as_xml = params_as_xml + "</param>"
-			}
+			params_as_xml = params_as_xml + "<param>"
+			params_as_xml = params_as_xml + this.encode_param(obj)
+			params_as_xml = params_as_xml + "</param>"
 		}
 		params_as_xml = params_as_xml + "</params>"
 		params_as_xml = params_as_xml + "</methodCall>"
