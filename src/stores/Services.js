@@ -76,7 +76,7 @@ export default Services = types.model('Services', {
   
     // check for Micropub first, then try XML-RPC
     const micropub_endpoints = yield MicroPubApi.discover_micropub_endpoints(discover_url)
-    if (micropub_endpoints !== MICROPUB_NOT_FOUND && false) {
+    if (micropub_endpoints !== MICROPUB_NOT_FOUND) {
       console.log("Micropub: Found endpoints:", micropub_endpoints)
       self.micropub_endpoint = micropub_endpoints["micropub"]
       self.auth_endpoint = micropub_endpoints["auth"]
