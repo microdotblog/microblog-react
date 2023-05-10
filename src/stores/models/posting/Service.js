@@ -24,17 +24,37 @@ export default Service = types.model('Service', {
 .actions(self => ({
 
   hydrate: flow(function* () {
-    console.log("Endpoint:hydrate", self.id)
+    console.log("Service:hydrate", self.id)
     if(self.is_microblog || self.type === "micropub"){
       if(self.credentials()?.token == null){return}
       const config = yield MicroPubApi.get_config(self.service_object())
-      console.log("Endpoint:hydrate:config", config)
+      console.log("Service:hydrate:micropub:config", config)
       if(config){
         self.config = config
         self.config.hydrate_default_destination()
         if(App.is_share_extension){
           self.check_for_categories()
         }
+      }
+    }
+    else if(self.type === "xmlrpc" && self.credentials()?.token != null){
+      console.log("Service:hydrate:xmlrpc")
+      const categories = yield XMLRPCApi.get_config(self.service_object())
+      console.log("Service:hydrate:xmlrpc:categories", categories)
+      if (categories !== XML_ERROR) {
+        // We need to iterate over categories and grab just the "categoryName" attributes for now. Not sure if we need ID data?
+        const category_names = categories.map(category => category.categoryName)
+        console.log("Service:hydrate:xmlrpc:categories:category_names", category_names)
+        
+        self.config = {
+          "media-endpoint": self.url,
+          destination: [{
+            uid: self.name,
+            name: self.name,
+            categories: category_names
+          }]
+        }
+        console.log("Service:set_initial_config:config", self.config)
       }
     }
   }),

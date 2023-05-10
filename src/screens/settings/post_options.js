@@ -75,7 +75,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
                 editable={!Services.did_set_up_successfully}
               />
               {
-                Services.show_credentials ?
+                Services.show_credentials && !Services.did_set_up_successfully ?
                 <View style={{ padding: 12, borderRadius: 8, backgroundColor: App.theme_settings_group_background_color(), marginBottom: 12 }}>
                   <Text style={{fontWeight: "500", marginBottom: 12, color: App.theme_text_color()}}>Username:</Text>
                   <TextInput
@@ -118,9 +118,9 @@ export default class PostOptionsSettingsScreen extends React.Component{
                 </View>
                 : null
               }
-              <View style={{flexDirection: "row", justifyContent: Services.show_credentials ? "space-between" : "center"}}>
+              <View style={{flexDirection: "row", justifyContent: Services.show_credentials && !Services.did_set_up_successfully ? "space-between" : "center"}}>
                 {
-                  Services.show_credentials ?
+                  Services.show_credentials && !Services.did_set_up_successfully ?
                   <>
                     <Button
                       title="Cancel"
