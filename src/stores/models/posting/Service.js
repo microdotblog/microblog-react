@@ -64,7 +64,7 @@ export default Service = types.model('Service', {
   }),
 
   check_for_categories: flow(function* () { 
-    if(self.config?.destination != null && self.config.destination.length > 0){
+    if(self.config?.destination != null && self.config.destination.length > 0 && self.type !== "xmlrpc"){
       self.config.destination.forEach(async (destination) => {
         // TODO: Perhaps check if we already have categories downloaded before fetching,
         // as we download them on demand when opening the new post screen.

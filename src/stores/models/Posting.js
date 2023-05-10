@@ -3,6 +3,7 @@ import Service from './posting/Service';
 import { blog_services } from './../enums/blog_services';
 import { Alert, Platform, Linking } from 'react-native';
 import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
+import XMLRPCApi, { XML_ERROR } from '../../api/XMLRPCApi';
 import { launchImageLibrary } from 'react-native-image-picker';
 import MediaAsset from './posting/MediaAsset'
 import App from '../App'
@@ -146,7 +147,9 @@ export default Posting = types.model('Posting', {
       }
     }
     self.is_sending_post = true
-    const post_success = yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
+    const post_success = self.selected_service.type === "xmlrpc" ?
+      yield XMLRPCApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
+      : yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
     self.is_sending_post = false
     if(post_success !== POST_ERROR){
       self.post_text = ""
