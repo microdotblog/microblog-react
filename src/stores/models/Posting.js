@@ -204,6 +204,10 @@ export default Posting = types.model('Posting', {
     const options = {
       title: 'Select an image',
       mediaType: 'photo',
+      ...self.selected_service.type === "xmlrpc" &&
+        {
+          includeBase64: true,
+        }
     };
     const result = yield launchImageLibrary(options)
     console.log("Posting:handle_asset_action:result", result)
@@ -229,7 +233,7 @@ export default Posting = types.model('Posting', {
         else {
           const media_asset = MediaAsset.create(asset)
           self.post_assets.push(media_asset)
-          media_asset.upload(self.selected_service.service_object())
+          media_asset.upload(self.selected_service.service_object(), asset)
         }
       })
     }

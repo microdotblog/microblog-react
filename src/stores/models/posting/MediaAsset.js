@@ -13,20 +13,27 @@ export default MediaAsset = types.model('MediaAsset', {
 	did_upload: types.optional(types.boolean, false),
 	remote_url: types.maybe(types.string),
 	alt_text: types.maybe(types.string),
-	progress: types.optional(types.number, 0)
+	progress: types.optional(types.number, 0),
+	base64: types.maybe(types.string),
 })
 .actions(self => ({
 
-	upload: flow(function* (service_object) {
+	upload: flow(function* (service_object, asset = null) {
 		self.is_uploading = true
-		self.cancel_source = axios.CancelToken.source()
-		const response = yield MicroPubApi.upload_image(service_object, self)
-		console.log("MediaAsset:upload", response)
-		if (response !== POST_ERROR) {
-			self.remote_url = response.url
-			self.did_upload = true
+		if (service_object.type !== "xmlrpc") {
+			self.cancel_source = axios.CancelToken.source()
+			const response = yield MicroPubApi.upload_image(service_object, self)
+			console.log("MediaAsset:upload", response)
+			if (response !== POST_ERROR) {
+				self.remote_url = response.url
+				self.did_upload = true
+			}
+			self.cancel_source = null
 		}
-		self.cancel_source = null
+		else {
+			console.log("MediaAsset:upload:base64", self.base64 != null)
+		}
+		
 		self.is_uploading = false
 	}),
 	
