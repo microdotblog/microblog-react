@@ -334,7 +334,8 @@ export default Service = types.model('Service', {
       destination: self.config?.active_destination()?.uid,
       media_endpoint: self.config?.media_endpoint(),
       temporary_destination: self.config?.temporary_destination()?.uid,
-      blog_id: self.blog_id
+      blog_id: self.blog_id,
+      type: self.type,
     }
   },
 
