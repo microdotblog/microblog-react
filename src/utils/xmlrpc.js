@@ -3,7 +3,7 @@ import axios from 'axios';
 class XMLRPC {
 
 	encode_param(param) {
-		var result = null
+		var result = "";
 		if (typeof param == "boolean") {
 			result = `<value><boolean>${param}</boolean></value>`
 		}
@@ -33,10 +33,9 @@ class XMLRPC {
 					result = result + this.encode_param(param[k])
 					result = result + "</member>"
 				}
-				result = result + "</value></struct>"
-			}		
+				result = result + "</struct></value>"
+			}
 		}
-		
 		return result
 	}
 
