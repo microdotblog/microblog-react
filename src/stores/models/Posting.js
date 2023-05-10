@@ -151,7 +151,7 @@ export default Posting = types.model('Posting', {
       yield XMLRPCApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
       : yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
     self.is_sending_post = false
-    if(post_success !== POST_ERROR){
+    if(post_success !== POST_ERROR && post_success !== XML_ERROR){
       self.post_text = ""
       self.post_title = null
       self.post_assets = []
