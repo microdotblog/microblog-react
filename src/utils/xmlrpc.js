@@ -53,7 +53,7 @@ class XMLRPC {
 		params_as_xml = params_as_xml + "</params>"
 		params_as_xml = params_as_xml + "</methodCall>"
 		
-		console.log("XML-RPC", params_as_xml)
+		//console.log("XML-RPC", params_as_xml)
 		
 		return params_as_xml
 	}
