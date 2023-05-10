@@ -177,7 +177,7 @@ class XMLRPCApi {
 			title: title,
 			description: content,
 			categories: categories,
-			post_status: status
+			post_status: status === "published" ? "publish" : status
 		}
 		const params = [ service.blog_id, service.username, service.token, info ]
 
