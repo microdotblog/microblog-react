@@ -58,10 +58,10 @@ export default Services = types.model('Services', {
   }),
   
   set_url: flow(function* (text) {
-    self.current_url = text
-    if(self.show_credentials){
+    if(text !== self.current_url && self.show_credentials){
       self.show_credentials = false
     }
+    self.current_url = text
   }),
   
   setup_new_service: flow(function* () {
@@ -134,10 +134,16 @@ export default Services = types.model('Services', {
           console.log("Services:check_credentials_and_proceed_setup:token", token != null)
           if(token != null){
             // Now we have a saved token! Let's set the service as the active one.
-            const activated = yield user.posting?.activate_new_service(service)
-            if(activated){
-              // We need to change the state of the current active one displayed on the page...
-              self.did_set_up_successfully = true
+            const config_is_set_up = yield service.set_initial_config()
+            if(config_is_set_up){
+              const activated = yield user.posting?.activate_new_service(service)
+              if(activated){
+                // We need to change the state of the current active one displayed on the page...
+                self.did_set_up_successfully = true
+              }
+            }
+            else{
+              Alert.alert("Sorry, something went wrong setting up your Micropub endpoint. Please try again.")
             }
           }
         }

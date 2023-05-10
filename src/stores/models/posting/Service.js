@@ -261,8 +261,8 @@ export default Service = types.model('Service', {
     })
   }),
   
-  set_initial_config: flow(function* (config) {
-    if((self.is_microblog || self.type === "micropub") && self.credentials()?.token != null){
+  set_initial_config: flow(function* (config = null) {
+    if((self.is_microblog || self.type === "micropub") && self.credentials()?.token != null && config != null){
       console.log("Service:set_initial_config:config", config)
       if(config){
         self.config = config
@@ -272,6 +272,9 @@ export default Service = types.model('Service', {
         }
         return true
       }
+    }
+    else if(self.type === "xmlrpc" && self.credentials()?.token != null){
+      console.log("Service:set_initial_config:xmlrpc")
     }
     return false
   })
