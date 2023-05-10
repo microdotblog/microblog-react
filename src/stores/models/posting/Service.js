@@ -1,6 +1,7 @@
 import { types, flow } from 'mobx-state-tree'
 import Tokens from './../../Tokens'
 import MicroPubApi, { DELETE_ERROR } from './../../../api/MicroPubApi'
+import XMLRPCApi, { NO_AUTH, XML_ERROR } from '../../../api/XMLRPCApi'
 import Config from './Config'
 import { Alert } from 'react-native'
 import DocumentPicker from 'react-native-document-picker'
@@ -17,7 +18,8 @@ export default Service = types.model('Service', {
   config: types.maybeNull(Config),
   is_loading_posts: types.optional(types.boolean, false),
   is_loading_pages: types.optional(types.boolean, false),
-  is_loading_uploads: types.optional(types.boolean, false)
+  is_loading_uploads: types.optional(types.boolean, false),
+  blog_id: types.maybeNull(types.string),
 })
 .actions(self => ({
 
@@ -275,6 +277,24 @@ export default Service = types.model('Service', {
     }
     else if(self.type === "xmlrpc" && self.credentials()?.token != null){
       console.log("Service:set_initial_config:xmlrpc")
+      const categories = yield XMLRPCApi.get_config(self.service_object())
+      console.log("Service:set_initial_config:xml_config", categories)
+      if (categories !== XML_ERROR) {
+        // We need to iterate over categories and grab just the "categoryName" attributes for now. Not sure if we need ID data?
+        const category_names = categories.map(category => category.categoryName)
+        console.log("Service:set_initial_config:category_names", category_names)
+        
+        self.config = {
+          "media-endpoint": self.url,
+          destination: [{
+            uid: self.name,
+            name: self.name,
+            categories: category_names
+          }]
+        }
+        console.log("Service:set_initial_config:config", self.config)
+        return true
+      }
     }
     return false
   })
@@ -294,6 +314,7 @@ export default Service = types.model('Service', {
       destination: self.config?.active_destination()?.uid,
       media_endpoint: self.config?.media_endpoint(),
       temporary_destination: self.config?.temporary_destination()?.uid,
+      blog_id: self.blog_id
     }
   },
 
