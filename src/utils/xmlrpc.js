@@ -4,7 +4,6 @@ class XMLRPC {
 
 	encode_param(param) {
 		var result = null
-		
 		if (typeof param == "boolean") {
 			result = `<value><boolean>${param}</boolean></value>`
 		}
@@ -18,7 +17,7 @@ class XMLRPC {
 			if (Array.isArray(param)) {
 				result = result + "<value><array><data>"
 				for (let obj of param) {
-					result = result + self.encode_param(obj)
+					result = result + this.encode_param(obj)
 				}
 				result = result + "</data></array></value>"
 			}
@@ -31,7 +30,7 @@ class XMLRPC {
 				for (let k in param) {
 					result = result + "<member>"
 					result = result + `<name>${k}</name>`
-					result = result + self.encode_param(param[k])
+					result = result + this.encode_param(param[k])
 					result = result + "</member>"
 				}
 				result = result + "</value></struct>"
@@ -45,14 +44,16 @@ class XMLRPC {
 		var params_as_xml = `<?xml version=\"1.0\"?><methodCall><methodName>${method}</methodName>`
 		params_as_xml = params_as_xml + "<params>"
 		for (let obj of params) {
-			params_as_xml = params_as_xml + "<param>"
-			params_as_xml = params_as_xml + this.encode_param(obj)
-			params_as_xml = params_as_xml + "</param>"
+			if (obj !== "" && obj !== null) {
+				params_as_xml = params_as_xml + "<param>"
+				params_as_xml = params_as_xml + this.encode_param(obj)
+				params_as_xml = params_as_xml + "</param>"
+			}
 		}
 		params_as_xml = params_as_xml + "</params>"
 		params_as_xml = params_as_xml + "</methodCall>"
 		
-		//console.log("XML-RPC", params_as_xml)
+		console.log("XML-RPC", params_as_xml)
 		
 		return params_as_xml
 	}
