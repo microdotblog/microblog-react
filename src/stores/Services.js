@@ -137,6 +137,7 @@ export default Services = types.model('Services', {
             const activated = yield user.posting?.activate_new_service(service)
             if(activated){
               // We need to change the state of the current active one displayed on the page...
+              self.did_set_up_successfully = true
             }
           }
         }
