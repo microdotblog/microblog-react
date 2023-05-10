@@ -233,7 +233,7 @@ export default Posting = types.model('Posting', {
         else {
           const media_asset = MediaAsset.create(asset)
           self.post_assets.push(media_asset)
-          media_asset.upload(self.selected_service.service_object(), asset)
+          media_asset.upload(self.selected_service.service_object())
         }
       })
     }

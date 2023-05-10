@@ -18,7 +18,7 @@ export default MediaAsset = types.model('MediaAsset', {
 })
 .actions(self => ({
 
-	upload: flow(function* (service_object, asset = null) {
+	upload: flow(function* (service_object) {
 		self.is_uploading = true
 		if (service_object.type !== "xmlrpc") {
 			self.cancel_source = axios.CancelToken.source()
