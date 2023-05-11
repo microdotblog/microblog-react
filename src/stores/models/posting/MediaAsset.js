@@ -16,6 +16,7 @@ export default MediaAsset = types.model('MediaAsset', {
 	alt_text: types.maybe(types.string),
 	progress: types.optional(types.number, 0),
 	base64: types.maybe(types.string),
+	upload_id: types.maybe(types.number),
 })
 .actions(self => ({
 
@@ -37,6 +38,7 @@ export default MediaAsset = types.model('MediaAsset', {
 			console.log("MediaAsset:upload", response)
 			if (response !== XML_ERROR) {
 				self.remote_url = response.link
+				self.upload_id = response.id
 				self.did_upload = true
 			}
 		}

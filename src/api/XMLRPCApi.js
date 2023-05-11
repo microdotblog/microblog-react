@@ -170,13 +170,18 @@ class XMLRPCApi {
 	}
 
 	async send_post(service, content, title = null, images = [], categories = [], status = null) {
-		console.log('MicroBlogApi:send_post', service, content, title, images, status)
+		console.log('XMLRPCApi:send_post', content, title, images, status)
 		const verb = "metaWeblog.newPost"
+		const featured_image_id = images.length > 0 ? images[ 0 ]?.upload_id : null
+		// TODO: Add multiple images
 		var info = {
 			title: title,
 			description: content,
 			categories: categories,
-			post_status: status === "published" ? "publish" : status
+			post_status: status === "published" ? "publish" : status,
+			...featured_image_id && {
+				wp_post_thumbnail: featured_image_id
+			}
 		}
 		const params = [ service.blog_id, service.username, service.token, info ]
 
