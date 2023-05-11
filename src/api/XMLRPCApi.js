@@ -173,7 +173,12 @@ class XMLRPCApi {
 		console.log('XMLRPCApi:send_post', content, title, images, status)
 		const verb = "metaWeblog.newPost"
 		const featured_image_id = images.length > 0 ? images[ 0 ]?.upload_id : null
-		// TODO: Add multiple images
+
+		if (images.length > 1) {
+			const image_markdown = images.map(image => `![${ image.alt_text ?? "" }](${ image.remote_url })`).join('\n')
+			content = `${content}\n\n${image_markdown}`
+		}
+
 		var info = {
 			title: title,
 			description: content,
