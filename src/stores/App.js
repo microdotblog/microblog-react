@@ -204,7 +204,7 @@ export default App = types.model('App', {
     }
   }),
 
-  navigate_to_screen_from_menu: flow(function* (screen) {
+  navigate_to_screen_from_menu: flow(function* (screen, open_as_modal = false) {
     console.log("App:navigate_to_screen_from_menu", screen)
     menuBottomSheet(true)
     let tab_index = null
@@ -251,7 +251,7 @@ export default App = types.model('App', {
       case "Uploads":
         return uploadsScreen(self.current_screen_id)
       case "PostService":
-        return postOptionsSettingsScreen(Auth.selected_user, self.current_screen_id)
+        return postOptionsSettingsScreen(Auth.selected_user, self.current_screen_id, open_as_modal)
     }
     console.log("App:navigate_to_screen_from_menu:index", screen, tab_index, self.current_screen_id, should_pop)
     if(tab_index != null){

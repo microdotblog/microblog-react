@@ -1103,10 +1103,10 @@ export const uploadsScreen = (component_id) => {
   return Navigation.push(component_id, options);
 }
 
-export const postOptionsSettingsScreen = async (user, component_id) => {
+export const postOptionsSettingsScreen = async (user, component_id, open_as_modal = false) => {
   console.log("Screens:postOptionsSettingsScreen", user, component_id);
   await Services.hydrate_with_user(user)
-  const options = {
+  const component = {
     component: {
       id: POST_OPTIONS_SETTINGS_SCREEN,
       name: POST_OPTIONS_SETTINGS_SCREEN,
@@ -1118,10 +1118,30 @@ export const postOptionsSettingsScreen = async (user, component_id) => {
           title: {
             text: "Post Options"
           },
+          ...open_as_modal &&
+          {
+            leftButtons: [
+              {
+                id: 'close_modal_button',
+                text: 'Close',
+                icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
+              },
+            ]
+          }
         }
       }
     }
-  };
-
-  return Navigation.push(component_id, options);
+  }
+  if(open_as_modal){
+    return Navigation.showModal({
+      stack: {
+        id: POST_OPTIONS_SETTINGS_SCREEN,
+        name: EDIT_PAGE_SCREEN,
+        children: [component],
+      }
+    });
+  }
+  else{
+    return Navigation.push(component_id, component);
+  }
 }
