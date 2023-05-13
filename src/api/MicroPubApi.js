@@ -64,7 +64,7 @@ class MicroPubApi {
 		var new_state = Math.floor(Math.random() * 10000).toString(); // need to store this
 		
 		new_url = new_url + "?me=" + encodeURIComponent(me_url)
-		new_url = new_url + "&redirect_uri=" + encodeURIComponent("https://micro.blog/micropub/redirect")
+		new_url = new_url + "&redirect_uri=" + encodeURIComponent("https://micro.blog/indieauth/redirect")
 		new_url = new_url + "&client_id=" + encodeURIComponent("https://micro.blog/")
 		new_url = new_url + "&state=" + new_state
 		new_url = new_url + "&scope=" + "create"
