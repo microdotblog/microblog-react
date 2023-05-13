@@ -194,6 +194,9 @@ export default Services = types.model('Services', {
           }
         }
       }
+      else{
+        Alert.alert("Sorry, something went wrong setting up your Micropub endpoint. Please try again.")
+      }
     }
     self.checking_credentials = false
   }),

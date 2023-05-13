@@ -93,7 +93,10 @@ class MicroPubApi {
 				.then(response => {
 					const access_token = response.data["access_token"]
 					console.log("Micropub: Got access token:", access_token)
-					return access_token
+					if(access_token != null){
+						return access_token
+					}
+					return NO_AUTH;
 				})
 				.catch(error => {
 					console.log(error)
