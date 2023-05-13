@@ -83,6 +83,8 @@ class MicroPubApi {
 			var params_s = ""
 			params_s = params_s + "client_id=" + encodeURIComponent("https://micro.blog/")
 			params_s = params_s	+ "&code=" + encodeURIComponent(auth_code)
+			params_s = params_s + "&redirect_uri=" + encodeURIComponent("https://micro.blog/indieauth/redirect")
+			params_s = params_s	+ "&grant_type=" + "authorization_code"
 			const verify_response = axios
 				.post(service.token_endpoint, params_s, {
 					headers: {
