@@ -20,7 +20,9 @@ export default class PostingOptionsScreen extends React.Component{
 			<ScrollView style={{ flex: 1, padding: 15 }}>
 				{/* Post status */}
 				<View style={{ marginBottom: 25 }}>
-					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>When sending this post to Micro.blog:</Text>
+					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>
+						{ posting.selected_service?.type === "microblog" ? "When sending this post to Micro.blog" : "When sending this post to your blog" }:
+					</Text>
 					<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
 						<TouchableOpacity
 							key={"published"}
@@ -42,7 +44,6 @@ export default class PostingOptionsScreen extends React.Component{
 						</TouchableOpacity>
 					</View>
 				</View>
-				
 				{/* Categories */}
 				<View style={{ marginBottom: 25 }}>
 					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>Select categories for this post:</Text>

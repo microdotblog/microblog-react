@@ -37,6 +37,9 @@ Navigation.events().registerNavigationButtonPressedListener(({ buttonId }) => {
   if(buttonId === "reply_button" && Reply.conversation_id){
     replyScreen()
   }
+  else if(buttonId === "close_modal_button"){
+    Navigation.dismissAllModals()
+  }
 })
 
 Navigation.events().registerBottomTabPressedListener(({ tabIndex }) => {

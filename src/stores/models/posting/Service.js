@@ -1,6 +1,7 @@
 import { types, flow } from 'mobx-state-tree'
 import Tokens from './../../Tokens'
 import MicroPubApi, { DELETE_ERROR } from './../../../api/MicroPubApi'
+import XMLRPCApi, { NO_AUTH, XML_ERROR } from '../../../api/XMLRPCApi'
 import Config from './Config'
 import { Alert } from 'react-native'
 import DocumentPicker from 'react-native-document-picker'
@@ -17,21 +18,43 @@ export default Service = types.model('Service', {
   config: types.maybeNull(Config),
   is_loading_posts: types.optional(types.boolean, false),
   is_loading_pages: types.optional(types.boolean, false),
-  is_loading_uploads: types.optional(types.boolean, false)
+  is_loading_uploads: types.optional(types.boolean, false),
+  blog_id: types.maybeNull(types.string),
 })
 .actions(self => ({
 
   hydrate: flow(function* () {
-    console.log("Endpoint:hydrate", self.id)
-    if(self.is_microblog){
+    console.log("Service:hydrate", self.id)
+    if(self.is_microblog || self.type === "micropub"){
+      if(self.credentials()?.token == null){return}
       const config = yield MicroPubApi.get_config(self.service_object())
-      console.log("Endpoint:hydrate:config", config)
+      console.log("Service:hydrate:micropub:config", config)
       if(config){
         self.config = config
         self.config.hydrate_default_destination()
         if(App.is_share_extension){
           self.check_for_categories()
         }
+      }
+    }
+    else if(self.type === "xmlrpc" && self.credentials()?.token != null){
+      console.log("Service:hydrate:xmlrpc")
+      const categories = yield XMLRPCApi.get_config(self.service_object())
+      console.log("Service:hydrate:xmlrpc:categories", categories)
+      if (categories !== XML_ERROR) {
+        // We need to iterate over categories and grab just the "categoryName" attributes for now. Not sure if we need ID data?
+        const category_names = categories.map(category => category.categoryName)
+        console.log("Service:hydrate:xmlrpc:categories:category_names", category_names)
+        
+        self.config = {
+          "media-endpoint": self.url,
+          destination: [{
+            uid: self.name,
+            name: self.name,
+            categories: category_names
+          }]
+        }
+        console.log("Service:set_initial_config:config", self.config)
       }
     }
   }),
@@ -41,7 +64,7 @@ export default Service = types.model('Service', {
   }),
 
   check_for_categories: flow(function* () { 
-    if(self.config?.destination != null && self.config.destination.length > 0){
+    if(self.config?.destination != null && self.config.destination.length > 0 && self.type !== "xmlrpc"){
       self.config.destination.forEach(async (destination) => {
         // TODO: Perhaps check if we already have categories downloaded before fetching,
         // as we download them on demand when opening the new post screen.
@@ -258,13 +281,49 @@ export default Service = types.model('Service', {
         }
       }
     })
+  }),
+  
+  set_initial_config: flow(function* (config = null) {
+    if((self.is_microblog || self.type === "micropub") && self.credentials()?.token != null && config != null){
+      console.log("Service:set_initial_config:config", config)
+      if(config){
+        self.config = config
+        self.config.hydrate_default_destination()
+        if(App.is_share_extension){
+          self.check_for_categories()
+        }
+        return true
+      }
+    }
+    else if(self.type === "xmlrpc" && self.credentials()?.token != null){
+      console.log("Service:set_initial_config:xmlrpc")
+      const categories = yield XMLRPCApi.get_config(self.service_object())
+      console.log("Service:set_initial_config:xml_config", categories)
+      if (categories !== XML_ERROR) {
+        // We need to iterate over categories and grab just the "categoryName" attributes for now. Not sure if we need ID data?
+        const category_names = categories.map(category => category.categoryName)
+        console.log("Service:set_initial_config:category_names", category_names)
+        
+        self.config = {
+          "media-endpoint": self.url,
+          destination: [{
+            uid: self.name,
+            name: self.name,
+            categories: category_names
+          }]
+        }
+        console.log("Service:set_initial_config:config", self.config)
+        return true
+      }
+    }
+    return false
   })
   
 }))
 .views(self => ({
   
   credentials() {
-    return self.name != null && self.name === "Micro.blog" && self.username != null && self.is_microblog ? Tokens.token_for_username(self.username) : null
+    return self.name != null && self.name === "Micro.blog" && self.username != null && self.is_microblog ? Tokens.token_for_username(self.username) : Tokens.token_for_service_id(self.id)
   },
   
   service_object(){
@@ -275,11 +334,13 @@ export default Service = types.model('Service', {
       destination: self.config?.active_destination()?.uid,
       media_endpoint: self.config?.media_endpoint(),
       temporary_destination: self.config?.temporary_destination()?.uid,
+      blog_id: self.blog_id,
+      type: self.type,
     }
   },
 
   description() {
-    return self.name === "Micro.blog" ? "Micro.blog hosted weblog" : "WordPress or compatible weblog"
+    return self.name === "Micro.blog" ? "Micro.blog hosted blog" : "WordPress or compatible blog"
   }
   
 }))

@@ -1,8 +1,9 @@
-import { types, flow } from 'mobx-state-tree';
+import { types, flow, destroy } from 'mobx-state-tree';
 import Service from './posting/Service';
 import { blog_services } from './../enums/blog_services';
 import { Alert, Platform, Linking } from 'react-native';
 import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
+import XMLRPCApi, { XML_ERROR } from '../../api/XMLRPCApi';
 import { launchImageLibrary } from 'react-native-image-picker';
 import MediaAsset from './posting/MediaAsset'
 import App from '../App'
@@ -10,6 +11,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { imageOptionsScreen, POSTING_SCREEN } from '../../screens';
 import { imageCropScreen } from '../../screens';
 import { Navigation } from 'react-native-navigation';
+import Tokens from '../Tokens';
 import md from 'markdown-it';
 const parser = md({ html: true });
 
@@ -145,9 +147,11 @@ export default Posting = types.model('Posting', {
       }
     }
     self.is_sending_post = true
-    const post_success = yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
+    const post_success = self.selected_service.type === "xmlrpc" ?
+      yield XMLRPCApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
+      : yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
     self.is_sending_post = false
-    if(post_success !== POST_ERROR){
+    if(post_success !== POST_ERROR && post_success !== XML_ERROR){
       self.post_text = ""
       self.post_title = null
       self.post_assets = []
@@ -200,6 +204,10 @@ export default Posting = types.model('Posting', {
     const options = {
       title: 'Select an image',
       mediaType: 'photo',
+      ...self.selected_service.type === "xmlrpc" &&
+        {
+          includeBase64: true,
+        }
     };
     const result = yield launchImageLibrary(options)
     console.log("Posting:handle_asset_action:result", result)
@@ -372,13 +380,74 @@ export default Posting = types.model('Posting', {
       yield asset.upload(self.selected_service.service_object())
     }
     return self.post_assets.every(asset => asset.did_upload)
-  })
+  }),
+  
+  create_new_service: flow(function* (blog_service, name, endpoint, username, blog_id = null) {
+    console.log("Posting:create_new_service", blog_service, endpoint, username)
+    const service_id = `endpoint_${blog_service.name}-${username}-${name}`
+    const existing_service = self.services.find(s => s.id === service_id)
+    if(existing_service != null){
+      destroy(existing_service)
+    }
+    const new_service = Service.create({
+      id: service_id,
+      name: name,
+      url: endpoint,
+      username: username,
+      type: blog_service.type,
+      is_microblog: false,
+      blog_id: blog_id
+    })
+    if(new_service){
+      self.services.push(new_service)
+      return new_service
+    }
+    return false
+  }),
+  
+  activate_new_service: flow(function* (service = null) {
+    if(service === null){return false}
+    self.selected_service = service
+    console.log("Posting:activate_new_service", service)
+    return true
+  }),
+  
+  set_default_service: flow(function* () {
+    if(self.services.length > 0){
+      self.selected_service = self.services[0]
+      return self.selected_service
+    }
+    return false
+  }),
+  
+  set_custom_service: flow(function* () {
+    if(self.services.length > 0 && self.first_custom_service() != null){
+      self.selected_service = self.first_custom_service()
+      return self.selected_service
+    }
+    return false
+  }),
+  
+  remove_custom_services: flow(function* () {
+    console.log("Posting:remove_custom_services")
+    const services = self.services.filter(s => !s.is_microblog)
+    if(services){
+      services.forEach((service) => {
+        Tokens.destroy_token_for_service_id(service.id)
+        destroy(service)
+      })
+    }
+  }),
   
 }))
 .views(self => ({
   
   posting_enabled(){
     return self.username != null && self.services != null && self.selected_service && self.selected_service.credentials()?.token != null
+  },
+  
+  first_custom_service(){
+    return self.services != null && self.services.length > 1 ? self.services.find(s => !s.is_microblog) : null
   },
   
   post_text_length(){

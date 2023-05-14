@@ -5,6 +5,7 @@ import Auth from './../../stores/Auth';
 import App from './../../stores/App';
 import { SFSymbol } from "react-native-sfsymbols";
 import { SvgXml } from 'react-native-svg';
+import {} from "./../../screens";
 
 // Nav icons
 import Bookmarks from './../../assets/icons/nav/bookmarks.png';
@@ -137,6 +138,7 @@ export default class MenuNavigation extends React.Component{
 
   render() {
     if(Auth.selected_user != null){
+      const { posting } = Auth.selected_user
       return(
         <View
           style={{
@@ -150,7 +152,26 @@ export default class MenuNavigation extends React.Component{
             flexDirection: 'column'
           }}
         >
-          {this._render_secondary_menu_items(this.manage_menu)}
+          {
+            posting.selected_service?.type !== "xmlrpc" ?
+              this._render_secondary_menu_items(this.manage_menu)
+            :
+            <TouchableOpacity
+              onPress={() => App.navigate_to_screen_from_menu("PostService", true)}
+              style={{
+                borderRadius: 8,
+                backgroundColor: App.theme_button_background_color(),
+                padding: 12,
+                marginBottom: 8,
+              }}
+            >
+              <Text style={{
+                color: App.theme_text_color()
+              }}>
+              Posting to {posting.selected_service?.description()}. Some menu items have been hidden. Tap here to change.
+              </Text>
+            </TouchableOpacity>
+          }
           <View style={{
             paddingTop: 15,
             marginTop: 10,

@@ -11,7 +11,7 @@ class StringChecker {
   }
 
   _validate_url = (value) => {
-    var re = /^(http|https):\/\/[^ "]+$/;
+    var re = /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,}(\/[^\s]*)?(\?\S*)?(#[^\s]*)?$/
     return re.test(value);
   }
 

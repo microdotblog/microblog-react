@@ -1,5 +1,6 @@
 import { types, flow } from 'mobx-state-tree';
 import MicroPubApi, { POST_ERROR } from './../../../api/MicroPubApi';
+import XMLRPCApi, { XML_ERROR } from '../../../api/XMLRPCApi';
 const FS = require("react-native-fs")
 import axios from 'axios';
 
@@ -13,20 +14,35 @@ export default MediaAsset = types.model('MediaAsset', {
 	did_upload: types.optional(types.boolean, false),
 	remote_url: types.maybe(types.string),
 	alt_text: types.maybe(types.string),
-	progress: types.optional(types.number, 0)
+	progress: types.optional(types.number, 0),
+	base64: types.maybe(types.string),
+	upload_id: types.maybe(types.number),
 })
 .actions(self => ({
 
 	upload: flow(function* (service_object) {
 		self.is_uploading = true
-		self.cancel_source = axios.CancelToken.source()
-		const response = yield MicroPubApi.upload_image(service_object, self)
-		console.log("MediaAsset:upload", response)
-		if (response !== POST_ERROR) {
-			self.remote_url = response.url
-			self.did_upload = true
+		if (service_object.type !== "xmlrpc") {
+			self.cancel_source = axios.CancelToken.source()
+			const response = yield MicroPubApi.upload_image(service_object, self)
+			console.log("MediaAsset:upload", response)
+			if (response !== POST_ERROR) {
+				self.remote_url = response.url
+				self.did_upload = true
+			}
+			self.cancel_source = null
 		}
-		self.cancel_source = null
+		else {
+			console.log("MediaAsset:upload:base64", self.base64 != null)
+			const response = yield XMLRPCApi.upload_image(service_object, self)
+			console.log("MediaAsset:upload", response)
+			if (response !== XML_ERROR) {
+				self.remote_url = response.link
+				self.upload_id = response.id
+				self.did_upload = true
+			}
+		}
+		
 		self.is_uploading = false
 	}),
 	

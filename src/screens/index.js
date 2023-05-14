@@ -31,6 +31,7 @@ import EditPostScreen from "./posts/edit";
 import PagesScreen from "./pages/pages"
 import EditPageScreen from "./pages/edit"
 import UploadsScreen from "./uploads/uploads";
+import PostOptionsSettingsScreen from "./settings/post_options";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -57,7 +58,8 @@ export const POSTS_SCREEN = 'microblog.PostsScreen';
 export const EDIT_POST_SCREEN = 'microblog.EditPostScreen';
 export const PAGES_SCREEN = 'microblog.PagesScreen';
 export const EDIT_PAGE_SCREEN = 'microblog.EditPageScreen';
-export const UPLOADS_SCREEN = 'microbloog.UploadsScreen';
+export const UPLOADS_SCREEN = 'microblog.UploadsScreen';
+export const POST_OPTIONS_SETTINGS_SCREEN = 'microblog.modal.PostOptionsSettingsScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -96,6 +98,7 @@ import Push from "../stores/Push"
 import { theme_options } from "../utils/navigation"
 import App from "../stores/App"
 import Auth from "../stores/Auth"
+import Services from "../stores/Services"
 
 // Set up screens & components
 export const Screens = {
@@ -124,6 +127,7 @@ export const Screens = {
   [ PAGES_SCREEN ]: PagesScreen,
   [ EDIT_PAGE_SCREEN ]: EditPageScreen,
   [ UPLOADS_SCREEN ]: UploadsScreen,
+  [ POST_OPTIONS_SETTINGS_SCREEN ]: PostOptionsSettingsScreen,
   // COMPONENTS
   [ PROFILE_IMAGE ]: ProfileImage,
   [ NEW_POST_BUTTON ]: NewPostButton,
@@ -1097,4 +1101,47 @@ export const uploadsScreen = (component_id) => {
   };
 
   return Navigation.push(component_id, options);
+}
+
+export const postOptionsSettingsScreen = async (user, component_id, open_as_modal = false) => {
+  console.log("Screens:postOptionsSettingsScreen", user, component_id);
+  await Services.hydrate_with_user(user)
+  const component = {
+    component: {
+      id: POST_OPTIONS_SETTINGS_SCREEN,
+      name: POST_OPTIONS_SETTINGS_SCREEN,
+      passProps: {
+        user: user
+      },
+      options: {
+        topBar: {
+          title: {
+            text: "Post Options"
+          },
+          ...open_as_modal &&
+          {
+            leftButtons: [
+              {
+                id: 'close_modal_button',
+                text: 'Close',
+                icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
+              },
+            ]
+          }
+        }
+      }
+    }
+  }
+  if(open_as_modal){
+    return Navigation.showModal({
+      stack: {
+        id: POST_OPTIONS_SETTINGS_SCREEN,
+        name: EDIT_PAGE_SCREEN,
+        children: [component],
+      }
+    });
+  }
+  else{
+    return Navigation.push(component_id, component);
+  }
 }

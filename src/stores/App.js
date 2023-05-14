@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen, settingsScreen, postsScreen, pagesScreen, uploadsScreen } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen, settingsScreen, postsScreen, pagesScreen, uploadsScreen, postOptionsSettingsScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
@@ -15,6 +15,7 @@ import Settings from "./Settings"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Contact from './models/posting/Contact'
 import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
+import Services from './Services';
 // import ShareMenu from 'react-native-share-menu'
 
 let SCROLLING_TIMEOUT = null
@@ -97,6 +98,10 @@ export default App = types.model('App', {
       }
       else if(event?.url && event?.url.includes('/post?text=') && Auth.is_logged_in()){
         App.navigate_to_screen("post", event.url)
+      }
+      else if(event?.url && event?.url.includes('/indieauth') && Auth.is_logged_in()){
+        console.log("Micropub:Opened app with IndieAuth")
+        Services.check_micropub_credentials_and_proceed_setup(event?.url)
       }
       else if (event?.url) {
         self.handle_url(event?.url)
@@ -199,7 +204,7 @@ export default App = types.model('App', {
     }
   }),
 
-  navigate_to_screen_from_menu: flow(function* (screen) {
+  navigate_to_screen_from_menu: flow(function* (screen, open_as_modal = false) {
     console.log("App:navigate_to_screen_from_menu", screen)
     menuBottomSheet(true)
     let tab_index = null
@@ -245,6 +250,8 @@ export default App = types.model('App', {
         return pagesScreen(self.current_screen_id)
       case "Uploads":
         return uploadsScreen(self.current_screen_id)
+      case "PostService":
+        return postOptionsSettingsScreen(Auth.selected_user, self.current_screen_id, open_as_modal)
     }
     console.log("App:navigate_to_screen_from_menu:index", screen, tab_index, self.current_screen_id, should_pop)
     if(tab_index != null){
@@ -338,6 +345,9 @@ export default App = types.model('App', {
         App.open_url(url, true)
       }
       else if (parts?.length >= 4) {
+        App.open_url(url)
+      }
+      else if (parts?.length === 1 && parts[0] === "summer"){
         App.open_url(url)
       }
       else {
@@ -655,6 +665,9 @@ export default App = types.model('App', {
   },
   theme_input_contrast_background_color() {
     return self.theme === "dark" ? "#171c24" : "#f2f2f2"
+  },
+  theme_input_contrast_alt_background_color() {
+    return self.theme === "dark" ? "#171c24" : "#F9FAFB"
   },
   theme_opacity_background_color() {
     return self.theme === "dark" ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.6)"
