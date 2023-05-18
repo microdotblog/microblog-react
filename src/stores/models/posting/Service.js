@@ -30,6 +30,15 @@ export default Service = types.model('Service', {
       const config = yield MicroPubApi.get_config(self.service_object())
       console.log("Service:hydrate:micropub:config", config)
       if(config){
+        // We need to check if config.destination exists, and if not, we need to create it.
+        if(config.destination == null){
+          config.destination = [
+            {
+              uid: self.name.includes("http://") || self.name.includes("https://") ? self.name : `https://${self.name}`,
+              name: self.name
+            }
+          ]
+        }
         self.config = config
         self.config.hydrate_default_destination()
         if(App.is_share_extension){
