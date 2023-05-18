@@ -61,21 +61,25 @@ export default class PostToolbar extends React.Component{
 	render() {
 		const { posting } = App.is_share_extension ? Share.selected_user : Auth.selected_user
 		return (
-			<>
+			<View
+				style={{
+					width: '100%',
+					...Platform.select({
+						android: {
+							position: 'absolute',
+							bottom: 0,
+							right: 0,
+							left: 0,
+						}
+					})
+				}}
+			>
 				{this._render_destinations()}
 				{this._render_users_select()}
 				<View
 					style={{
 						width: '100%',
 						backgroundColor: App.theme_section_background_color(),
-						...Platform.select({
-							android: {
-								position: 'absolute',
-								bottom: 0,
-								right: 0,
-								left: 0,
-							}
-						}),
 						padding: 5,
 						minHeight: 40,
 						flexDirection: 'row',
@@ -174,7 +178,7 @@ export default class PostToolbar extends React.Component{
 						}
 					</View>
 				</View>
-			</>
+			</View>
     )
   }
   
