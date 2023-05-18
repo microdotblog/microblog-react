@@ -25,13 +25,12 @@ export default Services = types.model('Services', {
 .actions(self => ({
   
   hydrate_with_user: flow(function* (user = null) {
-    console.log("Services:hydrate_with_user", user)
-    self.current_username = user.username
-    if(user != null && !user.posting?.selected_service?.is_microblog){
+    self.current_username = user?.username
+    if(user?.posting?.selected_service?.is_microblog){
       self.current_url = user.posting?.selected_service?.name // I know, bad property name
       self.did_set_up_successfully = true
     }
-    else if(user != null && user.posting?.first_custom_service()?.name){
+    else if(user?.posting?.first_custom_service()?.name){
       self.current_url = user.posting?.first_custom_service().name
       self.did_set_up_successfully = true
     }
