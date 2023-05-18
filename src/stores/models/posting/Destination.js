@@ -29,12 +29,12 @@ export default Destination = types.model('Destination', {
 	set_posts(entries) {
 		console.log("Destination:set_posts", entries.length)
 		const posts = entries.reduce((acc, entry) => {
-			const uid =  entry.properties.uid && entry.properties.uid[0] ? parseInt(entry.properties.uid[0], 10) : 0
-			const name = entry.properties.name[0] || ""
-			const content = entry.properties.content[0] || ""
-			const published = entry.properties.published[0]
-			const url = entry.properties.url[0] || ""
-			const post_status = entry.properties["post-status"][0] || ""
+			const uid = entry.properties.uid && entry.properties.uid[0] ? parseInt(entry.properties.uid[0], 10) : 0
+			const name = entry.properties.name ? entry.properties.name[0] : ""
+			const content = entry.properties.content ? entry.properties.content[0] : ""
+			const published = entry.properties.published ? entry.properties.published[0] : ""
+			const url = entry.properties.url ? entry.properties.url[0] : ""
+			const post_status = entry.properties["post-status"] ? entry.properties["post-status"][0] : ""
 			const post = {
 				uid: uid,
 				name: name,
@@ -43,8 +43,8 @@ export default Destination = types.model('Destination', {
 				url: url,
 				post_status: post_status
 			}
-			if (!uid || url === "") {
-				return acc;
+			if (uid === 0 || url === "") {
+				return acc
 			}
 			return [...acc, post]
 		}, [])
@@ -57,10 +57,10 @@ export default Destination = types.model('Destination', {
 		const pages = entries.reduce((acc, entry) => {
 			// MAYBE MAKE THIS MORE GENERIC? DRY.
 			const uid =  entry.properties.uid && entry.properties.uid[0] ? parseInt(entry.properties.uid[0], 10) : 0
-			const name = entry.properties.name[0] || ""
-			const content = entry.properties.content[0] || ""
-			const published = entry.properties.published[0]
-			const url = entry.properties.url[0] || ""
+			const name = entry.properties.name ? entry.properties.name[0] : ""
+			const content = entry.properties.content ? entry.properties.content[0] : ""
+			const published = entry.properties.published ? entry.properties.published[0] : ""
+			const url = entry.properties.url ? entry.properties.url[0] : ""
 			const post = {
 				uid: uid,
 				name: name,
@@ -68,7 +68,7 @@ export default Destination = types.model('Destination', {
 				published: published,
 				url: url
 			}
-			if (!uid || url === "") {
+			if (uid === 0 || url === "") {
 				return acc;
 			}
 			return [...acc, post]
