@@ -26,7 +26,7 @@ export default Services = types.model('Services', {
   
   hydrate_with_user: flow(function* (user = null) {
     self.current_username = user?.username
-    if(user?.posting?.selected_service?.is_microblog){
+    if(!user?.posting?.selected_service?.is_microblog){
       self.current_url = user.posting?.selected_service?.name // I know, bad property name
       self.did_set_up_successfully = true
     }
