@@ -52,7 +52,7 @@ export default class NewUploadButton extends React.Component {
 							:
 							<Image
 								source={AddIcon}
-								style={{ width: 28, height: 28 }}
+								style={{ width: 28, height: 28, tintColor: App.theme_text_color(), marginRight: 5 }}
 							/>
 					}
 				</MenuView>
