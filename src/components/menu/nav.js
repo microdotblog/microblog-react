@@ -5,7 +5,6 @@ import Auth from './../../stores/Auth';
 import App from './../../stores/App';
 import { SFSymbol } from "react-native-sfsymbols";
 import { SvgXml } from 'react-native-svg';
-import {} from "./../../screens";
 
 // Nav icons
 import Bookmarks from './../../assets/icons/nav/bookmarks.png';
