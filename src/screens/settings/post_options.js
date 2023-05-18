@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TextInput, TouchableOpacity, Button, Keyboard, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Button, Keyboard, KeyboardAvoidingView, ActivityIndicator, Platform } from 'react-native';
 import App from '../../stores/App'
 import Services from '../../stores/Services'
 
@@ -124,7 +124,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
                   <>
                     <Button
                       title="Cancel"
-                      color={App.theme_error_text_color()}
+                      color={Platform.OS === "ios" ? App.theme_error_text_color() : App.theme_error_background_color()}
                       onPress={Services.clear}
                     />
                     <View style={{ flexDirection: "row", justifyContent: "center" }}>
@@ -135,7 +135,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
                         disabled={!Services.can_set_up_credentials() || !Services.has_credentials() || Services.checking_credentials}
                       />
                       {
-                        Services.checking_credentials &&
+                        Services.checking_credentials || Services.is_setting_up &&
                         <ActivityIndicator style={{ marginLeft: 8 }} color={App.theme_accent_color()} />
                       }
                     </View>
@@ -144,12 +144,12 @@ export default class PostOptionsSettingsScreen extends React.Component{
                   <>
                   <Button
                     title={Services.should_show_set_up() ? "Set Up..." : "Remove Blog..."}
-                    color={Services.should_show_set_up() ? App.theme_accent_color() : App.theme_error_text_color()}
+                    color={Services.should_show_set_up() ? App.theme_accent_color() : Platform.OS === "ios" ? App.theme_error_text_color() : App.theme_error_background_color()}
                     onPress={Services.should_show_set_up() ? Services.setup_new_service : Services.trigger_custom_service_delete}
                     disabled={!Services.can_set_up() || Services.is_setting_up}
                   />
                   {
-                    Services.is_setting_up &&
+                    Services.is_setting_up || Services.checking_credentials &&
                     <ActivityIndicator style={{marginLeft: 8}} color={App.theme_accent_color()} />
                   }
                   </>
