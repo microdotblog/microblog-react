@@ -90,7 +90,7 @@ export default Discover = types.model('Discover', {
 	},
 	
 	sanitised_search_query(){
-		return self.search_query.replace(/(%20|\s)/g, "+")
+		return self.search_query.trim().replace(/(%20|\s)/g, "+")
 	}
 
 }))
