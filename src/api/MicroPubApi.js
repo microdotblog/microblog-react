@@ -19,26 +19,25 @@ class MicroPubApi {
 				headers: {
 					'Accept': 'text/html',
 				}
-			});
-			const html = await response.text();
-			const dom_parser = new DOMParser();
-			console.log(html);
-			const doc = dom_parser.parseFromString(html, "text/html");
-			const head = doc.getElementsByTagName('head')[0];
-			const links = head.getElementsByTagName('link');
-			let micropub_link;
-			let auth_link;
-			let token_link;
+			})
+			const html = await response.text()
+			const dom_parser = new DOMParser()
+			const doc = dom_parser.parseFromString(html, "text/html")
+			const head = doc.getElementsByTagName('head')[0]
+			const links = head.getElementsByTagName('link')
+			let micropub_link
+			let auth_link
+			let token_link
 			for (let i = 0; i < links.length; i++) {
-				const link = links[i];
+				const link = links[i]
 				if (link.getAttribute('rel') === 'micropub') {
-					micropub_link = link;
+					micropub_link = link
 				}
 				else if (link.getAttribute('rel') === 'authorization_endpoint') {
-					auth_link = link;
+					auth_link = link
 				}
 				else if (link.getAttribute('rel') === 'token_endpoint') {
-					token_link = link;
+					token_link = link
 				}
 			}
 			if (micropub_link && auth_link && token_link) {
