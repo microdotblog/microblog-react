@@ -14,49 +14,52 @@ class MicroPubApi {
   
 	async discover_micropub_endpoints(url) {
 		console.log('MicroPubApi:discover_micropub_endpoints', url);
-		const micropub_endpoints = axios
-			.get(url)
-			.then(response => {
-				const dom_parser = new DOMParser()
-				const doc = dom_parser.parseFromString(response.data, "text/html")
-				const head = doc.getElementsByTagName('head')[0]
-				const links = head.getElementsByTagName('link')
-				var micropub_link
-				var auth_link
-				var token_link
-				for (let i = 0; i < links.length; i++) {
-					const link = links[i];
-					if (link.getAttribute('rel') === 'micropub') {
-						micropub_link = link;
-					}
-					else if (link.getAttribute('rel') === 'authorization_endpoint') {
-						auth_link = link;
-					}
-					else if (link.getAttribute('rel') === 'token_endpoint') {
-						token_link = link;
-					}
+		try {
+			const response = await fetch(url, {
+				headers: {
+					'Accept': 'text/html',
 				}
-				if (micropub_link && auth_link && token_link) {
-					return {
-						"micropub": micropub_link.getAttribute('href'),
-						"auth": auth_link.getAttribute('href'),
-						"token": token_link.getAttribute('href')
-					}
-				} else {
-					return MICROPUB_NOT_FOUND
-				}
-			})
-			.catch(error => {
-				console.log(error)
-				if(error?.toString()?.includes("Network error")){
-					Alert.alert("Whoops. There was an error connecting to the URL. Please check the url and try again.")
-				}
-				else{
-					Alert.alert("Whoops, an error occured trying to connect. Please try again.")
-				}
-				return MICROPUB_NOT_FOUND
 			});
-		return micropub_endpoints
+			const html = await response.text();
+			const dom_parser = new DOMParser();
+			console.log(html);
+			const doc = dom_parser.parseFromString(html, "text/html");
+			const head = doc.getElementsByTagName('head')[0];
+			const links = head.getElementsByTagName('link');
+			let micropub_link;
+			let auth_link;
+			let token_link;
+			for (let i = 0; i < links.length; i++) {
+				const link = links[i];
+				if (link.getAttribute('rel') === 'micropub') {
+					micropub_link = link;
+				}
+				else if (link.getAttribute('rel') === 'authorization_endpoint') {
+					auth_link = link;
+				}
+				else if (link.getAttribute('rel') === 'token_endpoint') {
+					token_link = link;
+				}
+			}
+			if (micropub_link && auth_link && token_link) {
+				return {
+					"micropub": micropub_link.getAttribute('href'),
+					"auth": auth_link.getAttribute('href'),
+					"token": token_link.getAttribute('href')
+				}
+			} else {
+				return MICROPUB_NOT_FOUND
+			}
+		} catch (error) {
+			console.log(error);
+			if (error?.toString()?.includes("Network error")) {
+				Alert.alert("Whoops. There was an error connecting to the URL. Please check the url and try again.")
+			}
+			else {
+				Alert.alert("Whoops, an error occured trying to connect. Please try again.")
+			}
+			return MICROPUB_NOT_FOUND
+		}
 	}
 
 	make_auth_url(me_url, base_auth_url) {
