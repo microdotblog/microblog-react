@@ -18,6 +18,7 @@ class MicroPubApi {
 			const response = await fetch(url, {
 				headers: {
 					'Accept': 'text/html',
+					'Cache-Control': 'no-cache'
 				}
 			})
 			const html = await response.text()
