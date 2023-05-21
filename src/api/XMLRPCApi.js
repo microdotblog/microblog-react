@@ -27,8 +27,9 @@ async function xmlRpcCall(url, methodName, params) {
 			body: xmlPayload,
 		})
 
-		const options = {}
+		console.log("XML-RPC response", response.text())
 
+		const options = {}
 		const parser = new XMLParser(options)
 		const xmlResponse = await response.text()
 		const jsonResponse = parser.parse(xmlResponse)
@@ -95,16 +96,21 @@ class XMLRPCApi {
 				const xmlDoc = dom_parser.parseFromString(response.data, 'text/xml')
 				const apis = xmlDoc.getElementsByTagName('api')
 				let blog_id
+				let xmlrpc_url
 				for (let i = 0; i < apis.length; i++) {
 					const api = apis[ i ]
 					if (api.getAttribute('preferred') === 'true') {
 						blog_id = api.getAttribute('blogID')
+						xmlrpc_url = api.getAttribute('apiLink')
 						break
 					}
 				}
-				console.log(blog_id)
+				console.log("XMLRPCApi:discover_preferred_blog:blog_id", blog_id)
 				if (blog_id != null) {
-					return blog_id
+					return {
+						blog_id: blog_id,
+						xmlrpc_url: xmlrpc_url
+					}
 				} else {
 					return BLOG_ID_NOT_FOUND
 				}

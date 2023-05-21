@@ -88,13 +88,12 @@ export default Services = types.model('Services', {
       const rsd_link = yield XMLRPCApi.discover_rsd_endpoint(discover_url)
       console.log("Services:setup_new_service:rsd_link", rsd_link)
       if(rsd_link !== RSD_NOT_FOUND){
-        // OK, so we found the RSD link, now we need to get the preferred blog ID
-        self.xml_endpoint = rsd_link.replace("?rsd", "")
-        const blog_id = yield XMLRPCApi.discover_preferred_blog(rsd_link)
-        console.log("Services:setup_new_service:blog_id", blog_id)
-        if(blog_id !== BLOG_ID_NOT_FOUND){
+        const blog_info = yield XMLRPCApi.discover_preferred_blog(rsd_link)
+        if(blog_info !== BLOG_ID_NOT_FOUND){
           // We found a blog id, nice!
-          self.blog_id = blog_id
+          console.log("Services:setup_new_service:xmlrpc_url", blog_info.xmlrpc_url)
+          self.blog_id = blog_info.blog_id
+          self.xml_endpoint = blog_info.xmlrpc_url
           self.show_credentials = true
         }
       }
