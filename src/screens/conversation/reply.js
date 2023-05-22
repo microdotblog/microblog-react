@@ -4,6 +4,7 @@ import { View, TextInput, Keyboard, ActivityIndicator, InputAccessoryView, Platf
 import { Navigation } from 'react-native-navigation';
 import Reply from '../../stores/Reply'
 import ReplyToolbar from '../../components/keyboard/reply_toolbar'
+import UsernameToolbar from '../../components/keyboard/username_toolbar'
 import App from '../../stores/App'
 
 @observer
@@ -59,7 +60,7 @@ export default class ReplyScreen extends React.Component{
 					enablesReturnKeyAutomatically={true}
 					underlineColorAndroid={'transparent'}
           value={Reply.reply_text}
-          onChangeText={(text) => !Reply.is_sending_reply ? Reply.set_reply_text(text) : null}
+          onChangeText={(text) => !Reply.is_sending_reply ? Reply.set_reply_text_from_typing(text) : null}
           onSelectionChange={({ nativeEvent: { selection } }) => {
             Reply.set_text_selection(selection)
           }}
@@ -68,9 +69,14 @@ export default class ReplyScreen extends React.Component{
         {
           Platform.OS === 'ios' ?
             <InputAccessoryView nativeID={this.input_accessory_view_id}>
-              <ReplyToolbar />
+              <UsernameToolbar componentId={this.props.componentId} object={Reply} />
+              <ReplyToolbar reply={Reply} />
             </InputAccessoryView>
-          :  <ReplyToolbar />
+          :  
+          <>
+            <UsernameToolbar componentId={this.props.componentId} object={Reply} />
+            <ReplyToolbar reply={Reply} />
+          </>
         }
         {
           Reply.is_sending_reply ?

@@ -1,8 +1,8 @@
 diff --git a/node_modules/react-native-image-viewing/dist/components/ImageItem/ImageItem.ios.js b/node_modules/react-native-image-viewing/dist/components/ImageItem/ImageItem.ios.js
-index 0708505..aa2b97a 100644
+index 0708505..1b9a7cc 100644
 --- a/node_modules/react-native-image-viewing/dist/components/ImageItem/ImageItem.ios.js
 +++ b/node_modules/react-native-image-viewing/dist/components/ImageItem/ImageItem.ios.js
-@@ -26,7 +26,7 @@ const ImageItem = ({ imageSrc, onZoom, onRequestClose, onLongPress, delayLongPre
+@@ -26,10 +26,10 @@ const ImageItem = ({ imageSrc, onZoom, onRequestClose, onLongPress, delayLongPre
      const scrollValueY = new Animated.Value(0);
      const scaleValue = new Animated.Value(scale || 1);
      const translateValue = new Animated.ValueXY(translate);
@@ -10,4 +10,8 @@ index 0708505..aa2b97a 100644
 +    const maxScale = scale && scale > 0 ? 3 : 1;
      const imageOpacity = scrollValueY.interpolate({
          inputRange: [-SWIPE_CLOSE_OFFSET, 0, SWIPE_CLOSE_OFFSET],
-         outputRange: [0.5, 1, 0.5],
+-        outputRange: [0.5, 1, 0.5],
++        outputRange: [0.95, 1, 0.95],
+     });
+     const imagesStyles = getImageStyles(imageDimensions, translateValue, scaleValue);
+     const imageStylesWithOpacity = { ...imagesStyles, opacity: imageOpacity };

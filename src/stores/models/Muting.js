@@ -1,7 +1,7 @@
 import { types, flow } from 'mobx-state-tree';
-import { ToastAndroid } from 'react-native';
 import MicroBlogApi, { API_ERROR, MUTING_ERROR } from '../../api/MicroBlogApi'
 import Tokens from '../Tokens';
+import Toast from 'react-native-simple-toast';
 
 export default Muting = types.model('Muting', {
 	username: types.identifier,
@@ -36,7 +36,7 @@ export default Muting = types.model('Muting', {
 		self.is_sending_mute = true;
 		const mute = yield MicroBlogApi.mute_user(username, self.token());
 		if (mute && mute !== MUTING_ERROR) {
-			ToastAndroid.show(`@${ username } has been muted.`, ToastAndroid.SHORT)
+			Toast.showWithGravity(`@${ username } has been muted.`, Toast.SHORT, Toast.CENTER)
 			yield self.hydrate()
 		}
 		else {
@@ -50,7 +50,7 @@ export default Muting = types.model('Muting', {
 		self.is_sending_unmute = true;
 		const unmute = yield MicroBlogApi.unmute_user(self.get_mute_id(username), self.token());
 		if (unmute && unmute !== API_ERROR) {
-			ToastAndroid.show(`@${ username } has been unmuted.`, ToastAndroid.SHORT);
+			Toast.showWithGravity(`@${ username } has been unmuted.`, Toast.SHORT, Toast.CENTER)
 			yield self.hydrate()
 		}
 		else {

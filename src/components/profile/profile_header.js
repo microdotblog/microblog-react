@@ -17,11 +17,9 @@ export default class ProfileHeader extends React.Component{
       loading: true,
       profile: null,
       more_expanded: false,
-      is_toggling_follow: false
+      is_toggling_follow: false,
+      is_mastodon: false
     }
-    let now = new Date()
-    now.setHours(0, 0, 0, 0)
-    this.now = now
   }
   
   componentDidMount = async () => {
@@ -49,7 +47,8 @@ export default class ProfileHeader extends React.Component{
       this.setState({
         loading: false,
         profile: profile,
-        is_toggling_follow: false
+        is_toggling_follow: false,
+        is_mastodon: profile._microblog.username.includes("@")
       })
     }
     else if(profile === API_ERROR){
@@ -65,10 +64,15 @@ export default class ProfileHeader extends React.Component{
     return(
       <View style={{ padding: 8, backgroundColor: App.theme_button_background_color(), width: '100%' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image source={{ uri: `${profile.author.avatar}?v=${this.now}` }} style={{ width: 50, height: 50, borderRadius: 50 }} />
+          <TouchableOpacity onPress={() => App.set_image_modal_data_and_activate(`${profile.author.avatar}${!this.state.is_mastodon ? `?v=${App.now()}`: ""}`)}>
+            <Image source={{ uri: `${profile.author.avatar}${!this.state.is_mastodon ? `?v=${App.now()}`: ""}` }} style={{ width: 50, height: 50, borderRadius: 50 }} />
+          </TouchableOpacity>
           <View style={{ marginLeft: 15 }}>
             <Text style={{ fontWeight: '700', fontSize: 18, marginBottom: 2, color: App.theme_text_color() }}>{profile.author.name}</Text>
-            <Text style={{ fontWeight: '300', color: App.theme_text_color() }}>@{profile._microblog.username}</Text>
+            {
+              profile._microblog?.pronouns &&
+                <Text style={{ fontWeight: '300', color: App.theme_text_color() }}>{profile._microblog.pronouns}</Text>
+            }
             {
               profile.author.url != null ?
               <TouchableOpacity style={{ marginTop: 2 }} onPress={() => App.open_url(profile.author.url)}>
@@ -100,12 +104,12 @@ export default class ProfileHeader extends React.Component{
         <ScrollView style={{marginTop: 5, marginBottom: 5, maxHeight: more_expanded ? 205 : 'auto'}}>
         {
           long_bio && more_expanded ?
-          <Hyperlink linkDefault={ true } linkStyle={{ textDecorationLine: 'underline' }}>
+          <Hyperlink onPress={(url) => App.handle_url_from_webview(url)} linkStyle={{ textDecorationLine: 'underline' }}>
             <Text style={{ paddingBottom: 20, color: App.theme_text_color() }}>{long_bio}</Text>
           </Hyperlink>
           :
           long_bio && !more_expanded ?
-          <Hyperlink linkDefault={ true } linkStyle={{ textDecorationLine: 'underline' }}>
+          <Hyperlink onPress={(url) => App.handle_url_from_webview(url)} linkStyle={{ textDecorationLine: 'underline' }}>
             <Text style={{ position: 'relative', color: App.theme_text_color() }}>
               {short_bio}{ long_bio.length > short_bio.length ? "..." : "" }
             </Text>

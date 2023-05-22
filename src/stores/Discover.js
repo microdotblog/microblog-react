@@ -8,7 +8,11 @@ export default Discover = types.model('Discover', {
 		emoji: types.maybeNull(types.string),
 		is_featured: types.maybeNull(types.boolean)
 	})), []),
-	random_tagmoji: types.optional(types.array(types.string), [])
+	random_tagmoji: types.optional(types.array(types.string), []),
+	search_shown: types.optional(types.boolean, false),
+	search_query: types.optional(types.string, ""),
+	search_trigger: types.optional(types.boolean, false),
+	did_trigger_search: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -26,6 +30,34 @@ export default Discover = types.model('Discover', {
 			yield self.init()
 		}
 		self.random_tagmoji = self.random_emojis()
+	}),
+	
+	toggle_search_bar: flow(function* () { 
+		self.search_shown = !self.search_shown
+		if(!self.search_shown){
+			self.search_query = ""
+			self.search_trigger = false
+			self.did_trigger_search = false
+		}
+	}),
+	
+	set_search_query: flow(function* (value) { 
+		self.search_query = value
+		if(value === ""){
+			self.search_trigger = false
+			self.did_trigger_search = false
+		}
+	}),
+	
+	trigger_search: flow(function* (value = true) { 
+		if(value){
+			self.did_trigger_search = true
+		}
+		self.search_trigger = value
+		setTimeout(() =>{
+			self.trigger_search(false)
+		}, 50)
+		
 	})
 
 }))
@@ -43,6 +75,22 @@ export default Discover = types.model('Discover', {
 			emoji_list_random_indexes.push(random_index)
 		}
 		return emoji_list.filter((emoji, index) => emoji_list_random_indexes.includes(index))
+	},
+	
+	can_show_search(){
+		return self.did_trigger_search && self.search_shown && self.search_query !== "" && self.search_query.length >= 3
+	},
+	
+	should_load_search(){
+		return self.search_trigger
+	},
+	
+	topic_by_slug(slug){
+		return self.tagmoji.find(topic => topic.name === slug)
+	},
+	
+	sanitised_search_query(){
+		return self.search_query.trim().replace(/(%20|\s)/g, "+")
 	}
 
 }))

@@ -14,6 +14,7 @@ export const POST_ERROR = 6;
 export const BOOKMARK_ERROR = 7;
 export const REPORTING_ERROR = 8;
 export const MUTING_ERROR = 9;
+export const DELETE_ERROR = 10;
 
 axios.defaults.baseURL = API_URL;
 
@@ -120,7 +121,7 @@ class MicroBlogApi {
 			})
 			.catch(error => {
 				console.log(error);
-				return FETCH_ERROR;
+				return POST_ERROR;
 			});
 		return unfollow;
   }
@@ -291,6 +292,60 @@ class MicroBlogApi {
 			})
 			.catch(error => {
 				console.log(error);
+				return API_ERROR;
+			});
+		return push;
+	}
+	
+	async get_replies() {
+		console.log('MicroBlogApi: get_replies');
+		const push = axios
+			.get(`/posts/replies`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+			})
+			.then(response => {
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: get_replies', error);
+				return API_ERROR;
+			});
+		return push;
+	}
+	
+	async delete_post(id) {
+		console.log('MicroBlogApi:delete_post', id);
+		const posts = axios
+			.delete(`/posts/${id}`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` }
+			})
+			.then(response => {
+				return response.data;
+			})
+			.catch(error => {
+				console.log(error);
+				return DELETE_ERROR;
+			});
+		return posts;
+	}
+
+	async find_users(username) {
+		console.log('MicroBlogApi: find_users', username);
+		const push = axios
+			.get(`/micropub?q=contact&filter=${username}`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+			})
+			.then(response => {
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: find_users', error);
 				return API_ERROR;
 			});
 		return push;

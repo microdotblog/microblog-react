@@ -1,8 +1,9 @@
 import { Navigation } from "react-native-navigation";
-import { RNNBottomSheet } from 'react-native-navigation-bottom-sheet';
 import * as React from 'react';
 import { Platform } from 'react-native';
+import { registerSheet, SheetManager } from "react-native-actions-sheet";
 import Reply from '../stores/Reply';
+import Replies from '../stores/Replies'
 
 // SCREENS
 import TimelineScreen from './timeline/timeline';
@@ -13,14 +14,24 @@ import ProfileScreen from './profile/profile';
 import ConversationScreen from "./conversation/conversation";
 import BookmarksScreen from "./bookmarks/bookmarks";
 import FollowingScreen from "./following/following";
-import PostingScreen from "./posting/posting";
+import PostingScreen from "./posts/new";
 import DiscoverTopicScreen from "./discover/topic";
-import PostingOptionsScreen from "./posting/options";
+import PostingOptionsScreen from "./posts/options";
 import ReplyScreen from "./conversation/reply";
 import BookmarkScreen from "./bookmarks/bookmark";
 import AddBookmarkScreen from "./bookmarks/add_bookmark";
 import HelpScreen from "./help/help";
-import ImageOptionsScreen from "./posting/image_options";
+import ImageOptionsScreen from "./posts/image_options";
+import ImageCropScreen from "./posts/image_crop";
+import RepliesScreen from "./replies/replies";
+import ReplyEditScreen from "./replies/edit";
+import SettingsScreen from "./settings/settings";
+import PostsScreen from "./posts/posts";
+import EditPostScreen from "./posts/edit";
+import PagesScreen from "./pages/pages"
+import EditPageScreen from "./pages/edit"
+import UploadsScreen from "./uploads/uploads";
+import PostOptionsSettingsScreen from "./settings/post_options";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -30,6 +41,7 @@ export const PROFILE_SCREEN = 'microblog.ProfileScreen';
 export const CONVERSATION_SCREEN = 'microblog.ConversationScreen';
 export const BOOKMARKS_SCREEN = 'microblog.BookmarksScreen';
 export const FOLLOWING_SCREEN = 'microblog.FollowingScreen';
+export const POSTING_STACK = 'microblog.modal.PostingStack';
 export const POSTING_SCREEN = 'microblog.modal.PostingScreen';
 export const DISCOVER_TOPIC_SCREEN = 'microblog.DiscoverTopicScreen';
 export const POSTING_OPTIONS_SCREEN = 'microblog.modal.PostingOptionsScreen';
@@ -38,18 +50,31 @@ export const BOOKMARK_SCREEN = 'microblog.BookmarkScreen';
 export const ADD_BOOKMARK_SCREEN = 'microblog.modal.AddBookmarkScreen';
 export const HELP_SCREEN = 'microblog.modal.HelpScreen';
 export const IMAGE_OPTIONS_SCREEN = 'microblog.modal.ImageOptionsScreen';
+export const IMAGE_CROP_SCREEN = 'microblog.modal.ImageCropScreen';
+export const REPLIES_SCREEN = 'micrblog.RepliesScreen';
+export const REPLY_EDIT_SCREEN = 'microblog.ReplyEditScreen';
+export const SETTINGS_SCREEN = 'microblog.modal.SettingsScreen';
+export const POSTS_SCREEN = 'microblog.PostsScreen';
+export const EDIT_POST_SCREEN = 'microblog.EditPostScreen';
+export const PAGES_SCREEN = 'microblog.PagesScreen';
+export const EDIT_PAGE_SCREEN = 'microblog.EditPageScreen';
+export const UPLOADS_SCREEN = 'microblog.UploadsScreen';
+export const POST_OPTIONS_SETTINGS_SCREEN = 'microblog.modal.PostOptionsSettingsScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
-import SheetMenu from './../components/sheets/menu';
 import NewPostButton from './../components/header/new_post';
-import TagmojiMenu from "../components/sheets/tagmoji";
-import ProfileMoreMenu from "../components/sheets/profile_more";
 import ScreenTitle from "../components/header/screen_title";
+import RefreshActivity from "../components/header/refresh_activity";
+import Tab from "../components/tabs/tab";
+import NewUploadButton from "../components/header/new_upload";
 
 export const PROFILE_IMAGE = 'microblog.component.ProfileImage'
 export const NEW_POST_BUTTON = 'microblog.component.NewPostButton'
 export const SCREEN_TITLE = 'microblog.component.ScreenTitle'
+export const REFRESH_ACTIVITY = 'microblog.component.RefreshActivity'
+export const TAB = 'microblog.component.tab'
+export const NEW_UPLOAD_BUTTON = 'microblog.component.NewUploadButton'
 
 // ICONS
 import TimelineIcon from './../assets/icons/tab_bar/timeline.png';
@@ -57,195 +82,62 @@ import MentionsIcon from './../assets/icons/tab_bar/mentions.png';
 import DiscoverIcon from './../assets/icons/tab_bar/discover.png';
 import ArrowBackIcon from './../assets/icons/arrow_back.png';
 import ReplyIcon from './../assets/icons/reply.png';
-import AddIcon from './../assets/icons/add.png';
+import BookmarksIcon from './../assets/icons/nav/bookmarks.png'
+
+// SHEETS
+import SheetMenu from './../components/sheets/menu';
+import ProfileMoreMenu from "./../components/sheets/profile_more"
+import TagmojiMenu from "../components/sheets/tagmoji";
+import PostsDestinationMenu from "../components/sheets/posts_destination";
+registerSheet("main_sheet", SheetMenu);
+registerSheet("profile_more_menu", ProfileMoreMenu);
+registerSheet("tagmoji_menu", TagmojiMenu);
+registerSheet("posts_destination_menu", PostsDestinationMenu);
+
 import Push from "../stores/Push"
 import { theme_options } from "../utils/navigation"
 import App from "../stores/App"
+import Auth from "../stores/Auth"
+import Services from "../stores/Services"
 
-// Set up screens
-export const Screens = new Map();
-Screens.set(TIMELINE_SCREEN, TimelineScreen);
-Screens.set(MENTIONS_SCREEN, MentionsScreen);
-Screens.set(DISCOVER_SCREEN, DiscoverScreen);
-Screens.set(LOGIN_SCREEN, LoginScreen);
-Screens.set(PROFILE_SCREEN, ProfileScreen);
-Screens.set(CONVERSATION_SCREEN, ConversationScreen);
-Screens.set(BOOKMARKS_SCREEN, BookmarksScreen);
-Screens.set(FOLLOWING_SCREEN, FollowingScreen);
-Screens.set(POSTING_SCREEN, PostingScreen);
-Screens.set(DISCOVER_TOPIC_SCREEN, DiscoverTopicScreen);
-Screens.set(POSTING_OPTIONS_SCREEN, PostingOptionsScreen);
-Screens.set(REPLY_SCREEN, ReplyScreen);
-Screens.set(BOOKMARK_SCREEN, BookmarkScreen);
-Screens.set(ADD_BOOKMARK_SCREEN, AddBookmarkScreen);
-Screens.set(HELP_SCREEN, HelpScreen)
-Screens.set(IMAGE_OPTIONS_SCREEN, ImageOptionsScreen);
-
-// SET UP COMPONENTS
-Screens.set(PROFILE_IMAGE, ProfileImage)
-Screens.set(NEW_POST_BUTTON, NewPostButton)
-Screens.set(SCREEN_TITLE, ScreenTitle)
+// Set up screens & components
+export const Screens = {
+  [ TIMELINE_SCREEN ]: TimelineScreen,
+  [ MENTIONS_SCREEN ]: MentionsScreen,
+  [ DISCOVER_SCREEN ]: DiscoverScreen,
+  [ LOGIN_SCREEN ]: LoginScreen,
+  [ PROFILE_SCREEN ]: ProfileScreen,
+  [ CONVERSATION_SCREEN ]: ConversationScreen,
+  [ BOOKMARKS_SCREEN ]: BookmarksScreen,
+  [ FOLLOWING_SCREEN ]: FollowingScreen,
+  [ POSTING_SCREEN ]: PostingScreen,
+  [ DISCOVER_TOPIC_SCREEN ]: DiscoverTopicScreen,
+  [ POSTING_OPTIONS_SCREEN ]: PostingOptionsScreen,
+  [ REPLY_SCREEN ]: ReplyScreen,
+  [ BOOKMARK_SCREEN ]: BookmarkScreen,
+  [ ADD_BOOKMARK_SCREEN ]: AddBookmarkScreen,
+  [ HELP_SCREEN ]: HelpScreen,
+  [ IMAGE_OPTIONS_SCREEN ]: ImageOptionsScreen,
+  [ IMAGE_CROP_SCREEN ]: ImageCropScreen,
+  [ REPLIES_SCREEN ]: RepliesScreen,
+  [ REPLY_EDIT_SCREEN ]: ReplyEditScreen,
+  [ SETTINGS_SCREEN ]: SettingsScreen,
+  [ POSTS_SCREEN ]: PostsScreen,
+  [ EDIT_POST_SCREEN ]: EditPostScreen,
+  [ PAGES_SCREEN ]: PagesScreen,
+  [ EDIT_PAGE_SCREEN ]: EditPageScreen,
+  [ UPLOADS_SCREEN ]: UploadsScreen,
+  [ POST_OPTIONS_SETTINGS_SCREEN ]: PostOptionsSettingsScreen,
+  // COMPONENTS
+  [ PROFILE_IMAGE ]: ProfileImage,
+  [ NEW_POST_BUTTON ]: NewPostButton,
+  [ SCREEN_TITLE ]: ScreenTitle,
+  [ REFRESH_ACTIVITY ]: RefreshActivity,
+  [ TAB ]: Tab,
+  [ NEW_UPLOAD_BUTTON ]: NewUploadButton,
+}
 
 export const startApp = () => {
-  
-  // INIT BOTTOMSHEET
-  RNNBottomSheet.init()
-
-  const tabs = [
-    {
-      stack: {
-        children: [{
-          component: {
-            id: TIMELINE_SCREEN,
-            name: TIMELINE_SCREEN,
-            options: {
-              topBar: {
-                title: {
-                  component: {
-                    name: SCREEN_TITLE,
-                    passProps: {
-                      title: 'Timeline'
-                    },
-                  },
-                  text: 'Timeline',
-                },
-                rightButtons: [
-                  {
-                    id: 'post_button',
-                    text: 'New',
-                    component: {
-                      name: NEW_POST_BUTTON
-                    }
-                  }
-                ],
-                ...Platform.select({
-                  ios: {
-                    leftButtons: [
-                    {
-                      id: 'profile_button',
-                      text: 'Profile',
-                      component: {
-                        name: PROFILE_IMAGE
-                      }
-                    }
-                  ],
-                  }
-                })
-              }
-            }
-          },
-        }],
-        options: {
-          bottomTab: {
-            text: 'Timeline',
-            icon: Platform.OS === 'ios' ? { system: 'bubble.left.and.bubble.right' } : TimelineIcon
-          },
-        },
-      },
-    },
-    {
-      stack: {
-        children: [{
-          component: {
-            id: MENTIONS_SCREEN,
-            name: MENTIONS_SCREEN,
-            options: {
-              topBar: {
-                title: {
-                  component: {
-                    name: SCREEN_TITLE,
-                    passProps: {
-                      title: 'Mentions'
-                    },
-                  },
-                  text: 'Mentions',
-                },
-                rightButtons: [
-                  {
-                    id: 'post_button',
-                    text: 'New',
-                    component: {
-                      name: NEW_POST_BUTTON
-                    }
-                  }
-                ],
-                ...Platform.select({
-                  ios: {
-                    leftButtons: [
-                    {
-                      id: 'profile_button',
-                      text: 'Profile',
-                      component: {
-                        name: PROFILE_IMAGE
-                      }
-                    }
-                  ],
-                  }
-                })
-              }
-            }
-          },
-        }],
-        options: {
-          bottomTab: {
-            text: 'Mentions',
-            icon: Platform.OS === 'ios' ? { system: 'at' } : MentionsIcon
-          },
-        },
-      },
-    },
-    {
-      stack: {
-        children: [{
-          component: {
-            id: DISCOVER_SCREEN,
-            name: DISCOVER_SCREEN,
-            options: {
-              topBar: {
-                title: {
-                  component: {
-                    name: SCREEN_TITLE,
-                    passProps: {
-                      title: 'Discover'
-                    },
-                  },
-                  text: 'Discover',
-                },
-                rightButtons: [
-                  {
-                    id: 'post_button',
-                    text: 'New',
-                    component: {
-                      name: NEW_POST_BUTTON
-                    }
-                  }
-                ],
-                ...Platform.select({
-                  ios: {
-                    leftButtons: [
-                    {
-                      id: 'profile_button',
-                      text: 'Profile',
-                      component: {
-                        name: PROFILE_IMAGE
-                      }
-                    }
-                  ],
-                  }
-                })
-              }
-            }
-          },
-        }],
-        options: {
-          bottomTab: {
-            text: 'Discover',
-            icon: Platform.OS === 'ios' ? { system: 'magnifyingglass' } : DiscoverIcon
-          },
-        },
-      },
-    }
-  ]
 
   Navigation.setDefaultOptions(theme_options({}));
 
@@ -253,11 +145,223 @@ export const startApp = () => {
     root: {
       bottomTabs: {
         id: 'ROOT',
-        children: tabs,
+        children: [
+          timelineStackScreen(),
+          mentionsStackScreen(),
+          bookmarksStackScreen(),
+          discoverStackScreen()
+        ],
       }
     },
   });
 
+}
+
+export const timelineStackScreen = () =>{
+  return {
+    stack: {
+      children: [{
+        component: {
+          id: TIMELINE_SCREEN,
+          name: TIMELINE_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                component: {
+                  name: SCREEN_TITLE,
+                  passProps: {
+                    title: 'Timeline'
+                  },
+                },
+                text: 'Timeline',
+              },
+              rightButtons: [
+                {
+                  id: 'post_button',
+                  text: 'New',
+                  component: {
+                    name: NEW_POST_BUTTON
+                  }
+                }
+              ],
+              ...Platform.select({
+                ios: {
+                  leftButtons: [
+                  {
+                    id: 'profile_button',
+                    text: 'Profile',
+                    component: {
+                      name: PROFILE_IMAGE
+                    }
+                  }
+                ],
+                }
+              })
+            }
+          }
+        },
+      }],
+      options: {
+        bottomTab: {
+          text: 'Timeline',
+          icon: Platform.OS === 'ios' ? { system: 'bubble.left.and.bubble.right' } : TimelineIcon
+        },
+      },
+    },
+  }
+}
+
+export const mentionsStackScreen = () =>{
+  return {
+    stack: {
+      children: [{
+        component: {
+          id: MENTIONS_SCREEN,
+          name: MENTIONS_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                component: {
+                  name: SCREEN_TITLE,
+                  passProps: {
+                    title: 'Mentions'
+                  },
+                },
+                text: 'Mentions',
+              },
+              rightButtons: [
+                {
+                  id: 'post_button',
+                  text: 'New',
+                  component: {
+                    name: NEW_POST_BUTTON
+                  }
+                }
+              ],
+              ...Platform.select({
+                ios: {
+                  leftButtons: [
+                  {
+                    id: 'profile_button',
+                    text: 'Profile',
+                    component: {
+                      name: PROFILE_IMAGE
+                    }
+                  }
+                ],
+                }
+              })
+            }
+          }
+        },
+      }],
+      options: {
+        bottomTab: {
+          text: 'Mentions',
+          icon: Platform.OS === 'ios' ? { system: 'at' } : MentionsIcon
+        },
+      },
+    },
+  }
+}
+
+export const discoverStackScreen = () =>{
+  return {
+    stack: {
+      children: [{
+        component: {
+          id: DISCOVER_SCREEN,
+          name: DISCOVER_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                component: {
+                  name: SCREEN_TITLE,
+                  passProps: {
+                    title: 'Discover'
+                  },
+                },
+                text: 'Discover',
+              },
+              rightButtons: [
+                {
+                  id: 'post_button',
+                  text: 'New',
+                  component: {
+                    name: NEW_POST_BUTTON
+                  }
+                }
+              ],
+              ...Platform.select({
+                ios: {
+                  leftButtons: [
+                  {
+                    id: 'profile_button',
+                    text: 'Profile',
+                    component: {
+                      name: PROFILE_IMAGE
+                    }
+                  }
+                ],
+                }
+              })
+            }
+          }
+        },
+      }],
+      options: {
+        bottomTab: {
+          text: 'Discover',
+          icon: Platform.OS === 'ios' ? { system: 'magnifyingglass' } : DiscoverIcon
+        },
+      },
+    },
+  }
+}
+
+export const bookmarksStackScreen = () =>{
+  return {
+    stack: {
+      children: [{
+        component: {
+          id: BOOKMARKS_SCREEN,
+          name: BOOKMARKS_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                component: {
+                  name: SCREEN_TITLE,
+                  passProps: {
+                    title: 'Bookmarks'
+                  },
+                },
+                text: 'Bookmarks',
+              },
+              ...Platform.select({
+                ios: {
+                  leftButtons: [
+                  {
+                    id: 'profile_button',
+                    text: 'Profile',
+                    component: {
+                      name: PROFILE_IMAGE
+                    }
+                  }
+                ],
+                }
+              })
+            }
+          }
+        },
+      }],
+      options: {
+        bottomTab: {
+          text: 'Bookmarks',
+          icon: Platform.OS === 'ios' ? { system: 'star' } : BookmarksIcon
+        },
+      },
+    },
+  }
 }
 
 export const loginScreen = (can_dismiss = false) => {
@@ -296,15 +400,9 @@ export const loginScreen = (can_dismiss = false) => {
 
 export const menuBottomSheet = (close = false) => {
   if(!close){
-    return RNNBottomSheet.openBottomSheet({
-      renderContent: () => <SheetMenu />,
-      snapPoints: [0, Platform.OS === 'ios' ? 200 : 220, Platform.OS === 'ios' ? 290 : 310, '70%'],
-      initialSnapIndex: 2,
-      borderRadius: 16,
-      backgroundColor: App.theme_background_color_secondary()
-    })
+    return SheetManager.show("main_sheet")
   }
-  RNNBottomSheet.closeBottomSheet()
+  SheetManager.hide("main_sheet")
 }
 
 export const profileScreen = (username, component_id, close_bottom_sheet = true) => {
@@ -378,39 +476,6 @@ export const conversationScreen = (conversation_id, component_id) => {
   }
 }
 
-export const bookmarksScreen = (component_id) => {
-  console.log("Screens:bookmarksScreen", component_id);
-  const options = {
-    component: {
-      id: 'BOOKMARKS_SCREEN',
-      name: BOOKMARKS_SCREEN,
-      options: {
-        topBar: {
-          title: {
-            text: "Bookmarks"
-          },
-          rightButtons: [
-            {
-              id: 'add_bookmark_button',
-              text: 'Add bookmark',
-              icon: Platform.OS === 'ios' ? { system: 'plus' } : AddIcon
-            },
-            {
-              id: 'profile_button',
-              text: 'profile',
-              component: {
-                name: PROFILE_IMAGE
-              }
-            }
-          ],
-        }
-      }
-    }
-  };
-
-  return Navigation.push(component_id, options);
-}
-
 export const bookmarkScreen = (bookmark_id, component_id) => {
   console.log("Screens:bookmarkScreen", bookmark_id, component_id);
   const options = {
@@ -480,10 +545,11 @@ export const followingScreen = (username, component_id) => {
 }
 
 export const postingScreen = () => {
+  const { post_status } = Auth.selected_user?.posting
   return Navigation.showModal({
     stack: {
-      id: POSTING_SCREEN,
-      name: POSTING_SCREEN,
+      id: POSTING_STACK,
+      name: POSTING_STACK,
       children: [ {
         component: {
           id: POSTING_SCREEN,
@@ -503,20 +569,13 @@ export const postingScreen = () => {
               rightButtons: [
 						    {
 							    id: 'post_button',
-							    text: 'Post',
+							    text: post_status === "draft" ? "Save" : "Post",
                   color: '#f80'
                 },
-                {
-                  id: 'profile_button',
-                  text: 'profile',
-                  component: {
-                    name: PROFILE_IMAGE
-                  }
-                }
 					    ]
             },
             layout: {
-              backgroundColor: "#fff"
+              backgroundColor: App.theme_background_color()
             }
           }
         },
@@ -527,19 +586,12 @@ export const postingScreen = () => {
 
 export const tagmojiBottomSheet = (close = false) => {
   if(!close){
-    return RNNBottomSheet.openBottomSheet({
-      renderContent: () => <TagmojiMenu />,
-      snapPoints: [0, '20%', '40%', '90%'],
-      initialSnapIndex: 2,
-      borderRadius: 16,
-      backgroundColor: App.theme_background_color_secondary()
-    })
+    return SheetManager.show("tagmoji_menu")
   }
-  RNNBottomSheet.closeBottomSheet()
+  SheetManager.hide("tagmoji_menu")
 }
 
 export const discoverTopicScreen = (topic, component_id) => {
-  console.log("Screens:discoverTopicScreen", topic, component_id);
   const options = {
     component: {
       id: 'DISCOVER_TOPIC_SCREEN',
@@ -570,7 +622,6 @@ export const discoverTopicScreen = (topic, component_id) => {
 }
 
 export const postingOptionsScreen = (component_id) => {
-  console.log("Screens:discoverTopicScreen", component_id);
   const options = {
     component: {
       id: POSTING_OPTIONS_SCREEN,
@@ -578,7 +629,7 @@ export const postingOptionsScreen = (component_id) => {
 			options: {
 				topBar: {
 					title: {
-            text: "Posting options & blogs"
+            text: "Posting Options"
           },
 				}
 			}
@@ -625,7 +676,7 @@ export const replyScreen = () => {
 					    ]
             },
             layout: {
-              backgroundColor: "#fff"
+              backgroundColor: App.theme_background_color()
             }
           }
         },
@@ -636,15 +687,13 @@ export const replyScreen = () => {
 
 export const profileMoreBottomSheet = (username, close = false) => {
   if(!close){
-    return RNNBottomSheet.openBottomSheet({
-      renderContent: () => <ProfileMoreMenu username={username} />,
-      snapPoints: [0, 200],
-      initialSnapIndex: 1,
-      borderRadius: 16,
-      backgroundColor: App.theme_background_color_secondary()
+    return SheetManager.show("profile_more_menu", {
+      payload: {
+        username: username
+      }
     })
   }
-  RNNBottomSheet.closeBottomSheet()
+  SheetManager.hide("profile_more_menu")
 }
 
 export const addBoomarkScreen = () => {
@@ -667,19 +716,10 @@ export const addBoomarkScreen = () => {
                   text: 'Back',
                   icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
                 },
-              ],
-              rightButtons: [
-                {
-                  id: 'profile_button',
-                  text: 'profile',
-                  component: {
-                    name: PROFILE_IMAGE
-                  }
-                }
-					    ]
+              ]
             },
             layout: {
-              backgroundColor: "#fff"
+              backgroundColor: App.theme_background_color()
             }
           }
         },
@@ -741,4 +781,367 @@ export const imageOptionsScreen = (image, index, component_id) => {
   };
 
   return Navigation.push(component_id, options);
+}
+
+export const imageCropScreen = async (asset, component_id) => {
+  console.log("Screens:imageCropScreen");
+  
+  const new_asset = await asset.save_to_temp()
+  
+  const options = {
+    component: {
+      id: IMAGE_CROP_SCREEN,
+      name: IMAGE_CROP_SCREEN,
+      passProps: {
+        asset: new_asset
+      },
+      options: {
+        topBar: {
+          title: {
+            text: "Photo"
+          },
+          rightButtons: [
+            {
+              id: 'add_image_button',
+              text: 'Add Photo',
+              color: App.theme_accent_color()
+            }
+          ]
+        }
+      }
+    }
+  };
+
+  return Navigation.push(component_id, options);
+}
+
+export const repliesScreen = (component_id) => {
+  Replies.hydrate()
+  const options = {
+    component: {
+      id: REPLIES_SCREEN,
+      name: REPLIES_SCREEN,
+      options: {
+        topBar: {
+          title: {
+            text: "Replies"
+          },
+          rightButtons: [
+            {
+              id: 'refresh_indicator',
+              text: 'refresh',
+              component: {
+                name: REFRESH_ACTIVITY,
+                passProps: {
+                  type: "replies"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  };
+
+  return Navigation.push(component_id, options);
+}
+
+export const replyEditScreen = () => {
+  return Navigation.showModal({
+    stack: {
+      id: REPLY_EDIT_SCREEN,
+      name: REPLY_EDIT_SCREEN,
+      children: [ {
+        component: {
+          id: REPLY_EDIT_SCREEN,
+          name: REPLY_EDIT_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                text: 'Update Reply',
+              },
+              leftButtons: [
+                {
+                  id: 'back_button',
+                  text: 'Back',
+                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
+                },
+              ],
+              rightButtons: [
+                {
+                  id: 'post_button',
+                  text: 'Update',
+                  color: App.theme_accent_color()
+                }
+              ]
+            },
+            layout: {
+              backgroundColor: App.theme_background_color()
+            }
+          }
+        },
+      }],
+    }
+  });
+}
+
+export const settingsScreen = () => {
+  return Navigation.showModal({
+    stack: {
+      id: SETTINGS_SCREEN,
+      name: SETTINGS_SCREEN,
+      children: [ {
+        component: {
+          id: SETTINGS_SCREEN,
+          name: SETTINGS_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                text: 'Settings',
+              },
+              leftButtons: [
+                {
+                  id: 'back_button',
+                  text: 'Back',
+                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
+                },
+              ],
+            },
+            layout: {
+              backgroundColor: App.theme_background_color()
+            }
+          }
+        },
+      }],
+    }
+  });
+}
+
+export const postsScreen = (component_id) => {
+  const options = {
+    component: {
+      id: POSTS_SCREEN,
+      name: POSTS_SCREEN,
+      options: {
+        topBar: {
+          title: {
+            text: "Posts"
+          },
+          rightButtons: [
+            {
+              id: 'refresh_indicator',
+              text: 'refresh',
+              component: {
+                name: REFRESH_ACTIVITY,
+                passProps: {
+                  type: "posts"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  };
+
+  return Navigation.push(component_id, options);
+}
+
+export const postsDestinationBottomSheet = (close = false, type = null) => {
+  if(!close){
+    return SheetManager.show("posts_destination_menu", {
+      payload: { type: type }
+    })
+  }
+  SheetManager.hide("posts_destination_menu")
+}
+
+export const editPostScreen = (post) => {
+  Auth.selected_user?.posting.hydrate_post_edit(post)
+  return Navigation.showModal({
+    stack: {
+      id: EDIT_POST_SCREEN,
+      name: EDIT_POST_SCREEN,
+      children: [ {
+        component: {
+          id: EDIT_POST_SCREEN,
+          name: EDIT_POST_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                text: 'Edit Post',
+              },
+              leftButtons: [
+                {
+                  id: 'back_button',
+                  text: 'Back',
+                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
+                },
+              ],
+              rightButtons: [
+                {
+                  id: 'post_button',
+                  text: 'Update',
+                  color: '#f80'
+                }
+              ]
+            },
+            layout: {
+              backgroundColor: App.theme_background_color()
+            }
+          }
+        },
+      }],
+    }
+  });
+}
+
+export const pagesScreen = (component_id) => {
+  const options = {
+    component: {
+      id: PAGES_SCREEN,
+      name: PAGES_SCREEN,
+      options: {
+        topBar: {
+          title: {
+            text: "Pages"
+          },
+          rightButtons: [
+            {
+              id: 'refresh_indicator',
+              text: 'refresh',
+              component: {
+                name: REFRESH_ACTIVITY,
+                passProps: {
+                  type: "pages"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  };
+
+  return Navigation.push(component_id, options);
+}
+
+export const editPageScreen = (page) => {
+  Auth.selected_user?.posting.hydrate_page_edit(page)
+  return Navigation.showModal({
+    stack: {
+      id: EDIT_PAGE_SCREEN,
+      name: EDIT_PAGE_SCREEN,
+      children: [ {
+        component: {
+          id: EDIT_PAGE_SCREEN,
+          name: EDIT_PAGE_SCREEN,
+          options: {
+            topBar: {
+              title: {
+                text: 'Edit Page',
+              },
+              leftButtons: [
+                {
+                  id: 'back_button',
+                  text: 'Back',
+                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
+                },
+              ],
+              rightButtons: [
+                {
+                  id: 'post_button',
+                  text: 'Update',
+                  color: '#f80'
+                }
+              ]
+            },
+            layout: {
+              backgroundColor: App.theme_background_color()
+            }
+          }
+        },
+      }],
+    }
+  });
+}
+
+export const uploadsScreen = (component_id) => {
+  const options = {
+    component: {
+      id: UPLOADS_SCREEN,
+      name: UPLOADS_SCREEN,
+      options: {
+        topBar: {
+          title: {
+            text: "Uploads"
+          },
+          rightButtons: [
+            {
+              id: 'upload_button',
+              text: 'upload',
+              component: {
+                name: NEW_UPLOAD_BUTTON
+              }
+            },
+            {
+              id: 'refresh_indicator',
+              text: 'refresh',
+              component: {
+                name: REFRESH_ACTIVITY,
+                passProps: {
+                  type: "uploads"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  };
+
+  return Navigation.push(component_id, options);
+}
+
+export const postOptionsSettingsScreen = async (user, component_id, open_as_modal = false) => {
+  console.log("Screens:postOptionsSettingsScreen", user, component_id);
+  await Services.hydrate_with_user(user)
+  const component = {
+    component: {
+      id: POST_OPTIONS_SETTINGS_SCREEN,
+      name: POST_OPTIONS_SETTINGS_SCREEN,
+      passProps: {
+        user: user
+      },
+      options: {
+        topBar: {
+          title: {
+            text: "Post Options"
+          },
+          ...open_as_modal &&
+          {
+            leftButtons: [
+              {
+                id: 'close_modal_button',
+                text: 'Close',
+                icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
+              },
+            ]
+          }
+        }
+      }
+    }
+  }
+  if(open_as_modal){
+    return Navigation.showModal({
+      stack: {
+        id: POST_OPTIONS_SETTINGS_SCREEN,
+        name: EDIT_PAGE_SCREEN,
+        children: [component],
+      }
+    });
+  }
+  else{
+    return Navigation.push(component_id, component);
+  }
 }

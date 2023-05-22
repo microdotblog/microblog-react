@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import Auth from '../../stores/Auth';
 import BlockIcon from '../../assets/icons/block.png';
+import App from '../../stores/App';
 
 @observer
 export default class MutedMessage extends React.Component{
@@ -12,7 +13,7 @@ export default class MutedMessage extends React.Component{
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         {
           this.props.title ?
-            <Text style={{ fontWeight: '600', fontSize: 18, marginBottom: 15 }}>{this.props.title}</Text>
+            <Text style={{ fontWeight: '600', fontSize: 18, marginBottom: 15, color: App.theme_text_color() }}>{this.props.title}</Text>
           : null
         }
         <TouchableOpacity

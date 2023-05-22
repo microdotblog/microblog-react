@@ -1,6 +1,7 @@
 import { types, flow } from 'mobx-state-tree';
 import { Alert, ToastAndroid } from 'react-native';
 import MicroBlogApi, { API_ERROR, REPORTING_ERROR } from '../api/MicroBlogApi'
+import Toast from 'react-native-simple-toast';
 
 export default Reporting = types.model('Reporting', {
 	is_sending_report: types.optional(types.boolean, false)
@@ -40,7 +41,7 @@ export default Reporting = types.model('Reporting', {
 		self.is_sending_report = true;
 		const report = yield MicroBlogApi.report_user(username)
 		if (report !== REPORTING_ERROR) {
-			ToastAndroid.show(`@${username} has been reported.`, ToastAndroid.SHORT);
+			Toast.showWithGravity(`@${ username } has been reported.`, Toast.SHORT, Toast.CENTER)
 		}
 		else {
 			alert("Something went wrong. Please try again.")

@@ -11,13 +11,6 @@ import AddAccountImage from './../../assets/icons/add_account.png';
 
 @observer
 export default class AccountSwitcher extends React.Component{
-
-  constructor (props) {
-    super(props)
-    let now = new Date()
-    now.setHours(0, 0, 0, 0)
-    this.now = now
-  }
   
   _render_current_user = () => {
     return(
@@ -45,7 +38,7 @@ export default class AccountSwitcher extends React.Component{
           <View style={{marginRight: 15}}>
             <FastImage
               source={{
-                uri: `${Auth.selected_user.avatar}?v=${this.now}`,
+                uri: `${Auth.selected_user.avatar}?v=${App.now()}`,
                 priority: FastImage.priority.normal,
                 cache: FastImage.cacheControl.web
               }}
@@ -74,7 +67,7 @@ export default class AccountSwitcher extends React.Component{
           borderBottomRightRadius: 20
         }}>
         {
-          Auth.all_users_except_current().map((user) => {
+          Auth.all_users_except_current().map((user, index) => {
             return(
 							<TouchableOpacity
 								onPress={() => Auth.select_user(user)}
@@ -85,6 +78,7 @@ export default class AccountSwitcher extends React.Component{
                   width: '100%',
                   justifyContent: 'space-between',
                   marginLeft: 16,
+                  paddingBottom: index === Auth.all_users_except_current().length - 1 ? 0 : 18,
                 }}
               >
                 <View 
@@ -96,7 +90,7 @@ export default class AccountSwitcher extends React.Component{
                   <View style={{marginRight: 15}}>
                     <FastImage
                       source={{
-                        uri: `${user.avatar}?v=${this.now}`,
+                        uri: `${user.avatar}?v=${App.now()}`,
                         priority: FastImage.priority.normal,
                         cache: FastImage.cacheControl.web
                       }}

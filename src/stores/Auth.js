@@ -67,11 +67,11 @@ export default Auth = types.model('Auth', {
     console.log("Auth:select_user", user)
     yield Auth.clear_cookies()
     self.selected_user = user
-    self.is_selecting_user = false
     if (self.selected_user.posting.selected_service != null) {
       user.posting.selected_service.hydrate()
       menuBottomSheet(true)
     }
+    self.is_selecting_user = false
     setTimeout(() => {
       Toast.showWithGravity(`You're now logged in as @${user.username}`, Toast.SHORT, Toast.CENTER)
     }, Platform.OS === 'ios' ? 350 : 0)
@@ -129,6 +129,10 @@ export default Auth = types.model('Auth', {
   
   all_users_except_current(){
     return self.users.filter(u => u.username !== self.selected_user.username)
+  },
+  
+  user_from_username(username){
+    return self.users.find(u => u.username === username)
   }
   
 }))

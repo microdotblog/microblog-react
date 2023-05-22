@@ -8,6 +8,8 @@ import WebView from 'react-native-webview'
 import { Navigation } from "react-native-navigation";
 import PushNotifications from '../push/push_notifications'
 import WebLoadingViewModule from './loading_view'
+import WebErrorViewModule from './error_view'
+import { SheetProvider } from "react-native-actions-sheet";
 
 @observer
 export default class WebViewModule extends React.Component{
@@ -52,13 +54,15 @@ export default class WebViewModule extends React.Component{
   return_url_options = () => {
     let url_options = this.props.endpoint.includes("#post_") ? "" : "show_actions=true"
     if (url_options && url_options !== "") {
-      url_options = `?${url_options}&theme=${App.theme}`
+      url_options = `${!this.props.is_search ? "?" : "&"}${url_options}&theme=${App.theme}`
     }
     else if(!this.props.endpoint.includes("#post_")) {
       url_options = `?theme=${App.theme}`
     }
     return url_options
   }
+
+  onContentProcessDidTerminate = () => this.ref.current?.reload()
 
   _webview = () => {
     const { scroll_view_height } = this.state
@@ -87,8 +91,11 @@ export default class WebViewModule extends React.Component{
       onMessage={(event) => {
         App.handle_web_view_message(event.nativeEvent.data)
       }}
-      style={{ flex: 1, backgroundColor: App.theme_background_color(), ...Platform.select({android: { height: scroll_view_height }}) }}
+      style={{ flex: 1, height: scroll_view_height, backgroundColor: App.theme_background_color() }}
       renderLoading={() => <WebLoadingViewModule loading_text={this.props.loading_text} />}
+      renderError={(name, code, description) => <WebErrorViewModule error_name={description} /> }
+      injectedJavaScript={Platform.OS === 'ios' ? `const meta = document.createElement('meta'); meta.setAttribute('content', 'width=width, initial-scale=${ App.web_font_scale() }'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);` : null}
+      onContentProcessDidTerminate={this.onContentProcessDidTerminate}
     />)
   }
 
@@ -96,6 +103,9 @@ export default class WebViewModule extends React.Component{
     const { is_pull_to_refresh_enabled } = this.state
     return (
       <>
+      {
+        Platform.OS === "ios" && <SheetProvider />
+      }
       <ScrollView
         overScrollMode={Platform.OS === 'ios' ? 'auto' : 'always'}
         style={{ flex: 1, width: '100%', height: '100%', backgroundColor: App.theme_background_color() }}
