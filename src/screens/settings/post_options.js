@@ -135,7 +135,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
                         disabled={!Services.can_set_up_credentials() || !Services.has_credentials() || Services.checking_credentials}
                       />
                       {
-                        Services.checking_credentials || Services.is_setting_up &&
+                        Services.show_loading() &&
                         <ActivityIndicator style={{ marginLeft: 8 }} color={App.theme_accent_color()} />
                       }
                     </View>
@@ -149,7 +149,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
                     disabled={!Services.can_set_up() || Services.is_setting_up}
                   />
                   {
-                    Services.is_setting_up || Services.checking_credentials &&
+                    Services.show_loading() &&
                     <ActivityIndicator style={{marginLeft: 8}} color={App.theme_accent_color()} />
                   }
                   </>
