@@ -7,7 +7,12 @@ class XMLRPC {
 			result = `<value><boolean>${param}</boolean></value>`
 		}
 		else if (typeof param == "string") {
-			result = `<value><string>${param}</string></value>`
+			// encoding special chars
+			var s = param
+			s = s.replace("&", "&amp;")
+			s = s.replace("<", "&lt;")
+			s = s.replace(">", "&gt;")
+			result = `<value><string>${s}</string></value>`
 		}
 		else if (typeof param == "number") {
 			result = `<value><int>${param}</int></value>`
