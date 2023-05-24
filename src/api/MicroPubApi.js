@@ -45,7 +45,8 @@ class MicroPubApi {
 				return {
 					"micropub": micropub_link.getAttribute('href'),
 					"auth": auth_link.getAttribute('href'),
-					"token": token_link.getAttribute('href')
+					"token": token_link.getAttribute('href'),
+					is_wordpress: micropub_link.getAttribute('href').includes("/wp-json")
 				}
 			} else {
 				return MICROPUB_NOT_FOUND

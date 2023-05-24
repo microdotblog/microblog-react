@@ -75,7 +75,7 @@ export default Services = types.model('Services', {
   
     // check for Micropub first, then try XML-RPC
     const micropub_endpoints = yield MicroPubApi.discover_micropub_endpoints(discover_url)
-    if (micropub_endpoints !== MICROPUB_NOT_FOUND) {
+    if (micropub_endpoints !== MICROPUB_NOT_FOUND && !micropub_endpoints.is_wordpress) {
       console.log("Micropub: Found endpoints:", micropub_endpoints)
       self.micropub_endpoint = micropub_endpoints["micropub"]
       self.auth_endpoint = micropub_endpoints["auth"]
@@ -281,6 +281,10 @@ export default Services = types.model('Services', {
   
   current_user(){
     return Auth.user_from_username(self.current_username)
+  },
+  
+  show_loading(){
+    return self.checking_credentials || self.is_setting_up
   }
   
 }))

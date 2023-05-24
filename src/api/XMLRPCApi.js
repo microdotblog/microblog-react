@@ -17,21 +17,22 @@ export const XML_ERROR = 9
 async function xmlRpcCall(url, methodName, params) {
 
 	const xmlPayload = xmlrpc.make_request(methodName, params)
+	// console.log("XML-RPC request", xmlPayload)
 
 	try {
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'text/xml',
+				'Accept': 'text/xml',
 			},
 			body: xmlPayload,
 		})
 
-		console.log("XML-RPC response", response.text())
-
 		const options = {}
 		const parser = new XMLParser(options)
 		const xmlResponse = await response.text()
+		console.log("XML-RPC response", xmlResponse)
 		const jsonResponse = parser.parse(xmlResponse)
 
 		if (jsonResponse[ "methodResponse" ][ "fault" ] != null) {
