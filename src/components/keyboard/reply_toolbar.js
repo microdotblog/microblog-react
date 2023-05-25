@@ -7,6 +7,7 @@ import App from '../../stores/App';
 export default class ReplyToolbar extends React.Component{
   
 	render() {
+    const { posting } = Auth.selected_user
     return(
       <View
 				style={{
@@ -40,7 +41,7 @@ export default class ReplyToolbar extends React.Component{
 						position: 'absolute',
 						flexDirection: 'row',
 						alignItems: 'center',
-						top: -25,
+						top: posting.reply_chars_offset(),
 						right: 8
 					}}
 				>
