@@ -484,6 +484,17 @@ export default Posting = types.model('Posting', {
    }
     
     return offset
+  },
+
+  reply_chars_offset() {
+    var offset = -25
+    
+    if (App.found_users.length > 0) {
+      // if usernames bar, move chars counter higher
+      offset -= 40
+    }
+    
+    return offset
   }
   
 }))
