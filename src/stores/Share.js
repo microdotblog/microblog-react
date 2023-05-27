@@ -78,6 +78,9 @@ export default Share = types.model('Share', {
 			if (mime_type === "image/jpeg" || mime_type === "image/png") {
 				self.share_type = "image"
 			}
+			else if(mime_type === "application/json"){
+				self.share_type = "json"
+			}
 			if (self.share_type === "text") {
 				self.share_text = string_checker._validate_url(data) ? data : `> ${data}`
 				self.users.forEach(user => {
@@ -93,6 +96,22 @@ export default Share = types.model('Share', {
 				self.share_image_data = image_data
 				self.users.forEach(user => {
 					user.posting.create_and_attach_asset(image_data)
+				})
+			}
+			else if (self.share_type === "json"){
+				// Because we're dealing with JSON, we need to check a few things and add the correct share_text
+				const parsed_data = JSON.parse(data)
+				
+				let share_text = parsed_data.text ? `> ${parsed_data.text}\n\n` : "";
+				if (parsed_data.title && parsed_data.url) {
+						share_text += `[${parsed_data.title}](${parsed_data.url})`
+				} else if (parsed_data.url) {
+						share_text += `[](${parsed_data.url})`
+				}
+				
+				self.share_text = share_text
+				self.users.forEach(user => {
+					user.posting.set_post_text(self.share_text)
 				})
 			}
 			else {
