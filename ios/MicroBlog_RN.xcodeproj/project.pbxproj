@@ -22,6 +22,7 @@
 		4B1233D829ECD7D200174307 /* MBHighlightingTextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1233D529ECD7D200174307 /* MBHighlightingTextStorage.m */; };
 		4B7619D129EC9E7A0030A495 /* MBHighlightingTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B7619D029EC9E7A0030A495 /* MBHighlightingTextView.m */; };
 		4B7619D229EC9E7A0030A495 /* MBHighlightingTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B7619D029EC9E7A0030A495 /* MBHighlightingTextView.m */; };
+		4B8CE8AB2A1FCC69006D79CF /* GetURL.js in Resources */ = {isa = PBXBuildFile; fileRef = 4B8CE8AA2A1FCC69006D79CF /* GetURL.js */; };
 		52509892FFF0C47000E8F5DE /* libPods-MicroBlog_RN-MicroBlog_RNTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 60EE2B6292F1F3ED4E3AD989 /* libPods-MicroBlog_RN-MicroBlog_RNTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8C619CFF939F9E33E65A6DAA /* libPods-MicroBlog_RN.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1AD34313DED25C45B534DA /* libPods-MicroBlog_RN.a */; };
@@ -89,6 +90,7 @@
 		4B1233D629ECD7D200174307 /* MBHighlightingTextStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBHighlightingTextStorage.h; path = MicroBlog_RN/MBHighlightingTextStorage.h; sourceTree = "<group>"; };
 		4B7619CF29EC9E7A0030A495 /* MBHighlightingTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MBHighlightingTextView.h; path = MicroBlog_RN/MBHighlightingTextView.h; sourceTree = "<group>"; };
 		4B7619D029EC9E7A0030A495 /* MBHighlightingTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MBHighlightingTextView.m; path = MicroBlog_RN/MBHighlightingTextView.m; sourceTree = "<group>"; };
+		4B8CE8AA2A1FCC69006D79CF /* GetURL.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = GetURL.js; sourceTree = "<group>"; };
 		4C096FE28E3BF256DF2F0398 /* Pods-MicroBlog_RN-MicroBlog_RNTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MicroBlog_RN-MicroBlog_RNTests.release.xcconfig"; path = "Target Support Files/Pods-MicroBlog_RN-MicroBlog_RNTests/Pods-MicroBlog_RN-MicroBlog_RNTests.release.xcconfig"; sourceTree = "<group>"; };
 		60EE2B6292F1F3ED4E3AD989 /* libPods-MicroBlog_RN-MicroBlog_RNTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MicroBlog_RN-MicroBlog_RNTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		67F5CB031FE91036DC73F2D9 /* Pods-MicroBlog_RN-MicroBlog_Share.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MicroBlog_RN-MicroBlog_Share.debug.xcconfig"; path = "Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/Pods-MicroBlog_RN-MicroBlog_Share.debug.xcconfig"; sourceTree = "<group>"; };
@@ -154,6 +156,7 @@
 				0221AB2829D42C1500838597 /* MainInterface.storyboard */,
 				0221AB2B29D42C1500838597 /* Info.plist */,
 				0221AB3329D42CE400838597 /* MicroBlog_Share-Bridging-Header.h */,
+				4B8CE8AA2A1FCC69006D79CF /* GetURL.js */,
 			);
 			path = MicroBlog_Share;
 			sourceTree = "<group>";
@@ -362,6 +365,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0221AB2A29D42C1500838597 /* MainInterface.storyboard in Resources */,
+				4B8CE8AB2A1FCC69006D79CF /* GetURL.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -708,7 +712,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = MicroBlog_Share/MicroBlog_Share.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 277;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 3F9MDJ6K4E;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -722,7 +726,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.0.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "blog.micro.ios.MicroBlog-Share";
@@ -751,7 +755,7 @@
 				CODE_SIGN_ENTITLEMENTS = MicroBlog_Share/MicroBlog_Share.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 277;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 3F9MDJ6K4E;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -765,7 +769,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.0.3;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "blog.micro.ios.MicroBlog-Share";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -795,7 +799,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.2;
+				MARKETING_VERSION = 3.0.3;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -826,7 +830,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.2;
+				MARKETING_VERSION = 3.0.3;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

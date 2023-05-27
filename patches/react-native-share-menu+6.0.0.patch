@@ -1,3 +1,36 @@
+diff --git a/node_modules/react-native-share-menu/ios/Modules/ShareMenuReactView.swift b/node_modules/react-native-share-menu/ios/Modules/ShareMenuReactView.swift
+index e290cce..f267c3d 100644
+--- a/node_modules/react-native-share-menu/ios/Modules/ShareMenuReactView.swift
++++ b/node_modules/react-native-share-menu/ios/Modules/ShareMenuReactView.swift
+@@ -159,9 +159,26 @@ public class ShareMenuReactView: NSObject {
+                         semaphore.wait()
+                     } else if provider.hasItemConformingToTypeIdentifier(kUTTypeData as String) {
+                         provider.loadItem(forTypeIdentifier: kUTTypeData as String, options: nil) { (item, error) in
+-                            let url: URL! = item as? URL
++                            let url_item = item
++                            let url: URL! = url_item as? URL
++                            
++                            if url != nil {
++                                results.append([DATA_KEY: url.absoluteString, MIME_TYPE_KEY: self.extractMimeType(from: url)])
++                            }
++                            else if let itemDictionary = item as? NSDictionary,
++                                        let preprocessingResults = itemDictionary["NSExtensionJavaScriptPreprocessingResultsKey"] as? NSDictionary {
++                                         
++                                         let data = ["title": preprocessingResults["title"],
++                                                     "url": preprocessingResults["url"],
++                                                     "text": preprocessingResults["text"]]
++                                
+                                          
+-                            results.append([DATA_KEY: url.absoluteString, MIME_TYPE_KEY: self.extractMimeType(from: url)])
++                                         if let jsonData = try? JSONSerialization.data(withJSONObject: data),
++                                            let jsonString = String(data: jsonData, encoding: .utf8) {
++                                             // jsonString is the string representation of the preprocessing results
++                                             results.append([DATA_KEY: jsonString, MIME_TYPE_KEY: "application/json"])
++                                         }
++                                     }
+ 
+                             semaphore.signal()
+                         }
 diff --git a/node_modules/react-native-share-menu/ios/ReactShareViewController.swift b/node_modules/react-native-share-menu/ios/ReactShareViewController.swift
 index f42bce6..ee36062 100644
 --- a/node_modules/react-native-share-menu/ios/ReactShareViewController.swift
