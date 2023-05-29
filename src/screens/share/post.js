@@ -5,6 +5,7 @@ import Share from '../../stores/Share'
 import App from '../../stores/App'
 import AssetToolbar from '../../components/keyboard/asset_toolbar'
 import PostToolbar from '../../components/keyboard/post_toolbar'
+import HighlightingText from '../../components/text/highlighting_text';
 
 @observer
 export default class SharePostScreen extends React.Component {
@@ -32,7 +33,7 @@ export default class SharePostScreen extends React.Component {
 								</Text>
 							</View>
 					}
-					<TextInput
+					<HighlightingText
 						placeholderTextColor="lightgrey"
 						style={{
 							fontSize: 18,
@@ -53,7 +54,7 @@ export default class SharePostScreen extends React.Component {
 						enablesReturnKeyAutomatically={true}
 						underlineColorAndroid={'transparent'}
 						value={Share.share_text}
-						onChangeText={(text) => !Share.selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null}
+						onChangeText={({ nativeEvent: { text } }) => !Share.selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null}
 						onSelectionChange={({ nativeEvent: { selection } }) => {
 							Share.set_text_selection(selection)
 						}}
