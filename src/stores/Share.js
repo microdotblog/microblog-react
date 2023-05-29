@@ -103,7 +103,7 @@ export default Share = types.model('Share', {
 				// Because we're dealing with JSON, we need to check a few things and add the correct share_text
 				const parsed_data = JSON.parse(data)
 				
-				let share_text = parsed_data.text ? `> ${parsed_data.text}\n\n` : ""
+				let share_text = ""
 				if (parsed_data.title && parsed_data.url) {
 					share_text += `[${parsed_data.title}](${parsed_data.url})`
 					self.share_url = parsed_data.url
@@ -111,6 +111,9 @@ export default Share = types.model('Share', {
 				else if (parsed_data.url) {
 					share_text += `[](${parsed_data.url})`
 					self.share_url = parsed_data.url
+				}
+				if (parsed_data.text) {
+					share_text += `\n\n> ${parsed_data.text}\n\n`
 				}
 				
 				self.share_text = share_text
