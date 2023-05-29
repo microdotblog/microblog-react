@@ -11,6 +11,7 @@ export default Share = types.model('Share', {
 	share_type: types.optional(types.string, "text"),
 	share_data: types.optional(types.string, ""),
 	share_text: types.optional(types.string, ""),
+	share_url: types.optional(types.string, ""),
 	share_image_data: types.maybeNull(types.model("ShareImageData", {
 		uri: types.string,
 		type: types.string,
@@ -102,11 +103,14 @@ export default Share = types.model('Share', {
 				// Because we're dealing with JSON, we need to check a few things and add the correct share_text
 				const parsed_data = JSON.parse(data)
 				
-				let share_text = parsed_data.text ? `> ${parsed_data.text}\n\n` : "";
+				let share_text = parsed_data.text ? `> ${parsed_data.text}\n\n` : ""
 				if (parsed_data.title && parsed_data.url) {
-						share_text += `[${parsed_data.title}](${parsed_data.url})`
-				} else if (parsed_data.url) {
-						share_text += `[](${parsed_data.url})`
+					share_text += `[${parsed_data.title}](${parsed_data.url})`
+					self.share_url = parsed_data.url
+				} 
+				else if (parsed_data.url) {
+					share_text += `[](${parsed_data.url})`
+					self.share_url = parsed_data.url
 				}
 				
 				self.share_text = share_text
@@ -162,8 +166,15 @@ export default Share = types.model('Share', {
 
 		save_as_bookmark: flow(function* () {
 			console.log("Share:save_as_bookmark")
+			let url = ""
+			if(string_checker._validate_url(self.share_text)){
+				url = self.share_text
+			}
+			else if(string_checker._validate_url(self.share_url)){
+				url = self.share_url
+			}
 			Share.clear_error_message()
-			const saved = yield self.selected_user.posting.add_bookmark(self.share_data)
+			const saved = yield self.selected_user.posting.add_bookmark(url)
 			if (saved) {
 				ShareMenuReactView.dismissExtension()
 			}
@@ -228,7 +239,7 @@ export default Share = types.model('Share', {
 			return self.users.length && self.selected_user != null && self.selected_user.token() != null
 		},
 		can_save_as_bookmark() {
-			return self.share_type === "text" && self.share_text.length > 0 && (self.share_text.startsWith("http://") || self.share_text.startsWith("https://")) && string_checker._validate_url(self.share_text)
+			return (self.share_type === "text" || self.share_type === "json") && self.share_text.length > 0 && (self.share_text.startsWith("http://") || self.share_text.startsWith("https://") || (self.share_text.startsWith("[") && self.share_text.endsWith(")"))) && (string_checker._validate_url(self.share_text) || string_checker._validate_url(self.share_url))
 		},
 		sorted_users() {
 			return self.users.slice().sort((a, b) => {
