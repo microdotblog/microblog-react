@@ -18,7 +18,8 @@ export default class SharePostScreen extends React.Component {
 	render() {
 		return (
 			Share.is_logged_in() && Share.selected_user?.posting != null ?
-				<KeyboardAvoidingView behavior={'padding'}>
+				<View style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
+				<KeyboardAvoidingView behavior={'padding'} style={{ flex: 1 }}>
 					{
 						Share.error_message != null &&
 						<View style={{ backgroundColor: App.theme_error_background_color(), padding: 8 }}>
@@ -65,6 +66,7 @@ export default class SharePostScreen extends React.Component {
 						<PostToolbar />
 					</InputAccessoryView>
 				</KeyboardAvoidingView>
+				</View>
 				: null
 		)
 	}
