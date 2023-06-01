@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { TextInput, KeyboardAvoidingView, InputAccessoryView, View, Text } from 'react-native'
+import { TextInput, InputAccessoryView, View, Text } from 'react-native'
 import Share from '../../stores/Share'
 import App from '../../stores/App'
 import AssetToolbar from '../../components/keyboard/asset_toolbar'
@@ -19,7 +19,6 @@ export default class SharePostScreen extends React.Component {
 		return (
 			Share.is_logged_in() && Share.selected_user?.posting != null ?
 				<View style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
-				<KeyboardAvoidingView behavior={'padding'} style={{ flex: 1 }}>
 					{
 						Share.error_message != null &&
 						<View style={{ backgroundColor: App.theme_error_background_color(), padding: 8 }}>
@@ -37,6 +36,7 @@ export default class SharePostScreen extends React.Component {
 					<HighlightingText
 						placeholderTextColor="lightgrey"
 						style={{
+							height: 300,
 							fontSize: 18,
 							justifyContent: 'flex-start',
 							alignItems: 'flex-start',
@@ -65,7 +65,6 @@ export default class SharePostScreen extends React.Component {
 						<AssetToolbar />
 						<PostToolbar />
 					</InputAccessoryView>
-				</KeyboardAvoidingView>
 				</View>
 				: null
 		)

@@ -21,16 +21,16 @@ RCT_EXPORT_VIEW_PROPERTY(onSelectionChange, RCTBubblingEventBlock)
 RCT_CUSTOM_VIEW_PROPERTY(inputAccessoryViewID, NSString, MBHighlightingTextView)
 {
   if (json) {
-    NSString* input_id = [RCTConvert NSString:json];
-    NSLog(@"inputAccessoryViewID = %@", input_id);
+//    NSString* input_id = [RCTConvert NSString:json];
+//    NSLog(@"inputAccessoryViewID = %@", input_id);
   }
 }
 
 RCT_CUSTOM_VIEW_PROPERTY(fontSize, NSNumber, MBHighlightingTextView)
 {
   if (json) {
-    NSInteger font_size = [RCTConvert NSInteger:json];
-    NSLog(@"fontSize = %ld", (long)font_size);
+//    NSInteger font_size = [RCTConvert NSInteger:json];
+//    NSLog(@"fontSize = %ld", (long)font_size);
   }
 }
 
@@ -67,9 +67,10 @@ RCT_CUSTOM_VIEW_PROPERTY(value, NSString, MBHighlightingTextView)
   [text_layout addTextContainer:text_container];
   [self.textStorage addLayoutManager:text_layout];
 
-  // make the view (should we use UIScreen.mainScreen.bounds?)
+  // make the view
   self.textView = [[MBHighlightingTextView alloc] initWithFrame:r textContainer:text_container];
   self.textView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+  self.textView.translatesAutoresizingMaskIntoConstraints = NO;
   self.textView.delegate = self;
   
   // background color
@@ -83,6 +84,9 @@ RCT_CUSTOM_VIEW_PROPERTY(value, NSString, MBHighlightingTextView)
   else {
     self.textView.backgroundColor = [UIColor whiteColor];
   }
+  
+  // test
+//  self.textView.backgroundColor = [UIColor orangeColor];
   
   // default text
   NSString* s = @"";
