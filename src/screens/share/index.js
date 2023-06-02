@@ -27,7 +27,7 @@ export default class ShareScreen extends React.Component {
 						</View>
 						:
 						Share.is_logged_in() ?
-							<KeyboardAvoidingView behavior="height" style={{ position: "relative", flex: 1 }}>
+							<View style={{ position: "relative", flex: 1 }}>
 								<ShareHeaderComponent />
 								<SharePostScreen />
 								{
@@ -50,7 +50,7 @@ export default class ShareScreen extends React.Component {
 										</View>
 									: null
 								}
-							</KeyboardAvoidingView>
+							</View>
 							:
 							<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
 								<Text style={{ color: App.theme_text_color(), fontSize: 17, textAlign: "center", marginBottom: 10}}>Please login, in the app, before using the Share Extension</Text>
