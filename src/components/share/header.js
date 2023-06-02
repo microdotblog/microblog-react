@@ -22,7 +22,7 @@ export default class ShareHeaderComponent extends React.Component {
 					{
 						Share.can_save_as_bookmark() &&
 						<TouchableOpacity style={{marginRight: 22}} onPress={Share.save_as_bookmark}>
-							<Text style={{ color: App.theme_accent_color(), fontSize: 16 }}>Save bookmark</Text>
+							<Text style={{ color: App.theme_accent_color(), fontSize: 18, fontWeight: 300 }}>Save Bookmark</Text>
 						</TouchableOpacity>
 					}
 					<TouchableOpacity onPress={Share.send_post}>
