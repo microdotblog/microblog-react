@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, Keyboard, ActivityIndicator, InputAccessoryView, Platform, KeyboardAvoidingView } from 'react-native';
+import { View, TextInput, Keyboard, ActivityIndicator, InputAccessoryView, Platform } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Auth from '../../stores/Auth';
 import App from '../../stores/App';
@@ -43,13 +43,13 @@ export default class PostingScreen extends React.Component{
   }
   
   _input_outer_view = (component) => {
-    if (Platform.OS === 'ios') {
-      return (
-        <KeyboardAvoidingView behavior={'padding'} style={{ flex: 1 }}>
-        {component}
-        </KeyboardAvoidingView>
-      )
-    }
+    // if (Platform.OS === 'ios') {
+    //   return (
+    //     <KeyboardAvoidingView behavior={'padding'} style={{ flex: 1 }}>
+    //     {component}
+    //     </KeyboardAvoidingView>
+    //   )
+    // }
     return component
   }
   
@@ -102,7 +102,7 @@ export default class PostingScreen extends React.Component{
                 marginTop: 3,
                 ...Platform.select({
                   android: {
-                  marginBottom: posting.post_text_length() > posting.max_post_length() || posting.post_title ? posting.post_assets.length > 0 ? 135 : 80 : posting.post_assets.length > 0 ? 93 : 38,
+                    marginBottom: posting.post_text_length() > posting.max_post_length() || posting.post_title ? posting.post_assets.length > 0 ? 135 : 80 : posting.post_assets.length > 0 ? 93 : 38,
                   },
                   ios: {
                     paddingBottom: posting.post_text_length() > posting.max_post_length() ? 150 : 0,

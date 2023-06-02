@@ -1,10 +1,11 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { TextInput, KeyboardAvoidingView, InputAccessoryView, View, Text } from 'react-native'
+import { TextInput, InputAccessoryView, View, Text } from 'react-native'
 import Share from '../../stores/Share'
 import App from '../../stores/App'
 import AssetToolbar from '../../components/keyboard/asset_toolbar'
 import PostToolbar from '../../components/keyboard/post_toolbar'
+import HighlightingText from '../../components/text/highlighting_text';
 
 @observer
 export default class SharePostScreen extends React.Component {
@@ -17,7 +18,7 @@ export default class SharePostScreen extends React.Component {
 	render() {
 		return (
 			Share.is_logged_in() && Share.selected_user?.posting != null ?
-				<KeyboardAvoidingView behavior={'padding'}>
+				<View style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
 					{
 						Share.error_message != null &&
 						<View style={{ backgroundColor: App.theme_error_background_color(), padding: 8 }}>
@@ -32,9 +33,10 @@ export default class SharePostScreen extends React.Component {
 								</Text>
 							</View>
 					}
-					<TextInput
+					<HighlightingText
 						placeholderTextColor="lightgrey"
 						style={{
+							height: 300,
 							fontSize: 18,
 							justifyContent: 'flex-start',
 							alignItems: 'flex-start',
@@ -53,7 +55,7 @@ export default class SharePostScreen extends React.Component {
 						enablesReturnKeyAutomatically={true}
 						underlineColorAndroid={'transparent'}
 						value={Share.share_text}
-						onChangeText={(text) => !Share.selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null}
+						onChangeText={({ nativeEvent: { text } }) => !Share.selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null}
 						onSelectionChange={({ nativeEvent: { selection } }) => {
 							Share.set_text_selection(selection)
 						}}
@@ -63,7 +65,7 @@ export default class SharePostScreen extends React.Component {
 						<AssetToolbar />
 						<PostToolbar />
 					</InputAccessoryView>
-				</KeyboardAvoidingView>
+				</View>
 				: null
 		)
 	}

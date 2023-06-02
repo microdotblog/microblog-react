@@ -23,6 +23,8 @@
 		4B7619D129EC9E7A0030A495 /* MBHighlightingTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B7619D029EC9E7A0030A495 /* MBHighlightingTextView.m */; };
 		4B7619D229EC9E7A0030A495 /* MBHighlightingTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B7619D029EC9E7A0030A495 /* MBHighlightingTextView.m */; };
 		4B8CE8AB2A1FCC69006D79CF /* GetURL.js in Resources */ = {isa = PBXBuildFile; fileRef = 4B8CE8AA2A1FCC69006D79CF /* GetURL.js */; };
+		4BAA745E2A24E56500953D91 /* MBHighlightingTextManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1233D329ECCC0100174307 /* MBHighlightingTextManager.m */; };
+		4BAA745F2A24E78700953D91 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		52509892FFF0C47000E8F5DE /* libPods-MicroBlog_RN-MicroBlog_RNTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 60EE2B6292F1F3ED4E3AD989 /* libPods-MicroBlog_RN-MicroBlog_RNTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8C619CFF939F9E33E65A6DAA /* libPods-MicroBlog_RN.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1AD34313DED25C45B534DA /* libPods-MicroBlog_RN.a */; };
@@ -364,6 +366,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4BAA745F2A24E78700953D91 /* Images.xcassets in Resources */,
 				0221AB2A29D42C1500838597 /* MainInterface.storyboard in Resources */,
 				4B8CE8AB2A1FCC69006D79CF /* GetURL.js in Resources */,
 			);
@@ -602,6 +605,7 @@
 				4B7619D229EC9E7A0030A495 /* MBHighlightingTextView.m in Sources */,
 				4B1233D829ECD7D200174307 /* MBHighlightingTextStorage.m in Sources */,
 				0221AB3529D42CE500838597 /* ShareViewController.swift in Sources */,
+				4BAA745E2A24E56500953D91 /* MBHighlightingTextManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
