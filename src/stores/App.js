@@ -709,7 +709,7 @@ export default App = types.model('App', {
   now() {
     let now = new Date()
     now.setHours(0, 0, 0, 0)
-    return now
+    return now.getTime()
   },
   web_font_scale(){
     return App.font_scale > 2 ? 2 : App.font_scale
