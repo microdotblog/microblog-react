@@ -576,9 +576,6 @@ export const postingScreen = () => {
             },
             layout: {
               backgroundColor: App.theme_background_color()
-            },
-            modal: {
-              swipeToDismiss: false
             }
           }
         },
