@@ -11,7 +11,7 @@ export default class ConversationScreen extends React.Component{
   render() {
     return (
       <GenericScreenComponent
-        can_show_web_view={Auth.is_logged_in() && !Auth.is_selecting_user && !Reply.is_sending_reply && !Auth.selected_user.muting?.is_sending_mute && !Auth.selected_user.muting?.is_sending_unmute}
+        can_show_web_view={Auth.is_logged_in() && !Auth.is_selecting_user && !Reply.is_sending_reply && !Auth.selected_user.muting?.is_sending_mute && !Auth.selected_user.muting?.is_sending_unmute && !App.should_reload_web_view()}
         endpoint={`hybrid/conversation/${ this.props.conversation_id }?show_actions=true&theme=${App.theme}#post_${ this.props.conversation_id }`}
         component_id={this.props.componentId}
         title="Conversation"
