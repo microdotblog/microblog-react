@@ -712,7 +712,7 @@ export default App = types.model('App', {
     return now
   },
   web_font_scale(){
-    return App.font_scale > 2 ? 2 : App.font_scale
+    return App.font_scale > 2 ? 2 : (App.font_scale * 0.98)
   }
 }))
 .create();
