@@ -178,7 +178,9 @@ class XMLRPCApi {
 
 	async send_post(service, content, title = null, images = [], categories = [], status = null) {
 		console.log('XMLRPCApi:send_post', content, title, images, status)
-		const verb = "metaWeblog.newPost"
+		var is_wordpress = service.endpoint.includes("xmlrpc.php")
+		var verb = ""
+		var params = []
 		const featured_image_id = images.length > 0 ? images[ 0 ]?.upload_id : null
 
 		if (images.length > 1) {
@@ -186,16 +188,27 @@ class XMLRPCApi {
 			content = `${content}\n\n${image_markdown}`
 		}
 
-		var info = {
-			title: title,
-			description: content,
-			categories: categories,
-			post_status: status === "published" ? "publish" : status,
-			...featured_image_id && {
-				wp_post_thumbnail: featured_image_id
+		if (is_wordpress) {
+			// special params if WordPress
+			verb = "wp.newPost"
+			var info = {
+				post_title: title,
+				post_content: content,
+				post_status: status === "published" ? "publish" : status,
+				categories: categories,
+				...featured_image_id && {
+					wp_post_thumbnail: featured_image_id
+				}
 			}
+			params = [ service.blog_id, service.username, service.token, info ]
 		}
-		const params = [ service.blog_id, service.username, service.token, info ]
+		else {
+			// if not WordPress, fall back on generic Blogger API (not MetaWeblog)
+			const app_key = ""
+			const publish = true
+			verb = "blogger.newPost"
+			params = [ app_key, service.blog_id, service.username, service.token, content, publish ]
+		}
 
 		const response = xmlRpcCall(service.endpoint, verb, params)
 			.then(data => {

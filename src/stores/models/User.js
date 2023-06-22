@@ -5,6 +5,7 @@ import FastImage from 'react-native-fast-image';
 import Muting from './Muting'
 import Push from '../Push'
 import App from '../App'
+import MicroBlogApi from '../../api/MicroBlogApi';
 
 export default User = types.model('User', {
     username: types.identifier,
@@ -44,6 +45,7 @@ export default User = types.model('User', {
             self.did_complete_auto_register_push = true
           }
         }
+        self.update_avatar()
       }
       self.toggling_push = false
     }),
@@ -74,6 +76,13 @@ export default User = types.model('User', {
       }
       else {
         self.posting.hydrate()
+      }
+    }),
+    
+    update_avatar: flow(function* () {
+      const user_data = yield MicroBlogApi.login_with_token(self.token())
+      if(user_data && user_data?.avatar){
+        self.avatar = user_data.avatar
       }
     })
     

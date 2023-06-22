@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import LoginMessage from '../info/login_message';
 import ImageModalModule from '../images/image_modal';
 import WebViewModule from '../web/webview_module';
+import App from '../../stores/App';
 
 @observer
 export default class GenericScreenComponent extends React.Component{
@@ -18,7 +19,7 @@ export default class GenericScreenComponent extends React.Component{
               <WebViewModule is_search={this.props.is_search} loading_text={this.props.loading_text} endpoint={this.props.endpoint} component_id={this.props.component_id} />
             </>
           :
-          !this.props.is_search && <LoginMessage title={this.props.title} />
+          !this.props.is_search && !App.is_changing_font_scale && <LoginMessage title={this.props.title} />
         }
         <ImageModalModule />
       </View>

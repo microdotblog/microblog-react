@@ -1,6 +1,6 @@
 import { types, flow } from 'mobx-state-tree';
 import { Alert, Platform } from 'react-native'
-import MicroBlogApi, { API_ERROR, POST_ERROR } from '../api/MicroBlogApi'
+import MicroBlogApi, { API_ERROR, POST_ERROR, DUPLICATE_REPLY, CURRENT_REPLY_ID } from '../api/MicroBlogApi'
 import Auth from './Auth'
 import Clipboard from '@react-native-clipboard/clipboard';
 import md from 'markdown-it';
@@ -16,11 +16,13 @@ export default Reply = types.model('Reply', {
       end: types.optional(types.number, 0),
     }), {start: 0, end: 0}
   ),
+  reply_id: types.optional(types.number, new Date().getTime())
 })
 .actions(self => ({
 
   hydrate: flow(function* (conversation_id = null) {
 		console.log("Reply:hydrate", conversation_id)
+    self.reply_id = new Date().getTime()
 		if (conversation_id !== self.conversation_id || self.reply_text === "") {
 			self.reply_text = ""
 			const data = yield MicroBlogApi.get_conversation(conversation_id)
@@ -41,6 +43,7 @@ export default Reply = types.model('Reply', {
 			}
 		}
 		self.is_sending_reply = false
+    console.log("Reply:hydrate:reply_id", self.reply_id)
   }),
   
   set_reply_text: flow(function* (value) {
@@ -54,11 +57,13 @@ export default Reply = types.model('Reply', {
   
   send_reply: flow(function* () {
 		console.log("Reply:send_reply", self.reply_text)
-    if(!self.is_sending_reply && self.reply_text !== " " && App.enforce_max_characters ? self.reply_text_length() <= App.max_characters_allowed : true){
+    if(self.reply_id !== CURRENT_REPLY_ID && !self.is_sending_reply && self.reply_text !== " " && App.enforce_max_characters ? self.reply_text_length() <= App.max_characters_allowed : true){
       self.is_sending_reply = true
-      const data = yield MicroBlogApi.send_reply(self.conversation_id, self.reply_text)
+      const data = yield MicroBlogApi.send_reply(self.conversation_id, self.reply_text, self.reply_id)
       console.log("Reply:send_reply:data", data)
-      if (data !== POST_ERROR) {
+      // Because it might already be sending a reply, we should get back
+      // a DUPLICATE_REPLY status. In that case, assume all is good (I know, bad!) (TODO: handle later on).
+      if (data !== POST_ERROR || data === DUPLICATE_REPLY) {
         self.reply_text = ""
         self.is_sending_reply = false
         return true
