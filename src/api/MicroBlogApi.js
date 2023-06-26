@@ -15,6 +15,8 @@ export const BOOKMARK_ERROR = 7;
 export const REPORTING_ERROR = 8;
 export const MUTING_ERROR = 9;
 export const DELETE_ERROR = 10;
+export const DUPLICATE_REPLY = 11;
+export let CURRENT_REPLY_ID = 0;
 
 axios.defaults.baseURL = API_URL;
 
@@ -159,8 +161,12 @@ class MicroBlogApi {
 		return conversation;
   }
   
-  async send_reply(id, content) {
-		console.log('MicroBlogApi:send_reply', id, content);
+  async send_reply(id, content, reply_id) {
+		console.log('MicroBlogApi:send_reply', id, content, reply_id);
+		if(CURRENT_REPLY_ID === reply_id){
+			return DUPLICATE_REPLY
+		}
+		CURRENT_REPLY_ID = reply_id
 		const reply = axios
 			.post(`/posts/reply`, "" ,{
 				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },

@@ -8,6 +8,8 @@
 
 #import "MBHighlightingTextStorage.h"
 
+#import "MBHighlightingTextManager.h"
+
 @implementation MBHighlightingTextStorage
 {
 	NSMutableAttributedString *_imp;
@@ -94,7 +96,7 @@
 
 - (void) processBold
 {
-  UIFont* bold_font = [UIFont boldSystemFontOfSize:18];
+  UIFont* bold_font = [UIFont boldSystemFontOfSize:[MBHighlightingTextManager preferredTimelineFontSize]];
 	NSRange current_r = NSMakeRange (0, 0);
 	BOOL is_bold = NO;
 	for (NSInteger i = 0; i < self.string.length; i++) {
@@ -125,7 +127,7 @@
 
 - (void) processItalic
 {
-  UIFont* italic_font = [UIFont italicSystemFontOfSize:18];
+  UIFont* italic_font = [UIFont italicSystemFontOfSize:[MBHighlightingTextManager preferredTimelineFontSize]];
 	NSRange current_r = NSMakeRange (0, 0);
 	BOOL is_italic = NO;
 	BOOL is_link = NO;
@@ -328,7 +330,7 @@
 
 - (void) processHeaders
 {
-  UIFont* header_font = [UIFont boldSystemFontOfSize:18];
+  UIFont* header_font = [UIFont boldSystemFontOfSize:[MBHighlightingTextManager preferredTimelineFontSize]];
 	UIColor* header_c = [UIColor blueColor];
 	NSRange current_r = NSMakeRange (0, 0);
 	BOOL is_header = NO;
@@ -472,7 +474,7 @@
 {
 	// clear fonts and colors
 	NSRange paragraph_r = NSMakeRange (0, self.string.length);
-  UIFont* normal_font = [UIFont systemFontOfSize:18];
+  UIFont* normal_font = [UIFont systemFontOfSize:[MBHighlightingTextManager preferredTimelineFontSize]];
 	UIColor* c = [UIColor blackColor];
 	if (@available(iOS 11, *)) {
 		c = [UIColor colorNamed:@"color_editing_paragraph"];

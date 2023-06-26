@@ -18,6 +18,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) MBHighlightingTextView* textView;
 @property (assign) BOOL isTyping;
 
++ (CGFloat) preferredTimelineFontSize;
++ (CGFloat) preferredPostingFontSize;
+
 @end
 
 NS_ASSUME_NONNULL_END

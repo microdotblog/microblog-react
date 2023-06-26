@@ -35,7 +35,7 @@ export default class ImageOptionsScreen extends React.Component{
     const { posting } = Auth.selected_user
     const { image, index } = this.props
     return(
-      <KeyboardAvoidingView behavior={"position"} style={{ flex: 1, height: "100%" }}>
+      <KeyboardAvoidingView behavior={"height"} style={{ flex: 1, height: "100%" }}>
         <ScrollView style={{ padding: 15 }} contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', width: "100%" }}>
           <View
             style={{

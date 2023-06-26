@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, Keyboard, ActivityIndicator, InputAccessoryView, Platform } from 'react-native';
+import { View, TextInput, Keyboard, ActivityIndicator, InputAccessoryView, Platform, KeyboardAvoidingView } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Auth from '../../stores/Auth';
 import App from '../../stores/App';
@@ -24,6 +24,14 @@ export default class PostingScreen extends React.Component{
     }
   }
   
+  componentDidAppear(){
+    Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: true}});
+  }
+  
+  componentDidDisappear(){
+    Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: false}});
+  }
+  
   navigationButtonPressed = async ({ buttonId }) => {
     console.log("navigationButtonPressed::", buttonId)
     if(buttonId === "post_button"){
@@ -43,13 +51,13 @@ export default class PostingScreen extends React.Component{
   }
   
   _input_outer_view = (component) => {
-    // if (Platform.OS === 'ios') {
-    //   return (
-    //     <KeyboardAvoidingView behavior={'padding'} style={{ flex: 1 }}>
-    //     {component}
-    //     </KeyboardAvoidingView>
-    //   )
-    // }
+    if (Platform.OS === 'ios') {
+      return (
+        <KeyboardAvoidingView behavior={'padding'} style={{ flex: 1 }}>
+        {component}
+        </KeyboardAvoidingView>
+      )
+    }
     return component
   }
   

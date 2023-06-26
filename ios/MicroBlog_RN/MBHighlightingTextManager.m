@@ -46,6 +46,20 @@ RCT_CUSTOM_VIEW_PROPERTY(value, NSString, MBHighlightingTextView)
   }
 }
 
++ (CGFloat) preferredTimelineFontSize
+{
+  UIFont* font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+  CGFloat result = font.pointSize;
+  return result;
+}
+
++ (CGFloat) preferredPostingFontSize
+{
+  CGFloat scale = 1.2;
+  CGFloat fontsize = round ([self preferredTimelineFontSize] * scale);
+  return fontsize;
+}
+
 - (UIView *) view
 {
   if (UIAccessibilityIsVoiceOverRunning()) {
@@ -90,9 +104,13 @@ RCT_CUSTOM_VIEW_PROPERTY(value, NSString, MBHighlightingTextView)
   
   // default text
   NSString* s = @"";
-  NSAttributedString* attr_s = [[NSAttributedString alloc] initWithString:s attributes:@{}];
+  NSDictionary* attr_info = @{
+    NSFontAttributeName: [UIFont systemFontOfSize:[[self class] preferredPostingFontSize]]
+  };
+  NSAttributedString* attr_s = [[NSAttributedString alloc] initWithString:s attributes:attr_info];
   self.textView.attributedText = attr_s;
   self.textView.textContainerInset = UIEdgeInsetsMake (8, 5, 8, 5);
+  self.textView.font = [UIFont systemFontOfSize:[[self class] preferredPostingFontSize]];
   [self.textStorage setAttributedString:attr_s];
 
   return self.textView;

@@ -1,6 +1,7 @@
 import { Alert, Platform } from 'react-native';
 import axios from 'axios';
 import { DOMParser } from "@xmldom/xmldom";
+import App from "./../stores/App";
 
 export const FETCH_ERROR = 2
 export const POST_ERROR = 3
@@ -226,7 +227,7 @@ class MicroPubApi {
 			type: file.type,
 			uri: file.uri
 		})
-		data.append("mp-destination", service.destination)
+		data.append("mp-destination", App.current_screen_name === "microblog.UploadsScreen" ? service.temporary_destination : service.destination)
 		console.log('MicroPubApi:upload_image', service, file, data);
 		
 		const upload = axios

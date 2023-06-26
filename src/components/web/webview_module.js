@@ -52,7 +52,7 @@ export default class WebViewModule extends React.Component{
   }
 
   return_url_options = () => {
-    let url_options = this.props.endpoint.includes("#post_") ? "" : "show_actions=true"
+    let url_options = this.props.endpoint.includes("#post_") ? "" : "show_actions=true&fontsize=17"
     if (url_options && url_options !== "") {
       url_options = `${!this.props.is_search ? "?" : "&"}${url_options}&theme=${App.theme}`
     }
