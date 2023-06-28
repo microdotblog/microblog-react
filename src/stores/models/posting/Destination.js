@@ -30,6 +30,10 @@ export default Destination = types.model('Destination', {
 		self[ "microblog-default" ] = is_default
 	},
 	
+	set_syndicate_to_targets(syndicates){
+		self.syndicates = syndicates
+	},
+	
 	set_posts(entries) {
 		console.log("Destination:set_posts", entries.length)
 		const posts = entries.reduce((acc, entry) => {
