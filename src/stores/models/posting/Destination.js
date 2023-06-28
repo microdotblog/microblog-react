@@ -11,6 +11,10 @@ export default Destination = types.model('Destination', {
 	"microblog-default": types.optional(types.boolean, false),
 	"microblog-title": types.maybeNull(types.string),
 	categories: types.optional(types.array(types.string), []),
+	syndicates: types.optional(types.array(types.model("Syndicate", {
+		uid: types.identifier,
+		name: types.maybeNull(types.string)
+	})), []),
 	posts: types.optional(types.array(Post), []),
 	pages: types.optional(types.array(Page), []),
 	uploads: types.optional(types.array(Upload), []),

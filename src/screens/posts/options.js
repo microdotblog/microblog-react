@@ -73,6 +73,35 @@ export default class PostingOptionsScreen extends React.Component{
 					}
 					</View>
 				</View>
+				{/* Cross posting */}
+				<View style={{ marginBottom: 25 }}>
+					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>Cross-posting:</Text>
+					<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
+					{
+						posting.selected_service.config?.active_destination()?.syndicates.length ?
+							posting.selected_service.config.active_destination().syndicates.map((syndicate) => {
+								const is_selected = posting.post_syndicates.indexOf(syndicate.uid) > -1
+								return(
+									<TouchableOpacity
+										key={syndicate.uid}
+										style={{
+											padding: 8,
+											marginBottom: 5,
+											flexDirection: 'row',
+											alignItems: 'center',
+										}}
+										onPress={() => {
+											posting.handle_post_syndicates_select(syndicate.uid)
+										}}
+									>
+										<Text style={ is_selected ? { fontWeight: '500', color: App.theme_button_text_color() } : { color: App.theme_button_text_color() }}>{syndicate.name} { is_selected ? <Image source={CheckmarkIcon} style={{ width: 12, height: 12, tintColor: App.theme_button_text_color() }} /> : null }</Text>
+									</TouchableOpacity>
+								)
+							})
+						: <Text style={{ color: App.theme_button_text_color() }}>No cross-posting options to display</Text>
+					}
+					</View>
+				</View>
       </ScrollView>
     )
   }

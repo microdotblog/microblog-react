@@ -24,6 +24,7 @@ export default Posting = types.model('Posting', {
   is_sending_post: types.optional(types.boolean, false),
   post_assets: types.optional(types.array(MediaAsset), []),
   post_categories: types.optional(types.array(types.string), []),
+  post_syndicates: types.optional(types.array(types.string), []),
   post_status: types.optional(types.string, "published"),
   is_adding_bookmark: types.optional(types.boolean, false),
   text_selection: types.optional(
