@@ -220,6 +220,23 @@ class MicroPubApi {
 			});
 		return config;
 	}
+	
+	async get_syndicate_to(service, destination = null) {
+		console.log('MicroPubApi:get_syndicate_to');
+		const config = axios
+			.get(service.endpoint, {
+				headers: { Authorization: `Bearer ${service.token}` },
+				params: { q: "syndicate-to", "mp-destination": destination }
+			})
+			.then(response => {
+				return response.data;
+			})
+			.catch(error => {
+				console.log(error);
+				return FETCH_ERROR;
+			});
+		return config;
+	}
 
 	async upload_image(service, file) {
 		const data = new FormData();
