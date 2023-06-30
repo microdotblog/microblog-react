@@ -133,8 +133,8 @@ class MicroPubApi {
 		return config;
 	}
 
-	async send_post(service, content, title = null, images = [], categories = [], status = null, syndicate_to = []) {
-		console.log('MicroBlogApi:send_post', service, content, title, images, status);
+	async send_post(service, content, title = null, images = [], categories = [], status = null, syndicate_to = null) {
+		console.log('MicroBlogApi:send_post', service, content, title, images, status, syndicate_to);		
 		const params = new FormData()
 		params.append('h', 'entry')
 		params.append('content', content)
@@ -171,13 +171,15 @@ class MicroPubApi {
 			})
 		}
 		params.append('mp-destination', service.destination)
-		if (syndicate_to.length > 0){
+		if (syndicate_to != null && syndicate_to.length > 0){
 			syndicate_to.map((syndicate) => {
 				params.append('mp-syndicate-to[]', syndicate)
 			})
 		}
+		else if(syndicate_to != null && syndicate_to.length === 0){
+			params.append('mp-syndicate-to[]', "")
+		}
 		console.log("MicroBlogApi:send_post:FORM_DATA:PARAMS", params)
-		
 		const post = axios
 			.post(service.endpoint, params ,{
 				headers: { Authorization: `Bearer ${service.token}` }
