@@ -363,6 +363,10 @@ export default Service = types.model('Service', {
 
   description() {
     return self.name === "Micro.blog" ? "Micro.blog hosted blog" : "WordPress or compatible blog"
+  },
+  
+  active_destination(){
+    return self.config?.active_destination()
   }
   
 }))
