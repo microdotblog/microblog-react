@@ -171,7 +171,7 @@ class MicroPubApi {
 			})
 		}
 		params.append('mp-destination', service.destination)
-		if (syndicate_to.length){
+		if (syndicate_to.length > 0){
 			syndicate_to.map((syndicate) => {
 				params.append('mp-syndicate-to[]', syndicate)
 			})
