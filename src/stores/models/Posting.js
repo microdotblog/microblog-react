@@ -448,6 +448,15 @@ export default Posting = types.model('Posting', {
     }
   }),
   
+  handle_post_syndicates_select: flow(function* (uid) {
+    console.log("Posting:handle_post_syndicates_select")
+    if (self.post_syndicates.includes(uid)) {
+      self.post_syndicates = self.post_syndicates.filter(s => s !== uid)
+    } else {
+      self.post_syndicates.push(uid)
+    }
+  }),
+  
 }))
 .views(self => ({
   

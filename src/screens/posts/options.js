@@ -78,8 +78,8 @@ export default class PostingOptionsScreen extends React.Component{
 					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>Cross-posting:</Text>
 					<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
 					{
-						posting.selected_service.config?.active_destination()?.syndicates.length ?
-							posting.selected_service.config.active_destination().syndicates.map((syndicate) => {
+						posting.selected_service.active_destination()?.syndicates?.length ?
+							posting.selected_service.active_destination().syndicates.map((syndicate) => {
 								const is_selected = posting.post_syndicates.indexOf(syndicate.uid) > -1
 								return(
 									<TouchableOpacity
