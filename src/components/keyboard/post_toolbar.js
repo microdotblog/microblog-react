@@ -45,7 +45,7 @@ export default class PostToolbar extends React.Component{
 							posting.selected_service?.config?.sorted_destinations().map((destination, index) => {
 								const is_selected_destination = posting.selected_service?.config?.active_destination()?.uid == destination.uid
 								return (
-									<TouchableOpacity key={index} onPress={() => { posting.selected_service?.config?.set_default_destination(destination); App.toggle_select_destination() }} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 5, borderRadius: 5, backgroundColor: is_selected_destination ? App.theme_selected_button_color() : App.theme_section_background_color(), marginRight: 5 }}>
+									<TouchableOpacity key={index} onPress={() => { posting.selected_service?.config?.set_default_destination(destination); posting.reset_post_syndicates(); App.toggle_select_destination() }} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 5, borderRadius: 5, backgroundColor: is_selected_destination ? App.theme_selected_button_color() : App.theme_section_background_color(), marginRight: 5 }}>
 										<Text style={{ color: App.theme_text_color(), fontWeight: is_selected_destination ? 600 : 300 }}>{destination.name}</Text>
 									</TouchableOpacity>
 								)

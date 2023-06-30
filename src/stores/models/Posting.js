@@ -388,13 +388,7 @@ export default Posting = types.model('Posting', {
     self.post_categories = []
     self.is_editing_post = false
     self.post_url = null
-    if(self.selected_service && self.selected_service.active_destination()?.syndicates?.length > 0){
-      let syndicate_targets = []
-      self.selected_service.active_destination()?.syndicates.forEach((syndicate) => {
-        syndicate_targets.push(syndicate.uid)
-      })
-      self.post_syndicates = syndicate_targets
-    }
+    self.reset_post_syndicates()
   }),
 
   upload_assets: flow(function* () {
@@ -468,6 +462,17 @@ export default Posting = types.model('Posting', {
       self.post_syndicates = self.post_syndicates.filter(s => s !== uid)
     } else {
       self.post_syndicates.push(uid)
+    }
+  }),
+  
+  reset_post_syndicates: flow(function* () {
+    console.log("Posting:reset_post_syndicates")
+    if(self.selected_service && self.selected_service.active_destination()?.syndicates?.length > 0){
+      let syndicate_targets = []
+      self.selected_service.active_destination()?.syndicates.forEach((syndicate) => {
+        syndicate_targets.push(syndicate.uid)
+      })
+      self.post_syndicates = syndicate_targets
     }
   }),
   
