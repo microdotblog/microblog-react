@@ -34,7 +34,8 @@ export default Posting = types.model('Posting', {
     }), {start: 0, end: 0}
   ),
   is_editing_post: types.optional(types.boolean, false),
-  post_url: types.maybeNull(types.string)
+  post_url: types.maybeNull(types.string),
+  show_title: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -476,6 +477,12 @@ export default Posting = types.model('Posting', {
     }
   }),
   
+  toggle_title: flow(function* () {
+    console.log("Posting:toggle_title")
+    if(self.post_title){return}
+    self.show_title = !self.show_title
+  }),
+  
 }))
 .views(self => ({
   
@@ -532,6 +539,10 @@ export default Posting = types.model('Posting', {
     }
     
     return offset
+  },
+  
+  should_show_title(){
+    return self.show_title || this.post_text_length() > this.max_post_length() || self.post_title
   }
   
 }))

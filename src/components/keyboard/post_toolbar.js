@@ -118,6 +118,9 @@ export default class PostToolbar extends React.Component{
 						<TouchableOpacity style={{minWidth: 35}} onPress={() => App.is_share_extension ? Share.handle_text_action("[]") : posting.handle_text_action("[]")}>
 							<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"[ ]"}</Text>
 						</TouchableOpacity>
+						<TouchableOpacity style={{minWidth: 35}} onPress={() => posting.toggle_title()}>
+							<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"T"}</Text>
+						</TouchableOpacity>
 						{
 							!this.props.is_post_edit && posting.selected_service?.config?.active_destination() != null && (posting.selected_service?.config?.destination?.length > 1 || (!posting.selected_service?.is_microblog && !App.is_share_extension)) ?
 							<TouchableOpacity style={{marginLeft: 8, marginRight: 8}} onPress={() => {!posting.selected_service?.is_microblog ? postOptionsSettingsScreen(App.is_share_extension ? Share.selected_user : Auth.selected_user, this.props.componentId) : App.toggle_select_destination()}}>
