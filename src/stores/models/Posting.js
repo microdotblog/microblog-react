@@ -216,12 +216,13 @@ export default Posting = types.model('Posting', {
     
   }),
 
-  handle_asset_action: flow(function* (component_id) {
-    console.log("Posting:handle_asset_action")
+  handle_asset_action: flow(function* (component_id, type = "photo") {
+    console.log("Posting:handle_asset_action", type)
     const options = {
-      title: 'Select an image',
-      mediaType: 'photo',
-      ...self.selected_service.type === "xmlrpc" &&
+      title: type === "video" ? "Select a video" : "Select an image",
+      mediaType: type === "video" ? "video" : "photo",
+      videoQuality: "high",
+      ...self.selected_service.type === "xmlrpc" && type === "photo" &&
         {
           includeBase64: true,
         }
@@ -240,7 +241,7 @@ export default Posting = types.model('Posting', {
     }
     if (result.assets) {
       result.assets.forEach((asset) => {
-        console.log("Posting:handle_image_action:asset", asset)
+        console.log("Posting:handle_image_action:asset", asset, type)
 
         // disabling the crop screen for 3.0, will bring back in 3.1
         if (false) {
@@ -248,6 +249,17 @@ export default Posting = types.model('Posting', {
           imageCropScreen(media_asset, component_id)
         }
         else {
+          if(type === "video"){
+            if(asset.fileSize > 74999999){
+              // TODO: Not sure if we need this size as binary?: 78643200
+              Alert.alert(
+                "Whoops...",
+                "Your video is over 75MB, please try another..."
+              )
+              return
+            }
+            asset.is_video = true
+          }
           const media_asset = MediaAsset.create(asset)
           self.post_assets.push(media_asset)
           media_asset.upload(self.selected_service.service_object())

@@ -242,12 +242,8 @@ class MicroPubApi {
 
 	async upload_image(service, file) {
 		const data = new FormData();
-		var extension = ".jpg"
-		if (file.mime === "image/png") {
-			extension = ".png"
-		}
 		data.append("file", {
-			name: `image${extension}`,
+			name: `image${file.file_extension()}`,
 			type: file.type,
 			uri: file.uri
 		})

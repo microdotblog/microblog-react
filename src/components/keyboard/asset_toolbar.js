@@ -37,7 +37,14 @@ export default class AssetToolbar extends React.Component{
                   width: 50,
                   height: 50
                 }}>
-                <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
+                {
+                  asset.is_video ?
+                  <>
+                    <Image source={{ uri: asset.remote_poster_url ? asset.remote_poster_url : asset.uri }} style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
+                  </>
+                  :
+                  <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
+                }
                 {
                   asset.is_uploading ?
                     <>
