@@ -133,8 +133,8 @@ class MicroPubApi {
 		return config;
 	}
 
-	async send_post(service, content, title = null, images = [], categories = [], status = null, syndicate_to = null) {
-		console.log('MicroBlogApi:send_post', service, content, title, images, status, syndicate_to);		
+	async send_post(service, content, title = null, assets = [], categories = [], status = null, syndicate_to = null) {
+		console.log('MicroBlogApi:send_post', service, content, title, assets, status, syndicate_to);		
 		const params = new FormData()
 		params.append('h', 'entry')
 		params.append('content', content)
@@ -144,8 +144,8 @@ class MicroPubApi {
 		if (status) {
 			params.append('post-status', status)
 		}
-		if (images.length) {
-			const images_with_url = images.filter(image => image.remote_url !== null && image.did_upload)
+		if (assets.length) {
+			const images_with_url = assets.filter(asset => asset.remote_url !== null && asset.did_upload && !asset.is_video)
 			if (images_with_url) {
 				// Now that we have images, we can append them to our params
 				if (images_with_url.length === 1) {
@@ -161,6 +161,19 @@ class MicroPubApi {
 						if(image.alt_text != null && image.alt_text !== ""){
 							params.append('mp-photo-alt[]', image.alt_text)
 						}
+					})
+				}
+			}
+			const videos_with_url = assets.filter(asset => asset.remote_url !== null && asset.did_upload && asset.is_video)
+			if (videos_with_url) {
+				// Now that we have images, we can append them to our params
+				if (videos_with_url.length === 1) {
+					const first_asset = videos_with_url[0]
+					params.append('video', first_asset.remote_url)
+				}
+				else {
+					videos_with_url.map((video) => {
+						params.append('video[]', video.remote_url)
 					})
 				}
 			}
