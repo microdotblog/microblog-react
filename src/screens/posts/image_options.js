@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity, ScrollView, Image, ActivityIndicator, Tex
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
 import { Navigation } from 'react-native-navigation';
+import Video from 'react-native-video';
 
 @observer
 export default class ImageOptionsScreen extends React.Component{
@@ -13,8 +14,8 @@ export default class ImageOptionsScreen extends React.Component{
     const existing_index = posting.post_assets?.findIndex(file => file.uri === image.uri)
     if (existing_index > -1) {
       Alert.alert(
-        "Remove image",
-        "Are you sure you want to remove this image from this post?",
+        "Remove upload?",
+        "Are you sure you want to remove this upload from this post?",
         [
           {
             text: "Cancel",
@@ -33,7 +34,7 @@ export default class ImageOptionsScreen extends React.Component{
   
   render() {
     const { posting } = Auth.selected_user
-    const { image, index } = this.props
+    const { asset, index } = this.props
     return(
       <KeyboardAvoidingView behavior={"height"} style={{ flex: 1, height: "100%" }}>
         <ScrollView style={{ padding: 15 }} contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', width: "100%" }}>
@@ -47,21 +48,33 @@ export default class ImageOptionsScreen extends React.Component{
               backgroundColor: '#E5E7EB'
             }}
           >
-            <Image source={{ uri: image.remote_url ? image.remote_url : image.uri }} style={{ width: 250, height: 250, borderRadius: 5 }} />
             {
-              image.is_uploading ?
+              asset.is_video ?
+              <Video 
+                source={{ uri: asset.uri }}
+                poster={asset.remote_poster_url ? asset.remote_poster_url : asset.uri} style={{width: 250, height: 250}}
+                mixWithOthers={"mix"}
+                controls
+                repeat
+              />
+              // <Image source={{ uri: asset.remote_poster_url ? asset.remote_poster_url : asset.uri }} style={{ width: 250, height: 250, borderRadius: 5 }} />
+              :
+              <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} style={{ width: 250, height: 250, borderRadius: 5 }} />
+            }
+            {
+              asset.is_uploading ?
                 <>
                   <ActivityIndicator color="#f80" size={"large"} style={{ position: 'absolute' }} />
                   <View
                     style={{
-                      width: `${ image.progress }%`,
+                      width: `${ asset.progress }%`,
                       height: 5,
                       backgroundColor: App.theme_accent_color(),
                       position: 'absolute',
                       left: 0,
                       bottom: 0,
                       borderBottomLeftRadius: 5,
-                      borderBottomRightRadius: image.progress === 100 ? 5 : 0,
+                      borderBottomRightRadius: asset.progress === 100 ? 5 : 0,
                       zIndex: 2
                     }}
                   />
@@ -69,47 +82,51 @@ export default class ImageOptionsScreen extends React.Component{
               : null
             }
           </View>
-          <TextInput
-            placeholder="Accessibility description"
-            placeholderTextColor={App.theme_placeholder_alt_text_color()}
-            style={{
-              fontSize: 20,
-              padding: 9,
-              paddingTop: 9,
-              fontWeight: '400',
-              color: App.theme_text_color(),
-              marginVertical: 25,
-              borderRadius: 5,
-              backgroundColor: App.theme_button_background_color(),
-              width: "100%",
-            }}
-            editable={!posting.is_sending_post}
-            multiline={true}
-            scrollEnabled={true}
-            returnKeyType={'default'}
-            keyboardType={'default'}
-            autoFocus={false}
-            autoCorrect={true}
-            clearButtonMode={'while-editing'}
-            enablesReturnKeyAutomatically={true}
-            underlineColorAndroid={'transparent'}
-            value={image.alt_text}
-            onChangeText={(text) => !posting.is_sending_post ? image.set_alt_text(text) : null}
-          />
+          {
+            !asset.is_video &&
+            <TextInput
+              placeholder="Accessibility description"
+              placeholderTextColor={App.theme_placeholder_alt_text_color()}
+              style={{
+                fontSize: 20,
+                padding: 9,
+                paddingTop: 9,
+                fontWeight: '400',
+                color: App.theme_text_color(),
+                marginVertical: 25,
+                borderRadius: 5,
+                backgroundColor: App.theme_button_background_color(),
+                width: "100%",
+              }}
+              editable={!posting.is_sending_post}
+              multiline={true}
+              scrollEnabled={true}
+              returnKeyType={'default'}
+              keyboardType={'default'}
+              autoFocus={false}
+              autoCorrect={true}
+              clearButtonMode={'while-editing'}
+              enablesReturnKeyAutomatically={true}
+              underlineColorAndroid={'transparent'}
+              value={asset.alt_text}
+              onChangeText={(text) => !posting.is_sending_post ? asset.set_alt_text(text) : null}
+            />
+          }
           <View
             style={{
               width: "100%",
             }}
           >
             <TouchableOpacity
-              onPress={() => this._handle_image_remove(image, index)}
-              key={image.uri}
+              onPress={() => this._handle_image_remove(asset, index)}
+              key={asset.uri}
               style={{
                 justifyContent: 'center',
-                alignItems: 'center'
+                alignItems: 'center',
+                marginVertical: asset.is_video ? 25 : 0,
               }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', width: "100%", justifyContent: 'center' }}>
-                <Text style={{color: 'red'}}>{image.is_uploading ? "Cancel Upload & Remove Image" : "Remove Image"}</Text>
+                <Text style={{color: 'red'}}>{asset.is_uploading ? "Cancel Upload & Remove" : "Remove"}</Text>
               </View>
             </TouchableOpacity>
           </View>

@@ -109,19 +109,6 @@ export default class PostToolbar extends React.Component{
 									<Image source={PhotoLibrary} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
 								}
 								</TouchableOpacity>
-								<TouchableOpacity style={{minWidth: 35, marginLeft: 4, marginRight: 0}} onPress={() => posting.handle_asset_action(this.props.componentId, "video")}>
-								{
-									Platform.OS === 'ios' ?
-										<SFSymbol
-											name={'film'}
-											color={App.theme_text_color()}
-											style={{ height: 22, width: 22 }}
-											multicolor={true}
-										/>
-									: 						
-									<Image source={PhotoLibrary} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
-								}
-								</TouchableOpacity>
 							</>
 						}
 						<TouchableOpacity style={{minWidth: 35}} onPress={() => App.is_share_extension ? Share.handle_text_action("**") : posting.handle_text_action("**")}>

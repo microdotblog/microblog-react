@@ -216,13 +216,15 @@ export default Posting = types.model('Posting', {
     
   }),
 
-  handle_asset_action: flow(function* (component_id, type = "photo") {
-    console.log("Posting:handle_asset_action", type)
+  handle_asset_action: flow(function* (component_id) {
+    console.log("Posting:handle_asset_action")
     const options = {
-      title: type === "video" ? "Select a video" : "Select an image",
-      mediaType: type === "video" ? "video" : "photo",
-      videoQuality: "high",
-      ...self.selected_service.type === "xmlrpc" && type === "photo" &&
+      title: "Select media",
+      mediaType: "mixed",
+      videoQuality: Platform.OS === "android" ? "high" : "medium",
+      formatAsMp4: true,
+      quality: 0.95,
+      ...self.selected_service.type === "xmlrpc" &&
         {
           includeBase64: true,
         }
@@ -241,15 +243,15 @@ export default Posting = types.model('Posting', {
     }
     if (result.assets) {
       result.assets.forEach((asset) => {
-        console.log("Posting:handle_image_action:asset", asset, type)
-
-        // disabling the crop screen for 3.0, will bring back in 3.1
+        let is_video = self.is_asset_video(asset.type)
+        console.log("Posting:handle_asset_action:asset", asset, is_video)
+        // disabling the crop screen for 3.0, will bring back in 3.X
         if (false) {
           const media_asset = MediaAsset.create(asset)
           imageCropScreen(media_asset, component_id)
         }
         else {
-          if(type === "video"){
+          if(is_video){
             if(asset.fileSize > 74999999){
               // TODO: Not sure if we need this size as binary?: 78643200
               Alert.alert(
@@ -308,9 +310,9 @@ export default Posting = types.model('Posting', {
     }
   }),
   
-  image_option_screen: flow(function* (image, index, component_id) {
-    console.log("Posting:image_option_screen", image)
-    return imageOptionsScreen(image, index, component_id)
+  asset_option_screen: flow(function* (asset, index, component_id) {
+    console.log("Posting:asset_option_screen", asset)
+    return imageOptionsScreen(asset, index, component_id)
   }),
   
   remove_asset: flow(function* (media_index) {
@@ -555,6 +557,10 @@ export default Posting = types.model('Posting', {
   
   should_show_title(){
     return self.show_title || this.post_text_length() > this.max_post_length() || self.post_title
+  },
+  
+  is_asset_video(type){
+    return type.includes("video/")
   }
   
 }))
