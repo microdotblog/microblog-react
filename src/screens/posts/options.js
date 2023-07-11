@@ -104,7 +104,7 @@ export default class PostingOptionsScreen extends React.Component{
 				</View>
 				{/* Other options */}
 				<View style={{ marginBottom: 25 }}>
-					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>Other:</Text>
+					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>View:</Text>
 					<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
 						<TouchableOpacity
 							style={{
