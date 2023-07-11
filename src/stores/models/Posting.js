@@ -403,6 +403,7 @@ export default Posting = types.model('Posting', {
     self.post_categories = []
     self.is_editing_post = false
     self.post_url = null
+    self.show_title = false
     self.reset_post_syndicates()
   }),
 
