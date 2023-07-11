@@ -26,7 +26,7 @@ export default class PostingOptionsScreen extends React.Component{
 					<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
 						<TouchableOpacity
 							key={"published"}
-							style={{ padding: 8, marginBottom: 5, flexDirection: 'row', alignItems: 'center' }}
+							style={{ padding: 8, marginVertical: 2.5, flexDirection: 'row', alignItems: 'center' }}
 							onPress={() => {	
 								posting.handle_post_status_select("published")
 							}}
@@ -57,7 +57,7 @@ export default class PostingOptionsScreen extends React.Component{
 										key={category}
 										style={{
 											padding: 8,
-											marginBottom: 5,
+											marginVertical: 2.5,
 											flexDirection: 'row',
 											alignItems: 'center',
 										}}
@@ -86,7 +86,7 @@ export default class PostingOptionsScreen extends React.Component{
 										key={syndicate.uid}
 										style={{
 											padding: 8,
-											marginBottom: 5,
+											marginVertical: 2.5,
 											flexDirection: 'row',
 											alignItems: 'center',
 										}}
@@ -109,7 +109,7 @@ export default class PostingOptionsScreen extends React.Component{
 						<TouchableOpacity
 							style={{
 								padding: 8,
-								marginBottom: 5,
+								marginVertical: 2.5,
 								flexDirection: 'row',
 								alignItems: 'center',
 							}}
