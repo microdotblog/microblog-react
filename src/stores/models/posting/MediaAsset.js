@@ -107,8 +107,11 @@ export default MediaAsset = types.model('MediaAsset', {
 		else if (self.type === "video/mov") {
 			return ".mov"
 		}
-		else if (self.type === "video/mpeg"){
-			return ".mpeg"
+		else if (self.type == "video/quicktime") {
+			return ".mov"
+		}
+		else if (self.type === "video/mpeg") {
+			return ".mp4"
 		}
 		else {
 			return ".jpg"
