@@ -102,6 +102,23 @@ export default class PostingOptionsScreen extends React.Component{
 					}
 					</View>
 				</View>
+				{/* Other options */}
+				<View style={{ marginBottom: 25 }}>
+					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>Other:</Text>
+					<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
+						<TouchableOpacity
+							style={{
+								padding: 8,
+								marginBottom: 5,
+								flexDirection: 'row',
+								alignItems: 'center',
+							}}
+							onPress={posting.toggle_title}
+						>
+							<Text style={ posting.show_title ? { fontWeight: '500', color: App.theme_button_text_color() } : { color: App.theme_button_text_color() }}>Show title field { posting.show_title ? <Image source={CheckmarkIcon} style={{ width: 12, height: 12, tintColor: App.theme_button_text_color() }} /> : null }</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
       </ScrollView>
     )
   }
