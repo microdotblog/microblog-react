@@ -148,7 +148,7 @@ export default class ProfileHeader extends React.Component{
             alignItems: 'center'
           }}>
           <TouchableOpacity style={{maxWidth: '80%'}} onPress={() => followingScreen(this.props.username, App.current_screen_id)}>
-            <Text style={{ fontWeight: '500', paddingVertical: 5, color: App.theme_text_color() }}>{profile._microblog.is_you ? `Following ${profile._microblog.following_count} users` : `Following ${profile._microblog.discover_count} users you're not following`}</Text>
+            <Text style={{ fontWeight: '500', paddingVertical: 5, color: App.theme_text_color() }}>{profile._microblog.is_you ? `Following ${profile._microblog.following_count} users` : ( profile._microblog.discover_count == 0 ? "" : `Following ${profile._microblog.discover_count} users you're not following` )}</Text>
           </TouchableOpacity>
           {
             !profile._microblog.is_you ?
