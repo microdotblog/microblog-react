@@ -69,13 +69,7 @@ export default Posting = types.model('Posting', {
     self.is_adding_bookmark = false
     self.is_editing_post = false
     
-    if(self.selected_service && self.selected_service.active_destination()?.syndicates?.length > 0){
-      let syndicate_targets = []
-      self.selected_service.active_destination()?.syndicates.forEach((syndicate) => {
-        syndicate_targets.push(syndicate.uid)
-      })
-      self.post_syndicates = syndicate_targets
-    }
+    self.reset_post_syndicates()
 
     if (App.is_share_extension) {
       self.post_text = ""

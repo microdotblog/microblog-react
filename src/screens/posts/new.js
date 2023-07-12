@@ -21,6 +21,7 @@ export default class PostingScreen extends React.Component{
   componentDidMount() {
     if (Auth.selected_user.posting.selected_service != null) {
       Auth.selected_user.posting.selected_service.check_for_categories()
+      Auth.selected_user.posting.reset_post_syndicates()
     }
   }
   
