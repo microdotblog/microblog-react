@@ -62,7 +62,7 @@ export default class ProfileHeader extends React.Component{
     const short_bio = long_bio ? long_bio.slice(0, 90).replace(/\n/g, " ") : null
     const show_expand_option = long_bio?.length > short_bio?.length
     return(
-      <View style={{ padding: 8, backgroundColor: App.theme_button_background_color(), width: '100%' }}>
+      <View style={{ padding: 12, backgroundColor: App.theme_button_background_color(), width: '100%' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <TouchableOpacity onPress={() => App.set_image_modal_data_and_activate(`${profile.author.avatar}${!this.state.is_mastodon ? `?v=${App.now()}`: ""}`)}>
             <Image source={{ uri: `${profile.author.avatar}${!this.state.is_mastodon ? `?v=${App.now()}`: ""}` }} style={{ width: 50, height: 50, borderRadius: 50 }} />
@@ -87,7 +87,7 @@ export default class ProfileHeader extends React.Component{
                 onPress={this._toggle_more}
                 style={{
                   position: 'absolute',
-                  right: 0,
+                  right: 2,
                   top: 2,
                   padding: 2,
                   backgroundColor: App.theme_profile_button_background_color(),
@@ -140,9 +140,9 @@ export default class ProfileHeader extends React.Component{
           style={{ 
             borderTopWidth: .5,
             borderColor: App.theme_alt_background_div_color(), 
-            paddingTop: 8, 
+            paddingTop: 10, 
             marginTop: 8,
-            paddingBottom: 3,
+            paddingBottom: 0,
             justifyContent: 'space-between', 
             flexDirection: 'row',
             alignItems: 'center'
@@ -152,7 +152,7 @@ export default class ProfileHeader extends React.Component{
           </TouchableOpacity>
           {
             !profile._microblog.is_you ?
-            <TouchableOpacity onPress={this._toggle_follow} style={{marginRight: 5, paddingTop: 8, paddingBottom: 8, paddingLeft: 10, paddingRight: 10, borderRadius: 20, backgroundColor: App.theme_profile_button_background_color()}}>
+            <TouchableOpacity onPress={this._toggle_follow} style={{marginRight: 2, paddingTop: 8, paddingBottom: 8, paddingLeft: 10, paddingRight: 10, borderRadius: 20, backgroundColor: App.theme_profile_button_background_color()}}>
               { this.state.is_toggling_follow ? 
                 <ActivityIndicator color="#f80" />
                 :
