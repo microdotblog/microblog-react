@@ -5,7 +5,6 @@ import MicroBlogApi, { API_ERROR } from './../../api/MicroBlogApi';
 import App from './../../stores/App';
 import Hyperlink from 'react-native-hyperlink'
 import { followingScreen, profileMoreBottomSheet } from './../../screens/'
-import MoreIcon from './../../assets/icons/more.png'
 import MoreIconWhite from './../../assets/icons/more_white.png'
 import MoreIconHorizontal from './../../assets/icons/more_ios.png'
 import MoreIconHorizontalWhite from './../../assets/icons/more_ios_white.png'
@@ -148,7 +147,7 @@ export default class ProfileHeader extends React.Component{
             alignItems: 'center'
           }}>
           <TouchableOpacity style={{maxWidth: '80%'}} onPress={() => followingScreen(this.props.username, App.current_screen_id)}>
-            <Text style={{ fontWeight: '500', paddingVertical: 5, color: App.theme_text_color() }}>{profile._microblog.is_you ? `Following ${profile._microblog.following_count} users` : ( profile._microblog.discover_count == 0 ? "" : `Following ${profile._microblog.discover_count} users you're not following` )}</Text>
+            <Text style={{ fontWeight: '500', paddingVertical: 5, color: App.theme_text_color() }}>{profile._microblog.is_you ? `Following ${profile._microblog.following_count} ${profile._microblog.following_count > 1 ? "users" : "user"}` : ( profile._microblog.discover_count == 0 ? "" : `Following ${profile._microblog.discover_count} ${profile._microblog.discover_count > 1 ? "users" : "user"} you're not following` )}</Text>
           </TouchableOpacity>
           {
             !profile._microblog.is_you ?
