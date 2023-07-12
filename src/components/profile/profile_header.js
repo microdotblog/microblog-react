@@ -90,7 +90,7 @@ export default class ProfileHeader extends React.Component{
                   right: 0,
                   top: 2,
                   padding: 2,
-                  backgroundColor: 'lightgray',
+                  backgroundColor: App.theme_profile_button_background_color(),
                   borderRadius: 50,
                 }}
               >
@@ -152,11 +152,11 @@ export default class ProfileHeader extends React.Component{
           </TouchableOpacity>
           {
             !profile._microblog.is_you ?
-            <TouchableOpacity onPress={this._toggle_follow} style={{marginRight: 5}}>
+            <TouchableOpacity onPress={this._toggle_follow} style={{marginRight: 5, paddingTop: 8, paddingBottom: 8, paddingLeft: 10, paddingRight: 10, borderRadius: 20, backgroundColor: App.theme_profile_button_background_color()}}>
               { this.state.is_toggling_follow ? 
                 <ActivityIndicator color="#f80" />
                 :
-                <Text style={{ fontWeight: '500', color: '#337ab7' }}>{profile._microblog.is_following ? 'Unfollow' : 'Follow'}</Text>
+                <Text style={{ fontWeight: '500', color: App.theme_profile_button_text_color() }}>{profile._microblog.is_following ? 'Unfollow' : 'Follow'}</Text>
               }
             </TouchableOpacity>
             : null
