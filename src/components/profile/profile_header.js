@@ -127,9 +127,7 @@ export default class ProfileHeader extends React.Component{
               position: 'absolute',
               right: 0,
               bottom: 5,
-              backgroundColor: App.theme_section_background_color(),
-              paddingHorizontal: 5,
-              borderRadius: 5
+              paddingHorizontal: 5
             }}
           >
             <Text style={{ fontWeight: '400', color: '#f80' }}>{more_expanded ? "Show less" : "Show more"}</Text>
