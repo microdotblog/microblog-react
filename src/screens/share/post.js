@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { TextInput, InputAccessoryView, View, Text } from 'react-native'
+import { InputAccessoryView, View, Text } from 'react-native'
 import Share from '../../stores/Share'
 import App from '../../stores/App'
 import AssetToolbar from '../../components/keyboard/asset_toolbar'

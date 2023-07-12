@@ -27,7 +27,7 @@ export default class AssetToolbar extends React.Component{
           {
             posting.post_assets.map((asset, index) => (
               <TouchableOpacity
-                onPress={() => posting.asset_option_screen(asset, index, this.props.componentId)}
+                onPress={() => App.is_share_extension ? Share.trigger_image_options(asset) : posting.asset_option_screen(asset, index, this.props.componentId)}
                 key={`${asset.uri}-${index}`}
                 style={{
                   marginRight: 4,

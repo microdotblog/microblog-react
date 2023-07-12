@@ -27,6 +27,7 @@ export default Share = types.model('Share', {
 	selected_user: types.maybeNull(types.reference(User)),
 	toolbar_select_user_open: types.optional(types.boolean, false),
 	error_message: types.maybeNull(types.string),
+	image_options_open: types.optional(types.boolean, false)
 })
 	.actions(self => ({
 
@@ -43,6 +44,7 @@ export default Share = types.model('Share', {
 				self.share_text = ""
 				self.share_image_data = null
 				self.error_message = null
+				self.image_options_open = false
 			}
 			const data = yield Tokens.hydrate(true)
 			if (data?.tokens) {
@@ -234,7 +236,17 @@ export default Share = types.model('Share', {
 
 		clear_error_message: flow(function* () {
 			self.error_message = null
-		})
+		}),
+		
+		trigger_image_options: flow(function* (asset) {
+			console.log('Share:trigger_image_options', asset)
+			self.image_options_open = true
+		}),
+		
+		close_image_options: flow(function* () {
+			console.log('Share:close_image_options')
+			self.image_options_open = false
+		}),
 
 	}))
 	.views(self => ({
