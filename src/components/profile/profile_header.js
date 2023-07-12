@@ -6,7 +6,9 @@ import App from './../../stores/App';
 import Hyperlink from 'react-native-hyperlink'
 import { followingScreen, profileMoreBottomSheet } from './../../screens/'
 import MoreIcon from './../../assets/icons/more.png'
+import MoreIconWhite from './../../assets/icons/more_white.png'
 import MoreIconHorizontal from './../../assets/icons/more_ios.png'
+import MoreIconHorizontalWhite from './../../assets/icons/more_ios_white.png'
 
 @observer
 export default class ProfileHeader extends React.Component{
@@ -94,7 +96,7 @@ export default class ProfileHeader extends React.Component{
                   borderRadius: 50,
                 }}
               >
-                <Image source={ Platform.OS === 'ios' ? MoreIconHorizontal : MoreIcon} style={{ width: 24, height: 24 }} />
+                <Image source={ Platform.OS === 'ios' ? ( App.theme == "dark" ? MoreIconHorizontalWhite : MoreIconHorizontal ) : ( App.theme == "dark" ? MoreIconWhite : MoreIconHorizontalWhite )} style={{ width: 24, height: 24 }} />
               </TouchableOpacity>
             : null
           }
