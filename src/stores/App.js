@@ -362,33 +362,39 @@ export default App = types.model('App', {
 
   }),
 
-  open_url: flow(function* (url, open_external = false) {
-    Linking.canOpenURL(url).then(async (supported) => {
-      if (supported) {
-        const is_inapp_browser_avail = await InAppBrowser.isAvailable()
-        if(is_inapp_browser_avail && !open_external && !Settings.open_links_in_external_browser){
-          return InAppBrowser.open(url, {
-            dismissButtonStyle: 'close',
-            preferredControlTintColor: "#f80",
-            readerMode: Settings.open_links_with_reader_mode,
-            animated: true,
-            modalEnabled: false
-          })
+  open_url: flow(function* (url, open_external = false) {    
+    const is_mailto = url.includes("mailto:")
+    if (is_mailto) {
+      Linking.openURL(url)
+    }
+    else {
+      Linking.canOpenURL(url).then(async (supported) => {
+        if (supported) {
+          const is_inapp_browser_avail = await InAppBrowser.isAvailable()
+          if (is_inapp_browser_avail && !open_external && !Settings.open_links_in_external_browser) {
+            return InAppBrowser.open(url, {
+              dismissButtonStyle: 'close',
+              preferredControlTintColor: "#f80",
+              readerMode: Settings.open_links_with_reader_mode,
+              animated: true,
+              modalEnabled: false
+            })
+          }
+          else {
+            Linking.openURL(url);
+          }
         }
-        else{
-          Linking.openURL(url);
+        else {
+          try {
+            Linking.openURL(url)
+          }
+          catch (error) {
+            console.log("App:open_url:error", error)
+            alert("Something went wrong with that link...")
+          }
         }
-      }
-      else {
-        try {
-          Linking.openURL(url)
-        }
-        catch (error) {
-          console.log("App:open_url:error", error)
-          alert("Something went wrong with that link...")
-        }
-      }
-    });
+      });
+    }
   }),
 
   set_current_web_view_ref: flow(function* (current_ref) {
