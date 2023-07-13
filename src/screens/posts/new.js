@@ -185,13 +185,13 @@ export default class PostingScreen extends React.Component{
             <PostToolbar componentId={this.props.componentId} />
           </>
         }
-        {
+        {          
           posting.is_sending_post ?
           <View 
             style={{ 
               position: 'absolute',
               top: 0,
-              bottom:0,
+              height: 200,
               width: '100%',
               justifyContent: 'center',
               alignItems: 'center',

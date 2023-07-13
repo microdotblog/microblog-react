@@ -138,7 +138,7 @@ export default class PostEditScreen extends React.Component{
             style={{ 
               position: 'absolute',
               top: 0,
-              bottom:0,
+              height: 200,
               width: '100%',
               justifyContent: 'center',
               alignItems: 'center',
