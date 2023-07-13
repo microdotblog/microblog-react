@@ -47,7 +47,6 @@ export default class ShareScreen extends React.Component {
 													flex: 1,
 													justifyContent: 'center',
 													alignItems: 'center',
-													backgroundColor: App.theme_opacity_background_color(),
 													zIndex: 10
 												}} 
 											>

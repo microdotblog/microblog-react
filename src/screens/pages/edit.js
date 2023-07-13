@@ -138,7 +138,6 @@ export default class PostEditScreen extends React.Component{
               width: '100%',
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: App.theme_opacity_background_color(),
               zIndex: 10
             }} 
           >
