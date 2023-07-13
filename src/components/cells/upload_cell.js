@@ -91,7 +91,7 @@ export default class UploadCell extends React.Component {
 						<View style={{
 							width: dimension,
 							height: dimension,
-							borderWidth: 2,
+							borderWidth: upload.is_audio() ? 1 : 0,
 							borderColor: App.theme_placeholder_text_color(),
 							borderRadius: 5
 						}}>
@@ -107,7 +107,9 @@ export default class UploadCell extends React.Component {
 									resizeMode={FastImage.resizeMode.cover}
 									style={{
 										width: dimension,
-										height: dimension
+										height: dimension,
+										borderRadius: 5,
+										opacity: 0.5
 									}}
 								/>
 							}
@@ -150,7 +152,7 @@ export default class UploadCell extends React.Component {
 							style={{
 								width: dimension,
 								height: dimension,
-								borderWidth: upload.is_video() || upload.is_audio() || !this.state.did_load ? 2 : 0,
+								borderWidth: !this.state.did_load ? 1 : 0,
 								borderColor: App.theme_placeholder_text_color(),
 								borderRadius: 5
 							}}
