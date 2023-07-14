@@ -61,12 +61,14 @@ export default class HelpScreen extends React.Component{
 							style={{
 								padding: 8,
 								paddingHorizontal: 15,
-								backgroundColor: '#F9FAFB',
-								borderRadius: 5
+								backgroundColor: App.theme_button_background_color(),
+								borderRadius: 20,
+								borderColor: App.theme_section_background_color(),
+								borderWidth: 1
 							}}
 							onPress={() => App.handle_url_from_webview("mailto:help@micro.blog")}
 						>
-							<Text style={{ color: '#337ab7' }}>Email help@micro.blog</Text>
+							<Text style={{ color: App.theme_button_text_color() }}>Email help@micro.blog</Text>
 						</TouchableOpacity>
 					</View>
 				</View>
@@ -77,12 +79,14 @@ export default class HelpScreen extends React.Component{
 							style={{
 								padding: 8,
 								paddingHorizontal: 15,
-								backgroundColor: '#F9FAFB',
-								borderRadius: 5
+								backgroundColor: App.theme_button_background_color(),
+								borderRadius: 20,
+								borderColor: App.theme_section_background_color(),
+								borderWidth: 1
 							}}
 							onPress={() => App.handle_url_from_webview("https://help.micro.blog")}
 						>
-							<Text style={{ color: '#337ab7' }}>Open help.micro.blog</Text>
+							<Text style={{ color: App.theme_button_text_color() }}>Open help.micro.blog</Text>
 						</TouchableOpacity>
 					</View>
 				</View>

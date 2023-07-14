@@ -42,7 +42,7 @@ export default class ProfileMoreMenu extends React.Component{
                     padding: 8,
                     paddingHorizontal: 16,
                     borderRadius: 20,
-                    backgroundColor: "#F9FAFB",
+                    backgroundColor: App.theme_button_background_color(),
                     marginBottom: 12,
                     flexDirection: 'row',
                     alignItems: 'center',
@@ -57,7 +57,7 @@ export default class ProfileMoreMenu extends React.Component{
                     Auth.selected_user.muting?.is_sending_unmute ?
                       <ActivityIndicator size="small" color="#1F2937" />
                       :
-                      <Text style={{ fontSize: 16, fontWeight: '500', color: '#1F2937' }}>Unmute @{ this.props.payload.username }</Text>
+                      <Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_button_text_color() }}>Unmute @{ this.props.payload.username }</Text>
                   }
                 </TouchableOpacity>
                 :
@@ -67,7 +67,7 @@ export default class ProfileMoreMenu extends React.Component{
                     padding: 8,
                     paddingHorizontal: 16,
                     borderRadius: 20,
-                    backgroundColor: "#F9FAFB",
+                    backgroundColor: App.theme_button_background_color(),
                     marginBottom: 12,
                     flexDirection: 'row',
                     alignItems: 'center',
@@ -82,7 +82,7 @@ export default class ProfileMoreMenu extends React.Component{
                     Auth.selected_user.muting?.is_sending_mute ?
                       <ActivityIndicator size="small" color="#1F2937" />
                       :
-                      <Text style={{ fontSize: 16, fontWeight: '500', color: '#1F2937' }}>Mute @{ this.props.payload.username }</Text>
+                      <Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_button_text_color() }}>Mute @{ this.props.payload.username }</Text>
                   }
                 </TouchableOpacity>
             }

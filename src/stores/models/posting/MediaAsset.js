@@ -13,10 +13,12 @@ export default MediaAsset = types.model('MediaAsset', {
 	is_uploading: types.optional(types.boolean, false),
 	did_upload: types.optional(types.boolean, false),
 	remote_url: types.maybe(types.string),
+	remote_poster_url: types.maybe(types.string),
 	alt_text: types.maybe(types.string),
 	progress: types.optional(types.number, 0),
 	base64: types.maybe(types.string),
 	upload_id: types.maybe(types.number),
+	is_video: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -28,6 +30,9 @@ export default MediaAsset = types.model('MediaAsset', {
 			console.log("MediaAsset:upload", response)
 			if (response !== POST_ERROR) {
 				self.remote_url = response.url
+				if(response.poster){
+					self.remote_poster_url = response.poster
+				}
 				self.did_upload = true
 			}
 			self.cancel_source = null
@@ -96,9 +101,22 @@ export default MediaAsset = types.model('MediaAsset', {
 		else if (self.type === "image/gif") {
 			return ".gif"
 		}
+		else if (self.type === "video/mp4") {
+			return ".mp4"
+		}
+		else if (self.type === "video/mov") {
+			return ".mov"
+		}
+		else if (self.type == "video/quicktime") {
+			return ".mov"
+		}
+		else if (self.type === "video/mpeg") {
+			return ".mp4"
+		}
 		else {
 			return ".jpg"
 		}
+		//TODO: Is there a nicer way to do this? There should be...
 	},
 	
 	is_landscape() {

@@ -24,6 +24,7 @@ export default Posting = types.model('Posting', {
   is_sending_post: types.optional(types.boolean, false),
   post_assets: types.optional(types.array(MediaAsset), []),
   post_categories: types.optional(types.array(types.string), []),
+  post_syndicates: types.optional(types.array(types.string), []),
   post_status: types.optional(types.string, "published"),
   is_adding_bookmark: types.optional(types.boolean, false),
   text_selection: types.optional(
@@ -33,7 +34,8 @@ export default Posting = types.model('Posting', {
     }), {start: 0, end: 0}
   ),
   is_editing_post: types.optional(types.boolean, false),
-  post_url: types.maybeNull(types.string)
+  post_url: types.maybeNull(types.string),
+  show_title: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -66,6 +68,8 @@ export default Posting = types.model('Posting', {
     self.is_sending_post = false
     self.is_adding_bookmark = false
     self.is_editing_post = false
+    
+    self.reset_post_syndicates()
 
     if (App.is_share_extension) {
       self.post_text = ""
@@ -149,7 +153,7 @@ export default Posting = types.model('Posting', {
     self.is_sending_post = true
     const post_success = self.selected_service.type === "xmlrpc" ?
       yield XMLRPCApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
-      : yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
+      : yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status, self.post_syndicates.length === self.selected_service.active_destination()?.syndicates?.length ? null : self.post_syndicates)
     self.is_sending_post = false
     if(post_success !== POST_ERROR && post_success !== XML_ERROR){
       self.post_text = ""
@@ -157,6 +161,13 @@ export default Posting = types.model('Posting', {
       self.post_assets = []
       self.post_categories = []
       self.post_status = "published"
+      if(self.selected_service && self.selected_service.active_destination()?.syndicates?.length > 0){
+        let syndicate_targets = []
+        self.selected_service.active_destination()?.syndicates.forEach((syndicate) => {
+          syndicate_targets.push(syndicate.uid)
+        })
+        self.post_syndicates = syndicate_targets
+      }
       return true
     }
     return false
@@ -202,8 +213,11 @@ export default Posting = types.model('Posting', {
   handle_asset_action: flow(function* (component_id) {
     console.log("Posting:handle_asset_action")
     const options = {
-      title: 'Select an image',
-      mediaType: 'photo',
+      title: "Select media",
+      mediaType: "mixed",
+      videoQuality: Platform.OS === "android" ? "high" : "medium",
+      formatAsMp4: true,
+      quality: 0.95,
       ...self.selected_service.type === "xmlrpc" &&
         {
           includeBase64: true,
@@ -223,14 +237,25 @@ export default Posting = types.model('Posting', {
     }
     if (result.assets) {
       result.assets.forEach((asset) => {
-        console.log("Posting:handle_image_action:asset", asset)
-
-        // disabling the crop screen for 3.0, will bring back in 3.1
+        let is_video = self.is_asset_video(asset.type)
+        console.log("Posting:handle_asset_action:asset", asset, is_video)
+        // disabling the crop screen for 3.0, will bring back in 3.X
         if (false) {
           const media_asset = MediaAsset.create(asset)
           imageCropScreen(media_asset, component_id)
         }
         else {
+          if(is_video){
+            if(asset.fileSize > 74999999){
+              // TODO: Not sure if we need this size as binary?: 78643200
+              Alert.alert(
+                "Whoops...",
+                "Your video is over 75MB, please try another..."
+              )
+              return
+            }
+            asset.is_video = true
+          }
           const media_asset = MediaAsset.create(asset)
           self.post_assets.push(media_asset)
           media_asset.upload(self.selected_service.service_object())
@@ -279,9 +304,9 @@ export default Posting = types.model('Posting', {
     }
   }),
   
-  image_option_screen: flow(function* (image, index, component_id) {
-    console.log("Posting:image_option_screen", image)
-    return imageOptionsScreen(image, index, component_id)
+  asset_option_screen: flow(function* (asset, index, component_id) {
+    console.log("Posting:asset_option_screen", asset)
+    return imageOptionsScreen(asset, index, component_id)
   }),
   
   remove_asset: flow(function* (media_index) {
@@ -372,6 +397,8 @@ export default Posting = types.model('Posting', {
     self.post_categories = []
     self.is_editing_post = false
     self.post_url = null
+    self.show_title = false
+    self.reset_post_syndicates()
   }),
 
   upload_assets: flow(function* () {
@@ -439,6 +466,32 @@ export default Posting = types.model('Posting', {
     }
   }),
   
+  handle_post_syndicates_select: flow(function* (uid) {
+    console.log("Posting:handle_post_syndicates_select")
+    if (self.post_syndicates.includes(uid)) {
+      self.post_syndicates = self.post_syndicates.filter(s => s !== uid)
+    } else {
+      self.post_syndicates.push(uid)
+    }
+  }),
+  
+  reset_post_syndicates: flow(function* () {
+    console.log("Posting:reset_post_syndicates")
+    if(self.selected_service && self.selected_service.active_destination()?.syndicates?.length > 0){
+      let syndicate_targets = []
+      self.selected_service.active_destination()?.syndicates.forEach((syndicate) => {
+        syndicate_targets.push(syndicate.uid)
+      })
+      self.post_syndicates = syndicate_targets
+    }
+  }),
+  
+  toggle_title: flow(function* () {
+    console.log("Posting:toggle_title")
+    if(self.post_title){return}
+    self.show_title = !self.show_title
+  }),
+  
 }))
 .views(self => ({
   
@@ -495,6 +548,14 @@ export default Posting = types.model('Posting', {
     }
     
     return offset
+  },
+  
+  should_show_title(){
+    return self.show_title || this.post_text_length() > this.max_post_length() || self.post_title
+  },
+  
+  is_asset_video(type){
+    return type.includes("video/")
   }
   
 }))

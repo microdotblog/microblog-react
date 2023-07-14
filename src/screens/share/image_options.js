@@ -1,40 +1,15 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, ScrollView, Image, ActivityIndicator, TextInput, KeyboardAvoidingView, Alert } from 'react-native';
-import Auth from '../../stores/Auth';
+import { View, ScrollView, Image, ActivityIndicator, TextInput, KeyboardAvoidingView } from 'react-native';
 import App from '../../stores/App'
-import { Navigation } from 'react-native-navigation';
-import Video from 'react-native-video';
+import Share from '../../stores/Share'
 
 @observer
-export default class ImageOptionsScreen extends React.Component{
-  
-  _handle_image_remove = (image, index) => {
-    const { posting } = Auth.selected_user
-    const existing_index = posting.post_assets?.findIndex(file => file.uri === image.uri)
-    if (existing_index > -1) {
-      Alert.alert(
-        "Remove upload?",
-        "Are you sure you want to remove this upload from this post?",
-        [
-          {
-            text: "Cancel",
-            style: 'cancel',
-          },
-          {
-            text: "Remove",
-            onPress: () => { Navigation.popToRoot(this.props.componentId) ; posting.remove_asset(index) },
-            style: 'destructive'
-          },
-        ],
-        {cancelable: false},
-      );
-    }
-  }
+export default class ShareImageOptionsScreen extends React.Component{
   
   render() {
-    const { posting } = Auth.selected_user
-    const { asset, index } = this.props
+    const { posting } = Share.selected_user
+    const { asset } = this.props
     return(
       <KeyboardAvoidingView behavior={"height"} style={{ flex: 1, height: "100%" }}>
         <ScrollView style={{ padding: 15 }} contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', width: "100%" }}>
@@ -48,19 +23,7 @@ export default class ImageOptionsScreen extends React.Component{
               backgroundColor: '#E5E7EB'
             }}
           >
-            {
-              asset.is_video ?
-              <Video 
-                source={{ uri: asset.uri }}
-                poster={asset.remote_poster_url ? asset.remote_poster_url : asset.uri} style={{width: 250, height: 250}}
-                mixWithOthers={"mix"}
-                controls
-                repeat
-              />
-              // <Image source={{ uri: asset.remote_poster_url ? asset.remote_poster_url : asset.uri }} style={{ width: 250, height: 250, borderRadius: 5 }} />
-              :
-              <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} style={{ width: 250, height: 250, borderRadius: 5 }} />
-            }
+            <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} style={{ width: 250, height: 250, borderRadius: 5 }} />
             {
               asset.is_uploading ?
                 <>
@@ -112,24 +75,6 @@ export default class ImageOptionsScreen extends React.Component{
               onChangeText={(text) => !posting.is_sending_post ? asset.set_alt_text(text) : null}
             />
           }
-          <View
-            style={{
-              width: "100%",
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => this._handle_image_remove(asset, index)}
-              key={asset.uri}
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginVertical: asset.is_video ? 25 : 0,
-              }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', width: "100%", justifyContent: 'center' }}>
-                <Text style={{color: 'red'}}>{asset.is_uploading ? "Cancel Upload & Remove" : "Remove"}</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     )

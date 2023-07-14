@@ -45,7 +45,7 @@ export default class PostToolbar extends React.Component{
 							posting.selected_service?.config?.sorted_destinations().map((destination, index) => {
 								const is_selected_destination = posting.selected_service?.config?.active_destination()?.uid == destination.uid
 								return (
-									<TouchableOpacity key={index} onPress={() => { posting.selected_service?.config?.set_default_destination(destination); App.toggle_select_destination() }} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 5, borderRadius: 5, backgroundColor: is_selected_destination ? App.theme_selected_button_color() : App.theme_section_background_color(), marginRight: 5 }}>
+									<TouchableOpacity key={index} onPress={() => { posting.selected_service?.config?.set_default_destination(destination); posting.reset_post_syndicates(); App.toggle_select_destination() }} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 5, borderRadius: 5, backgroundColor: is_selected_destination ? App.theme_selected_button_color() : App.theme_section_background_color(), marginRight: 5 }}>
 										<Text style={{ color: App.theme_text_color(), fontWeight: is_selected_destination ? 600 : 300 }}>{destination.name}</Text>
 									</TouchableOpacity>
 								)
@@ -95,19 +95,21 @@ export default class PostToolbar extends React.Component{
 						}
 						{
 							!this.props.is_post_edit && !App.is_share_extension &&
-							<TouchableOpacity style={{minWidth: 35, marginLeft: 4, marginRight: 0}} onPress={() => posting.handle_asset_action(this.props.componentId)}>
-							{
-								Platform.OS === 'ios' ?
-									<SFSymbol
-										name={'photo'}
-										color={App.theme_text_color()}
-										style={{ height: 22, width: 22 }}
-										multicolor={true}
-									/>
-								: 						
-								<Image source={PhotoLibrary} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
-							}
-							</TouchableOpacity>
+							<>
+								<TouchableOpacity style={{minWidth: 35, marginLeft: 4, marginRight: 0}} onPress={() => posting.handle_asset_action(this.props.componentId)}>
+								{
+									Platform.OS === 'ios' ?
+										<SFSymbol
+											name={'photo'}
+											color={App.theme_text_color()}
+											style={{ height: 22, width: 22 }}
+											multicolor={true}
+										/>
+									: 						
+									<Image source={PhotoLibrary} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
+								}
+								</TouchableOpacity>
+							</>
 						}
 						<TouchableOpacity style={{minWidth: 35}} onPress={() => App.is_share_extension ? Share.handle_text_action("**") : posting.handle_text_action("**")}>
 							<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"**"}</Text>
@@ -118,6 +120,9 @@ export default class PostToolbar extends React.Component{
 						<TouchableOpacity style={{minWidth: 35}} onPress={() => App.is_share_extension ? Share.handle_text_action("[]") : posting.handle_text_action("[]")}>
 							<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"[ ]"}</Text>
 						</TouchableOpacity>
+						{/* <TouchableOpacity style={{minWidth: 35}} onPress={() => posting.toggle_title()}>
+							<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"T"}</Text>
+						</TouchableOpacity> */}
 						{
 							!this.props.is_post_edit && posting.selected_service?.config?.active_destination() != null && (posting.selected_service?.config?.destination?.length > 1 || (!posting.selected_service?.is_microblog && !App.is_share_extension)) ?
 							<TouchableOpacity style={{marginLeft: 8, marginRight: 8}} onPress={() => {!posting.selected_service?.is_microblog ? postOptionsSettingsScreen(App.is_share_extension ? Share.selected_user : Auth.selected_user, this.props.componentId) : App.toggle_select_destination()}}>

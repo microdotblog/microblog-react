@@ -1,9 +1,10 @@
 import { observer } from 'mobx-react'
 import * as React from 'react'
-import { ActivityIndicator, Button, Text, View, KeyboardAvoidingView } from 'react-native'
+import { ActivityIndicator, Button, Text, View } from 'react-native'
 import App from '../../stores/App'
 import Share from '../../stores/Share'
 import SharePostScreen from './post'
+import ShareImageOptionsScreen from './image_options'
 import ShareHeaderComponent from '../../components/share/header'
 
 @observer
@@ -29,26 +30,32 @@ export default class ShareScreen extends React.Component {
 						Share.is_logged_in() ?
 							<View style={{ position: "relative", flex: 1 }}>
 								<ShareHeaderComponent />
-								<SharePostScreen />
 								{
-									Share.selected_user?.posting.is_sending_post || Share.selected_user?.posting.is_adding_bookmark ?
-										<View 
-											style={{ 
-												position: 'absolute',
-												top: 0,
-												bottom:0,
-												width: '100%',
-												flex: 1,
-												justifyContent: 'center',
-												alignItems: 'center',
-												backgroundColor: App.theme_opacity_background_color(),
-												zIndex: 10
-											}} 
-										>
-											<ActivityIndicator color="#f80" size={'large'} />
-											<Text style={{ marginTop: 12, color: App.theme_text_color() }}>{ Share.selected_user?.posting.is_sending_post ? "Sending post..." : "Saving bookmark..." }</Text>
-										</View>
-									: null
+									Share.image_options_open ?
+									<ShareImageOptionsScreen asset={Share.selected_user?.posting?.post_assets[0]} />
+									:
+									<>
+									<SharePostScreen />
+									{
+										Share.selected_user?.posting.is_sending_post || Share.selected_user?.posting.is_adding_bookmark ?
+											<View 
+												style={{ 
+													position: 'absolute',
+													top: 0,
+													height: 200,
+													width: '100%',
+													flex: 1,
+													justifyContent: 'center',
+													alignItems: 'center',
+													zIndex: 10
+												}} 
+											>
+												<ActivityIndicator color="#f80" size={'large'} />
+												<Text style={{ marginTop: 12, color: App.theme_text_color() }}>{ Share.selected_user?.posting.is_sending_post ? "Sending post..." : "Saving bookmark..." }</Text>
+											</View>
+										: null
+									}
+									</>
 								}
 							</View>
 							:

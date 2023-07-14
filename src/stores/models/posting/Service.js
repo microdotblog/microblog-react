@@ -1,7 +1,7 @@
 import { types, flow } from 'mobx-state-tree'
 import Tokens from './../../Tokens'
-import MicroPubApi, { DELETE_ERROR } from './../../../api/MicroPubApi'
-import XMLRPCApi, { NO_AUTH, XML_ERROR } from '../../../api/XMLRPCApi'
+import MicroPubApi, { DELETE_ERROR, FETCH_ERROR } from './../../../api/MicroPubApi'
+import XMLRPCApi, { XML_ERROR } from '../../../api/XMLRPCApi'
 import Config from './Config'
 import { Alert } from 'react-native'
 import DocumentPicker from 'react-native-document-picker'
@@ -41,6 +41,7 @@ export default Service = types.model('Service', {
         }
         self.config = config
         self.config.hydrate_default_destination()
+        self.check_for_syndicate_to_targets()
         if(App.is_share_extension){
           self.check_for_categories()
         }
@@ -326,7 +327,19 @@ export default Service = types.model('Service', {
       }
     }
     return false
-  })
+  }),
+  
+  check_for_syndicate_to_targets: flow(function* () { 
+    if(self.config?.destination != null && self.config.destination.length > 0){
+      self.config.destination.forEach(async (dest) => {
+        const config = await MicroPubApi.get_syndicate_to(self.service_object(), dest.uid)
+        if(config !== FETCH_ERROR && config["syndicate-to"]?.length > 0){
+          console.log("check_for_syndicate_to_targets", config["syndicate-to"])
+          dest.set_syndicate_to_targets(config["syndicate-to"])
+        }
+      })
+    }
+  }),
   
 }))
 .views(self => ({
@@ -350,6 +363,10 @@ export default Service = types.model('Service', {
 
   description() {
     return self.name === "Micro.blog" ? "Micro.blog hosted blog" : "WordPress or compatible blog"
+  },
+  
+  active_destination(){
+    return self.config?.active_destination()
   }
   
 }))

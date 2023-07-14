@@ -5,8 +5,9 @@ import MicroBlogApi, { API_ERROR } from './../../api/MicroBlogApi';
 import App from './../../stores/App';
 import Hyperlink from 'react-native-hyperlink'
 import { followingScreen, profileMoreBottomSheet } from './../../screens/'
-import MoreIcon from './../../assets/icons/more.png'
+import MoreIconWhite from './../../assets/icons/more_white.png'
 import MoreIconHorizontal from './../../assets/icons/more_ios.png'
+import MoreIconHorizontalWhite from './../../assets/icons/more_ios_white.png'
 
 @observer
 export default class ProfileHeader extends React.Component{
@@ -62,7 +63,7 @@ export default class ProfileHeader extends React.Component{
     const short_bio = long_bio ? long_bio.slice(0, 90).replace(/\n/g, " ") : null
     const show_expand_option = long_bio?.length > short_bio?.length
     return(
-      <View style={{ padding: 8, backgroundColor: App.theme_button_background_color(), width: '100%' }}>
+      <View style={{ padding: 12, backgroundColor: App.theme_button_background_color(), width: '100%' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <TouchableOpacity onPress={() => App.set_image_modal_data_and_activate(`${profile.author.avatar}${!this.state.is_mastodon ? `?v=${App.now()}`: ""}`)}>
             <Image source={{ uri: `${profile.author.avatar}${!this.state.is_mastodon ? `?v=${App.now()}`: ""}` }} style={{ width: 50, height: 50, borderRadius: 50 }} />
@@ -87,14 +88,14 @@ export default class ProfileHeader extends React.Component{
                 onPress={this._toggle_more}
                 style={{
                   position: 'absolute',
-                  right: 0,
+                  right: 2,
                   top: 2,
                   padding: 2,
-                  backgroundColor: 'lightgray',
+                  backgroundColor: App.theme_profile_button_background_color(),
                   borderRadius: 50,
                 }}
               >
-                <Image source={ Platform.OS === 'ios' ? MoreIconHorizontal : MoreIcon} style={{ width: 24, height: 24 }} />
+                <Image source={ Platform.OS === 'ios' ? ( App.theme == "dark" ? MoreIconHorizontalWhite : MoreIconHorizontal ) : ( App.theme == "dark" ? MoreIconWhite : MoreIconHorizontalWhite )} style={{ width: 24, height: 24 }} />
               </TouchableOpacity>
             : null
           }
@@ -125,9 +126,7 @@ export default class ProfileHeader extends React.Component{
               position: 'absolute',
               right: 0,
               bottom: 5,
-              backgroundColor: App.theme_section_background_color(),
-              paddingHorizontal: 5,
-              borderRadius: 5
+              paddingHorizontal: 5
             }}
           >
             <Text style={{ fontWeight: '400', color: '#f80' }}>{more_expanded ? "Show less" : "Show more"}</Text>
@@ -140,23 +139,23 @@ export default class ProfileHeader extends React.Component{
           style={{ 
             borderTopWidth: .5,
             borderColor: App.theme_alt_background_div_color(), 
-            paddingTop: 8, 
+            paddingTop: 10, 
             marginTop: 8,
-            paddingBottom: 3,
+            paddingBottom: 0,
             justifyContent: 'space-between', 
             flexDirection: 'row',
             alignItems: 'center'
           }}>
           <TouchableOpacity style={{maxWidth: '80%'}} onPress={() => followingScreen(this.props.username, App.current_screen_id)}>
-            <Text style={{ fontWeight: '500', paddingVertical: 5, color: App.theme_text_color() }}>{profile._microblog.is_you ? `Following ${profile._microblog.following_count} users` : `Following ${profile._microblog.discover_count} users you're not following`}</Text>
+            <Text style={{ fontWeight: '500', paddingVertical: 5, color: App.theme_text_color() }}>{profile._microblog.is_you ? `Following ${profile._microblog.following_count} ${profile._microblog.following_count > 1 ? "users" : "user"}` : ( profile._microblog.discover_count == 0 ? "" : `Following ${profile._microblog.discover_count} ${profile._microblog.discover_count > 1 ? "users" : "user"} you're not following` )}</Text>
           </TouchableOpacity>
           {
             !profile._microblog.is_you ?
-            <TouchableOpacity onPress={this._toggle_follow} style={{marginRight: 5}}>
+            <TouchableOpacity onPress={this._toggle_follow} style={{marginRight: 2, paddingTop: 8, paddingBottom: 8, paddingLeft: 10, paddingRight: 10, borderRadius: 20, backgroundColor: App.theme_profile_button_background_color()}}>
               { this.state.is_toggling_follow ? 
                 <ActivityIndicator color="#f80" />
                 :
-                <Text style={{ fontWeight: '500', color: '#337ab7' }}>{profile._microblog.is_following ? 'Unfollow' : 'Follow'}</Text>
+                <Text style={{ fontWeight: '500', color: App.theme_profile_button_text_color() }}>{profile._microblog.is_following ? 'Unfollow' : 'Follow'}</Text>
               }
             </TouchableOpacity>
             : null

@@ -4,10 +4,13 @@ import App from '../stores/App'
 import Reply from '../stores/Reply'
 import Replies from '../stores/Replies'
 import { Screens, replyScreen } from './../screens';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 Object.entries(Screens).forEach(([ key, ScreenComponent ]) => {
   Navigation.registerComponent(key, () => (props) => (
-    <ScreenComponent {...props} />
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ScreenComponent {...props} />
+    </GestureHandlerRootView>
   ))
 })
 
