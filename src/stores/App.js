@@ -44,7 +44,9 @@ export default App = types.model('App', {
   found_users: types.optional(types.array(Contact), []),
   current_autocomplete: types.optional(types.string, ""),
   is_share_extension: types.optional(types.boolean, false),
-	toolbar_select_destination_open: types.optional(types.boolean, false)
+	toolbar_select_destination_open: types.optional(types.boolean, false),
+  post_search_is_open: types.optional(types.boolean, false),
+  page_search_is_open: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -614,6 +616,16 @@ export default App = types.model('App', {
   toggle_select_destination: flow(function* () {
     console.log("App:toggle_select_destination")
     self.toolbar_select_destination_open = !self.toolbar_select_destination_open
+  }),
+  
+  toggle_post_search_is_open: flow(function* () {
+    console.log("App:toggle_post_search_is_open")
+    
+  }),
+  
+  toggle_page_search_is_open: flow(function* () {
+    console.log("App:toggle_page_search_is_open")
+    
   }),
 
 }))

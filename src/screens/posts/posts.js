@@ -8,6 +8,8 @@ import { Navigation } from 'react-native-navigation';
 import PostCell from '../../components/cells/post_cell';
 import { postsDestinationBottomSheet } from '..'
 import { SheetProvider } from "react-native-actions-sheet";
+import SearchIcon from '../../assets/icons/nav/discover.png';
+import { SFSymbol } from "react-native-sfsymbols";
 
 @observer
 export default class PostsScreen extends React.Component{
@@ -38,6 +40,30 @@ export default class PostsScreen extends React.Component{
           <Text style={{color: App.theme_text_color(), fontWeight: "500", fontSize: 16}}>
             {config.posts_destination()?.name}
           </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            borderColor: App.theme_border_color(),
+            borderWidth: 2,
+            padding: 4,
+            paddingHorizontal: 6,
+            borderRadius: 5,
+            marginLeft: 5,
+          }}
+          onPress={App.toggle_post_search_is_open}
+        >
+        {
+          Platform.OS === "ios" ?
+          <SFSymbol
+            name={"magnifyingglass"}
+            color={App.theme_button_text_color()}
+            style={{ height: 18, width: 18 }}
+          />
+          :
+          <Image source={SearchIcon} style={{ height: 22, width: 22, tintColor: App.theme_button_text_color() }} />
+        }
         </TouchableOpacity>
       </View>
     )
