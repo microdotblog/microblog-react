@@ -46,7 +46,9 @@ export default App = types.model('App', {
   is_share_extension: types.optional(types.boolean, false),
 	toolbar_select_destination_open: types.optional(types.boolean, false),
   post_search_is_open: types.optional(types.boolean, false),
-  page_search_is_open: types.optional(types.boolean, false)
+  post_search_query: types.optional(types.string, ""),
+  page_search_is_open: types.optional(types.boolean, false),
+  page_search_query: types.optional(types.string, ""),
 })
 .actions(self => ({
 
@@ -620,12 +622,12 @@ export default App = types.model('App', {
   
   toggle_post_search_is_open: flow(function* () {
     console.log("App:toggle_post_search_is_open")
-    
+    self.post_search_is_open = !self.post_search_is_open
   }),
   
   toggle_page_search_is_open: flow(function* () {
     console.log("App:toggle_page_search_is_open")
-    
+    self.page_search_is_open = !self.page_search_is_open
   }),
 
 }))
