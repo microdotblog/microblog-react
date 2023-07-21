@@ -102,7 +102,7 @@ export default class PagesScreen extends React.Component{
       </TouchableOpacity>
       <TextInput
         placeholderTextColor="lightgrey"
-        placeholder={"Search for pages"}
+        placeholder={"Search pages"}
         returnKeyType={'search'}
         blurOnSubmit={true}
         autoFocus={true}

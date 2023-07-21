@@ -102,7 +102,7 @@ export default class PostsScreen extends React.Component{
       </TouchableOpacity>
       <TextInput
         placeholderTextColor="lightgrey"
-        placeholder={"Search for posts"}
+        placeholder={"Search posts"}
         returnKeyType={'search'}
         blurOnSubmit={true}
         autoFocus={true}
