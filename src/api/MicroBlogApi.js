@@ -356,6 +356,25 @@ class MicroBlogApi {
 			});
 		return push;
 	}
+	
+	async search_posts(query, destination = null) {
+		console.log('MicroBlogApi: search_posts', query, destination);
+		const push = axios
+			.get(`/micropub?q=source&mp-destination=${destination}&filter=${query}`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+			})
+			.then(response => {
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: search_posts', error);
+				return API_ERROR;
+			});
+		return push;
+	}
   
 }
 

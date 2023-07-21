@@ -122,9 +122,9 @@ export default class PostsScreen extends React.Component{
           minWidth: "85%",
           color: App.theme_text_color()
         }}
-        //onSubmitEditing={() => {Discover.trigger_search(); Keyboard.dismiss()}}
-        //onChangeText={(text) => Discover.set_search_query(text)}
-        //value={Discover.search_query}
+        //onSubmitEditing={() => {App.set_posts_query(); Keyboard.dismiss()}}
+        onChangeText={(text) => App.set_posts_query(text, config.posts_destination())}
+        value={App.post_search_query}
       />
       </View>
     )

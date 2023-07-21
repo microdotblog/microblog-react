@@ -47,8 +47,10 @@ export default App = types.model('App', {
 	toolbar_select_destination_open: types.optional(types.boolean, false),
   post_search_is_open: types.optional(types.boolean, false),
   post_search_query: types.optional(types.string, ""),
+  is_searching_posts: types.optional(types.boolean, false),
   page_search_is_open: types.optional(types.boolean, false),
   page_search_query: types.optional(types.string, ""),
+  is_searching_pages: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -629,6 +631,22 @@ export default App = types.model('App', {
     console.log("App:toggle_page_search_is_open")
     self.page_search_is_open = !self.page_search_is_open
   }),
+  
+  set_posts_query: flow(function* (text, destination) {
+    console.log("App:set_posts_query", text)
+    self.post_search_query = text
+    if(text?.length > 2){
+      self.is_searching_posts = true
+      const results = yield MicroBlogApi.search_posts(text, destination?.uid)
+      if(results !== API_ERROR && results.items != null){
+        destination.set_posts(results.items)
+      }
+      self.is_searching_posts = false
+    }
+    else if(self.post_search_query == ""){
+      Auth.selected_user.posting?.selected_service?.upate_posts_for_active_destination()
+    }
+  })
 
 }))
 .views(self => ({
