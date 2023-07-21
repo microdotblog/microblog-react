@@ -356,6 +356,25 @@ class MicroBlogApi {
 			});
 		return push;
 	}
+	
+	async search_posts_and_pages(query, destination = null, is_pages = false) {
+		console.log('MicroBlogApi: search_posts_and_pages', query, destination, is_pages);
+		const search = axios
+			.get(`/micropub?q=source&mp-destination=${destination}&filter=${query}${is_pages ? "&mp-channel=pages" : ""}`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+			})
+			.then(response => {
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: search_posts_and_pages', error);
+				return API_ERROR;
+			});
+		return search;
+	}	
   
 }
 
