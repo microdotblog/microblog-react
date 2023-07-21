@@ -133,8 +133,8 @@ class MicroPubApi {
 		return config;
 	}
 
-	async send_post(service, content, title = null, images = [], categories = [], status = null) {
-		console.log('MicroBlogApi:send_post', service, content, title, images, status);
+	async send_post(service, content, title = null, assets = [], categories = [], status = null, syndicate_to = null) {
+		console.log('MicroBlogApi:send_post', service, content, title, assets, status, syndicate_to);		
 		const params = new FormData()
 		params.append('h', 'entry')
 		params.append('content', content)
@@ -144,8 +144,8 @@ class MicroPubApi {
 		if (status) {
 			params.append('post-status', status)
 		}
-		if (images.length) {
-			const images_with_url = images.filter(image => image.remote_url !== null && image.did_upload)
+		if (assets.length) {
+			const images_with_url = assets.filter(asset => asset.remote_url !== null && asset.did_upload && !asset.is_video)
 			if (images_with_url) {
 				// Now that we have images, we can append them to our params
 				if (images_with_url.length === 1) {
@@ -164,6 +164,19 @@ class MicroPubApi {
 					})
 				}
 			}
+			const videos_with_url = assets.filter(asset => asset.remote_url !== null && asset.did_upload && asset.is_video)
+			if (videos_with_url) {
+				// Now that we have images, we can append them to our params
+				if (videos_with_url.length === 1) {
+					const first_asset = videos_with_url[0]
+					params.append('video', first_asset.remote_url)
+				}
+				else {
+					videos_with_url.map((video) => {
+						params.append('video[]', video.remote_url)
+					})
+				}
+			}
 		}
 		if (categories.length) {
 			categories.map((category) => {
@@ -171,8 +184,15 @@ class MicroPubApi {
 			})
 		}
 		params.append('mp-destination', service.destination)
+		if (syndicate_to != null && syndicate_to.length > 0){
+			syndicate_to.map((syndicate) => {
+				params.append('mp-syndicate-to[]', syndicate)
+			})
+		}
+		else if(syndicate_to != null && syndicate_to.length === 0){
+			params.append('mp-syndicate-to[]', "")
+		}
 		console.log("MicroBlogApi:send_post:FORM_DATA:PARAMS", params)
-		
 		const post = axios
 			.post(service.endpoint, params ,{
 				headers: { Authorization: `Bearer ${service.token}` }
@@ -215,15 +235,28 @@ class MicroPubApi {
 			});
 		return config;
 	}
+	
+	async get_syndicate_to(service, destination = null) {
+		console.log('MicroPubApi:get_syndicate_to');
+		const config = axios
+			.get(service.endpoint, {
+				headers: { Authorization: `Bearer ${service.token}` },
+				params: { q: "syndicate-to", "mp-destination": destination }
+			})
+			.then(response => {
+				return response.data;
+			})
+			.catch(error => {
+				console.log(error);
+				return FETCH_ERROR;
+			});
+		return config;
+	}
 
 	async upload_image(service, file) {
 		const data = new FormData();
-		var extension = ".jpg"
-		if (file.mime === "image/png") {
-			extension = ".png"
-		}
 		data.append("file", {
-			name: `image${extension}`,
+			name: `image${file.file_extension()}`,
 			type: file.type,
 			uri: file.uri
 		})

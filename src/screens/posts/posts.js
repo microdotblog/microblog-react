@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, FlatList, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
@@ -8,6 +8,8 @@ import { Navigation } from 'react-native-navigation';
 import PostCell from '../../components/cells/post_cell';
 import { postsDestinationBottomSheet } from '..'
 import { SheetProvider } from "react-native-actions-sheet";
+import SearchIcon from '../../assets/icons/nav/discover.png';
+import { SFSymbol } from "react-native-sfsymbols";
 
 @observer
 export default class PostsScreen extends React.Component{
@@ -24,6 +26,7 @@ export default class PostsScreen extends React.Component{
   _return_header = () => {
     const { config } = Auth.selected_user.posting.selected_service
     return(
+      !App.post_search_is_open ?
       <View
         style={{
           flexDirection: 'row',
@@ -39,6 +42,90 @@ export default class PostsScreen extends React.Component{
             {config.posts_destination()?.name}
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            borderColor: App.theme_border_color(),
+            borderWidth: 2,
+            padding: 4,
+            paddingHorizontal: 6,
+            borderRadius: 5,
+            marginLeft: 5,
+          }}
+          onPress={App.toggle_post_search_is_open}
+        >
+        {
+          Platform.OS === "ios" ?
+          <SFSymbol
+            name={"magnifyingglass"}
+            color={App.theme_button_text_color()}
+            style={{ height: 18, width: 18 }}
+          />
+          :
+          <Image source={SearchIcon} style={{ height: 22, width: 22, tintColor: App.theme_button_text_color() }} />
+        }
+        </TouchableOpacity>
+      </View>
+      :
+      <View style={{
+        paddingHorizontal: 8,
+        paddingVertical: 11,
+        width: '100%',
+        backgroundColor: App.theme_input_background_color(),
+        flexDirection: "row"
+      }}>
+      <TouchableOpacity
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          borderColor: App.theme_border_color(),
+          borderWidth: 2,
+          padding: 4,
+          borderRadius: 50,
+          marginRight: 8,
+          width: 28,
+          height: 28
+        }}
+        onPress={App.toggle_post_search_is_open}
+      >
+      {
+        Platform.OS === "ios" ?
+        <SFSymbol
+          name={"xmark"}
+          color={App.theme_button_text_color()}
+          style={{ height: 12, width: 12 }}
+        />
+        :
+        <Image source={SearchIcon} style={{ height: 22, width: 22, tintColor: App.theme_button_text_color() }} />
+      }
+      </TouchableOpacity>
+      <TextInput
+        placeholderTextColor="lightgrey"
+        placeholder={"Search posts"}
+        returnKeyType={'search'}
+        blurOnSubmit={true}
+        autoFocus={true}
+        autoCorrect={true}
+        autoCapitalize="none"
+        clearButtonMode={'while-editing'}
+        enablesReturnKeyAutomatically={true}
+        underlineColorAndroid={'transparent'}
+        style={{ 
+          backgroundColor: App.theme_button_background_color(), 
+          fontSize: 16,
+          borderColor: App.theme_border_color(), 
+          borderWidth: 1,
+          borderRadius: 15,
+          paddingHorizontal: 15,
+          paddingVertical: 4,
+          minWidth: "85%",
+          color: App.theme_text_color()
+        }}
+        onSubmitEditing={() => {Keyboard.dismiss()}}
+        onChangeText={(text) => App.set_posts_query(text, config.posts_destination())}
+        value={App.post_search_query}
+      />
       </View>
     )
   }

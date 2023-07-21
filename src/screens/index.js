@@ -760,20 +760,20 @@ export const helpScreen = () => {
   });
 }
 
-export const imageOptionsScreen = (image, index, component_id) => {
-  console.log("Screens:imageOptionsScreen", image, index, component_id);
+export const imageOptionsScreen = (asset, index, component_id) => {
+  console.log("Screens:imageOptionsScreen", asset, index, component_id);
   const options = {
     component: {
       id: IMAGE_OPTIONS_SCREEN,
       name: IMAGE_OPTIONS_SCREEN,
       passProps: {
-        image: image,
+        asset: asset,
         index: index
       },
       options: {
         topBar: {
           title: {
-            text: "Image options"
+            text: asset.is_video ? "Video options" : "Image options"
           },
         }
       }

@@ -183,11 +183,13 @@ class XMLRPCApi {
 		var params = []
 		const featured_image_id = images.length > 0 ? images[ 0 ]?.upload_id : null
 
-		if (images.length > 1) {
-			const image_markdown = images.map(image => `![${ image.alt_text ?? "" }](${ image.remote_url })`).join('\n')
-			content = `${content}\n\n${image_markdown}`
+		if (images.length > 0) {
+			const image_html = images.map(image => `<img src="${ image.remote_url }" alt="${ image.alt_text ?? "" }">`).join(" ")
+			content = `${content}\n\n${image_html}`
 		}
 
+		console.log("XMLRPCApi:send_post content", content)
+		
 		if (is_wordpress) {
 			// special params if WordPress
 			verb = "wp.newPost"

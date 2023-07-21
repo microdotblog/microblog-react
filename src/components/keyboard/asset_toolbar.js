@@ -27,8 +27,8 @@ export default class AssetToolbar extends React.Component{
           {
             posting.post_assets.map((asset, index) => (
               <TouchableOpacity
-                onPress={() => posting.image_option_screen(asset, index, this.props.componentId)}
-                key={asset.uri}
+                onPress={() => App.is_share_extension ? Share.trigger_image_options(asset) : posting.asset_option_screen(asset, index, this.props.componentId)}
+                key={`${asset.uri}-${index}`}
                 style={{
                   marginRight: 4,
                   position: 'relative',
@@ -37,7 +37,14 @@ export default class AssetToolbar extends React.Component{
                   width: 50,
                   height: 50
                 }}>
-                <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
+                {
+                  asset.is_video ?
+                  <>
+                    <Image source={{ uri: asset.remote_poster_url ? asset.remote_poster_url : asset.uri }} style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
+                  </>
+                  :
+                  <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
+                }
                 {
                   asset.is_uploading ?
                     <>

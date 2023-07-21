@@ -51,7 +51,7 @@ export default class PostEditScreen extends React.Component{
     return(
       <View style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
         {
-          posting.post_text_length() > posting.max_post_length() || posting.post_title ?
+          posting.should_show_title() ?
           <TextInput
             placeholder="Title"
             placeholderTextColor={App.theme_placeholder_text_color()}
@@ -138,11 +138,10 @@ export default class PostEditScreen extends React.Component{
             style={{ 
               position: 'absolute',
               top: 0,
-              bottom:0,
+              height: 200,
               width: '100%',
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: App.theme_opacity_background_color(),
               zIndex: 10
             }} 
           >

@@ -26,7 +26,7 @@ export default class PostingOptionsScreen extends React.Component{
 					<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
 						<TouchableOpacity
 							key={"published"}
-							style={{ padding: 8, marginBottom: 5, flexDirection: 'row', alignItems: 'center' }}
+							style={{ padding: 8, marginVertical: 2.5, flexDirection: 'row', alignItems: 'center' }}
 							onPress={() => {	
 								posting.handle_post_status_select("published")
 							}}
@@ -57,7 +57,7 @@ export default class PostingOptionsScreen extends React.Component{
 										key={category}
 										style={{
 											padding: 8,
-											marginBottom: 5,
+											marginVertical: 2.5,
 											flexDirection: 'row',
 											alignItems: 'center',
 										}}
@@ -71,6 +71,52 @@ export default class PostingOptionsScreen extends React.Component{
 							})
 						: <Text style={{ color: App.theme_button_text_color() }}>No categories to display</Text>
 					}
+					</View>
+				</View>
+				{/* Cross posting */}
+				<View style={{ marginBottom: 25 }}>
+					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>Cross-posting:</Text>
+					<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
+					{
+						posting.selected_service.active_destination()?.syndicates?.length ?
+							posting.selected_service.active_destination().syndicates.map((syndicate) => {
+								const is_selected = posting.post_syndicates.indexOf(syndicate.uid) > -1
+								return(
+									<TouchableOpacity
+										key={syndicate.uid}
+										style={{
+											padding: 8,
+											marginVertical: 2.5,
+											flexDirection: 'row',
+											alignItems: 'center',
+										}}
+										onPress={() => {
+											posting.handle_post_syndicates_select(syndicate.uid)
+										}}
+									>
+										<Text style={ is_selected ? { fontWeight: '500', color: App.theme_button_text_color() } : { color: App.theme_button_text_color() }}>{syndicate.name} { is_selected ? <Image source={CheckmarkIcon} style={{ width: 12, height: 12, tintColor: App.theme_button_text_color() }} /> : null }</Text>
+									</TouchableOpacity>
+								)
+							})
+						: <Text style={{ color: App.theme_button_text_color() }}>No cross-posting options to display</Text>
+					}
+					</View>
+				</View>
+				{/* Other options */}
+				<View style={{ marginBottom: 25 }}>
+					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>View:</Text>
+					<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
+						<TouchableOpacity
+							style={{
+								padding: 8,
+								marginVertical: 2.5,
+								flexDirection: 'row',
+								alignItems: 'center',
+							}}
+							onPress={posting.toggle_title}
+						>
+							<Text style={ posting.show_title ? { fontWeight: '500', color: App.theme_button_text_color() } : { color: App.theme_button_text_color() }}>Show title field { posting.show_title ? <Image source={CheckmarkIcon} style={{ width: 12, height: 12, tintColor: App.theme_button_text_color() }} /> : null }</Text>
+						</TouchableOpacity>
 					</View>
 				</View>
       </ScrollView>

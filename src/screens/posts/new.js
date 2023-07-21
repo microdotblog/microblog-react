@@ -21,6 +21,7 @@ export default class PostingScreen extends React.Component{
   componentDidMount() {
     if (Auth.selected_user.posting.selected_service != null) {
       Auth.selected_user.posting.selected_service.check_for_categories()
+      Auth.selected_user.posting.reset_post_syndicates()
     }
   }
   
@@ -66,7 +67,7 @@ export default class PostingScreen extends React.Component{
     return(
       <View style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
         {
-          posting.post_text_length() > posting.max_post_length() || posting.post_title ?
+          posting.should_show_title() ?
           <TextInput
             placeholder="Title"
             placeholderTextColor={App.theme_placeholder_text_color()}
@@ -184,17 +185,16 @@ export default class PostingScreen extends React.Component{
             <PostToolbar componentId={this.props.componentId} />
           </>
         }
-        {
+        {          
           posting.is_sending_post ?
           <View 
             style={{ 
               position: 'absolute',
               top: 0,
-              bottom:0,
+              height: 200,
               width: '100%',
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: App.theme_opacity_background_color(),
               zIndex: 10
             }} 
           >
