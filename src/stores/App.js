@@ -44,13 +44,7 @@ export default App = types.model('App', {
   found_users: types.optional(types.array(Contact), []),
   current_autocomplete: types.optional(types.string, ""),
   is_share_extension: types.optional(types.boolean, false),
-	toolbar_select_destination_open: types.optional(types.boolean, false),
-  post_search_is_open: types.optional(types.boolean, false),
-  post_search_query: types.optional(types.string, ""),
-  is_searching_posts: types.optional(types.boolean, false),
-  page_search_is_open: types.optional(types.boolean, false),
-  page_search_query: types.optional(types.string, ""),
-  is_searching_pages: types.optional(types.boolean, false)
+	toolbar_select_destination_open: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -621,48 +615,6 @@ export default App = types.model('App', {
     console.log("App:toggle_select_destination")
     self.toolbar_select_destination_open = !self.toolbar_select_destination_open
   }),
-  
-  toggle_post_search_is_open: flow(function* () {
-    console.log("App:toggle_post_search_is_open")
-    self.post_search_is_open = !self.post_search_is_open
-  }),
-  
-  toggle_page_search_is_open: flow(function* () {
-    console.log("App:toggle_page_search_is_open")
-    self.page_search_is_open = !self.page_search_is_open
-  }),
-  
-  set_posts_query: flow(function* (text, destination) {
-    console.log("App:set_posts_query", text)
-    self.post_search_query = text
-    if(text?.length > 2){
-      self.is_searching_posts = true
-      const results = yield MicroBlogApi.search_posts_and_pages(text, destination?.uid, false)
-      if(results !== API_ERROR && results.items != null){
-        destination.set_posts(results.items)
-      }
-      self.is_searching_posts = false
-    }
-    else if(self.post_search_query == ""){
-      Auth.selected_user.posting?.selected_service?.upate_posts_for_active_destination()
-    }
-  }),
-  
-  set_pages_query: flow(function* (text, destination) {
-    console.log("App:set_pages_query", text)
-    self.page_search_query = text
-    if(text?.length > 2){
-      self.is_searching_pages = true
-      const results = yield MicroBlogApi.search_posts_and_pages(text, destination?.uid, true)
-      if(results !== API_ERROR && results.items != null){
-        destination.set_pages(results.items)
-      }
-      self.is_searching_pages = false
-    }
-    else if(self.page_search_query == ""){
-      Auth.selected_user.posting?.selected_service?.upate_pages_for_active_destination()
-    }
-  })
 
 }))
 .views(self => ({
