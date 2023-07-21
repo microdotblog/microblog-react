@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
@@ -122,9 +122,9 @@ export default class PagesScreen extends React.Component{
           minWidth: "85%",
           color: App.theme_text_color()
         }}
-        //onSubmitEditing={() => {Discover.trigger_search(); Keyboard.dismiss()}}
-        //onChangeText={(text) => Discover.set_search_query(text)}
-        //value={Discover.search_query}
+        onSubmitEditing={() => {Keyboard.dismiss()}}
+        onChangeText={(text) => App.set_pages_query(text, config.posts_destination())}
+        value={App.page_search_query}
       />
       </View>
     )

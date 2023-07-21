@@ -637,7 +637,7 @@ export default App = types.model('App', {
     self.post_search_query = text
     if(text?.length > 2){
       self.is_searching_posts = true
-      const results = yield MicroBlogApi.search_posts(text, destination?.uid)
+      const results = yield MicroBlogApi.search_posts_and_pages(text, destination?.uid, false)
       if(results !== API_ERROR && results.items != null){
         destination.set_posts(results.items)
       }
@@ -645,6 +645,22 @@ export default App = types.model('App', {
     }
     else if(self.post_search_query == ""){
       Auth.selected_user.posting?.selected_service?.upate_posts_for_active_destination()
+    }
+  }),
+  
+  set_pages_query: flow(function* (text, destination) {
+    console.log("App:set_pages_query", text)
+    self.page_search_query = text
+    if(text?.length > 2){
+      self.is_searching_pages = true
+      const results = yield MicroBlogApi.search_posts_and_pages(text, destination?.uid, true)
+      if(results !== API_ERROR && results.items != null){
+        destination.set_pages(results.items)
+      }
+      self.is_searching_pages = false
+    }
+    else if(self.page_search_query == ""){
+      Auth.selected_user.posting?.selected_service?.upate_pages_for_active_destination()
     }
   })
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
@@ -122,7 +122,7 @@ export default class PostsScreen extends React.Component{
           minWidth: "85%",
           color: App.theme_text_color()
         }}
-        //onSubmitEditing={() => {App.set_posts_query(); Keyboard.dismiss()}}
+        onSubmitEditing={() => {Keyboard.dismiss()}}
         onChangeText={(text) => App.set_posts_query(text, config.posts_destination())}
         value={App.post_search_query}
       />
