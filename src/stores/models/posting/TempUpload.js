@@ -26,8 +26,8 @@ export default TempUpload = types.model('TempUpload', {
 			console.log("TempUpload:upload", response)
 			if (response !== POST_ERROR) {
 				self.did_upload = true
-				if(response.url) {
-					self.url = response.url
+				if(response.headers.location || response.data.url) {
+					self.url = response.headers.location || response.data.url
 					//self.copy_link_to_clipboard()
 				}
 			}

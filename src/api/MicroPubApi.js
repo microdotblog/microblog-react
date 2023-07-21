@@ -276,7 +276,7 @@ class MicroPubApi {
 			})
 			.then(response => {
 				console.log('MicroPubApi:upload_image:response', response);
-				return response.data;
+				return response;
 			})
 			.catch(error => {
 				console.log(error.response);
@@ -313,7 +313,7 @@ class MicroPubApi {
 			})
 			.then(response => {
 				console.log('MicroPubApi:upload_media:response', response)
-				return response.data
+				return response
 			})
 			.catch(error => {
 				console.log(error.response)

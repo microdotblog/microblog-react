@@ -29,7 +29,7 @@ export default MediaAsset = types.model('MediaAsset', {
 			const response = yield MicroPubApi.upload_image(service_object, self)
 			console.log("MediaAsset:upload", response)
 			if (response !== POST_ERROR) {
-				self.remote_url = response.url
+				self.remote_url = response.headers.location || response.data.url
 				if(response.poster){
 					self.remote_poster_url = response.poster
 				}
