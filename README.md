@@ -1,24 +1,27 @@
-# Micro.blog React Native App 
+# Micro.blog React Native App
 
 Welcome to the React Native app for Micro.blog. Here are some things to get started:
 
-## Install & Run the project
+## Install and run the project
 
 In the main root of this repo, run `yarn` or `npm install`. Yarn is preferred as the lock file will always be respected and the app will run the exact same package versions.
 
-### Running on Android:
+### Running on Android
+
 Note that you need to have a working installation of Android Studio and an enabled emulator. You can download it [here](https://developer.android.com/studio/).
 
 Once your packages have been installed using the above command, you can open up the project in Android Studio. Once Gradle has finished doing what it needs to, "Run" the app in your emulator and/or real device.
 
 Alternatively you can run `yarn android` which will do all the steps above without having to open Android Studio.
 
-### Running on iOS:
+### Running on iOS
+
 Before running the app on iOS, you will need to install pod files via `cocoapods`. Navigate to `./ios` and run `pod install`.
 
 Afterwards, open Xcode and run the app. You may need to sign the app. Alternatively you can run `yarn ios`.
 
-### Running the app after installing on the simulators:
+### Running the app after installing on the simulators
+
 You can simply start the development server (Metro), used for getting code to the development app, by running `yarn start`. Then simply open the app on your simulator of choice.
 
 ## Android Push Notifications
@@ -33,7 +36,8 @@ To test notifications, use the following "data" within the message:
 iOS requires correct signing & capabilities in order to allow push notifications. Please check relevant Apple documentation to enable this.
 
 To test notifications with the iOS simulator, you can use an app like [Sim Genie](https://simgenie.app). Here is an example payload:
-```
+
+```json
 {
 	"aps" : {
 		"alert" : {
