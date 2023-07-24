@@ -31,6 +31,12 @@ You can simply start the development server (Metro), used for getting code to th
 >
 > This basically adds a reverse proxy to the bundler. You can do this multiple times with different port numbers as needed. For example you might want to use a different port number when loading a local web view, web app or service that you want to access on the device.
 
+## Logging into the app
+
+Sign into the app the same as you would normally. Upon receiving a sign-in email, copy the sign-in link then open the web browser in the simulator and paste the URL into the location field.
+
+Alternatively, sign in using an app token. You can [generate an app token for your account on the Micro.blog website](https://micro.blog/account/apps).
+
 ## Push notifications
 
 ### Push notifications on Android
