@@ -69,6 +69,7 @@ export default Auth = types.model('Auth', {
     self.selected_user = user
     if (self.selected_user.posting.selected_service != null) {
       user.posting.selected_service.hydrate()
+      user.fetch_highlights()
       menuBottomSheet(true)
     }
     self.is_selecting_user = false

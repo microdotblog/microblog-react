@@ -5,8 +5,8 @@ import Auth from './../../stores/Auth';
 import { Navigation } from 'react-native-navigation';
 import { addBoomarkScreen } from '..'
 import GenericScreenComponent from '../../components/generic/generic_screen'
-import { theme_options } from '../../utils/navigation'
 import AddIcon from './../../assets/icons/add.png';
+import HighlightsHeader from '../../components/bookmarks/highlights';
 
 @observer
 export default class BookmarksScreen extends React.Component{
@@ -44,6 +44,11 @@ export default class BookmarksScreen extends React.Component{
 
   render() {
     return (
+      <>
+      {
+        Auth.is_logged_in() && Auth.selected_user?.bookmark_highlights?.length > 0 &&
+        <HighlightsHeader />
+      }
       <GenericScreenComponent
         can_show_web_view={Auth.is_logged_in() && !Auth.is_selecting_user && !App.should_reload_web_view()}
         endpoint="hybrid/favorites"
@@ -51,6 +56,7 @@ export default class BookmarksScreen extends React.Component{
         title="Bookmarks"
         loading_text="Loading bookmarks..."
       />
+      </>
     )
   }
 

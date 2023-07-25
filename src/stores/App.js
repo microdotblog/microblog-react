@@ -50,7 +50,8 @@ export default App = types.model('App', {
   is_searching_posts: types.optional(types.boolean, false),
   page_search_is_open: types.optional(types.boolean, false),
   page_search_query: types.optional(types.string, ""),
-  is_searching_pages: types.optional(types.boolean, false)
+  is_searching_pages: types.optional(types.boolean, false),
+  is_loading_highlights: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
