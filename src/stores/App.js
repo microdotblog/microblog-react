@@ -663,7 +663,12 @@ export default App = types.model('App', {
     else if(self.page_search_query == ""){
       Auth.selected_user.posting?.selected_service?.upate_pages_for_active_destination()
     }
-  })
+  }),
+  
+  set_is_loading_highlights: flow(function* (loading) {
+    console.log("App:set_is_loading_highlights", loading)
+    self.is_loading_highlights = loading
+  }),
 
 }))
 .views(self => ({

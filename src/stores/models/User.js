@@ -91,10 +91,12 @@ export default User = types.model('User', {
     
     fetch_highlights: flow(function* () {
       console.log("User:fetch_highlights")
+      App.set_is_loading_highlights(true)
       const highlights = yield MicroBlogApi.bookmark_highlights()
       if(highlights !== API_ERROR && highlights.items){
         self.bookmark_highlights = highlights.items
       }
+      App.set_is_loading_highlights(false)
       console.log("User:fetch_highlights:count", self.bookmark_highlights.length)
     })
     
