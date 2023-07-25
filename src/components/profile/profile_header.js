@@ -169,7 +169,7 @@ export default class ProfileHeader extends React.Component{
     const { loading, profile } = this.state
     if(loading){
       return(
-        <View style={{ backgroundColor: App.theme_section_background_color(), padding: 8, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+        <View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
           <ActivityIndicator color="#f80" />
         </View>
       )
@@ -178,7 +178,7 @@ export default class ProfileHeader extends React.Component{
       return this._render_profile()
     }
     return(
-      <View style={{ padding: 8, backgroundColor: App.theme_section_background_color(), width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ padding: 8, backgroundColor: App.theme_button_background_color(), width: '100%', justifyContent: 'center', alignItems: 'center' }}>
         <Text style={{color: App.theme_text_color()}}>An error occured loading the user profile.</Text>
       </View>
     )
