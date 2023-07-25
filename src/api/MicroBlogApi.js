@@ -374,7 +374,26 @@ class MicroBlogApi {
 				return API_ERROR;
 			});
 		return search;
-	}	
+	}
+	
+	async bookmark_highlights() {
+		console.log('MicroBlogApi: bookmark_highlights');
+		const highlights = axios
+			.get(`/posts/bookmarks/highlights`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+			})
+			.then(response => {
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: bookmark_highlights', error);
+				return API_ERROR;
+			});
+		return highlights;
+	}
   
 }
 

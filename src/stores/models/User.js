@@ -5,7 +5,8 @@ import FastImage from 'react-native-fast-image';
 import Muting from './Muting'
 import Push from '../Push'
 import App from '../App'
-import MicroBlogApi from '../../api/MicroBlogApi';
+import MicroBlogApi, { API_ERROR } from '../../api/MicroBlogApi';
+import Highlight from './Highlight';
 
 export default User = types.model('User', {
     username: types.identifier,
@@ -17,7 +18,8 @@ export default User = types.model('User', {
     muting: types.maybeNull(Muting),
     push_enabled: types.optional(types.boolean, false),
     toggling_push: types.optional(types.boolean, false),
-    did_complete_auto_register_push: types.optional(types.boolean, false)
+    did_complete_auto_register_push: types.optional(types.boolean, false),
+    bookmark_highlights: types.optional(types.array(Highlight), [])
   })
   .actions(self => ({
 
@@ -46,6 +48,7 @@ export default User = types.model('User', {
           }
         }
         self.update_avatar()
+        self.fetch_highlights()
       }
       self.toggling_push = false
     }),
@@ -84,6 +87,15 @@ export default User = types.model('User', {
       if(user_data && user_data?.avatar){
         self.avatar = user_data.avatar
       }
+    }),
+    
+    fetch_highlights: flow(function* () {
+      console.log("User:fetch_highlights")
+      const highlights = yield MicroBlogApi.bookmark_highlights()
+      if(highlights !== API_ERROR && highlights.items){
+        self.bookmark_highlights = highlights.items
+      }
+      console.log("User:fetch_highlights:count", self.bookmark_highlights.length)
     })
     
   }))
