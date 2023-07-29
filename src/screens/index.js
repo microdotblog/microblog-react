@@ -91,10 +91,12 @@ import SheetMenu from './../components/sheets/menu';
 import ProfileMoreMenu from "./../components/sheets/profile_more"
 import TagmojiMenu from "../components/sheets/tagmoji";
 import PostsDestinationMenu from "../components/sheets/posts_destination";
+import TagsMenu from "../components/sheets/tags";
 registerSheet("main_sheet", SheetMenu);
 registerSheet("profile_more_menu", ProfileMoreMenu);
 registerSheet("tagmoji_menu", TagmojiMenu);
 registerSheet("posts_destination_menu", PostsDestinationMenu);
+registerSheet("tags_menu", TagsMenu)
 
 import Push from "../stores/Push"
 import { theme_options } from "../utils/navigation"
@@ -1178,4 +1180,11 @@ export const highlightsScreen = (component_id) => {
   };
 
   return Navigation.push(component_id, options);
+}
+
+export const tagsBottomSheet = (close = false) => {
+  if(!close){
+    return SheetManager.show("tags_menu")
+  }
+  SheetManager.hide("tags_menu")
 }
