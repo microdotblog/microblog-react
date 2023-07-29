@@ -19,7 +19,8 @@ export default User = types.model('User', {
     push_enabled: types.optional(types.boolean, false),
     toggling_push: types.optional(types.boolean, false),
     did_complete_auto_register_push: types.optional(types.boolean, false),
-    bookmark_highlights: types.optional(types.array(Highlight), [])
+    bookmark_highlights: types.optional(types.array(Highlight), []),
+    bookmark_tags: types.optional(types.array(types.string), [])
   })
   .actions(self => ({
 
@@ -49,6 +50,7 @@ export default User = types.model('User', {
         }
         self.update_avatar()
         self.fetch_highlights()
+        self.fetch_tags()
       }
       self.toggling_push = false
     }),
@@ -98,6 +100,17 @@ export default User = types.model('User', {
       }
       App.set_is_loading_highlights(false)
       console.log("User:fetch_highlights:count", self.bookmark_highlights.length)
+    }),
+    
+    fetch_tags: flow(function* () {
+      console.log("User:fetch_tags")
+      App.set_is_loading_highlights(true)
+      const tags = yield MicroBlogApi.bookmark_tags()
+      if(tags !== API_ERROR && tags.items){
+        //self.bookmark_tags = highlights.items
+      }
+      App.set_is_loading_highlights(false)
+      console.log("User:fetch_tags:count", self.bookmark_tags.length)
     })
     
   }))

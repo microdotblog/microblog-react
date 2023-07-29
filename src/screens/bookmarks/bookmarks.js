@@ -42,6 +42,7 @@ export default class BookmarksScreen extends React.Component{
     Navigation.mergeOptions(this.props.componentId, BookmarksScreen.options);
     if(Auth.is_logged_in() && Auth.selected_user != null){
       Auth.selected_user.fetch_highlights()
+      Auth.selected_user.fetch_tags()
     }
   }
 

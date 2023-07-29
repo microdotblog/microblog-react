@@ -394,6 +394,25 @@ class MicroBlogApi {
 			});
 		return highlights;
 	}
+	
+	async bookmark_tags() {
+		console.log('MicroBlogApi: bookmark_tags');
+		const data = axios
+			.get(`/posts/bookmarks/tags`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+			})
+			.then(response => {
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: bookmark_tags', error);
+				return API_ERROR;
+			});
+		return data;
+	}
   
 }
 
