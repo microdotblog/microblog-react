@@ -32,6 +32,7 @@ import PagesScreen from "./pages/pages"
 import EditPageScreen from "./pages/edit"
 import UploadsScreen from "./uploads/uploads";
 import PostOptionsSettingsScreen from "./settings/post_options";
+import HighlightsScreen from "./bookmarks/highlights";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -60,6 +61,7 @@ export const PAGES_SCREEN = 'microblog.PagesScreen';
 export const EDIT_PAGE_SCREEN = 'microblog.EditPageScreen';
 export const UPLOADS_SCREEN = 'microblog.UploadsScreen';
 export const POST_OPTIONS_SETTINGS_SCREEN = 'microblog.modal.PostOptionsSettingsScreen';
+export const HIGHLIGHTS_SCREEN = 'microblog.HighlightsScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -128,6 +130,7 @@ export const Screens = {
   [ EDIT_PAGE_SCREEN ]: EditPageScreen,
   [ UPLOADS_SCREEN ]: UploadsScreen,
   [ POST_OPTIONS_SETTINGS_SCREEN ]: PostOptionsSettingsScreen,
+  [ HIGHLIGHTS_SCREEN ]: HighlightsScreen,
   // COMPONENTS
   [ PROFILE_IMAGE ]: ProfileImage,
   [ NEW_POST_BUTTON ]: NewPostButton,
@@ -1144,4 +1147,35 @@ export const postOptionsSettingsScreen = async (user, component_id, open_as_moda
   else{
     return Navigation.push(component_id, component);
   }
+}
+
+export const highlightsScreen = (component_id) => {
+  component_id = component_id ?? App.current_screen_id
+  const options = {
+    component: {
+      id: HIGHLIGHTS_SCREEN,
+      name: HIGHLIGHTS_SCREEN,
+      options: {
+        topBar: {
+          title: {
+            text: "Highlights"
+          },
+          rightButtons: [
+            {
+              id: 'refresh_indicator',
+              text: 'refresh',
+              component: {
+                name: REFRESH_ACTIVITY,
+                passProps: {
+                  type: "highlights"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  };
+
+  return Navigation.push(component_id, options);
 }

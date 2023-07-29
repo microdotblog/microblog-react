@@ -20,6 +20,9 @@ export default class RefreshActivity extends React.Component{
       case "uploads":
         is_loading = Auth.selected_user.posting.selected_service.is_loading_uploads
         break;
+      case "highlights":
+        is_loading = App.is_loading_highlights
+        break;
       default:
       is_loading = Replies.is_loading
     }
