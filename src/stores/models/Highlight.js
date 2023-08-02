@@ -7,3 +7,9 @@ export default Highlight = types.model('Highlight', {
   url: types.maybe(types.string),
   date_published: types.maybe(types.string),
 })
+.views(self => ({
+  nice_local_published_date(){
+    const date = new Date(self.date_published);
+    return date.toLocaleString();
+  },
+}))
