@@ -2,7 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import App from '../../stores/App'
-import { editPageScreen } from '../../screens';
+//import { editPageScreen } from '../../screens';
 
 @observer
 export default class PostCell extends React.Component{
@@ -20,8 +20,12 @@ export default class PostCell extends React.Component{
         //onPress={() => editPageScreen(page)}
       >
         {
+          highlight.content_text && 
+          <Text style={{color: App.theme_text_color(), fontSize: 15}}>{highlight.content_text}</Text>
+        }
+        {
           highlight.title &&
-          <Text style={{color: App.theme_text_color(), fontSize: 16, fontWeight: "700", marginBottom: 15}}>{highlight.title}</Text>
+          <Text style={{color: App.theme_text_color(), fontSize: 15, fontWeight: "300", marginTop: 15}}>{highlight.title}</Text>
         }
         <View
           style={{
