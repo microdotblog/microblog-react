@@ -25,7 +25,7 @@ export default class PostCell extends React.Component{
         }
         {
           highlight.title &&
-          <Text style={{color: App.theme_text_color(), fontSize: 15, fontWeight: "300", marginTop: 15}}>{highlight.title}</Text>
+          <Text style={{color: App.theme_text_color(), fontSize: 15, fontWeight: "300", marginTop: 15}}>{highlight.hostname()}: {highlight.title}</Text>
         }
         <View
           style={{

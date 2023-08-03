@@ -1,4 +1,5 @@
 import { types } from 'mobx-state-tree';
+import { URL } from 'react-native-url-polyfill';
 
 export default Highlight = types.model('Highlight', {
   id: types.identifierNumber,
@@ -12,4 +13,7 @@ export default Highlight = types.model('Highlight', {
     const date = new Date(self.date_published);
     return date.toLocaleString();
   },
+  hostname(){
+    return new URL(self.url).host
+  }
 }))
