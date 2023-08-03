@@ -549,8 +549,11 @@ export const followingScreen = (username, component_id) => {
   return Navigation.push(component_id, options);
 }
 
-export const postingScreen = () => {
+export const postingScreen = (markdown = null) => {
   const { post_status } = Auth.selected_user?.posting
+  if(markdown != null){
+    Auth.selected_user?.posting.hydrate_post_with_markdown(markdown)
+  }
   return Navigation.showModal({
     stack: {
       id: POSTING_STACK,

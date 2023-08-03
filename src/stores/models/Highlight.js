@@ -15,5 +15,11 @@ export default Highlight = types.model('Highlight', {
   },
   hostname(){
     return new URL(self.url).host
+  },
+  markdown(){
+    return `[${self.title}](${self.url})
+
+> ${self.content_text}
+`
   }
 }))

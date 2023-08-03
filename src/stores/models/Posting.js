@@ -93,6 +93,11 @@ export default Posting = types.model('Posting', {
     self.post_url = page.url
   }),
   
+  hydrate_post_with_markdown: flow(function* (markdown) {
+    console.log("hydrate_post_with_markdown", markdown)
+    self.post_text = markdown
+  }),
+  
   afterCreate: flow(function* () {
     self.hydrate()
   }),

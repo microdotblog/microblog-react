@@ -2,7 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import App from '../../stores/App'
-//import { editPageScreen } from '../../screens';
+import { postingScreen } from '../../screens';
 
 @observer
 export default class PostCell extends React.Component{
@@ -17,7 +17,7 @@ export default class PostCell extends React.Component{
           borderBottomWidth: .5,
           backgroundColor: App.theme_highlight_background_color()
         }}
-        //onPress={() => editPageScreen(page)}
+        onPress={() => postingScreen(highlight.markdown())}
       >
         {
           highlight.content_text && 
