@@ -13,19 +13,19 @@ export default class PostCell extends React.Component{
       <TouchableOpacity
         style={{
           padding: 15,
-          borderColor: App.theme_alt_background_div_color(),
+          borderColor: App.theme_highlight_border_color(),
           borderBottomWidth: .5,
-          backgroundColor: App.theme_background_color_secondary()
+          backgroundColor: App.theme_highlight_background_color()
         }}
         //onPress={() => editPageScreen(page)}
       >
         {
           highlight.content_text && 
-          <Text style={{color: App.theme_text_color(), fontSize: 15}}>{highlight.content_text}</Text>
+          <Text style={{color: "#000", fontSize: 15}}>{highlight.content_text}</Text>
         }
         {
           highlight.title &&
-          <Text style={{color: App.theme_text_color(), fontSize: 15, fontWeight: "300", marginTop: 15}}>{highlight.hostname()}: {highlight.title}</Text>
+          <Text style={{color: App.theme_highlight_meta_text_color(), fontSize: 15, marginTop: 15}}>{highlight.hostname()}: {highlight.title}</Text>
         }
         <View
           style={{
@@ -35,7 +35,7 @@ export default class PostCell extends React.Component{
           }}
         >
           <TouchableOpacity onPress={() => App.handle_url_from_webview(highlight.url)}>
-            <Text style={{color: "gray", fontSize: 12}}>
+            <Text style={{color: App.theme_highlight_meta_text_color(), fontSize: 12}}>
             {highlight.nice_local_published_date()}
             </Text>
           </TouchableOpacity>
