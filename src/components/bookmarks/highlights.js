@@ -19,7 +19,7 @@ export default class HighlightsHeader extends React.Component{
           }
         </TouchableOpacity>
         {
-          Auth.selected_user.bookmark_tags.length > 0 &&
+          Auth.selected_user.bookmark_tags.length > 0 && false &&
           <TouchableOpacity
             style={{
               borderColor: App.theme_border_color(),
