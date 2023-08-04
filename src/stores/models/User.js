@@ -5,7 +5,7 @@ import FastImage from 'react-native-fast-image';
 import Muting from './Muting'
 import Push from '../Push'
 import App from '../App'
-import MicroBlogApi, { API_ERROR } from '../../api/MicroBlogApi';
+import MicroBlogApi, { API_ERROR, DELETE_ERROR } from '../../api/MicroBlogApi';
 import Highlight from './Highlight';
 
 export default User = types.model('User', {
@@ -100,6 +100,16 @@ export default User = types.model('User', {
       }
       App.set_is_loading_highlights(false)
       console.log("User:fetch_highlights:count", self.bookmark_highlights.length)
+    }),
+    
+    delete_highlight: flow(function* (highlight_id) {
+      console.log("User:delete_highlight", highlight_id)
+      App.set_is_loading_highlights(true)
+      const deleted = yield MicroBlogApi.delete_highlight(highlight_id)
+      if(deleted !== DELETE_ERROR){
+        self.fetch_highlights()
+      }
+      App.set_is_loading_highlights(false)
     }),
     
     fetch_tags: flow(function* () {

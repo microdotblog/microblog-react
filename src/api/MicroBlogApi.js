@@ -395,6 +395,22 @@ class MicroBlogApi {
 		return highlights;
 	}
 	
+	async delete_highlight(id) {
+		console.log('MicroBlogApi:delete_highlight', id);
+		const data = axios
+			.delete(`/posts/bookmarks/highlights/${id}`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` }
+			})
+			.then(response => {
+				return response.data;
+			})
+			.catch(error => {
+				console.log(error);
+				return DELETE_ERROR;
+			});
+		return data;
+	}
+	
 	async bookmark_tags() {
 		console.log('MicroBlogApi: bookmark_tags');
 		const data = axios

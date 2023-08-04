@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity, Animated, Platform } from 'react-native';
 import App from '../../stores/App'
+import Auth from '../../stores/Auth';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { RectButton } from 'react-native-gesture-handler';
 import { SvgXml } from 'react-native-svg';
@@ -33,7 +34,8 @@ export default class HighlightCell extends React.Component{
   )
   
   _trigger_delete = () => {
-   console.log("Trigger DELETE")
+    console.log("Trigger DELETE", this.props.highlight)
+    Auth.selected_user?.delete_highlight(this.props.highlight?.id)
   }
   
   _return_action = (text, color, x, progress, icon, item, stroke = "#fff") => {
