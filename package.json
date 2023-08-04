@@ -58,6 +58,7 @@
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
     "@react-native-community/eslint-config": "^3.0.0",
+    "@react-native/metro-config": "^0.72.9",
     "@rnx-kit/align-deps": "^2.1.1",
     "@tsconfig/react-native": "^2.0.2",
     "@types/jest": "^29.2.1",
