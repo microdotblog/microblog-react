@@ -354,7 +354,7 @@ export default App = types.model('App', {
       else if (parts?.length >= 4) {
         App.open_url(url)
       }
-      else if (parts?.length === 1 && parts[0] === "summer"){
+      else if (parts?.length === 1 && (parts[0] === "summer" || parts[0] === "about")){
         App.open_url(url)
       }
       else {
