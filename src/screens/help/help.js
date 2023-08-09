@@ -90,7 +90,7 @@ export default class HelpScreen extends React.Component{
 						</TouchableOpacity>
 					</View>
 				</View>
-				<View style={{ marginTop: 45, paddingTop: 15, borderColor: App.theme_border_color(), borderTopWidth: 1 }}>
+				<View style={{ marginTop: 25, paddingTop: 25, borderColor: App.theme_border_color(), borderTopWidth: 1 }}>
 					<Text style={{color: App.theme_text_color()}}>Micro.blog is a small team trying to make the web a little better.</Text>
 					<View
 						style={{
