@@ -35,7 +35,7 @@ export default class TagmojiBar extends React.Component{
                 <TouchableOpacity
                   style={{
                     borderColor: App.theme_border_color(),
-                    borderWidth: 2,
+                    borderWidth: 1,
                     padding: 4,
                     borderRadius: 5
                   }}
@@ -48,7 +48,7 @@ export default class TagmojiBar extends React.Component{
                     justifyContent: "center",
                     alignItems: "center",
                     borderColor: App.theme_border_color(),
-                    borderWidth: 2,
+                    borderWidth: 1,
                     padding: 4,
                     paddingHorizontal: 6,
                     borderRadius: 5,
@@ -77,7 +77,7 @@ export default class TagmojiBar extends React.Component{
                 justifyContent: "center",
                 alignItems: "center",
                 borderColor: App.theme_border_color(),
-                borderWidth: 2,
+                borderWidth: 1,
                 padding: 4,
                 borderRadius: 50,
                 marginRight: 8,

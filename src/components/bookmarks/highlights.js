@@ -23,7 +23,7 @@ export default class HighlightsHeader extends React.Component{
           <TouchableOpacity
             style={{
               borderColor: App.theme_border_color(),
-              borderWidth: 2,
+              borderWidth: 1,
               padding: 4,
               borderRadius: 5
             }}
