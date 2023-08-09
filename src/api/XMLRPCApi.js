@@ -54,11 +54,17 @@ class XMLRPCApi {
 
 	async discover_rsd_endpoint(url) {
 		console.log('XMLRPCApi:discover_rsd_endpoint', url)
-		const rsd_endpoint = axios
-			.get(url)
-			.then(response => {
+		const options = {
+			headers: {
+				"Accept": "text/html",
+				"Cache-Control": "no-cache"
+			}
+		};
+		const rsd_endpoint = fetch(url, options)
+			.then(response => response.text())
+			.then(data => {
 				const dom_parser = new DOMParser()
-				const doc = dom_parser.parseFromString(response.data, "text/html")
+				const doc = dom_parser.parseFromString(data, "text/html")
 				const head = doc.getElementsByTagName('head')[ 0 ]
 				const links = head.getElementsByTagName('link')
 				let rsd_link
@@ -78,10 +84,10 @@ class XMLRPCApi {
 			.catch(error => {
 				console.log(error)
 				if (error?.toString()?.includes("Network error")) {
-					Alert.alert("Whoops. There was an error connecting to the URL. Please check the url and try again.")
+					Alert.alert("There was an error connecting to the URL. Please check the URL and try again.")
 				}
 				else {
-					Alert.alert("Whoops, an error occured trying to connect. Please try again.")
+					Alert.alert("An error occured trying to connect. Please try again.")
 				}
 				return RSD_NOT_FOUND
 			})
