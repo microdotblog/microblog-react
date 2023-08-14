@@ -1586,44 +1586,44 @@
   resolved "https://registry.yarnpkg.com/@react-native-clipboard/clipboard/-/clipboard-1.11.2.tgz#e826d0336b34e67294aaffa6878308900bc7d197"
   integrity sha512-bHyZVW62TuleiZsXNHS1Pv16fWc0fh8O9WvBzl4h2fykqZRW9a+Pv/RGTH56E3X2PqzHP38K5go8zmCZUoIsoQ==
 
-"@react-native-community/cli-clean@11.3.2":
-  version "11.3.2"
-  resolved "https://registry.yarnpkg.com/@react-native-community/cli-clean/-/cli-clean-11.3.2.tgz#45dc0aa379deeb13834b661f8eeb2e63ed34316f"
-  integrity sha512-OIKeP8fYtaa9qw4bpf1m3WJDWx4GvcxTYkyycH5SDu+pZjYWNix7XtKhwoL3Ol2NJLWxdY4LnmQG1yy8OGeIRw==
+"@react-native-community/cli-clean@11.3.6":
+  version "11.3.6"
+  resolved "https://registry.yarnpkg.com/@react-native-community/cli-clean/-/cli-clean-11.3.6.tgz#43a06cbee1a5480da804debc4f94662a197720f2"
+  integrity sha512-jOOaeG5ebSXTHweq1NznVJVAFKtTFWL4lWgUXl845bCGX7t1lL8xQNWHKwT8Oh1pGR2CI3cKmRjY4hBg+pEI9g==
   dependencies:
-    "@react-native-community/cli-tools" "11.3.2"
+    "@react-native-community/cli-tools" "11.3.6"
     chalk "^4.1.2"
     execa "^5.0.0"
     prompts "^2.4.0"
 
-"@react-native-community/cli-config@11.3.2":
-  version "11.3.2"
-  resolved "https://registry.yarnpkg.com/@react-native-community/cli-config/-/cli-config-11.3.2.tgz#1bf268589f7261920dd65a78d7a0a1099792a7f9"
-  integrity sha512-hMAIR3QTjzDUmOSsbroXeNkZAcf8lpOGo1fj8CwJNfjuVho1RZZSlHKp8G7FU2sgqZmb8jWN+9tFvCRACXVYoQ==
+"@react-native-community/cli-config@11.3.6":
+  version "11.3.6"
+  resolved "https://registry.yarnpkg.com/@react-native-community/cli-config/-/cli-config-11.3.6.tgz#6d3636a8a3c4542ebb123eaf61bbbc0c2a1d2a6b"
+  integrity sha512-edy7fwllSFLan/6BG6/rznOBCLPrjmJAE10FzkEqNLHowi0bckiAPg1+1jlgQ2qqAxV5kuk+c9eajVfQvPLYDA==
   dependencies:
-    "@react-native-community/cli-tools" "11.3.2"
+    "@react-native-community/cli-tools" "11.3.6"
     chalk "^4.1.2"
     cosmiconfig "^5.1.0"
     deepmerge "^4.3.0"
     glob "^7.1.3"
     joi "^17.2.1"
 
-"@react-native-community/cli-debugger-ui@11.3.2":
-  version "11.3.2"
-  resolved "https://registry.yarnpkg.com/@react-native-community/cli-debugger-ui/-/cli-debugger-ui-11.3.2.tgz#35f29daf8354e8e516cb05ca471fb705780efdd7"
-  integrity sha512-pAKBcjrNl0iJoi42Ekqn3UH/QZ48pxfAIhsKkc3WmBqYetdByobhkYWfchHq3j9bilgiaBquPQaKzkg69kQw3w==
+"@react-native-community/cli-debugger-ui@11.3.6":
+  version "11.3.6"
+  resolved "https://registry.yarnpkg.com/@react-native-community/cli-debugger-ui/-/cli-debugger-ui-11.3.6.tgz#1eb2276450f270a938686b49881fe232a08c01c4"
+  integrity sha512-jhMOSN/iOlid9jn/A2/uf7HbC3u7+lGktpeGSLnHNw21iahFBzcpuO71ekEdlmTZ4zC/WyxBXw9j2ka33T358w==
   dependencies:
     serve-static "^1.13.1"
 
-"@react-native-community/cli-doctor@11.3.2":
-  version "11.3.2"
-  resolved "https://registry.yarnpkg.com/@react-native-community/cli-doctor/-/cli-doctor-11.3.2.tgz#d8eb867b80da66ce7b11e0e6e4e07ab152ffbf7b"
-  integrity sha512-tvmAQzz+qOJwtBCVEdhHweMeGaoHauGn3ef4tsHyqlDc0fF1K5No9DGXSESlLHpsopg066sIHWGq0PmAIeChiA==
+"@react-native-community/cli-doctor@11.3.6":
+  version "11.3.6"
+  resolved "https://registry.yarnpkg.com/@react-native-community/cli-doctor/-/cli-doctor-11.3.6.tgz#fa33ee00fe5120af516aa0f17fe3ad50270976e7"
+  integrity sha512-UT/Tt6omVPi1j6JEX+CObc85eVFghSZwy4GR9JFMsO7gNg2Tvcu1RGWlUkrbmWMAMHw127LUu6TGK66Ugu1NLA==
   dependencies:
-    "@react-native-community/cli-config" "11.3.2"
-    "@react-native-community/cli-platform-android" "11.3.2"
-    "@react-native-community/cli-platform-ios" "11.3.2"
-    "@react-native-community/cli-tools" "11.3.2"
+    "@react-native-community/cli-config" "11.3.6"
+    "@react-native-community/cli-platform-android" "11.3.6"
+    "@react-native-community/cli-platform-ios" "11.3.6"
+    "@react-native-community/cli-tools" "11.3.6"
     chalk "^4.1.2"
     command-exists "^1.2.8"
     envinfo "^7.7.2"
@@ -1633,70 +1633,70 @@
     node-stream-zip "^1.9.1"
     ora "^5.4.1"
     prompts "^2.4.0"
-    semver "^6.3.0"
+    semver "^7.5.2"
     strip-ansi "^5.2.0"
     sudo-prompt "^9.0.0"
     wcwidth "^1.0.1"
     yaml "^2.2.1"
 
-"@react-native-community/cli-hermes@11.3.2":
-  version "11.3.2"
-  resolved "https://registry.yarnpkg.com/@react-native-community/cli-hermes/-/cli-hermes-11.3.2.tgz#842b21a1cd3960295eed3591ab81e6f9e68aa606"
-  integrity sha512-IfzdYTjxu+BFEvweY9TXpLkOmWq0sxK8PTN+u0BduiT9cJRvcO0CxjOpLHAabVrSJc6o+7aLfEvogBmdN53Xfg==
+"@react-native-community/cli-hermes@11.3.6":
+  version "11.3.6"
+  resolved "https://registry.yarnpkg.com/@react-native-community/cli-hermes/-/cli-hermes-11.3.6.tgz#b1acc7feff66ab0859488e5812b3b3e8b8e9434c"
+  integrity sha512-O55YAYGZ3XynpUdePPVvNuUPGPY0IJdctLAOHme73OvS80gNwfntHDXfmY70TGHWIfkK2zBhA0B+2v8s5aTyTA==
   dependencies:
-    "@react-native-community/cli-platform-android" "11.3.2"
-    "@react-native-community/cli-tools" "11.3.2"
+    "@react-native-community/cli-platform-android" "11.3.6"
+    "@react-native-community/cli-tools" "11.3.6"
     chalk "^4.1.2"
     hermes-profile-transformer "^0.0.6"
     ip "^1.1.5"
 
-"@react-native-community/cli-platform-android@11.3.2":
-  version "11.3.2"
-  resolved "https://registry.yarnpkg.com/@react-native-community/cli-platform-android/-/cli-platform-android-11.3.2.tgz#d9528306c3751f7d6d1fd3d5a56187708dd65829"
-  integrity sha512-NKxyBP0/gwL4/tNWrkevFSjeb7Dw2SByNfE9wFXBaAvZHxbxxJUjZOTOW3ueOXEpgOMU7IYYOiSOz2M10IRQ2A==
+"@react-native-community/cli-platform-android@11.3.6":
+  version "11.3.6"
+  resolved "https://registry.yarnpkg.com/@react-native-community/cli-platform-android/-/cli-platform-android-11.3.6.tgz#6f3581ca4eed3deec7edba83c1bc467098c8167b"
+  integrity sha512-ZARrpLv5tn3rmhZc//IuDM1LSAdYnjUmjrp58RynlvjLDI4ZEjBAGCQmgysRgXAsK7ekMrfkZgemUczfn9td2A==
   dependencies:
-    "@react-native-community/cli-tools" "11.3.2"
+    "@react-native-community/cli-tools" "11.3.6"
     chalk "^4.1.2"
     execa "^5.0.0"
     glob "^7.1.3"
     logkitty "^0.7.1"
 
-"@react-native-community/cli-platform-ios@11.3.2":
-  version "11.3.2"
-  resolved "https://registry.yarnpkg.com/@react-native-community/cli-platform-ios/-/cli-platform-ios-11.3.2.tgz#cfecce27641950603d736e1f41fcae088e3ada1f"
-  integrity sha512-XPrfsI7dNY3f9crsKDDRIss+GHYX/snuYfMrjg4ZBHpYB5JdLepO8FJ5bFz+/s9KXDm045ijo8QFcIf3XJR0YQ==
+"@react-native-community/cli-platform-ios@11.3.6":
+  version "11.3.6"
+  resolved "https://registry.yarnpkg.com/@react-native-community/cli-platform-ios/-/cli-platform-ios-11.3.6.tgz#0fa58d01f55d85618c4218925509a4be77867dab"
+  integrity sha512-tZ9VbXWiRW+F+fbZzpLMZlj93g3Q96HpuMsS6DRhrTiG+vMQ3o6oPWSEEmMGOvJSYU7+y68Dc9ms2liC7VD6cw==
   dependencies:
-    "@react-native-community/cli-tools" "11.3.2"
+    "@react-native-community/cli-tools" "11.3.6"
     chalk "^4.1.2"
     execa "^5.0.0"
     fast-xml-parser "^4.0.12"
     glob "^7.1.3"
     ora "^5.4.1"
 
-"@react-native-community/cli-plugin-metro@11.3.2":
-  version "11.3.2"
-  resolved "https://registry.yarnpkg.com/@react-native-community/cli-plugin-metro/-/cli-plugin-metro-11.3.2.tgz#dbdf6d04b3c608a11dea833a9f882420352dda44"
-  integrity sha512-r1rZYCFfxZWIiUlukjMcDlxfCtm+QNYu+vFyVfE9yvN9gaNPBAi9029eVzkRkFuJ8Rxwr67HnYEAdGYLWQ1uIw==
+"@react-native-community/cli-plugin-metro@11.3.6":
+  version "11.3.6"
+  resolved "https://registry.yarnpkg.com/@react-native-community/cli-plugin-metro/-/cli-plugin-metro-11.3.6.tgz#2d632c304313435c9ea104086901fbbeba0f1882"
+  integrity sha512-D97racrPX3069ibyabJNKw9aJpVcaZrkYiEzsEnx50uauQtPDoQ1ELb/5c6CtMhAEGKoZ0B5MS23BbsSZcLs2g==
   dependencies:
-    "@react-native-community/cli-server-api" "11.3.2"
-    "@react-native-community/cli-tools" "11.3.2"
+    "@react-native-community/cli-server-api" "11.3.6"
+    "@react-native-community/cli-tools" "11.3.6"
     chalk "^4.1.2"
     execa "^5.0.0"
-    metro "0.76.5"
-    metro-config "0.76.5"
-    metro-core "0.76.5"
-    metro-react-native-babel-transformer "0.76.5"
-    metro-resolver "0.76.5"
-    metro-runtime "0.76.5"
+    metro "0.76.7"
+    metro-config "0.76.7"
+    metro-core "0.76.7"
+    metro-react-native-babel-transformer "0.76.7"
+    metro-resolver "0.76.7"
+    metro-runtime "0.76.7"
     readline "^1.3.0"
 
-"@react-native-community/cli-server-api@11.3.2":
-  version "11.3.2"
-  resolved "https://registry.yarnpkg.com/@react-native-community/cli-server-api/-/cli-server-api-11.3.2.tgz#79f06606aa1cf7f84dc5c4c53f9a6de0d98142d4"
-  integrity sha512-6rMb37HYWOdmiMGCxsttHDLIP7KmcJjWvzTJzb2tm9P5FoMvSSmSOn981MuP835Lk1U+IdjVcwtsA247Im4mkg==
+"@react-native-community/cli-server-api@11.3.6":
+  version "11.3.6"
+  resolved "https://registry.yarnpkg.com/@react-native-community/cli-server-api/-/cli-server-api-11.3.6.tgz#3a16039518f7f3865f85f8f54b19174448bbcdbb"
+  integrity sha512-8GUKodPnURGtJ9JKg8yOHIRtWepPciI3ssXVw5jik7+dZ43yN8P5BqCoDaq8e1H1yRer27iiOfT7XVnwk8Dueg==
   dependencies:
-    "@react-native-community/cli-debugger-ui" "11.3.2"
-    "@react-native-community/cli-tools" "11.3.2"
+    "@react-native-community/cli-debugger-ui" "11.3.6"
+    "@react-native-community/cli-tools" "11.3.6"
     compression "^1.7.1"
     connect "^3.6.5"
     errorhandler "^1.5.1"
@@ -1705,10 +1705,10 @@
     serve-static "^1.13.1"
     ws "^7.5.1"
 
-"@react-native-community/cli-tools@11.3.2":
-  version "11.3.2"
-  resolved "https://registry.yarnpkg.com/@react-native-community/cli-tools/-/cli-tools-11.3.2.tgz#29c01e0978199e3d65a2ed234a629a9cf05db8ca"
-  integrity sha512-rAnFPzRITeEhBLwC73ucvWsYjsGyotSOI4c+k8t9wUqcIk1Q+RFnuWozGc13msOPdESvBHt2MPJBwXrtKgKn1g==
+"@react-native-community/cli-tools@11.3.6":
+  version "11.3.6"
+  resolved "https://registry.yarnpkg.com/@react-native-community/cli-tools/-/cli-tools-11.3.6.tgz#ec213b8409917a56e023595f148c84b9cb3ad871"
+  integrity sha512-JpmUTcDwAGiTzLsfMlIAYpCMSJ9w2Qlf7PU7mZIRyEu61UzEawyw83DkqfbzDPBuRwRnaeN44JX2CP/yTO3ThQ==
   dependencies:
     appdirsjs "^1.2.4"
     chalk "^4.1.2"
@@ -1717,30 +1717,30 @@
     node-fetch "^2.6.0"
     open "^6.2.0"
     ora "^5.4.1"
-    semver "^6.3.0"
+    semver "^7.5.2"
     shell-quote "^1.7.3"
 
-"@react-native-community/cli-types@11.3.2":
-  version "11.3.2"
-  resolved "https://registry.yarnpkg.com/@react-native-community/cli-types/-/cli-types-11.3.2.tgz#09531e83ddda582c7321752d1d80674578bc8ea7"
-  integrity sha512-jba1Z1YgC4JIHPADSqpl4ATsrJaOja1zlQCbH/yE8McHRjVBzeYGeHIvG5jw7iU5cw6FFifH5vvr23JPGk8oyw==
+"@react-native-community/cli-types@11.3.6":
+  version "11.3.6"
+  resolved "https://registry.yarnpkg.com/@react-native-community/cli-types/-/cli-types-11.3.6.tgz#34012f1d0cb1c4039268828abc07c9c69f2e15be"
+  integrity sha512-6DxjrMKx5x68N/tCJYVYRKAtlRHbtUVBZrnAvkxbRWFD9v4vhNgsPM0RQm8i2vRugeksnao5mbnRGpS6c0awCw==
   dependencies:
     joi "^17.2.1"
 
-"@react-native-community/cli@11.3.2":
-  version "11.3.2"
-  resolved "https://registry.yarnpkg.com/@react-native-community/cli/-/cli-11.3.2.tgz#a14c341c2421a929a322b11d02a60f7ac8ff5ee9"
-  integrity sha512-riyMvro6HH2NLUhcnjUrOFwi2IHb6/GOC1WKf7GvGH1L4KnIo/jP4Sk9QV+pROg1Gd9btrCTnyY7WbWuPWJJ3w==
+"@react-native-community/cli@11.3.6":
+  version "11.3.6"
+  resolved "https://registry.yarnpkg.com/@react-native-community/cli/-/cli-11.3.6.tgz#d92618d75229eaf6c0391a6b075684eba5d9819f"
+  integrity sha512-bdwOIYTBVQ9VK34dsf6t3u6vOUU5lfdhKaAxiAVArjsr7Je88Bgs4sAbsOYsNK3tkE8G77U6wLpekknXcanlww==
   dependencies:
-    "@react-native-community/cli-clean" "11.3.2"
-    "@react-native-community/cli-config" "11.3.2"
-    "@react-native-community/cli-debugger-ui" "11.3.2"
-    "@react-native-community/cli-doctor" "11.3.2"
-    "@react-native-community/cli-hermes" "11.3.2"
-    "@react-native-community/cli-plugin-metro" "11.3.2"
-    "@react-native-community/cli-server-api" "11.3.2"
-    "@react-native-community/cli-tools" "11.3.2"
-    "@react-native-community/cli-types" "11.3.2"
+    "@react-native-community/cli-clean" "11.3.6"
+    "@react-native-community/cli-config" "11.3.6"
+    "@react-native-community/cli-debugger-ui" "11.3.6"
+    "@react-native-community/cli-doctor" "11.3.6"
+    "@react-native-community/cli-hermes" "11.3.6"
+    "@react-native-community/cli-plugin-metro" "11.3.6"
+    "@react-native-community/cli-server-api" "11.3.6"
+    "@react-native-community/cli-tools" "11.3.6"
+    "@react-native-community/cli-types" "11.3.6"
     chalk "^4.1.2"
     commander "^9.4.1"
     execa "^5.0.0"
@@ -1748,7 +1748,7 @@
     fs-extra "^8.1.0"
     graceful-fs "^4.1.3"
     prompts "^2.4.0"
-    semver "^6.3.0"
+    semver "^7.5.2"
 
 "@react-native-community/eslint-config@^3.0.0":
   version "3.2.0"
@@ -1818,25 +1818,25 @@
     jscodeshift "^0.14.0"
     nullthrows "^1.1.1"
 
-"@react-native/gradle-plugin@^0.72.10":
-  version "0.72.10"
-  resolved "https://registry.yarnpkg.com/@react-native/gradle-plugin/-/gradle-plugin-0.72.10.tgz#cd7ad2203039dc1f97fb849898d689442776b004"
-  integrity sha512-/3KZSdFOWpTCHlp468NOgNfSIhENEH44O3Xq+dmgp4kJ/WhTvCmI+7glJ0Io6T7AizcWlIuW5VKA2+Pb3GHXmg==
+"@react-native/gradle-plugin@^0.72.11":
+  version "0.72.11"
+  resolved "https://registry.yarnpkg.com/@react-native/gradle-plugin/-/gradle-plugin-0.72.11.tgz#c063ef12778706611de7a1e42b74b14d9405fb9f"
+  integrity sha512-P9iRnxiR2w7EHcZ0mJ+fmbPzMby77ZzV6y9sJI3lVLJzF7TLSdbwcQyD3lwMsiL+q5lKUHoZJS4sYmih+P2HXw==
 
 "@react-native/js-polyfills@^0.72.1":
   version "0.72.1"
   resolved "https://registry.yarnpkg.com/@react-native/js-polyfills/-/js-polyfills-0.72.1.tgz#905343ef0c51256f128256330fccbdb35b922291"
   integrity sha512-cRPZh2rBswFnGt5X5EUEPs0r+pAsXxYsifv/fgy9ZLQokuT52bPH+9xjDR+7TafRua5CttGW83wP4TntRcWNDA==
 
-"@react-native/metro-config@^0.72.9":
-  version "0.72.9"
-  resolved "https://registry.yarnpkg.com/@react-native/metro-config/-/metro-config-0.72.9.tgz#bc103c7b5be0e6db179baab3f57096565557a039"
-  integrity sha512-5MGmyDnXPeprRuvgPGE4LZ+e+ovofSd5YY6nFDwg6wbjRGOkeCRRlaTlQT+fjmv+zr4vYG+MUTKBlaO+fui/vA==
+"@react-native/metro-config@^0.72.11":
+  version "0.72.11"
+  resolved "https://registry.yarnpkg.com/@react-native/metro-config/-/metro-config-0.72.11.tgz#c775a22fbb138cedd4513ca46c06bfd6a9dad316"
+  integrity sha512-661EyQnDdVelyc0qP/ew7kKkGAh6N6KlkuPLC2SQ8sxaXskVU6fSuNlpLW4bUTBUDFKG8gEOU2hp6rzk4wQnGQ==
   dependencies:
     "@react-native/js-polyfills" "^0.72.1"
-    metro-config "0.76.7"
-    metro-react-native-babel-transformer "0.76.7"
-    metro-runtime "0.76.7"
+    metro-config "0.76.8"
+    metro-react-native-babel-transformer "0.76.8"
+    metro-runtime "0.76.8"
 
 "@react-native/normalize-color@*":
   version "2.1.0"
@@ -1853,10 +1853,10 @@
   resolved "https://registry.yarnpkg.com/@react-native/normalize-colors/-/normalize-colors-0.72.0.tgz#14294b7ed3c1d92176d2a00df48456e8d7d62212"
   integrity sha512-285lfdqSXaqKuBbbtP9qL2tDrfxdOFtIMvkKadtleRQkdOxx+uzGvFr82KHmc/sSiMtfXGp7JnFYWVh4sFl7Yw==
 
-"@react-native/virtualized-lists@^0.72.5":
-  version "0.72.5"
-  resolved "https://registry.yarnpkg.com/@react-native/virtualized-lists/-/virtualized-lists-0.72.5.tgz#a7b261357ec7e0e5aa97a24d4acab1d903811e09"
-  integrity sha512-AtKE3dez3lf89O87wC2ZglV5aPsifopQgn/UmFhXAwi18Yp1BJfEGh3sUqOPNgZNByYPAGxFANeZq44VATXeJA==
+"@react-native/virtualized-lists@^0.72.8":
+  version "0.72.8"
+  resolved "https://registry.yarnpkg.com/@react-native/virtualized-lists/-/virtualized-lists-0.72.8.tgz#a2c6a91ea0f1d40eb5a122fb063daedb92ed1dc3"
+  integrity sha512-J3Q4Bkuo99k7mu+jPS9gSUSgq+lLRSI/+ahXNwV92XgJ/8UgOTxu2LPwhJnBk/sQKxq7E8WkZBnBiozukQMqrw==
   dependencies:
     invariant "^2.2.4"
     nullthrows "^1.1.1"
@@ -3795,24 +3795,12 @@ hermes-estree@0.12.0:
   resolved "https://registry.yarnpkg.com/hermes-estree/-/hermes-estree-0.12.0.tgz#8a289f9aee854854422345e6995a48613bac2ca8"
   integrity sha512-+e8xR6SCen0wyAKrMT3UD0ZCCLymKhRgjEB5sS28rKiFir/fXgLoeRilRUssFCILmGHb+OvHDUlhxs0+IEyvQw==
 
-hermes-estree@0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/hermes-estree/-/hermes-estree-0.8.0.tgz#530be27243ca49f008381c1f3e8b18fb26bf9ec0"
-  integrity sha512-W6JDAOLZ5pMPMjEiQGLCXSSV7pIBEgRR5zGkxgmzGSXHOxqV5dC/M1Zevqpbm9TZDE5tu358qZf8Vkzmsc+u7Q==
-
 hermes-parser@0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/hermes-parser/-/hermes-parser-0.12.0.tgz#114dc26697cfb41a6302c215b859b74224383773"
   integrity sha512-d4PHnwq6SnDLhYl3LHNHvOg7nQ6rcI7QVil418REYksv0Mh3cEkHDcuhGxNQ3vgnLSLl4QSvDrFCwQNYdpWlzw==
   dependencies:
     hermes-estree "0.12.0"
-
-hermes-parser@0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/hermes-parser/-/hermes-parser-0.8.0.tgz#116dceaba32e45b16d6aefb5c4c830eaeba2d257"
-  integrity sha512-yZKalg1fTYG5eOiToLUaw69rQfZq/fi+/NtEXRU7N87K/XobNRhRWorh80oSge2lWUiZfTgUvRJH+XgZWrhoqA==
-  dependencies:
-    hermes-estree "0.8.0"
 
 hermes-profile-transformer@^0.0.6:
   version "0.0.6"
@@ -4895,16 +4883,6 @@ merge2@^1.3.0, merge2@^1.4.1:
   resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.4.1.tgz#4368892f885e907455a6fd7dc55c0c9d404990ae"
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
 
-metro-babel-transformer@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/metro-babel-transformer/-/metro-babel-transformer-0.76.5.tgz#1daea5b236c52579c9e9a04b94ae9f9677a81f3d"
-  integrity sha512-KmsMXY6VHjPLRQLwTITjLo//7ih8Ts39HPF2zODkaYav/ZLNq0QP7eGuW54dvk/sZiL9le1kaBwTN4BWQI1VZQ==
-  dependencies:
-    "@babel/core" "^7.20.0"
-    hermes-parser "0.8.0"
-    metro-source-map "0.76.5"
-    nullthrows "^1.1.1"
-
 metro-babel-transformer@0.76.7:
   version "0.76.7"
   resolved "https://registry.yarnpkg.com/metro-babel-transformer/-/metro-babel-transformer-0.76.7.tgz#ba620d64cbaf97d1aa14146d654a3e5d7477fc62"
@@ -4914,23 +4892,24 @@ metro-babel-transformer@0.76.7:
     hermes-parser "0.12.0"
     nullthrows "^1.1.1"
 
-metro-cache-key@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/metro-cache-key/-/metro-cache-key-0.76.5.tgz#9b5b7d7e24fa75c95b9e672c0f0a7a19b2a16508"
-  integrity sha512-QERX6ejYMt4BPr0ZMf7adnrOivmFSUbCim9FlU6cAeWUib+pV5P/Ph3KicWnOzJpbQz93+tHHG7vcsP6OrvLMw==
+metro-babel-transformer@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/metro-babel-transformer/-/metro-babel-transformer-0.76.8.tgz#5efd1027353b36b73706164ef09c290dceac096a"
+  integrity sha512-Hh6PW34Ug/nShlBGxkwQJSgPGAzSJ9FwQXhUImkzdsDgVu6zj5bx258J8cJVSandjNoQ8nbaHK6CaHlnbZKbyA==
+  dependencies:
+    "@babel/core" "^7.20.0"
+    hermes-parser "0.12.0"
+    nullthrows "^1.1.1"
 
 metro-cache-key@0.76.7:
   version "0.76.7"
   resolved "https://registry.yarnpkg.com/metro-cache-key/-/metro-cache-key-0.76.7.tgz#70913f43b92b313096673c37532edd07438cb325"
   integrity sha512-0pecoIzwsD/Whn/Qfa+SDMX2YyasV0ndbcgUFx7w1Ct2sLHClujdhQ4ik6mvQmsaOcnGkIyN0zcceMDjC2+BFQ==
 
-metro-cache@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/metro-cache/-/metro-cache-0.76.5.tgz#479c4e036ab89c68f12551a354ccaaf759eb9a40"
-  integrity sha512-8XalhoMNWDK6bi41oqxIpecTYRt4WsmtoHdqshgJIYshJ6qov0NuDw0pOfnS8rgMNHxPpuWyXc7NyKERqVRzaw==
-  dependencies:
-    metro-core "0.76.5"
-    rimraf "^3.0.2"
+metro-cache-key@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/metro-cache-key/-/metro-cache-key-0.76.8.tgz#8a0a5e991c06f56fcc584acadacb313c312bdc16"
+  integrity sha512-buKQ5xentPig9G6T37Ww/R/bC+/V1MA5xU/D8zjnhlelsrPG6w6LtHUS61ID3zZcMZqYaELWk5UIadIdDsaaLw==
 
 metro-cache@0.76.7:
   version "0.76.7"
@@ -4940,17 +4919,13 @@ metro-cache@0.76.7:
     metro-core "0.76.7"
     rimraf "^3.0.2"
 
-metro-config@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/metro-config/-/metro-config-0.76.5.tgz#74624b68cff4e72576129d4e59ff8c22a7171e45"
-  integrity sha512-SCMVIDOtm8s3H62E9z2IcY4Q9GVMqDurbiJS3PHrWgTZjwZFaL59lrW4W6DvzvFZHa9bbxKric5TFtwvVuyOCg==
+metro-cache@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/metro-cache/-/metro-cache-0.76.8.tgz#296c1c189db2053b89735a8f33dbe82575f53661"
+  integrity sha512-QBJSJIVNH7Hc/Yo6br/U/qQDUpiUdRgZ2ZBJmvAbmAKp2XDzsapnMwK/3BGj8JNWJF7OLrqrYHsRsukSbUBpvQ==
   dependencies:
-    cosmiconfig "^5.0.5"
-    jest-validate "^29.2.1"
-    metro "0.76.5"
-    metro-cache "0.76.5"
-    metro-core "0.76.5"
-    metro-runtime "0.76.5"
+    metro-core "0.76.8"
+    rimraf "^3.0.2"
 
 metro-config@0.76.7:
   version "0.76.7"
@@ -4965,13 +4940,18 @@ metro-config@0.76.7:
     metro-core "0.76.7"
     metro-runtime "0.76.7"
 
-metro-core@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/metro-core/-/metro-core-0.76.5.tgz#0196dbb32bfb3c3edd288e908daf360764c89105"
-  integrity sha512-yJvIe8a3sAG92U7+E7Bw6m4lae9RB180fp9iQZFBqY437Ilv4nE6PR8EWB6d8c4yt9fXIL1Hc+KyQv7OPFx/rQ==
+metro-config@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/metro-config/-/metro-config-0.76.8.tgz#20bd5397fcc6096f98d2a813a7cecb38b8af062d"
+  integrity sha512-SL1lfKB0qGHALcAk2zBqVgQZpazDYvYFGwCK1ikz0S6Y/CM2i2/HwuZN31kpX6z3mqjv/6KvlzaKoTb1otuSAA==
   dependencies:
-    lodash.throttle "^4.1.1"
-    metro-resolver "0.76.5"
+    connect "^3.6.5"
+    cosmiconfig "^5.0.5"
+    jest-validate "^29.2.1"
+    metro "0.76.8"
+    metro-cache "0.76.8"
+    metro-core "0.76.8"
+    metro-runtime "0.76.8"
 
 metro-core@0.76.7:
   version "0.76.7"
@@ -4981,25 +4961,13 @@ metro-core@0.76.7:
     lodash.throttle "^4.1.1"
     metro-resolver "0.76.7"
 
-metro-file-map@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/metro-file-map/-/metro-file-map-0.76.5.tgz#71f40660adfa1a806907f7961ef2a57884501d6c"
-  integrity sha512-9VS7zsec7BpTb+0v1DObOXso6XU/7oVBObQWp0EWBQpFcU1iF1lit2nnLQh2AyGCnSr8JVnuUe8gXhNH6xtPMg==
+metro-core@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/metro-core/-/metro-core-0.76.8.tgz#917c8157c63406cb223522835abb8e7c6291dcad"
+  integrity sha512-sl2QLFI3d1b1XUUGxwzw/KbaXXU/bvFYrSKz6Sg19AdYGWFyzsgZ1VISRIDf+HWm4R/TJXluhWMEkEtZuqi3qA==
   dependencies:
-    anymatch "^3.0.3"
-    debug "^2.2.0"
-    fb-watchman "^2.0.0"
-    graceful-fs "^4.2.4"
-    invariant "^2.2.4"
-    jest-regex-util "^27.0.6"
-    jest-util "^27.2.0"
-    jest-worker "^27.2.0"
-    micromatch "^4.0.4"
-    node-abort-controller "^3.1.1"
-    nullthrows "^1.1.1"
-    walker "^1.0.7"
-  optionalDependencies:
-    fsevents "^2.3.2"
+    lodash.throttle "^4.1.1"
+    metro-resolver "0.76.8"
 
 metro-file-map@0.76.7:
   version "0.76.7"
@@ -5021,16 +4989,25 @@ metro-file-map@0.76.7:
   optionalDependencies:
     fsevents "^2.3.2"
 
-metro-inspector-proxy@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/metro-inspector-proxy/-/metro-inspector-proxy-0.76.5.tgz#aac222b0680c7c031e24b6246d995ca3e87868f2"
-  integrity sha512-leqwei1qNMKOEbhqlQ37K+7OIp1JRgvS5qERO+J0ZTg7ZeJTaBHSFU7FnCeRHB9Tu7/FSfypY2PxjydZDwvUEQ==
+metro-file-map@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/metro-file-map/-/metro-file-map-0.76.8.tgz#a1db1185b6c316904ba6b53d628e5d1323991d79"
+  integrity sha512-A/xP1YNEVwO1SUV9/YYo6/Y1MmzhL4ZnVgcJC3VmHp/BYVOXVStzgVbWv2wILe56IIMkfXU+jpXrGKKYhFyHVw==
   dependencies:
-    connect "^3.6.5"
+    anymatch "^3.0.3"
     debug "^2.2.0"
-    node-fetch "^2.2.0"
-    ws "^7.5.1"
-    yargs "^17.6.2"
+    fb-watchman "^2.0.0"
+    graceful-fs "^4.2.4"
+    invariant "^2.2.4"
+    jest-regex-util "^27.0.6"
+    jest-util "^27.2.0"
+    jest-worker "^27.2.0"
+    micromatch "^4.0.4"
+    node-abort-controller "^3.1.1"
+    nullthrows "^1.1.1"
+    walker "^1.0.7"
+  optionalDependencies:
+    fsevents "^2.3.2"
 
 metro-inspector-proxy@0.76.7:
   version "0.76.7"
@@ -5043,12 +5020,16 @@ metro-inspector-proxy@0.76.7:
     ws "^7.5.1"
     yargs "^17.6.2"
 
-metro-minify-terser@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/metro-minify-terser/-/metro-minify-terser-0.76.5.tgz#1bde3e0bcad27ec1764f78075637782ace127dba"
-  integrity sha512-zizTXqlHcG7PArB5hfz1Djz/oCaOaTSXTZDNp8Y9K2FmmfLU3dU2eoDbNNiCnm5QdDtFIndLMXdqqe6omTfp4g==
+metro-inspector-proxy@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/metro-inspector-proxy/-/metro-inspector-proxy-0.76.8.tgz#6b8678a7461b0b42f913a7881cc9319b4d3cddff"
+  integrity sha512-Us5o5UEd4Smgn1+TfHX4LvVPoWVo9VsVMn4Ldbk0g5CQx3Gu0ygc/ei2AKPGTwsOZmKxJeACj7yMH2kgxQP/iw==
   dependencies:
-    terser "^5.15.0"
+    connect "^3.6.5"
+    debug "^2.2.0"
+    node-fetch "^2.2.0"
+    ws "^7.5.1"
+    yargs "^17.6.2"
 
 metro-minify-terser@0.76.7:
   version "0.76.7"
@@ -5057,12 +5038,12 @@ metro-minify-terser@0.76.7:
   dependencies:
     terser "^5.15.0"
 
-metro-minify-uglify@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/metro-minify-uglify/-/metro-minify-uglify-0.76.5.tgz#afbb5e3bbc9ca05a9a63d1c5fd74dfc9c1b4c4f8"
-  integrity sha512-JZNO5eK8r625/cheWSl+y7n0RlHLt03iSMgXPAxirH8BiFqPzs7h+c57r4AvSs793VXcF7L3sI1sAOj+nRqTeg==
+metro-minify-terser@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/metro-minify-terser/-/metro-minify-terser-0.76.8.tgz#915ab4d1419257fc6a0b9fa15827b83fe69814bf"
+  integrity sha512-Orbvg18qXHCrSj1KbaeSDVYRy/gkro2PC7Fy2tDSH1c9RB4aH8tuMOIXnKJE+1SXxBtjWmQ5Yirwkth2DyyEZA==
   dependencies:
-    uglify-es "^3.1.9"
+    terser "^5.15.0"
 
 metro-minify-uglify@0.76.7:
   version "0.76.7"
@@ -5071,50 +5052,12 @@ metro-minify-uglify@0.76.7:
   dependencies:
     uglify-es "^3.1.9"
 
-metro-react-native-babel-preset@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/metro-react-native-babel-preset/-/metro-react-native-babel-preset-0.76.5.tgz#5379e163e014dce14066d277628ae018fda79593"
-  integrity sha512-IlVKeTon5fef77rQ6WreSmrabmbc3dEsLwr/sL80fYjobjsD8FRCnOlbaJdgUf2SMJmSIoawgjh5Yeebv+gJzg==
+metro-minify-uglify@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/metro-minify-uglify/-/metro-minify-uglify-0.76.8.tgz#74745045ea2dd29f8783db483b2fce58385ba695"
+  integrity sha512-6l8/bEvtVaTSuhG1FqS0+Mc8lZ3Bl4RI8SeRIifVLC21eeSDp4CEBUWSGjpFyUDfi6R5dXzYaFnSgMNyfxADiQ==
   dependencies:
-    "@babel/core" "^7.20.0"
-    "@babel/plugin-proposal-async-generator-functions" "^7.0.0"
-    "@babel/plugin-proposal-class-properties" "^7.18.0"
-    "@babel/plugin-proposal-export-default-from" "^7.0.0"
-    "@babel/plugin-proposal-nullish-coalescing-operator" "^7.18.0"
-    "@babel/plugin-proposal-numeric-separator" "^7.0.0"
-    "@babel/plugin-proposal-object-rest-spread" "^7.20.0"
-    "@babel/plugin-proposal-optional-catch-binding" "^7.0.0"
-    "@babel/plugin-proposal-optional-chaining" "^7.20.0"
-    "@babel/plugin-syntax-dynamic-import" "^7.8.0"
-    "@babel/plugin-syntax-export-default-from" "^7.0.0"
-    "@babel/plugin-syntax-flow" "^7.18.0"
-    "@babel/plugin-syntax-nullish-coalescing-operator" "^7.0.0"
-    "@babel/plugin-syntax-optional-chaining" "^7.0.0"
-    "@babel/plugin-transform-arrow-functions" "^7.0.0"
-    "@babel/plugin-transform-async-to-generator" "^7.20.0"
-    "@babel/plugin-transform-block-scoping" "^7.0.0"
-    "@babel/plugin-transform-classes" "^7.0.0"
-    "@babel/plugin-transform-computed-properties" "^7.0.0"
-    "@babel/plugin-transform-destructuring" "^7.20.0"
-    "@babel/plugin-transform-flow-strip-types" "^7.20.0"
-    "@babel/plugin-transform-function-name" "^7.0.0"
-    "@babel/plugin-transform-literals" "^7.0.0"
-    "@babel/plugin-transform-modules-commonjs" "^7.0.0"
-    "@babel/plugin-transform-named-capturing-groups-regex" "^7.0.0"
-    "@babel/plugin-transform-parameters" "^7.0.0"
-    "@babel/plugin-transform-react-display-name" "^7.0.0"
-    "@babel/plugin-transform-react-jsx" "^7.0.0"
-    "@babel/plugin-transform-react-jsx-self" "^7.0.0"
-    "@babel/plugin-transform-react-jsx-source" "^7.0.0"
-    "@babel/plugin-transform-runtime" "^7.0.0"
-    "@babel/plugin-transform-shorthand-properties" "^7.0.0"
-    "@babel/plugin-transform-spread" "^7.0.0"
-    "@babel/plugin-transform-sticky-regex" "^7.0.0"
-    "@babel/plugin-transform-typescript" "^7.5.0"
-    "@babel/plugin-transform-unicode-regex" "^7.0.0"
-    "@babel/template" "^7.0.0"
-    babel-plugin-transform-flow-enums "^0.0.2"
-    react-refresh "^0.4.0"
+    uglify-es "^3.1.9"
 
 metro-react-native-babel-preset@0.76.7:
   version "0.76.7"
@@ -5161,7 +5104,52 @@ metro-react-native-babel-preset@0.76.7:
     babel-plugin-transform-flow-enums "^0.0.2"
     react-refresh "^0.4.0"
 
-metro-react-native-babel-preset@^0.73.7:
+metro-react-native-babel-preset@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/metro-react-native-babel-preset/-/metro-react-native-babel-preset-0.76.8.tgz#7476efae14363cbdfeeec403b4f01d7348e6c048"
+  integrity sha512-Ptza08GgqzxEdK8apYsjTx2S8WDUlS2ilBlu9DR1CUcHmg4g3kOkFylZroogVAUKtpYQNYwAvdsjmrSdDNtiAg==
+  dependencies:
+    "@babel/core" "^7.20.0"
+    "@babel/plugin-proposal-async-generator-functions" "^7.0.0"
+    "@babel/plugin-proposal-class-properties" "^7.18.0"
+    "@babel/plugin-proposal-export-default-from" "^7.0.0"
+    "@babel/plugin-proposal-nullish-coalescing-operator" "^7.18.0"
+    "@babel/plugin-proposal-numeric-separator" "^7.0.0"
+    "@babel/plugin-proposal-object-rest-spread" "^7.20.0"
+    "@babel/plugin-proposal-optional-catch-binding" "^7.0.0"
+    "@babel/plugin-proposal-optional-chaining" "^7.20.0"
+    "@babel/plugin-syntax-dynamic-import" "^7.8.0"
+    "@babel/plugin-syntax-export-default-from" "^7.0.0"
+    "@babel/plugin-syntax-flow" "^7.18.0"
+    "@babel/plugin-syntax-nullish-coalescing-operator" "^7.0.0"
+    "@babel/plugin-syntax-optional-chaining" "^7.0.0"
+    "@babel/plugin-transform-arrow-functions" "^7.0.0"
+    "@babel/plugin-transform-async-to-generator" "^7.20.0"
+    "@babel/plugin-transform-block-scoping" "^7.0.0"
+    "@babel/plugin-transform-classes" "^7.0.0"
+    "@babel/plugin-transform-computed-properties" "^7.0.0"
+    "@babel/plugin-transform-destructuring" "^7.20.0"
+    "@babel/plugin-transform-flow-strip-types" "^7.20.0"
+    "@babel/plugin-transform-function-name" "^7.0.0"
+    "@babel/plugin-transform-literals" "^7.0.0"
+    "@babel/plugin-transform-modules-commonjs" "^7.0.0"
+    "@babel/plugin-transform-named-capturing-groups-regex" "^7.0.0"
+    "@babel/plugin-transform-parameters" "^7.0.0"
+    "@babel/plugin-transform-react-display-name" "^7.0.0"
+    "@babel/plugin-transform-react-jsx" "^7.0.0"
+    "@babel/plugin-transform-react-jsx-self" "^7.0.0"
+    "@babel/plugin-transform-react-jsx-source" "^7.0.0"
+    "@babel/plugin-transform-runtime" "^7.0.0"
+    "@babel/plugin-transform-shorthand-properties" "^7.0.0"
+    "@babel/plugin-transform-spread" "^7.0.0"
+    "@babel/plugin-transform-sticky-regex" "^7.0.0"
+    "@babel/plugin-transform-typescript" "^7.5.0"
+    "@babel/plugin-transform-unicode-regex" "^7.0.0"
+    "@babel/template" "^7.0.0"
+    babel-plugin-transform-flow-enums "^0.0.2"
+    react-refresh "^0.4.0"
+
+metro-react-native-babel-preset@^0.73.8:
   version "0.73.10"
   resolved "https://registry.yarnpkg.com/metro-react-native-babel-preset/-/metro-react-native-babel-preset-0.73.10.tgz#304b24bb391537d2c987732cc0a9774be227d3f6"
   integrity sha512-1/dnH4EHwFb2RKEKx34vVDpUS3urt2WEeR8FYim+ogqALg4sTpG7yeQPxWpbgKATezt4rNfqAANpIyH19MS4BQ==
@@ -5205,19 +5193,6 @@ metro-react-native-babel-preset@^0.73.7:
     "@babel/template" "^7.0.0"
     react-refresh "^0.4.0"
 
-metro-react-native-babel-transformer@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/metro-react-native-babel-transformer/-/metro-react-native-babel-transformer-0.76.5.tgz#08b7d4a0240ebdafc1f2ff0691a70a7f507a0de0"
-  integrity sha512-7m2u7jQ1I2mwGm48Vrki5cNNSv4d2HegHMGmE5G2AAa6Pr2O3ajaX2yNoAKF8TCLO38/8pa9fZd0VWAlO/YMcA==
-  dependencies:
-    "@babel/core" "^7.20.0"
-    babel-preset-fbjs "^3.4.0"
-    hermes-parser "0.8.0"
-    metro-babel-transformer "0.76.5"
-    metro-react-native-babel-preset "0.76.5"
-    metro-source-map "0.76.5"
-    nullthrows "^1.1.1"
-
 metro-react-native-babel-transformer@0.76.7:
   version "0.76.7"
   resolved "https://registry.yarnpkg.com/metro-react-native-babel-transformer/-/metro-react-native-babel-transformer-0.76.7.tgz#ccc7c25b49ee8a1860aafdbf48bfa5441d206f8f"
@@ -5229,23 +5204,26 @@ metro-react-native-babel-transformer@0.76.7:
     metro-react-native-babel-preset "0.76.7"
     nullthrows "^1.1.1"
 
-metro-resolver@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/metro-resolver/-/metro-resolver-0.76.5.tgz#9d5521d73d1f5e651e36a3d80aa0e6c3a4a74f6f"
-  integrity sha512-QNsbDdf0xL1HefP6fhh1g3umqiX1qWEuCiBaTFroYRqM7u7RATt8mCu4n/FwSYhATuUUujHTIb2EduuQPbSGRQ==
+metro-react-native-babel-transformer@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/metro-react-native-babel-transformer/-/metro-react-native-babel-transformer-0.76.8.tgz#c3a98e1f4cd5faf1e21eba8e004b94a90c4db69b"
+  integrity sha512-3h+LfS1WG1PAzhq8QF0kfXjxuXetbY/lgz8vYMQhgrMMp17WM1DNJD0gjx8tOGYbpbBC1qesJ45KMS4o5TA73A==
+  dependencies:
+    "@babel/core" "^7.20.0"
+    babel-preset-fbjs "^3.4.0"
+    hermes-parser "0.12.0"
+    metro-react-native-babel-preset "0.76.8"
+    nullthrows "^1.1.1"
 
 metro-resolver@0.76.7:
   version "0.76.7"
   resolved "https://registry.yarnpkg.com/metro-resolver/-/metro-resolver-0.76.7.tgz#f00ebead64e451c060f30926ecbf4f797588df52"
   integrity sha512-pC0Wgq29HHIHrwz23xxiNgylhI8Rq1V01kQaJ9Kz11zWrIdlrH0ZdnJ7GC6qA0ErROG+cXmJ0rJb8/SW1Zp2IA==
 
-metro-runtime@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/metro-runtime/-/metro-runtime-0.76.5.tgz#546d3baf498b2736565c0781810c80bd9d81212e"
-  integrity sha512-1JAf9/v/NDHLhoTfiJ0n25G6dRkX7mjTkaMJ6UUXIyfIuSucoK5yAuOBx8OveNIekoLRjmyvSmyN5ojEeRmpvQ==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    react-refresh "^0.4.0"
+metro-resolver@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/metro-resolver/-/metro-resolver-0.76.8.tgz#0862755b9b84e26853978322464fb37c6fdad76d"
+  integrity sha512-KccOqc10vrzS7ZhG2NSnL2dh3uVydarB7nOhjreQ7C4zyWuiW9XpLC4h47KtGQv3Rnv/NDLJYeDqaJ4/+140HQ==
 
 metro-runtime@0.76.7:
   version "0.76.7"
@@ -5255,19 +5233,13 @@ metro-runtime@0.76.7:
     "@babel/runtime" "^7.0.0"
     react-refresh "^0.4.0"
 
-metro-source-map@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/metro-source-map/-/metro-source-map-0.76.5.tgz#786153fcc93609c7d41c22cae16082b69cd60429"
-  integrity sha512-1EhYPcoftONlvnOzgos7daE8hsJKOgSN3nD3Xf/yaY1F0aLeGeuWfpiNLLeFDNyUhfObHSuNxNhDQF/x1GFEbw==
+metro-runtime@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/metro-runtime/-/metro-runtime-0.76.8.tgz#74b2d301a2be5f3bbde91b8f1312106f8ffe50c3"
+  integrity sha512-XKahvB+iuYJSCr3QqCpROli4B4zASAYpkK+j3a0CJmokxCDNbgyI4Fp88uIL6rNaZfN0Mv35S0b99SdFXIfHjg==
   dependencies:
-    "@babel/traverse" "^7.20.0"
-    "@babel/types" "^7.20.0"
-    invariant "^2.2.4"
-    metro-symbolicate "0.76.5"
-    nullthrows "^1.1.1"
-    ob1 "0.76.5"
-    source-map "^0.5.6"
-    vlq "^1.0.0"
+    "@babel/runtime" "^7.0.0"
+    react-refresh "^0.4.0"
 
 metro-source-map@0.76.7:
   version "0.76.7"
@@ -5283,16 +5255,18 @@ metro-source-map@0.76.7:
     source-map "^0.5.6"
     vlq "^1.0.0"
 
-metro-symbolicate@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/metro-symbolicate/-/metro-symbolicate-0.76.5.tgz#f2fbb75ca9436ea053bde702fa2a20146ff10be1"
-  integrity sha512-7iftzh6G6HO4UDBmjsi2Yu4d6IkApv6Kg+jmBvkTjCXr8HwnKKum89gMg/FRMix+Rhhut0dnMpz6mAbtKTU9JQ==
+metro-source-map@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/metro-source-map/-/metro-source-map-0.76.8.tgz#f085800152a6ba0b41ca26833874d31ec36c5a53"
+  integrity sha512-Hh0ncPsHPVf6wXQSqJqB3K9Zbudht4aUtNpNXYXSxH+pteWqGAXnjtPsRAnCsCWl38wL0jYF0rJDdMajUI3BDw==
   dependencies:
+    "@babel/traverse" "^7.20.0"
+    "@babel/types" "^7.20.0"
     invariant "^2.2.4"
-    metro-source-map "0.76.5"
+    metro-symbolicate "0.76.8"
     nullthrows "^1.1.1"
+    ob1 "0.76.8"
     source-map "^0.5.6"
-    through2 "^2.0.1"
     vlq "^1.0.0"
 
 metro-symbolicate@0.76.7:
@@ -5307,16 +5281,17 @@ metro-symbolicate@0.76.7:
     through2 "^2.0.1"
     vlq "^1.0.0"
 
-metro-transform-plugins@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/metro-transform-plugins/-/metro-transform-plugins-0.76.5.tgz#b4a49b5b55fd3bc24c5a65fa8e40ba07d84e4170"
-  integrity sha512-7pJ24aRuvzdQYpX/eOyodr4fnwVJP5ArNLBE1d0DOU9sQxsGplOORDTGAqw2L01+UgaSJiiwEoFMw7Z91HAS+Q==
+metro-symbolicate@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/metro-symbolicate/-/metro-symbolicate-0.76.8.tgz#f102ac1a306d51597ecc8fdf961c0a88bddbca03"
+  integrity sha512-LrRL3uy2VkzrIXVlxoPtqb40J6Bf1mlPNmUQewipc3qfKKFgtPHBackqDy1YL0njDsWopCKcfGtFYLn0PTUn3w==
   dependencies:
-    "@babel/core" "^7.20.0"
-    "@babel/generator" "^7.20.0"
-    "@babel/template" "^7.0.0"
-    "@babel/traverse" "^7.20.0"
+    invariant "^2.2.4"
+    metro-source-map "0.76.8"
     nullthrows "^1.1.1"
+    source-map "^0.5.6"
+    through2 "^2.0.1"
+    vlq "^1.0.0"
 
 metro-transform-plugins@0.76.7:
   version "0.76.7"
@@ -5329,22 +5304,15 @@ metro-transform-plugins@0.76.7:
     "@babel/traverse" "^7.20.0"
     nullthrows "^1.1.1"
 
-metro-transform-worker@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/metro-transform-worker/-/metro-transform-worker-0.76.5.tgz#d101ad46c1a607c7bc52f0a0888961d237df42bd"
-  integrity sha512-xN6Kb06o9u5A7M1bbl7oPfQFmt4Kmi3CMXp5j9OcK37AFc+u6YXH8x/6e9b3Cq50rlBYuCXDOOYAWI5/tYNt2w==
+metro-transform-plugins@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/metro-transform-plugins/-/metro-transform-plugins-0.76.8.tgz#d77c28a6547a8e3b72250f740fcfbd7f5408f8ba"
+  integrity sha512-PlkGTQNqS51Bx4vuufSQCdSn2R2rt7korzngo+b5GCkeX5pjinPjnO2kNhQ8l+5bO0iUD/WZ9nsM2PGGKIkWFA==
   dependencies:
     "@babel/core" "^7.20.0"
     "@babel/generator" "^7.20.0"
-    "@babel/parser" "^7.20.0"
-    "@babel/types" "^7.20.0"
-    babel-preset-fbjs "^3.4.0"
-    metro "0.76.5"
-    metro-babel-transformer "0.76.5"
-    metro-cache "0.76.5"
-    metro-cache-key "0.76.5"
-    metro-source-map "0.76.5"
-    metro-transform-plugins "0.76.5"
+    "@babel/template" "^7.0.0"
+    "@babel/traverse" "^7.20.0"
     nullthrows "^1.1.1"
 
 metro-transform-worker@0.76.7:
@@ -5365,59 +5333,23 @@ metro-transform-worker@0.76.7:
     metro-transform-plugins "0.76.7"
     nullthrows "^1.1.1"
 
-metro@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/metro/-/metro-0.76.5.tgz#0defc2a773dcdfe6569d1bd7f7a25a7424ce6f11"
-  integrity sha512-aEQiqNFibfx4ajUXm7Xatsv43r/UQ0xE53T3XqgZBzsxhF235tf1cl8t0giawi0RbLtDS+Fu4kg2bVBKDYFy7A==
+metro-transform-worker@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/metro-transform-worker/-/metro-transform-worker-0.76.8.tgz#b9012a196cee205170d0c899b8b175b9305acdea"
+  integrity sha512-mE1fxVAnJKmwwJyDtThildxxos9+DGs9+vTrx2ktSFMEVTtXS/bIv2W6hux1pqivqAfyJpTeACXHk5u2DgGvIQ==
   dependencies:
-    "@babel/code-frame" "^7.0.0"
     "@babel/core" "^7.20.0"
     "@babel/generator" "^7.20.0"
     "@babel/parser" "^7.20.0"
-    "@babel/template" "^7.0.0"
-    "@babel/traverse" "^7.20.0"
     "@babel/types" "^7.20.0"
-    accepts "^1.3.7"
-    async "^3.2.2"
-    chalk "^4.0.0"
-    ci-info "^2.0.0"
-    connect "^3.6.5"
-    debug "^2.2.0"
-    denodeify "^1.2.1"
-    error-stack-parser "^2.0.6"
-    graceful-fs "^4.2.4"
-    hermes-parser "0.8.0"
-    image-size "^1.0.2"
-    invariant "^2.2.4"
-    jest-worker "^27.2.0"
-    jsc-safe-url "^0.2.2"
-    lodash.throttle "^4.1.1"
-    metro-babel-transformer "0.76.5"
-    metro-cache "0.76.5"
-    metro-cache-key "0.76.5"
-    metro-config "0.76.5"
-    metro-core "0.76.5"
-    metro-file-map "0.76.5"
-    metro-inspector-proxy "0.76.5"
-    metro-minify-terser "0.76.5"
-    metro-minify-uglify "0.76.5"
-    metro-react-native-babel-preset "0.76.5"
-    metro-resolver "0.76.5"
-    metro-runtime "0.76.5"
-    metro-source-map "0.76.5"
-    metro-symbolicate "0.76.5"
-    metro-transform-plugins "0.76.5"
-    metro-transform-worker "0.76.5"
-    mime-types "^2.1.27"
-    node-fetch "^2.2.0"
+    babel-preset-fbjs "^3.4.0"
+    metro "0.76.8"
+    metro-babel-transformer "0.76.8"
+    metro-cache "0.76.8"
+    metro-cache-key "0.76.8"
+    metro-source-map "0.76.8"
+    metro-transform-plugins "0.76.8"
     nullthrows "^1.1.1"
-    rimraf "^3.0.2"
-    serialize-error "^2.1.0"
-    source-map "^0.5.6"
-    strip-ansi "^6.0.0"
-    throat "^5.0.0"
-    ws "^7.5.1"
-    yargs "^17.6.2"
 
 metro@0.76.7:
   version "0.76.7"
@@ -5462,6 +5394,60 @@ metro@0.76.7:
     metro-symbolicate "0.76.7"
     metro-transform-plugins "0.76.7"
     metro-transform-worker "0.76.7"
+    mime-types "^2.1.27"
+    node-fetch "^2.2.0"
+    nullthrows "^1.1.1"
+    rimraf "^3.0.2"
+    serialize-error "^2.1.0"
+    source-map "^0.5.6"
+    strip-ansi "^6.0.0"
+    throat "^5.0.0"
+    ws "^7.5.1"
+    yargs "^17.6.2"
+
+metro@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/metro/-/metro-0.76.8.tgz#ba526808b99977ca3f9ac5a7432fd02a340d13a6"
+  integrity sha512-oQA3gLzrrYv3qKtuWArMgHPbHu8odZOD9AoavrqSFllkPgOtmkBvNNDLCELqv5SjBfqjISNffypg+5UGG3y0pg==
+  dependencies:
+    "@babel/code-frame" "^7.0.0"
+    "@babel/core" "^7.20.0"
+    "@babel/generator" "^7.20.0"
+    "@babel/parser" "^7.20.0"
+    "@babel/template" "^7.0.0"
+    "@babel/traverse" "^7.20.0"
+    "@babel/types" "^7.20.0"
+    accepts "^1.3.7"
+    async "^3.2.2"
+    chalk "^4.0.0"
+    ci-info "^2.0.0"
+    connect "^3.6.5"
+    debug "^2.2.0"
+    denodeify "^1.2.1"
+    error-stack-parser "^2.0.6"
+    graceful-fs "^4.2.4"
+    hermes-parser "0.12.0"
+    image-size "^1.0.2"
+    invariant "^2.2.4"
+    jest-worker "^27.2.0"
+    jsc-safe-url "^0.2.2"
+    lodash.throttle "^4.1.1"
+    metro-babel-transformer "0.76.8"
+    metro-cache "0.76.8"
+    metro-cache-key "0.76.8"
+    metro-config "0.76.8"
+    metro-core "0.76.8"
+    metro-file-map "0.76.8"
+    metro-inspector-proxy "0.76.8"
+    metro-minify-terser "0.76.8"
+    metro-minify-uglify "0.76.8"
+    metro-react-native-babel-preset "0.76.8"
+    metro-resolver "0.76.8"
+    metro-runtime "0.76.8"
+    metro-source-map "0.76.8"
+    metro-symbolicate "0.76.8"
+    metro-transform-plugins "0.76.8"
+    metro-transform-worker "0.76.8"
     mime-types "^2.1.27"
     node-fetch "^2.2.0"
     nullthrows "^1.1.1"
@@ -5652,15 +5638,15 @@ nullthrows@^1.1.1:
   resolved "https://registry.yarnpkg.com/nullthrows/-/nullthrows-1.1.1.tgz#7818258843856ae971eae4208ad7d7eb19a431b1"
   integrity sha512-2vPPEi+Z7WqML2jZYddDIfy5Dqb0r2fze2zTxNNknZaFpVHU3mFB3R+DWeJWGVx0ecvttSGlJTI+WG+8Z4cDWw==
 
-ob1@0.76.5:
-  version "0.76.5"
-  resolved "https://registry.yarnpkg.com/ob1/-/ob1-0.76.5.tgz#85476959743d8f6722faf0ac29bee8861f50120b"
-  integrity sha512-HoxZXMXNuY/eIXGoX7gx1C4O3eB4kJJMola6KoFaMm7PGGg39+AnhbgMASYVmSvP2lwU3545NyiR63g8J9PW3w==
-
 ob1@0.76.7:
   version "0.76.7"
   resolved "https://registry.yarnpkg.com/ob1/-/ob1-0.76.7.tgz#95b68fadafd47e7a6a0ad64cf80f3140dd6d1124"
   integrity sha512-BQdRtxxoUNfSoZxqeBGOyuT9nEYSn18xZHwGMb0mMVpn2NBcYbnyKY4BK2LIHRgw33CBGlUmE+KMaNvyTpLLtQ==
+
+ob1@0.76.8:
+  version "0.76.8"
+  resolved "https://registry.yarnpkg.com/ob1/-/ob1-0.76.8.tgz#ac4c459465b1c0e2c29aaa527e09fc463d3ffec8"
+  integrity sha512-dlBkJJV5M/msj9KYA9upc+nUWVwuOFFTbu28X6kZeGwcuW+JxaHSBZ70SYQnk5M+j5JbNLR6yKHmgW4M5E7X5g==
 
 object-assign@^4.1.1:
   version "4.1.1"
@@ -6249,21 +6235,21 @@ react-native-webview@^11.23.0:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
 
-react-native@0.72.0:
-  version "0.72.0"
-  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.72.0.tgz#fc76b4f31896b463cee01dd1a90657b97d2b5ffd"
-  integrity sha512-BP2qq5f05pl3zV+eYgW7nmjCV+3zLXs/Vm69xMTCLD34U2bvRhuWbuUhqpauw7fyk5c8+LrY9NKcnARCkqKXcw==
+react-native@0.72.4:
+  version "0.72.4"
+  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.72.4.tgz#97b57e22e4d7657eaf4d1f62a678511fcf9bdda7"
+  integrity sha512-+vrObi0wZR+NeqL09KihAAdVlQ9IdplwznJWtYrjnQ4UbCW6rkzZJebRsugwUneSOKNFaHFEo1uKU89HsgtYBg==
   dependencies:
     "@jest/create-cache-key-function" "^29.2.1"
-    "@react-native-community/cli" "11.3.2"
-    "@react-native-community/cli-platform-android" "11.3.2"
-    "@react-native-community/cli-platform-ios" "11.3.2"
+    "@react-native-community/cli" "11.3.6"
+    "@react-native-community/cli-platform-android" "11.3.6"
+    "@react-native-community/cli-platform-ios" "11.3.6"
     "@react-native/assets-registry" "^0.72.0"
     "@react-native/codegen" "^0.72.6"
-    "@react-native/gradle-plugin" "^0.72.10"
+    "@react-native/gradle-plugin" "^0.72.11"
     "@react-native/js-polyfills" "^0.72.1"
     "@react-native/normalize-colors" "^0.72.0"
-    "@react-native/virtualized-lists" "^0.72.5"
+    "@react-native/virtualized-lists" "^0.72.8"
     abort-controller "^3.0.0"
     anser "^1.4.9"
     base64-js "^1.1.2"
@@ -6274,8 +6260,8 @@ react-native@0.72.0:
     jest-environment-node "^29.2.1"
     jsc-android "^250231.0.0"
     memoize-one "^5.0.0"
-    metro-runtime "0.76.5"
-    metro-source-map "0.76.5"
+    metro-runtime "0.76.8"
+    metro-source-map "0.76.8"
     mkdirp "^0.5.1"
     nullthrows "^1.1.1"
     pretty-format "^26.5.2"
@@ -6566,6 +6552,13 @@ semver@^7.3.5, semver@^7.3.7:
   version "7.5.3"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.5.3.tgz#161ce8c2c6b4b3bdca6caadc9fa3317a4c4fe88e"
   integrity sha512-QBlUtyVk/5EeHbi7X0fw6liDZc7BBmEaSYn01fMU1OUYbf6GPsbTtd8WmnqbI20SeycoHSeiybkE/q1Q+qlThQ==
+  dependencies:
+    lru-cache "^6.0.0"
+
+semver@^7.5.2:
+  version "7.5.4"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.5.4.tgz#483986ec4ed38e1c6c48c34894a9182dbff68a6e"
+  integrity sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==
   dependencies:
     lru-cache "^6.0.0"
 
