@@ -34,7 +34,6 @@ export default class HighlightCell extends React.Component{
   )
   
   _trigger_delete = () => {
-    console.log("Trigger DELETE", this.props.highlight)
     Auth.selected_user?.delete_highlight(this.props.highlight?.id)
   }
   
@@ -101,7 +100,7 @@ export default class HighlightCell extends React.Component{
         >
           {
             highlight.content_text && 
-            <Text style={{color: "#000", fontSize: 15}}>{highlight.content_text}</Text>
+            <Text style={{color: App.theme_text_color(), fontSize: 15}}>{highlight.content_text}</Text>
           }
           {
             highlight.title &&

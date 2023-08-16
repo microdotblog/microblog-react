@@ -769,13 +769,13 @@ export default App = types.model('App', {
     return self.theme === "dark" ? "#212936" : "#EFEFEF"
   },
   theme_highlight_background_color(){
-    return self.theme === "dark" ? "rgb(234,179,8)" : "rgb(254,249,195)"
+    return self.theme === "dark" ? "#1F2937" : "rgb(254,249,195)"
   },
   theme_highlight_border_color(){
-    return self.theme === "dark" ? "rgb(254,243,199)" : "rgb(254,240,138)"
+    return self.theme === "dark" ? "#f2dede" : "rgb(254,240,138)"
   },
   theme_highlight_meta_text_color() {
-    return self.theme === "dark" ? "rgba(0,0,0,0.6)" : "gray"
+    return "gray"
   },
   should_reload_web_view() {
     // When it returns true, this will trigger a reload of the webviews
