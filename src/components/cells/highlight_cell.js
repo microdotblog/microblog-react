@@ -92,7 +92,7 @@ export default class HighlightCell extends React.Component{
         <TouchableOpacity
           style={{
             padding: 15,
-            borderColor: App.theme_highlight_border_color(),
+            borderColor: App.theme_alt_background_div_color(),
             borderBottomWidth: .5,
             backgroundColor: App.theme_highlight_background_color()
           }}
