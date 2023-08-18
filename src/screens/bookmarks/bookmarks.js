@@ -55,10 +55,11 @@ export default class BookmarksScreen extends React.Component{
       }
       <GenericScreenComponent
         can_show_web_view={Auth.is_logged_in() && !Auth.is_selecting_user && !App.should_reload_web_view()}
-        endpoint="hybrid/favorites"
+        endpoint={Auth.is_logged_in() && Auth.selected_user?.selected_tag != null ? `hybrid/favorites?tag=${Auth.selected_user?.selected_tag}` : "hybrid/favorites"}
         component_id={this.props.componentId}
         title="Bookmarks"
         loading_text="Loading bookmarks..."
+        is_filtered={Auth.selected_user?.selected_tag != null}
       />
       </>
     )
