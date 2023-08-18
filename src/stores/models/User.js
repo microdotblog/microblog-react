@@ -116,8 +116,9 @@ export default User = types.model('User', {
       console.log("User:fetch_tags")
       App.set_is_loading_highlights(true)
       const tags = yield MicroBlogApi.bookmark_tags()
-      if(tags !== API_ERROR && tags.items){
-        //self.bookmark_tags = highlights.items
+      console.log("User:fetch_tags:tags", tags)
+      if(tags !== API_ERROR && tags != null){
+        self.bookmark_tags = tags
       }
       App.set_is_loading_highlights(false)
       console.log("User:fetch_tags:count", self.bookmark_tags.length)
