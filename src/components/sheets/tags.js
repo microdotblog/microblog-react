@@ -21,8 +21,7 @@ export default class TagsMenu extends React.Component{
   }
   
   _render_tags = () => {
-    const { bookmark_tags } = Auth.selected_user
-    return bookmark_tags.map((tag) => {
+    return Auth.selected_user?.filtered_tags().map((tag) => {
       return(
         <TouchableOpacity
           key={`tag-${tag}`}

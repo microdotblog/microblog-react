@@ -22,7 +22,8 @@ export default User = types.model('User', {
     bookmark_highlights: types.optional(types.array(Highlight), []),
     bookmark_tags: types.optional(types.array(types.string), []),
     bookmark_recent_tags: types.optional(types.array(types.string), []),
-    selected_tag: types.maybeNull(types.string)
+    selected_tag: types.maybeNull(types.string),
+    bookmark_tag_filter_query: types.maybeNull(types.string)
   })
   .actions(self => ({
 
@@ -143,11 +144,20 @@ export default User = types.model('User', {
       self.selected_tag = tag
     }),
     
+    set_bookmark_tag_filter_query: flow(function* (query = "") {
+      console.log("User:set_bookmark_tag_filter_query", query)
+      self.bookmark_tag_filter_query = query
+    }),
+    
   }))
   .views(self => ({
     
     token(){
       return Tokens.token_for_username(self.username)?.token
+    },
+    
+    filtered_tags(){
+      return self.bookmark_tag_filter_query != null && self.bookmark_tag_filter_query != "" && self.bookmark_tags.length > 0 ? self.bookmark_tags.filter(tag => tag === self.bookmark_tag_filter_query) : self.bookmark_tags
     }
     
   }))
