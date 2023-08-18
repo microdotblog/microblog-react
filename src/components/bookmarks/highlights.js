@@ -7,6 +7,7 @@ import { highlightsScreen, tagsBottomSheet } from './../../screens/'
 import { SvgXml } from 'react-native-svg';
 import { SFSymbol } from "react-native-sfsymbols";
 import SearchIcon from '../../assets/icons/nav/discover.png';
+import { MenuView } from '@react-native-menu/menu';
 
 @observer
 export default class HighlightsHeader extends React.Component{
@@ -55,7 +56,7 @@ export default class HighlightsHeader extends React.Component{
         }
         {
           Auth.selected_user.bookmark_tags.length > 0 &&
-          <TouchableOpacity
+          <MenuView
             style={{
               borderColor: App.theme_border_color(),
               borderWidth: 1,
@@ -64,7 +65,38 @@ export default class HighlightsHeader extends React.Component{
               flexDirection: "row",
               alignItems: "center"
             }}
-            onPress={() => tagsBottomSheet()}
+            onPressAction={({ nativeEvent }) => {
+              const event_id = nativeEvent.event
+              if (event_id === 'all_tags') {
+                console.log('all_tags')
+                tagsBottomSheet()
+              } else{
+                // Let's not do anything too fancy and just try and set the tag given by the event_id
+                console.log('tag', event_id)
+                Auth.selected_user?.set_selected_tag(event_id)
+              }
+            }}
+            actions={[
+              {
+                title: "Recent tags",
+                attributes: {
+                  disabled: true
+                }
+              },
+              ...Auth.selected_user?.bookmark_recent_tags.map((tag) => {
+                return {
+                  title: tag,
+                  id: tag
+                }
+              }),
+              {
+                title: "All Tags",
+                id: "all_tags",
+                image: Platform.select({
+                  ios: 'tag'
+                })
+              },
+            ]}
           >
           {
             Platform.OS === "ios" ?
@@ -86,7 +118,7 @@ export default class HighlightsHeader extends React.Component{
                 color: App.theme_text_color()
               }}
             >Tags</Text>
-          </TouchableOpacity>
+          </MenuView>
         }
       </View>
     )

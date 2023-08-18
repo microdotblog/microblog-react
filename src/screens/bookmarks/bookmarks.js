@@ -43,6 +43,7 @@ export default class BookmarksScreen extends React.Component{
     if(Auth.is_logged_in() && Auth.selected_user != null){
       Auth.selected_user.fetch_highlights()
       Auth.selected_user.fetch_tags()
+      Auth.selected_user.fetch_recent_tags()
     }
   }
 

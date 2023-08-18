@@ -429,6 +429,27 @@ class MicroBlogApi {
 			});
 		return data;
 	}
+	
+	async bookmark_recent_tags(count = 10) {
+		// Would be nice to have this optional in the above command.
+		// One day I'd like to work on a bit on more DRY'ness.
+		console.log('MicroBlogApi: bookmark_recent_tags');
+		const data = axios
+			.get(`/posts/bookmarks/tags?recent=1&count=${count}`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+			})
+			.then(response => {
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: bookmark_recent_tags', error);
+				return API_ERROR;
+			});
+		return data;
+	}
   
 }
 

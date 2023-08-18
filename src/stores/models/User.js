@@ -21,6 +21,7 @@ export default User = types.model('User', {
     did_complete_auto_register_push: types.optional(types.boolean, false),
     bookmark_highlights: types.optional(types.array(Highlight), []),
     bookmark_tags: types.optional(types.array(types.string), []),
+    bookmark_recent_tags: types.optional(types.array(types.string), []),
     selected_tag: types.maybeNull(types.string)
   })
   .actions(self => ({
@@ -52,6 +53,7 @@ export default User = types.model('User', {
         self.update_avatar()
         self.fetch_highlights()
         self.fetch_tags()
+        self.fetch_recent_tags()
         self.selected_tag = null
       }
       self.toggling_push = false
@@ -124,6 +126,16 @@ export default User = types.model('User', {
       }
       App.set_is_loading_highlights(false)
       console.log("User:fetch_tags:count", self.bookmark_tags.length)
+    }),
+    
+    fetch_recent_tags: flow(function* () {
+      console.log("User:fetch_recent_tags")
+      const tags = yield MicroBlogApi.bookmark_recent_tags(5)
+      console.log("User:fetch_recent_tags:tags", tags)
+      if(tags !== API_ERROR && tags != null){
+        self.bookmark_recent_tags = tags
+      }
+      console.log("User:fetch_recent_tags:count", self.bookmark_recent_tags.length)
     }),
     
     set_selected_tag: flow(function* (tag = null) {
