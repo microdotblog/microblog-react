@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useRef } from 'react';
 import { observer } from 'mobx-react';
-import { ScrollView, TouchableOpacity, Text, Platform } from 'react-native';
+import { ScrollView, TouchableOpacity, Text, Platform, TextInput, Keyboard, View } from 'react-native';
 import ActionSheet, { useScrollHandlers, ActionSheetRef, SheetManager } from "react-native-actions-sheet";
 import App from '../../stores/App'
 import SheetHeader from "./header";
@@ -73,8 +73,44 @@ export default class TagsMenu extends React.Component{
           backgroundColor: App.theme_background_color_secondary()
         }}
       >
-      <SheetHeader title="Tags" />
-      <ScrollView style={{maxHeight: 700, marginBottom: 25, paddingHorizontal: 25}} {...this.scrollHandlers}>
+      <View
+        style={{
+          padding: 15,
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: 16,
+          paddingBottom: 5
+        }}
+      >
+        <Text style={{ fontWeight: '800', marginBottom: 15, color: App.theme_text_color() }}>Tags</Text>
+        <TextInput
+          placeholderTextColor="lightgrey"
+          placeholder={"Search tags..."}
+          returnKeyType={'search'}
+          blurOnSubmit={true}
+          //autoFocus={true}
+          autoCorrect={true}
+          autoCapitalize="none"
+          clearButtonMode={'always'}
+          enablesReturnKeyAutomatically={true}
+          underlineColorAndroid={'transparent'}
+          style={{ 
+            backgroundColor: App.theme_button_background_color(), 
+            fontSize: 16,
+            borderColor: App.theme_border_color(), 
+            borderWidth: 1,
+            borderRadius: 15,
+            paddingHorizontal: 15,
+            paddingVertical: 4,
+            minWidth: "87%",
+            color: App.theme_text_color()
+          }}
+          onSubmitEditing={Keyboard.dismiss}
+          onChangeText={(text) => Auth.selected_user.set_bookmark_tag_filter_query(text)}
+          value={Auth.selected_user.bookmark_tag_filter_query}
+        />
+      </View>
+      <ScrollView keyboardShouldPersistTaps={'always'} style={{maxHeight: 700, marginBottom: 25, paddingHorizontal: 25}} {...this.scrollHandlers}>
         {this._render_tags()}
       </ScrollView>
       </ActionSheet>
