@@ -6,6 +6,7 @@ import Auth from '../../stores/Auth';
 import { highlightsScreen, tagsBottomSheet } from './../../screens/'
 import { SvgXml } from 'react-native-svg';
 import { SFSymbol } from "react-native-sfsymbols";
+import SearchIcon from '../../assets/icons/nav/discover.png';
 
 @observer
 export default class HighlightsHeader extends React.Component{
@@ -13,13 +14,45 @@ export default class HighlightsHeader extends React.Component{
   render() {
     return(
       <View style={{ padding: 11, paddingHorizontal: 15, backgroundColor: App.theme_input_background_color(), width: '100%', flexDirection: "row", justifyContent: "space-between" }}>
-        <TouchableOpacity onPress={() => highlightsScreen()} style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text style={{ color: App.theme_text_color(), fontSize: 18 }}>{Auth.selected_user?.bookmark_highlights?.length} {Auth.selected_user?.bookmark_highlights?.length > 1 ? "highlights" : "highlight"}</Text>
-          {
-            App.is_loading_highlights &&
-            <ActivityIndicator color="#f80" style={{marginLeft: 8}} />
-          }
-        </TouchableOpacity>
+        {
+          Auth.selected_user?.selected_tag == null ?
+          <TouchableOpacity onPress={() => highlightsScreen()} style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={{ color: App.theme_text_color(), fontSize: 18 }}>{Auth.selected_user?.bookmark_highlights?.length} {Auth.selected_user?.bookmark_highlights?.length > 1 ? "highlights" : "highlight"}</Text>
+            {
+              App.is_loading_highlights &&
+              <ActivityIndicator color="#f80" style={{marginLeft: 8}} />
+            }
+          </TouchableOpacity>
+          :
+          <View style={{flexDirection: "row", alignItems: "center"}}>
+            <TouchableOpacity
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                borderColor: App.theme_border_color(),
+                borderWidth: 1,
+                padding: 4,
+                borderRadius: 50,
+                marginRight: 8,
+                width: 26,
+                height: 26
+              }}
+              onPress={() => Auth.selected_user?.set_selected_tag(null)}
+            >
+            {
+              Platform.OS === "ios" ?
+              <SFSymbol
+                name={"xmark"}
+                color={App.theme_button_text_color()}
+                style={{ height: 12, width: 12 }}
+              />
+              :
+              <Image source={SearchIcon} style={{ height: 22, width: 22, tintColor: App.theme_button_text_color() }} />
+            }
+            </TouchableOpacity>
+            <Text style={{ color: App.theme_text_color(), fontSize: 18 }}>tag: {Auth.selected_user?.selected_tag}</Text>
+          </View>
+        }
         {
           Auth.selected_user.bookmark_tags.length > 0 &&
           <TouchableOpacity
