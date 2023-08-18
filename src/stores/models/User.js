@@ -142,6 +142,9 @@ export default User = types.model('User', {
     set_selected_tag: flow(function* (tag = null) {
       console.log("User:set_selected_tag", tag)
       self.selected_tag = tag
+      if(tag == null){
+        self.set_bookmark_tag_filter_query(null)
+      }
     }),
     
     set_bookmark_tag_filter_query: flow(function* (query = "") {
@@ -157,7 +160,7 @@ export default User = types.model('User', {
     },
     
     filtered_tags(){
-      return self.bookmark_tag_filter_query != null && self.bookmark_tag_filter_query != "" && self.bookmark_tags.length > 0 ? self.bookmark_tags.filter(tag => tag === self.bookmark_tag_filter_query) : self.bookmark_tags
+      return self.bookmark_tag_filter_query != null && self.bookmark_tag_filter_query != "" && self.bookmark_tags.length > 0 ? self.bookmark_tags.filter(tag => tag.includes(self.bookmark_tag_filter_query)) : self.bookmark_tags
     }
     
   }))
