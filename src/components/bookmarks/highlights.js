@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import App from './../../stores/App';
 import Auth from '../../stores/Auth';
 import { highlightsScreen, tagsBottomSheet } from './../../screens/'
-import { SvgFromXml } from 'react-native-svg';
+import { SvgXml } from 'react-native-svg';
 
 @observer
 export default class HighlightsHeader extends React.Component{
@@ -32,7 +32,7 @@ export default class HighlightsHeader extends React.Component{
             }}
             onPress={() => tagsBottomSheet()}
           >
-            <SvgFromXml
+            <SvgXml
               style={{
                 marginRight: 4
               }}

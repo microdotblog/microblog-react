@@ -20,7 +20,8 @@ export default User = types.model('User', {
     toggling_push: types.optional(types.boolean, false),
     did_complete_auto_register_push: types.optional(types.boolean, false),
     bookmark_highlights: types.optional(types.array(Highlight), []),
-    bookmark_tags: types.optional(types.array(types.string), [])
+    bookmark_tags: types.optional(types.array(types.string), []),
+    selected_tag: types.maybeNull(types.string)
   })
   .actions(self => ({
 
@@ -51,6 +52,7 @@ export default User = types.model('User', {
         self.update_avatar()
         self.fetch_highlights()
         self.fetch_tags()
+        self.selected_tag = null
       }
       self.toggling_push = false
     }),
@@ -122,7 +124,12 @@ export default User = types.model('User', {
       }
       App.set_is_loading_highlights(false)
       console.log("User:fetch_tags:count", self.bookmark_tags.length)
-    })
+    }),
+    
+    set_selected_tag: flow(function* (tag = null) {
+      console.log("User:set_selected_tag", tag)
+      self.selected_tag = tag
+    }),
     
   }))
   .views(self => ({
