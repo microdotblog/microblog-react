@@ -168,6 +168,12 @@ export default User = types.model('User', {
       self.is_fetching_tags_for_bookmark = false
     }),
     
+    set_selected_temp_tag: flow(function* (tag) {
+      console.log("User:set_selected_temp_tag", tag)
+      // TODO: Set selected tag against temporary bookmark tag list
+      // Check items already exist in array before doing so.
+    }),
+    
   }))
   .views(self => ({
     
@@ -182,6 +188,5 @@ export default User = types.model('User', {
     temporary_tags_array(){
       return self.temporary_tags_for_bookmark.split(",")
     }
-    
     
   }))

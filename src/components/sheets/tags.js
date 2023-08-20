@@ -101,7 +101,7 @@ export default class TagsMenu extends React.Component{
             borderRadius: 15,
             paddingHorizontal: 15,
             paddingVertical: 4,
-            minWidth: "87%",
+            minWidth: "100%",
             color: App.theme_text_color()
           }}
           onSubmitEditing={Keyboard.dismiss}

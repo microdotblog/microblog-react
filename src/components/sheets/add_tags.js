@@ -25,8 +25,7 @@ export default class AddTagsMenu extends React.Component{
         <TouchableOpacity
           key={`tag-${tag}`}
           onPress={() => {
-            Auth.selected_user.set_selected_tag(tag)
-            SheetManager.hide(this.props.sheetId);
+            Auth.selected_user.set_selected_temp_tag(tag)
           }}
           style={{
             flexDirection: "row",
@@ -102,7 +101,7 @@ export default class AddTagsMenu extends React.Component{
             borderRadius: 15,
             paddingHorizontal: 15,
             paddingVertical: 4,
-            minWidth: "87%",
+            minWidth: "100%",
             color: App.theme_text_color()
           }}
           onSubmitEditing={Keyboard.dismiss}
@@ -111,6 +110,7 @@ export default class AddTagsMenu extends React.Component{
         />
       </View>
       <ScrollView keyboardShouldPersistTaps={'always'} style={{maxHeight: 700, marginBottom: 25, paddingHorizontal: 25}} {...this.scrollHandlers}>
+      {this._render_tags()}
       </ScrollView>
       </ActionSheet>
     )
