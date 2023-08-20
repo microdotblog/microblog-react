@@ -158,12 +158,14 @@ export default User = types.model('User', {
     
     fetch_tags_for_bookmark: flow(function* (id) {
       console.log("User:fetch_tags_for_bookmark", id)
+      self.is_fetching_tags_for_bookmark = true
       const data = yield MicroBlogApi.bookmark_by_id(id)
       console.log("User:fetch_tags_for_bookmark:data", data)
       if(data !== API_ERROR && data.items[0] != null){
         self.temporary_tags_for_bookmark = data.items[0].tags
       }
       console.log("User:temporary_tags_for_bookmark:array", self.temporary_tags_array())
+      self.is_fetching_tags_for_bookmark = false
     }),
     
   }))

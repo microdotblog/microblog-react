@@ -82,6 +82,7 @@ export default class AddTagsMenu extends React.Component{
         }}
       >
         <Text style={{ fontWeight: '800', marginBottom: 15, color: App.theme_text_color() }}>Add Tags</Text>
+        <Text style={{ marginBottom: 15, color: App.theme_text_color() }}>Assign tags to a bookmark to help organize your bookmarks and find them later.</Text>
         <TextInput
           placeholderTextColor="lightgrey"
           placeholder={"Search tags..."}
