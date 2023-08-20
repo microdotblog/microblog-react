@@ -186,7 +186,7 @@ export default User = types.model('User', {
     },
     
     temporary_tags_array(){
-      return self.temporary_tags_for_bookmark.split(",")
+      return self.temporary_tags_for_bookmark.split(", ")
     }
     
   }))
