@@ -92,11 +92,13 @@ import ProfileMoreMenu from "./../components/sheets/profile_more"
 import TagmojiMenu from "../components/sheets/tagmoji";
 import PostsDestinationMenu from "../components/sheets/posts_destination";
 import TagsMenu from "../components/sheets/tags";
+import AddTagsMenu from "../components/sheets/add_tags";
 registerSheet("main_sheet", SheetMenu);
 registerSheet("profile_more_menu", ProfileMoreMenu);
 registerSheet("tagmoji_menu", TagmojiMenu);
 registerSheet("posts_destination_menu", PostsDestinationMenu);
 registerSheet("tags_menu", TagsMenu)
+registerSheet("add_tags_sheet", AddTagsMenu)
 
 import Push from "../stores/Push"
 import { theme_options } from "../utils/navigation"
@@ -1190,4 +1192,11 @@ export const tagsBottomSheet = (close = false) => {
     return SheetManager.show("tags_menu")
   }
   SheetManager.hide("tags_menu")
+}
+
+export const addTagsBottomSheet = (close = false) => {
+  if(!close){
+    return SheetManager.show("add_tags_sheet")
+  }
+  SheetManager.hide("add_tags_sheet")
 }

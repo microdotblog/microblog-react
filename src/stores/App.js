@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen, settingsScreen, postsScreen, pagesScreen, uploadsScreen, postOptionsSettingsScreen } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen, settingsScreen, postsScreen, pagesScreen, uploadsScreen, postOptionsSettingsScreen, addTagsBottomSheet } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
@@ -178,6 +178,10 @@ export default App = types.model('App', {
         if (action != null && action_data != null) {
           if (action === "user" || action === "photo" || action === "open" || action === "reply") {
             self.navigate_to_screen(action, action_data)
+          }
+          else if (action === "tag"){
+            Auth.selected_user?.fetch_tags_for_bookmark(action_data)
+            addTagsBottomSheet()
           }
         }
       }

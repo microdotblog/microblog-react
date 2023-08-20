@@ -23,7 +23,9 @@ export default User = types.model('User', {
     bookmark_tags: types.optional(types.array(types.string), []),
     bookmark_recent_tags: types.optional(types.array(types.string), []),
     selected_tag: types.maybeNull(types.string),
-    bookmark_tag_filter_query: types.maybeNull(types.string)
+    bookmark_tag_filter_query: types.maybeNull(types.string),
+    temporary_tags_for_bookmark: types.optional(types.string, ""),// We'll use this to set the temporary bookmarks for a given bookmark.
+    is_fetching_tags_for_bookmark: types.optional(types.boolean, false)
   })
   .actions(self => ({
 
@@ -56,6 +58,8 @@ export default User = types.model('User', {
         self.fetch_tags()
         self.fetch_recent_tags()
         self.selected_tag = null
+        self.is_fetching_tags_for_bookmark = false
+        self.temporary_tags_for_bookmark = ""
       }
       self.toggling_push = false
     }),
@@ -152,6 +156,16 @@ export default User = types.model('User', {
       self.bookmark_tag_filter_query = query
     }),
     
+    fetch_tags_for_bookmark: flow(function* (id) {
+      console.log("User:fetch_tags_for_bookmark", id)
+      const data = yield MicroBlogApi.bookmark_by_id(id)
+      console.log("User:fetch_tags_for_bookmark:data", data)
+      if(data !== API_ERROR && data.items[0] != null){
+        self.temporary_tags_for_bookmark = data.items[0].tags
+      }
+      console.log("User:temporary_tags_for_bookmark:array", self.temporary_tags_array())
+    }),
+    
   }))
   .views(self => ({
     
@@ -161,6 +175,11 @@ export default User = types.model('User', {
     
     filtered_tags(){
       return self.bookmark_tag_filter_query != null && self.bookmark_tag_filter_query != "" && self.bookmark_tags.length > 0 ? self.bookmark_tags.filter(tag => tag.includes(self.bookmark_tag_filter_query)) : self.bookmark_tags
+    },
+    
+    temporary_tags_array(){
+      return self.temporary_tags_for_bookmark.split(",")
     }
+    
     
   }))
