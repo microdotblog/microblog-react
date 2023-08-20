@@ -450,6 +450,47 @@ class MicroBlogApi {
 			});
 		return data;
 	}
+	
+	async bookmark_by_id(id) {
+		console.log('MicroBlogApi: bookmark_by_id', id);
+		const data = axios
+			.get(`/posts/bookmarks/${id}`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+			})
+			.then(response => {
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: bookmark_by_id', error);
+				return API_ERROR;
+			});
+		return data;
+	}
+	
+	async save_tags_for_bookmark_by_id(id, tags) {
+		console.log('MicroBlogApi: save_tags_for_bookmark_by_id', id, tags);
+		const data = axios
+			.post(`/posts/bookmarks/${id}`, "", {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+				params: {
+					tags: tags
+				}
+			})
+			.then(response => {
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: save_tags_for_bookmark_by_id', error);
+				return API_ERROR;
+			});
+		return data;
+	}
   
 }
 

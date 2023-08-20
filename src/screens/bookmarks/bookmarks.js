@@ -56,7 +56,7 @@ export default class BookmarksScreen extends React.Component{
       }
       <GenericScreenComponent
         can_show_web_view={Auth.is_logged_in() && !Auth.is_selecting_user && !App.should_reload_web_view()}
-        endpoint={Auth.is_logged_in() && Auth.selected_user?.selected_tag != null ? `hybrid/favorites?tag=${Auth.selected_user?.selected_tag}` : "hybrid/favorites"}
+        endpoint={Auth.is_logged_in() && Auth.selected_user?.selected_tag != null ? `hybrid/favorites?tag=${Auth.selected_user?.selected_tag}&show_tags=1` : "hybrid/favorites?show_tags=1"}
         component_id={this.props.componentId}
         title="Bookmarks"
         loading_text="Loading bookmarks..."

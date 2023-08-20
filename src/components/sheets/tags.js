@@ -4,7 +4,6 @@ import { observer } from 'mobx-react';
 import { ScrollView, TouchableOpacity, Text, Platform, TextInput, Keyboard, View } from 'react-native';
 import ActionSheet, { useScrollHandlers, ActionSheetRef, SheetManager } from "react-native-actions-sheet";
 import App from '../../stores/App'
-import SheetHeader from "./header";
 import { SvgXml } from 'react-native-svg';
 import { SFSymbol } from "react-native-sfsymbols";
 
