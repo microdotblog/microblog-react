@@ -55,7 +55,7 @@ export default class HighlightsHeader extends React.Component{
           </View>
         }
         {
-          Auth.selected_user.bookmark_tags.length > 0 &&
+          Auth.selected_user?.bookmark_tags.length > 0 &&
           <MenuView
             style={{
               borderColor: App.theme_border_color(),

@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { Text, TextInput, Button, ActivityIndicator, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import App from '../../stores/App'
+import LoginMessage from '../../components/info/login_message';
 
 @observer
 export default class AddBookmarkScreen extends React.Component{
@@ -39,6 +40,9 @@ export default class AddBookmarkScreen extends React.Component{
 	}
   
 	render() {
+    if(!Auth.is_logged_in()){
+      return <LoginMessage title="Bookmarks" />
+    }
 		const { posting } = Auth.selected_user
     return(
       <KeyboardAvoidingView behavior={ Platform.OS === "ios" ? "padding" : "height" } style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 15, backgroundColor: App.theme_background_color() }}>

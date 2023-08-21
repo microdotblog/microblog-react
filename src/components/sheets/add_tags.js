@@ -122,8 +122,8 @@ export default class AddTagsMenu extends React.Component{
         <Text style={{ marginBottom: 15, color: App.theme_text_color() }}>Assign tags to a bookmark to help organize your bookmarks and find them later.</Text>
         <TextInput
           placeholderTextColor="lightgrey"
-          placeholder={"Search tags..."}
-          returnKeyType={'search'}
+          placeholder={"Add tag..."}
+          returnKeyType={'go'}
           blurOnSubmit={true}
           autoFocus={true}
           autoCorrect={false}
@@ -142,7 +142,7 @@ export default class AddTagsMenu extends React.Component{
             minWidth: "100%",
             color: App.theme_text_color()
           }}
-          onSubmitEditing={Keyboard.dismiss}
+          onSubmitEditing={Auth.selected_user.set_selected_temp_tag_from_input}
           onChangeText={(text) => Auth.selected_user.set_bookmark_tag_filter_query(text)}
           value={Auth.selected_user.bookmark_tag_filter_query}
         />

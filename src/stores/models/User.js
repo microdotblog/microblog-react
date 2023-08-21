@@ -24,7 +24,7 @@ export default User = types.model('User', {
     bookmark_recent_tags: types.optional(types.array(types.string), []),
     selected_tag: types.maybeNull(types.string),
     bookmark_tag_filter_query: types.maybeNull(types.string),
-    temporary_tags_for_bookmark: types.optional(types.string, ""),// We'll use this to set the temporary bookmarks for a given bookmark.
+    temporary_tags_for_bookmark: types.optional(types.array(types.string), []),// We'll use this to set the temporary bookmarks for a given bookmark.
     is_fetching_tags_for_bookmark: types.optional(types.boolean, false)
   })
   .actions(self => ({
@@ -59,7 +59,7 @@ export default User = types.model('User', {
         self.fetch_recent_tags()
         self.selected_tag = null
         self.is_fetching_tags_for_bookmark = false
-        self.temporary_tags_for_bookmark = ""
+        self.temporary_tags_for_bookmark = []
       }
       self.toggling_push = false
     }),
@@ -162,7 +162,7 @@ export default User = types.model('User', {
       const data = yield MicroBlogApi.bookmark_by_id(id)
       console.log("User:fetch_tags_for_bookmark:data", data)
       if(data !== API_ERROR && data.items[0] != null){
-        self.temporary_tags_for_bookmark = data.items[0].tags
+        self.temporary_tags_for_bookmark = self.tags_to_array(data.items[0].tags)
       }
       console.log("User:temporary_tags_for_bookmark:array", self.temporary_tags_array())
       self.is_fetching_tags_for_bookmark = false
@@ -172,6 +172,11 @@ export default User = types.model('User', {
       console.log("User:set_selected_temp_tag", tag)
       // TODO: Set selected tag against temporary bookmark tag list
       // Check items already exist in array before doing so.
+    }),
+    
+    set_selected_temp_tag_from_input: flow(function* () {
+      console.log("User:set_selected_temp_tag_from_input", self.bookmark_tag_filter_query)
+      const existing_tag = self.temporary_tags_for_bookmark.includes(self.bookmark_tag_filter_query)
     }),
     
   }))
@@ -186,7 +191,11 @@ export default User = types.model('User', {
     },
     
     temporary_tags_array(){
-      return self.temporary_tags_for_bookmark.split(", ")
+      return self.temporary_tags_for_bookmark !== "" ? self.temporary_tags_for_bookmark.split(", ") : []
+    },
+    
+    tags_to_array(tags){
+      return tags !== "" ? tags.split(", ") : []
     }
     
   }))

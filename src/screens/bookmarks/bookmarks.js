@@ -51,8 +51,9 @@ export default class BookmarksScreen extends React.Component{
     return (
       <>
       {
-        Auth.is_logged_in() && Auth.selected_user?.bookmark_highlights?.length > 0 &&
+        Auth.is_logged_in() && Auth.selected_user?.bookmark_highlights?.length > 0 ?
         <HighlightsHeader />
+        : null
       }
       <GenericScreenComponent
         can_show_web_view={Auth.is_logged_in() && !Auth.is_selecting_user && !App.should_reload_web_view()}
