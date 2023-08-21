@@ -21,8 +21,8 @@ export default Auth = types.model('Auth', {
     yield Tokens.hydrate()
     const data = yield AsyncStorage.getItem('Auth')
     if (data) {
-      applySnapshot(self, JSON.parse(data))
       yield Auth.clear_cookies()
+      applySnapshot(self, JSON.parse(data))
       if(self.selected_user){
         self.is_selecting_user = false
       }
@@ -96,6 +96,8 @@ export default Auth = types.model('Auth', {
     Tokens.destroy_token(user.username)
     self.selected_user = null
     destroy(user)
+    // TODO: Investigate if the clear_cookies has a direct impact to
+    // the "token not found" web message...
     yield Auth.clear_cookies()
     if(self.users.length){
       self.selected_user = self.users[0]

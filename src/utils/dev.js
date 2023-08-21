@@ -7,5 +7,7 @@ LogBox.ignoreLogs([
   "Cannot record touch end without",
   "Require cycle:",
   "onAnimatedValueUpdate",
-  "Cannot update during an existing state transition"
+  "Cannot update during an existing state transition",
+  "You are trying to read or write to an object that is no longer part of a state tree",
+  "Cannot read property 'addNodeToCache' of undefined"
 ])

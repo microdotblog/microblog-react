@@ -5,7 +5,7 @@ import FastImage from 'react-native-fast-image';
 import Muting from './Muting'
 import Push from '../Push'
 import App from '../App'
-import MicroBlogApi, { API_ERROR, DELETE_ERROR } from '../../api/MicroBlogApi';
+import MicroBlogApi, { API_ERROR, DELETE_ERROR, LOGIN_TOKEN_INVALID } from '../../api/MicroBlogApi';
 import Highlight from './Highlight';
 
 export default User = types.model('User', {
@@ -31,6 +31,7 @@ export default User = types.model('User', {
 
     hydrate: flow(function* () {
       console.log("HYDRATING USER", self.username)
+      self.check_token_validity()
       if(self.avatar){
         FastImage.preload([{uri: self.avatar}])
       }
@@ -66,6 +67,14 @@ export default User = types.model('User', {
     
     afterCreate: flow(function* () {
       self.hydrate()
+    }),
+    
+    check_token_validity: flow(function* () {
+      const token_validity = yield MicroBlogApi.login_with_token(self.token())
+      if(token_validity === LOGIN_TOKEN_INVALID){
+        console.log("User:TOKEN_IS_INVALID")
+        App.trigger_logout_for_user(self)
+      }
     }),
     
     toggle_push_notifications: flow(function* () {

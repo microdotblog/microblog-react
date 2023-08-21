@@ -3,7 +3,7 @@ import { startApp, loginScreen, profileScreen, conversationScreen, discoverTopic
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
-import { Linking, Appearance, AppState, Platform, Dimensions } from 'react-native'
+import { Linking, Appearance, AppState, Platform, Dimensions, Alert } from 'react-native'
 import { Navigation } from "react-native-navigation";
 import Push from './Push'
 import { theme_options } from '../utils/navigation'
@@ -672,6 +672,13 @@ export default App = types.model('App', {
   set_is_loading_highlights: flow(function* (loading) {
     console.log("App:set_is_loading_highlights", loading)
     self.is_loading_highlights = loading
+  }),
+  
+  trigger_logout_for_user: flow(function* (user) {
+    console.log("App:trigger_logout_for_user")
+    Alert.alert(`Please sign in again`, `Your token for, @${user.username}, is no longer valid.`)
+    yield Auth.logout_user(user)
+    loginScreen()
   }),
 
 }))
