@@ -9,5 +9,6 @@ LogBox.ignoreLogs([
   "onAnimatedValueUpdate",
   "Cannot update during an existing state transition",
   "You are trying to read or write to an object that is no longer part of a state tree",
-  "Cannot read property 'addNodeToCache' of undefined"
+  "Cannot read property 'addNodeToCache' of undefined",
+  "the creation of the observable instance must be done on the initializing phase"
 ])
