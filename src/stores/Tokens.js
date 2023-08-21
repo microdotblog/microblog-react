@@ -19,6 +19,11 @@ export default Tokens = types.model('Tokens', {
     }
   }),
   
+  destroy_all_token_data: flow(function* () {
+    console.log("Tokens:destroy_all_token_data")
+    yield SFInfo.deleteItem("Tokens", {})
+  }),
+  
   add_new_token: flow(function* (username, token) {
     console.log("Tokens:add_new_token", username)
     const existing_token = self.tokens.find(t => t.username === username && t.type === "user")

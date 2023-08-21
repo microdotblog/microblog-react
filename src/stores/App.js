@@ -58,16 +58,16 @@ export default App = types.model('App', {
   hydrate: flow(function* () {
     console.log("App:hydrate")
     self.is_loading = true
-    yield App.set_current_initial_theme()
-    yield App.set_current_initial_font_scale()
-    yield App.hydrate_last_tab_index()
 
     self.current_screen_name = TIMELINE_SCREEN
     self.current_screen_id = TIMELINE_SCREEN
     
-    Push.hydrate()
-    Settings.hydrate()
-    Auth.hydrate().then(() => {
+    Auth.hydrate().then(async () => {
+      await App.set_current_initial_theme()
+      await App.set_current_initial_font_scale()
+      await App.hydrate_last_tab_index()
+      Push.hydrate()
+      Settings.hydrate()
       startApp().then(() => {
         console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
         if(self.current_tab_index > 0){

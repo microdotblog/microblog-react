@@ -28,6 +28,14 @@ export default Auth = types.model('Auth', {
       }
       console.log("Auth:hydrate:with_data")
     }
+    else{
+      console.log("Auth:hydrate:destroy_all_data")
+      // It looks like we might no auth data,
+      // so we should also try and clear any tokens we might have
+      yield Tokens.destroy_all_token_data()
+      yield AsyncStorage.clear()
+      CookieManager.clearAll()
+    }
     return self.is_logged_in()
   }),
   
