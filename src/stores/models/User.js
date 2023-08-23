@@ -202,6 +202,10 @@ export default User = types.model('User', {
       }
     }),
     
+    clear_temporary_tags_for_bookmark: flow(function* () {
+      self.temporary_tags_for_bookmark = []
+    }),
+    
   }))
   .views(self => ({
     

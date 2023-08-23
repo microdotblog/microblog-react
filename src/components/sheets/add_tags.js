@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useRef } from 'react';
 import { observer } from 'mobx-react';
-import { ScrollView, TouchableOpacity, Text, Platform, TextInput, Keyboard, View } from 'react-native';
+import { ScrollView, TouchableOpacity, Text, Platform, TextInput, View } from 'react-native';
 import ActionSheet, { useScrollHandlers, ActionSheetRef, SheetManager } from "react-native-actions-sheet";
 import App from '../../stores/App'
 import { SvgXml } from 'react-native-svg';
@@ -99,11 +99,14 @@ export default class AddTagsMenu extends React.Component{
       <ActionSheet
         ref={this.actionSheetRef}
         id={this.props.sheetId}
-        snapPoints={[40,95]}
+        snapPoints={[40,90]}
         initialSnapIndex={[1]}
-        overdrawEnabled={true}
+        overdrawEnabled={false}
         useBottomSafeAreaPadding={true}
         gestureEnabled={true}
+        statusBarTranslucent={false}
+        drawUnderStatusBar={false}
+        onBeforeClose={() => {Auth.selected_user.clear_temporary_tags_for_bookmark()}}
         containerStyle={{
           backgroundColor: App.theme_background_color_secondary()
         }}
@@ -141,7 +144,7 @@ export default class AddTagsMenu extends React.Component{
             minWidth: "100%",
             color: App.theme_text_color()
           }}
-          onSubmitEditing={Auth.selected_user.set_selected_temp_tag_from_input}
+          onSubmitEditing={() => {Auth.selected_user.set_selected_temp_tag_from_input()}}
           onChangeText={(text) => Auth.selected_user.set_bookmark_tag_filter_query(text)}
           value={Auth.selected_user.bookmark_tag_filter_query}
         />
