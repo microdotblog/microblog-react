@@ -179,13 +179,27 @@ export default User = types.model('User', {
     
     set_selected_temp_tag: flow(function* (tag) {
       console.log("User:set_selected_temp_tag", tag)
-      // TODO: Set selected tag against temporary bookmark tag list
-      // Check items already exist in array before doing so.
+      const existing_tag = self.temporary_tags_for_bookmark.find(t => t === tag)
+      if(existing_tag == null){
+        self.temporary_tags_for_bookmark.push(tag)
+      }
+    }),
+    
+    delete_selected_temp_tag: flow(function* (tag) {
+      console.log("User:delete_selected_temp_tag", tag)
+      const existing_tag_index = self.temporary_tags_for_bookmark.findIndex(t => t === tag)
+      if(existing_tag_index > -1){
+        self.temporary_tags_for_bookmark.splice(existing_tag_index, 1)
+      }
     }),
     
     set_selected_temp_tag_from_input: flow(function* () {
       console.log("User:set_selected_temp_tag_from_input", self.bookmark_tag_filter_query)
-      const existing_tag = self.temporary_tags_for_bookmark.includes(self.bookmark_tag_filter_query)
+      const existing_tag = self.temporary_tags_for_bookmark.find(t => t === self.bookmark_tag_filter_query)
+      if(existing_tag == null){
+        self.temporary_tags_for_bookmark.push(self.bookmark_tag_filter_query)
+        self.bookmark_tag_filter_query = null
+      }
     }),
     
   }))
