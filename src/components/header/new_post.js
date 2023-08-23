@@ -13,7 +13,7 @@ export default class NewPostButton extends React.Component{
   render() {
     if(Auth.selected_user != null && Auth.selected_user.posting?.posting_enabled()){
       return(
-        <TouchableOpacity style={{ width: 40, height: 30, justifyContent: 'center', alignItems: 'center' }}
+        <TouchableOpacity style={{ height: 28, justifyContent: 'center', alignItems: 'center' }}
           onPress={() => postingScreen()}
         >
           {
