@@ -58,7 +58,7 @@ export default class AddTagsMenu extends React.Component{
   }
   
   _render_added_tags = () => {
-    return Auth.selected_user?.temporary_tags_array().map((tag) => {
+    return Auth.selected_user?.temporary_tags_for_bookmark.map((tag) => {
       return(
         <TouchableOpacity
           key={`tag-${tag}`}

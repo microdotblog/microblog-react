@@ -173,7 +173,7 @@ export default User = types.model('User', {
       if(data !== API_ERROR && data.items[0] != null){
         self.temporary_tags_for_bookmark = self.tags_to_array(data.items[0].tags)
       }
-      console.log("User:temporary_tags_for_bookmark:array", self.temporary_tags_array())
+      console.log("User:temporary_tags_for_bookmark:array", self.temporary_tags_for_bookmark)
       self.is_fetching_tags_for_bookmark = false
     }),
     
@@ -197,10 +197,6 @@ export default User = types.model('User', {
     
     filtered_tags(){
       return self.bookmark_tag_filter_query != null && self.bookmark_tag_filter_query != "" && self.bookmark_tags.length > 0 ? self.bookmark_tags.filter(tag => tag.includes(self.bookmark_tag_filter_query)) : self.bookmark_tags
-    },
-    
-    temporary_tags_array(){
-      return self.temporary_tags_for_bookmark !== "" ? self.temporary_tags_for_bookmark.split(", ") : []
     },
     
     tags_to_array(tags){
