@@ -129,6 +129,7 @@ export default class AddTagsMenu extends React.Component{
         >
           <Text style={{ fontWeight: '800', marginBottom: 15, color: App.theme_text_color() }}>Add Tags</Text>
           <TouchableOpacity
+            onPress={() => Auth.selected_user.update_tags_for_bookmark()}
             style={{
               borderColor: App.theme_border_color()
             }}

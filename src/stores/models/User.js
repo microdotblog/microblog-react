@@ -25,7 +25,9 @@ export default User = types.model('User', {
     selected_tag: types.maybeNull(types.string),
     bookmark_tag_filter_query: types.maybeNull(types.string),
     temporary_tags_for_bookmark: types.optional(types.array(types.string), []),// We'll use this to set the temporary bookmarks for a given bookmark.
-    is_fetching_tags_for_bookmark: types.optional(types.boolean, false)
+    is_fetching_tags_for_bookmark: types.optional(types.boolean, false),
+    is_updating_tags_for_bookmark: types.optional(types.boolean, false),
+    temporary_bookmark_id: types.maybeNull(types.string)
   })
   .actions(self => ({
 
@@ -61,6 +63,8 @@ export default User = types.model('User', {
         self.selected_tag = null
         self.is_fetching_tags_for_bookmark = false
         self.temporary_tags_for_bookmark = []
+        self.is_updating_tags_for_bookmark = false
+        self.temporary_bookmark_id = null
       }
       self.toggling_push = false
     }),
@@ -168,6 +172,7 @@ export default User = types.model('User', {
     fetch_tags_for_bookmark: flow(function* (id) {
       console.log("User:fetch_tags_for_bookmark", id)
       self.is_fetching_tags_for_bookmark = true
+      self.temporary_bookmark_id = id
       const data = yield MicroBlogApi.bookmark_by_id(id)
       console.log("User:fetch_tags_for_bookmark:data", data)
       if(data !== API_ERROR && data.items[0] != null){
@@ -204,6 +209,17 @@ export default User = types.model('User', {
     
     clear_temporary_tags_for_bookmark: flow(function* () {
       self.temporary_tags_for_bookmark = []
+      self.temporary_bookmark_id = null
+    }),
+    
+    update_tags_for_bookmark: flow(function* () {
+      console.log("User:update_tags_for_bookmark", self.temporary_bookmark_id)
+      self.is_updating_tags_for_bookmark = true
+      const data = yield MicroBlogApi.save_tags_for_bookmark_by_id(self.temporary_bookmark_id, self.temporary_tags_for_bookmark.toString())
+      if(data !== API_ERROR){
+        // TODO: Close sheet
+      }
+      self.is_updating_tags_for_bookmark = false
     }),
     
   }))
