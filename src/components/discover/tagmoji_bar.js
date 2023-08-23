@@ -116,7 +116,7 @@ export default class TagmojiBar extends React.Component{
                 borderRadius: 15,
                 paddingHorizontal: 15,
                 paddingVertical: 4,
-                minWidth: "87%",
+                minWidth: "89%",
                 color: App.theme_text_color()
               }}
               onSubmitEditing={() => {Discover.trigger_search(); Keyboard.dismiss()}}
