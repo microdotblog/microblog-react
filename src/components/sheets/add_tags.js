@@ -124,7 +124,7 @@ export default class AddTagsMenu extends React.Component{
           placeholder={"Add tag..."}
           returnKeyType={'go'}
           blurOnSubmit={true}
-          autoFocus={true}
+          autoFocus={false}
           autoCorrect={false}
           autoCapitalize="none"
           clearButtonMode={'always'}
@@ -165,7 +165,7 @@ export default class AddTagsMenu extends React.Component{
           : null
         }
       </View>
-      <ScrollView keyboardShouldPersistTaps={'always'} style={{maxHeight: 400, marginBottom: 25, paddingHorizontal: 25}} {...this.scrollHandlers}>
+      <ScrollView keyboardShouldPersistTaps={'always'} style={{maxHeight: 700, marginBottom: 25, paddingHorizontal: 25}} {...this.scrollHandlers}>
       {this._render_tags()}
       </ScrollView>
       </ActionSheet>
