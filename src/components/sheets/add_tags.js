@@ -120,7 +120,22 @@ export default class AddTagsMenu extends React.Component{
           paddingBottom: 5
         }}
       >
-        <Text style={{ fontWeight: '800', marginBottom: 15, color: App.theme_text_color() }}>Add Tags</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width: "100%"
+          }}
+        >
+          <Text style={{ fontWeight: '800', marginBottom: 15, color: App.theme_text_color() }}>Add Tags</Text>
+          <TouchableOpacity
+            style={{
+              borderColor: App.theme_border_color()
+            }}
+          >
+            <Text style={{color: App.theme_accent_color(), fontWeight: "700"}}>Update</Text>
+          </TouchableOpacity>
+        </View>
         <Text style={{ marginBottom: 15, color: App.theme_text_color() }}>Assign tags to a bookmark to help organize your bookmarks and find them later.</Text>
         <TextInput
           placeholderTextColor="lightgrey"
