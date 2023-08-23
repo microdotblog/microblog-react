@@ -52,7 +52,8 @@ export default class TagmojiBar extends React.Component{
                     padding: 4,
                     paddingHorizontal: 6,
                     borderRadius: 5,
-                    marginLeft: 5
+                    marginLeft: 5,
+                    marginRight: 8
                   }}
                   onPress={Discover.toggle_search_bar}
                 >
