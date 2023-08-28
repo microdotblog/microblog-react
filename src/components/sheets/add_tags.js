@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useRef } from 'react';
 import { observer } from 'mobx-react';
-import { ScrollView, TouchableOpacity, Text, Platform, TextInput, View } from 'react-native';
+import { ScrollView, TouchableOpacity, Text, Platform, TextInput, View, ActivityIndicator } from 'react-native';
 import ActionSheet, { useScrollHandlers, ActionSheetRef, SheetManager } from "react-native-actions-sheet";
 import App from '../../stores/App'
 import { SvgXml } from 'react-native-svg';
@@ -124,18 +124,25 @@ export default class AddTagsMenu extends React.Component{
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
-            width: "100%"
+            width: "100%",
+            alignItems: "center"
           }}
         >
           <Text style={{ fontWeight: '800', marginBottom: 15, color: App.theme_text_color() }}>Add Tags</Text>
-          <TouchableOpacity
-            onPress={() => Auth.selected_user.update_tags_for_bookmark()}
-            style={{
-              borderColor: App.theme_border_color()
-            }}
-          >
-            <Text style={{color: App.theme_accent_color(), fontWeight: "700"}}>Update</Text>
-          </TouchableOpacity>
+          {
+            !Auth.selected_user?.is_updating_tags_for_bookmark ?
+            <TouchableOpacity
+              onPress={() => Auth.selected_user.update_tags_for_bookmark()}
+              style={{
+                borderColor: App.theme_border_color(),
+                marginBottom: 20
+              }}
+            >
+              <Text style={{color: App.theme_accent_color(), fontWeight: "700"}}>Update</Text>
+            </TouchableOpacity>
+            : <ActivityIndicator style={{marginBottom: 20}} color={App.theme_accent_color()} animating />
+          }
+          
         </View>
         <Text style={{ marginBottom: 15, color: App.theme_text_color() }}>Assign tags to a bookmark to help organize your bookmarks and find them later.</Text>
         <TextInput
