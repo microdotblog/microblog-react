@@ -222,6 +222,7 @@ export default User = types.model('User', {
         App.set_is_loading_bookmarks(true)
         addTagsBottomSheet(true)
       }
+      self.fetch_recent_tags()
       setTimeout(() => {
         App.set_is_loading_bookmarks(false)
       }, 200)
