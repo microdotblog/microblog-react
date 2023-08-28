@@ -216,6 +216,7 @@ export default User = types.model('User', {
     update_tags_for_bookmark: flow(function* () {
       console.log("User:update_tags_for_bookmark", self.temporary_bookmark_id)
       self.is_updating_tags_for_bookmark = true
+      self.set_bookmark_tag_filter_query(null)
       const data = yield MicroBlogApi.save_tags_for_bookmark_by_id(self.temporary_bookmark_id, self.temporary_tags_for_bookmark.toString())
       if(data !== API_ERROR){
         App.set_is_loading_bookmarks(true)
