@@ -21,6 +21,7 @@ export default class AddTagsMenu extends React.Component{
   
   _render_tags = () => {
     return Auth.selected_user?.filtered_tags().map((tag) => {
+      const is_selected = Auth.selected_user.temporary_tags_for_bookmark.filter(t => t === tag)?.length > 0
       return(
         <TouchableOpacity
           key={`tag-${tag}`}
@@ -31,8 +32,10 @@ export default class AddTagsMenu extends React.Component{
             flexDirection: "row",
             alignItems: "center",
             paddingVertical: 15,
-            borderColor: App.theme_border_color()
+            borderColor: App.theme_border_color(),
+            opacity: is_selected ? .5 : 1
           }}
+          disabled={is_selected}
         >
           {
             Platform.OS === "ios" ?
