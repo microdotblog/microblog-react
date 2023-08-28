@@ -68,7 +68,11 @@ export default class AddTagsMenu extends React.Component{
           style={{
             flexDirection: "row",
             alignItems: "center",
-            borderColor: App.theme_border_color()
+            borderColor: App.theme_border_color(),
+            backgroundColor: App.theme_button_background_color(),
+            borderRadius: 8,
+            paddingHorizontal: 6,
+            paddingVertical: 4
           }}
         >
           {
@@ -130,7 +134,7 @@ export default class AddTagsMenu extends React.Component{
         >
           <Text style={{ fontWeight: '800', marginBottom: 15, color: App.theme_text_color() }}>Add Tags</Text>
           {
-            !Auth.selected_user?.is_updating_tags_for_bookmark ?
+            !Auth.selected_user?.is_updating_tags_for_bookmark && !Auth.selected_user?.is_fetching_tags_for_bookmark ?
             <TouchableOpacity
               onPress={() => Auth.selected_user.update_tags_for_bookmark()}
               style={{
