@@ -7,6 +7,7 @@ import Push from '../Push'
 import App from '../App'
 import MicroBlogApi, { API_ERROR, DELETE_ERROR, LOGIN_TOKEN_INVALID } from '../../api/MicroBlogApi';
 import Highlight from './Highlight';
+import { addTagsBottomSheet } from "./../../screens"
 
 export default User = types.model('User', {
     username: types.identifier,
@@ -217,8 +218,12 @@ export default User = types.model('User', {
       self.is_updating_tags_for_bookmark = true
       const data = yield MicroBlogApi.save_tags_for_bookmark_by_id(self.temporary_bookmark_id, self.temporary_tags_for_bookmark.toString())
       if(data !== API_ERROR){
-        // TODO: Close sheet
+        App.set_is_loading_bookmarks(true)
+        addTagsBottomSheet(true)
       }
+      setTimeout(() => {
+        App.set_is_loading_bookmarks(false)
+      }, 200)
       self.is_updating_tags_for_bookmark = false
     }),
     

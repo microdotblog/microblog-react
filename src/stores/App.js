@@ -51,7 +51,8 @@ export default App = types.model('App', {
   page_search_is_open: types.optional(types.boolean, false),
   page_search_query: types.optional(types.string, ""),
   is_searching_pages: types.optional(types.boolean, false),
-  is_loading_highlights: types.optional(types.boolean, false)
+  is_loading_highlights: types.optional(types.boolean, false),
+  is_loading_bookmarks: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -679,6 +680,11 @@ export default App = types.model('App', {
     Alert.alert(`Please sign in again`, `Your token for, @${user.username}, is no longer valid.`)
     yield Auth.logout_user(user)
     loginScreen()
+  }),
+  
+  set_is_loading_bookmarks: flow(function* (loading) {
+    console.log("App:set_is_loading_bookmarks", loading)
+    self.is_loading_bookmarks = loading
   }),
 
 }))
