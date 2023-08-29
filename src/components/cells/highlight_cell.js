@@ -100,11 +100,11 @@ export default class HighlightCell extends React.Component{
         >
           {
             highlight.content_text && 
-            <Text style={{color: App.theme_text_color(), fontSize: 15}}>{highlight.content_text}</Text>
+            <Text style={{color: App.theme_text_color(), fontSize: App.theme_default_font_size()}}>{highlight.content_text}</Text>
           }
           {
             highlight.title &&
-            <Text style={{color: App.theme_highlight_meta_text_color(), fontSize: 15, marginTop: 15}}>{highlight.hostname()}: {highlight.title}</Text>
+            <Text style={{color: App.theme_highlight_meta_text_color(), fontSize: App.theme_default_font_size(), marginTop: 15}}>{highlight.hostname()}: {highlight.title}</Text>
           }
           <View
             style={{

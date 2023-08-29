@@ -45,9 +45,9 @@ export default class PostCell extends React.Component{
       >
         {
           page.name &&
-          <Text style={{color: App.theme_text_color(), fontSize: 16, fontWeight: "700", marginBottom: 15}}>{page.name}</Text>
+          <Text style={{color: App.theme_text_color(), fontSize: App.theme_default_font_size(), fontWeight: "700", marginBottom: 15}}>{page.name}</Text>
         }
-        <Text style={{color: App.theme_text_color(), fontSize: 15}}>{page.plain_text_content()}</Text>
+        <Text style={{color: App.theme_text_color(), fontSize: App.theme_default_font_size()}}>{page.plain_text_content()}</Text>
         { page.images_from_content()?.length > 0 && this._render_images() }
         <View
           style={{
