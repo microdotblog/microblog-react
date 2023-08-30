@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard } from 'react-native';
+import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard, Image } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
