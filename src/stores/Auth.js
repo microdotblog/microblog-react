@@ -26,6 +26,7 @@ export default Auth = types.model('Auth', {
       if(self.selected_user){
         self.is_selecting_user = false
       }
+      self.did_load_one_or_more_webviews = false
       console.log("Auth:hydrate:with_data")
     }
     else{
