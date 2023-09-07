@@ -106,7 +106,7 @@ export default class AddTagsMenu extends React.Component{
       <ActionSheet
         ref={this.actionSheetRef}
         id={this.props.sheetId}
-        snapPoints={[40,90]}
+        snapPoints={[40]}
         initialSnapIndex={[1]}
         overdrawEnabled={false}
         useBottomSafeAreaPadding={true}
@@ -121,6 +121,7 @@ export default class AddTagsMenu extends React.Component{
       <View
         style={{
           padding: 15,
+          paddingHorizontal: 25,
           alignItems: 'center',
           justifyContent: 'center',
           borderRadius: 16,
@@ -151,7 +152,7 @@ export default class AddTagsMenu extends React.Component{
           }
           
         </View>
-        <Text style={{ marginBottom: 15, color: App.theme_text_color() }}>Assign tags to a bookmark to help organize your bookmarks and find them later.</Text>
+        <Text style={{ marginBottom: 15, color: App.theme_text_color(), width: "100%" }}>Assign tags to a bookmark to help organize your bookmarks and find them later.</Text>
         <TextInput
           placeholderTextColor="lightgrey"
           placeholder={"Add tag..."}
