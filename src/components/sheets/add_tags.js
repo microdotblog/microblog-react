@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useRef } from 'react';
 import { observer } from 'mobx-react';
 import { ScrollView, TouchableOpacity, Text, Platform, TextInput, View, ActivityIndicator } from 'react-native';
-import ActionSheet, { useScrollHandlers, ActionSheetRef, SheetManager } from "react-native-actions-sheet";
+import ActionSheet, { useScrollHandlers, ActionSheetRef } from "react-native-actions-sheet";
 import App from '../../stores/App'
 import { SvgXml } from 'react-native-svg';
 import { SFSymbol } from "react-native-sfsymbols";
@@ -106,8 +106,6 @@ export default class AddTagsMenu extends React.Component{
       <ActionSheet
         ref={this.actionSheetRef}
         id={this.props.sheetId}
-        snapPoints={[40]}
-        initialSnapIndex={[1]}
         overdrawEnabled={false}
         useBottomSafeAreaPadding={true}
         gestureEnabled={true}
@@ -115,7 +113,8 @@ export default class AddTagsMenu extends React.Component{
         drawUnderStatusBar={false}
         onBeforeClose={() => {Auth.selected_user.clear_temporary_tags_for_bookmark()}}
         containerStyle={{
-          backgroundColor: App.theme_background_color_secondary()
+          backgroundColor: App.theme_background_color_secondary(),
+          height: 450
         }}
       >
       <View
@@ -152,7 +151,7 @@ export default class AddTagsMenu extends React.Component{
           }
           
         </View>
-        <Text style={{ marginBottom: 15, color: App.theme_text_color(), width: "100%" }}>Assign tags to a bookmark to help organize your bookmarks and find them later.</Text>
+        <Text style={{ marginBottom: 20, color: App.theme_text_color(), width: "100%" }}>Assign tags to a bookmark to help organize your bookmarks and find them later.</Text>
         <TextInput
           placeholderTextColor="lightgrey"
           placeholder={"Add tag..."}
@@ -199,7 +198,7 @@ export default class AddTagsMenu extends React.Component{
           : null
         }
       </View>
-      <ScrollView keyboardShouldPersistTaps={'always'} style={{maxHeight: 700, marginBottom: 25, paddingHorizontal: 25}} {...this.scrollHandlers}>
+      <ScrollView keyboardShouldPersistTaps={'always'} style={{maxHeight: 350, marginBottom: 25, paddingHorizontal: 25}} {...this.scrollHandlers}>
       {this._render_tags()}
       </ScrollView>
       </ActionSheet>
