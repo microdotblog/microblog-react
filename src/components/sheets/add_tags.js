@@ -191,7 +191,6 @@ export default class AddTagsMenu extends React.Component{
               flexDirection: "row",
               flexWrap: "wrap",
               alignItems: "center",
-              justifyContent: "center",
               gap: 8,
               marginTop: 14,
               paddingBottom: 14,
