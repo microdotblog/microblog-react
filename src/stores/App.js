@@ -797,6 +797,12 @@ export default App = types.model('App', {
   theme_default_font_size(){
     return 17
   },
+  theme_tag_button_background_color() {
+    return self.theme === "dark" ? "#F9FAFB" : "#374151"
+  },
+  theme_tag_button_text_color() {
+    return self.theme === "dark" ? "#374151" : "#F9FAFB"
+  },
   should_reload_web_view() {
     // When it returns true, this will trigger a reload of the webviews
     return self.is_switching_theme || self.is_changing_font_scale
