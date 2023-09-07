@@ -78,17 +78,20 @@ export default class AddTagsMenu extends React.Component{
             paddingVertical: 6
           }}
         >
-          <Text style={{ color: App.theme_tag_button_text_color(), fontWeight: "600" }}>
-            {tag}
-          </Text>
           {
             Platform.OS === "ios" ?
             <SFSymbol
               name={"x.circle"}
               color={App.theme_tag_button_text_color()}
-              style={{ height: 16, width: 16, marginLeft: 6, marginRight: -1 }}
+              style={{ height: 16, width: 16, marginRight: 6 }}
             />
-            :
+            : null
+          }
+          <Text style={{ color: App.theme_tag_button_text_color(), fontWeight: "600" }}>
+            {tag}
+          </Text>
+          {
+            Platform.OS === "android" ?
             <SvgXml
               style={{
                 marginLeft: 6,
@@ -101,6 +104,8 @@ export default class AddTagsMenu extends React.Component{
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>'
             />
+            :
+            null
           }
         </TouchableOpacity>
       )
