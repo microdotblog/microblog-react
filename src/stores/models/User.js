@@ -233,7 +233,7 @@ export default User = types.model('User', {
   .views(self => ({
     
     token(){
-      return Tokens.token_for_username(self.username)?.token
+      return Tokens.token_for_username(self.username, "user")?.token
     },
     
     filtered_tags(){

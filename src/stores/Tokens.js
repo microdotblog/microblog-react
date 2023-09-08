@@ -69,8 +69,8 @@ export default Tokens = types.model('Tokens', {
 }))
 .views(self => ({
   
-  token_for_username(username){
-    return self.tokens.find(t => t.username === username)
+  token_for_username(username, type = "user"){
+    return self.tokens.find(t => t.username === username && t.type === type)
   },
   
   token_for_service_id(service_id){
