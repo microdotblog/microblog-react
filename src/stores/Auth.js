@@ -107,14 +107,14 @@ export default Auth = types.model('Auth', {
     Tokens.destroy_token(user.username)
     self.selected_user = null
     destroy(user)
-    // TODO: Investigate if the clear_cookies has a direct impact to
-    // the "token not found" web message...
     yield Auth.clear_cookies()
     if(self.users.length){
       self.selected_user = self.users[0]
       self.is_selecting_user = false
     }
     else{
+      // As we have no users left, let's also delete all tokens.
+      Tokens.destroy_all_token_data()
       menuBottomSheet(true)
     }
   }),
