@@ -5,7 +5,6 @@ import MicroBlogApi, { API_ERROR } from './../../api/MicroBlogApi';
 import App from './../../stores/App';
 import Hyperlink from 'react-native-hyperlink'
 import { followingScreen, profileMoreBottomSheet } from './../../screens/'
-import MoreIconWhite from './../../assets/icons/more_white.png'
 import MoreIconHorizontal from './../../assets/icons/more_ios.png'
 import MoreIconHorizontalWhite from './../../assets/icons/more_ios_white.png'
 
@@ -95,7 +94,7 @@ export default class ProfileHeader extends React.Component{
                   borderRadius: 50,
                 }}
               >
-                <Image source={ Platform.OS === 'ios' ? ( App.theme == "dark" ? MoreIconHorizontalWhite : MoreIconHorizontal ) : ( App.theme == "dark" ? MoreIconWhite : MoreIconHorizontalWhite )} style={{ width: 24, height: 24 }} />
+                <Image source={App.theme === "dark" ? MoreIconHorizontalWhite : MoreIconHorizontal} style={{ width: 24, height: 24 }} />
               </TouchableOpacity>
             : null
           }
@@ -169,7 +168,7 @@ export default class ProfileHeader extends React.Component{
     const { loading, profile } = this.state
     if(loading){
       return(
-        <View style={{ backgroundColor: App.theme_section_background_color(), padding: 8, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+        <View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
           <ActivityIndicator color="#f80" />
         </View>
       )
@@ -178,7 +177,7 @@ export default class ProfileHeader extends React.Component{
       return this._render_profile()
     }
     return(
-      <View style={{ padding: 8, backgroundColor: App.theme_section_background_color(), width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ padding: 8, backgroundColor: App.theme_button_background_color(), width: '100%', justifyContent: 'center', alignItems: 'center' }}>
         <Text style={{color: App.theme_text_color()}}>An error occured loading the user profile.</Text>
       </View>
     )

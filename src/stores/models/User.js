@@ -5,7 +5,9 @@ import FastImage from 'react-native-fast-image';
 import Muting from './Muting'
 import Push from '../Push'
 import App from '../App'
-import MicroBlogApi from '../../api/MicroBlogApi';
+import MicroBlogApi, { API_ERROR, DELETE_ERROR, LOGIN_TOKEN_INVALID } from '../../api/MicroBlogApi';
+import Highlight from './Highlight';
+import { addTagsBottomSheet } from "./../../screens"
 
 export default User = types.model('User', {
     username: types.identifier,
@@ -17,12 +19,22 @@ export default User = types.model('User', {
     muting: types.maybeNull(Muting),
     push_enabled: types.optional(types.boolean, false),
     toggling_push: types.optional(types.boolean, false),
-    did_complete_auto_register_push: types.optional(types.boolean, false)
+    did_complete_auto_register_push: types.optional(types.boolean, false),
+    bookmark_highlights: types.optional(types.array(Highlight), []),
+    bookmark_tags: types.optional(types.array(types.string), []),
+    bookmark_recent_tags: types.optional(types.array(types.string), []),
+    selected_tag: types.maybeNull(types.string),
+    bookmark_tag_filter_query: types.maybeNull(types.string),
+    temporary_tags_for_bookmark: types.optional(types.array(types.string), []),// We'll use this to set the temporary bookmarks for a given bookmark.
+    is_fetching_tags_for_bookmark: types.optional(types.boolean, false),
+    is_updating_tags_for_bookmark: types.optional(types.boolean, false),
+    temporary_bookmark_id: types.maybeNull(types.string)
   })
   .actions(self => ({
 
     hydrate: flow(function* () {
       console.log("HYDRATING USER", self.username)
+      self.check_token_validity()
       if(self.avatar){
         FastImage.preload([{uri: self.avatar}])
       }
@@ -46,12 +58,28 @@ export default User = types.model('User', {
           }
         }
         self.update_avatar()
+        self.fetch_highlights()
+        self.fetch_tags()
+        self.fetch_recent_tags()
+        self.selected_tag = null
+        self.is_fetching_tags_for_bookmark = false
+        self.temporary_tags_for_bookmark = []
+        self.is_updating_tags_for_bookmark = false
+        self.temporary_bookmark_id = null
       }
       self.toggling_push = false
     }),
     
     afterCreate: flow(function* () {
       self.hydrate()
+    }),
+    
+    check_token_validity: flow(function* () {
+      const token_validity = yield MicroBlogApi.login_with_token(self.token())
+      if(token_validity === LOGIN_TOKEN_INVALID){
+        console.log("User:TOKEN_IS_INVALID")
+        App.trigger_logout_for_user(self)
+      }
     }),
     
     toggle_push_notifications: flow(function* () {
@@ -84,13 +112,136 @@ export default User = types.model('User', {
       if(user_data && user_data?.avatar){
         self.avatar = user_data.avatar
       }
-    })
+    }),
+    
+    fetch_highlights: flow(function* () {
+      console.log("User:fetch_highlights")
+      App.set_is_loading_highlights(true)
+      const highlights = yield MicroBlogApi.bookmark_highlights()
+      if(highlights !== API_ERROR && highlights.items){
+        self.bookmark_highlights = highlights.items
+      }
+      App.set_is_loading_highlights(false)
+      console.log("User:fetch_highlights:count", self.bookmark_highlights.length)
+    }),
+    
+    delete_highlight: flow(function* (highlight_id) {
+      console.log("User:delete_highlight", highlight_id)
+      App.set_is_loading_highlights(true)
+      const deleted = yield MicroBlogApi.delete_highlight(highlight_id)
+      if(deleted !== DELETE_ERROR){
+        self.fetch_highlights()
+      }
+      App.set_is_loading_highlights(false)
+    }),
+    
+    fetch_tags: flow(function* () {
+      console.log("User:fetch_tags")
+      App.set_is_loading_highlights(true)
+      const tags = yield MicroBlogApi.bookmark_tags()
+      console.log("User:fetch_tags:tags", tags)
+      if(tags !== API_ERROR && tags != null){
+        self.bookmark_tags = tags
+      }
+      App.set_is_loading_highlights(false)
+      console.log("User:fetch_tags:count", self.bookmark_tags.length)
+    }),
+    
+    fetch_recent_tags: flow(function* () {
+      console.log("User:fetch_recent_tags")
+      const tags = yield MicroBlogApi.bookmark_recent_tags(5)
+      console.log("User:fetch_recent_tags:tags", tags)
+      if(tags !== API_ERROR && tags != null){
+        self.bookmark_recent_tags = tags
+      }
+      console.log("User:fetch_recent_tags:count", self.bookmark_recent_tags.length)
+    }),
+    
+    set_selected_tag: flow(function* (tag = null) {
+      console.log("User:set_selected_tag", tag)
+      self.selected_tag = tag
+      if(tag == null){
+        self.set_bookmark_tag_filter_query(null)
+      }
+    }),
+    
+    set_bookmark_tag_filter_query: flow(function* (query = "") {
+      console.log("User:set_bookmark_tag_filter_query", query)
+      self.bookmark_tag_filter_query = query
+    }),
+    
+    fetch_tags_for_bookmark: flow(function* (id) {
+      console.log("User:fetch_tags_for_bookmark", id)
+      self.is_fetching_tags_for_bookmark = true
+      self.temporary_bookmark_id = id
+      const data = yield MicroBlogApi.bookmark_by_id(id)
+      console.log("User:fetch_tags_for_bookmark:data", data)
+      if(data !== API_ERROR && data.items[0] != null){
+        self.temporary_tags_for_bookmark = self.tags_to_array(data.items[0].tags)
+      }
+      console.log("User:temporary_tags_for_bookmark:array", self.temporary_tags_for_bookmark)
+      self.is_fetching_tags_for_bookmark = false
+    }),
+    
+    set_selected_temp_tag: flow(function* (tag) {
+      console.log("User:set_selected_temp_tag", tag)
+      const existing_tag = self.temporary_tags_for_bookmark.find(t => t === tag)
+      if(existing_tag == null){
+        self.temporary_tags_for_bookmark.push(tag)
+      }
+    }),
+    
+    delete_selected_temp_tag: flow(function* (tag) {
+      console.log("User:delete_selected_temp_tag", tag)
+      const existing_tag_index = self.temporary_tags_for_bookmark.findIndex(t => t === tag)
+      if(existing_tag_index > -1){
+        self.temporary_tags_for_bookmark.splice(existing_tag_index, 1)
+      }
+    }),
+    
+    set_selected_temp_tag_from_input: flow(function* () {
+      console.log("User:set_selected_temp_tag_from_input", self.bookmark_tag_filter_query)
+      const existing_tag = self.temporary_tags_for_bookmark.find(t => t === self.bookmark_tag_filter_query)
+      if(existing_tag == null){
+        self.temporary_tags_for_bookmark.push(self.bookmark_tag_filter_query)
+        self.bookmark_tag_filter_query = null
+      }
+    }),
+    
+    clear_temporary_tags_for_bookmark: flow(function* () {
+      self.temporary_tags_for_bookmark = []
+      self.temporary_bookmark_id = null
+    }),
+    
+    update_tags_for_bookmark: flow(function* () {
+      console.log("User:update_tags_for_bookmark", self.temporary_bookmark_id)
+      self.is_updating_tags_for_bookmark = true
+      self.set_bookmark_tag_filter_query(null)
+      const data = yield MicroBlogApi.save_tags_for_bookmark_by_id(self.temporary_bookmark_id, self.temporary_tags_for_bookmark.toString())
+      if(data !== API_ERROR){
+        App.set_is_loading_bookmarks(true)
+        addTagsBottomSheet(true)
+      }
+      self.fetch_recent_tags()
+      setTimeout(() => {
+        App.set_is_loading_bookmarks(false)
+      }, 200)
+      self.is_updating_tags_for_bookmark = false
+    }),
     
   }))
   .views(self => ({
     
     token(){
-      return Tokens.token_for_username(self.username)?.token
+      return Tokens.token_for_username(self.username, "user")?.token
+    },
+    
+    filtered_tags(){
+      return self.bookmark_tag_filter_query != null && self.bookmark_tag_filter_query != "" && self.bookmark_tags.length > 0 ? self.bookmark_tags.filter(tag => tag.includes(self.bookmark_tag_filter_query)) : self.bookmark_tags
+    },
+    
+    tags_to_array(tags){
+      return tags !== "" ? tags.split(", ") : []
     }
     
   }))

@@ -15,7 +15,11 @@ export default class DiscoverScreen extends React.Component{
   render() {
     return (
       <>
-      <TagmojiBar />
+      {
+        Auth.is_logged_in() ?
+        <TagmojiBar />
+        : null
+      }
       <GenericScreenComponent
         can_show_web_view={Auth.is_logged_in() && !Auth.is_selecting_user && !Auth.selected_user.muting?.is_sending_mute && !Auth.selected_user.muting?.is_sending_unmute && !Discover.should_load_search() && !App.should_reload_web_view()}
         endpoint={Discover.can_show_search() ? `hybrid/discover/search?q=${Discover.sanitised_search_query()}` : "hybrid/discover"}

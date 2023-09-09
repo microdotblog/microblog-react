@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TouchableOpacity, Image, ActivityIndicator, Platform } from 'react-native';
+import { View, TouchableOpacity, Image, ActivityIndicator, Platform, ScrollView } from 'react-native';
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
 import Share from '../../stores/Share'
@@ -12,7 +12,8 @@ export default class AssetToolbar extends React.Component{
     const { posting } = App.is_share_extension ? Share.selected_user : Auth.selected_user
     if(posting.post_assets.length > 0){
       return(
-        <View
+        <ScrollView
+          horizontal
           style={{
             ...Platform.select({
               android: {
@@ -22,6 +23,9 @@ export default class AssetToolbar extends React.Component{
             }),
             flexDirection: 'row',
             padding: 8
+          }}
+          contentContainerStyle={{
+            paddingRight: 12
           }}
         >
           {
@@ -82,7 +86,7 @@ export default class AssetToolbar extends React.Component{
               </TouchableOpacity>
             ))
           }
-        </View>
+        </ScrollView>
       )
     }
     return null

@@ -33,6 +33,7 @@ export default class PostEditScreen extends React.Component{
   _dismiss = () => {
     Keyboard.dismiss()
     Navigation.dismissModal(this.props.componentId)
+    Auth.selected_user.posting.clear_post()
   }
   
   _input_outer_view = (component) => {

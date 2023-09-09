@@ -16,10 +16,10 @@ export default class GenericScreenComponent extends React.Component{
           this.props.can_show_web_view != null && this.props.can_show_web_view ?
             <>
               {this.props.children}
-              <WebViewModule is_search={this.props.is_search} loading_text={this.props.loading_text} endpoint={this.props.endpoint} component_id={this.props.component_id} />
+              <WebViewModule is_filtered={this.props.is_filtered} is_search={this.props.is_search} loading_text={this.props.loading_text} endpoint={this.props.endpoint} component_id={this.props.component_id} />
             </>
           :
-          !this.props.is_search && !App.is_changing_font_scale && <LoginMessage title={this.props.title} />
+          !this.props.is_search && !this.props.is_filtered && !App.is_changing_font_scale && !App.is_loading_bookmarks && <LoginMessage title={this.props.title} />
         }
         <ImageModalModule />
       </View>

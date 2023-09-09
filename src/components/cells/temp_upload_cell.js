@@ -51,7 +51,7 @@ export default class TempUploadCell extends React.Component {
 							<View style={{
 								width: dimension,
 								height: dimension,
-								borderWidth: 2,
+								borderWidth: 1,
 								borderColor: App.theme_placeholder_text_color(),
 								borderRadius: 5,
 								alignItems: 'center',
@@ -87,7 +87,7 @@ export default class TempUploadCell extends React.Component {
 								style={{
 									width: dimension,
 									height: dimension,
-									borderWidth: 2,
+									borderWidth: 1,
 									borderColor: App.theme_placeholder_text_color(),
 									borderRadius: 5
 								}}

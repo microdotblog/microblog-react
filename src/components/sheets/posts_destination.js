@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useRef } from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
-import ActionSheet, { useScrollHandlers, ActionSheetRef} from "react-native-actions-sheet";
+import ActionSheet, { useScrollHandlers, ActionSheetRef, SheetManager } from "react-native-actions-sheet";
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
 import CheckmarkIcon from '../../assets/icons/checkmark.png';
@@ -12,6 +12,7 @@ export default class PostsDestinationMenu extends React.Component{
   
   constructor(props){
     super(props);
+    this.sheetId = props.sheetId
     this.actionSheetRef = useRef<ActionSheetRef>(null)
     this.scrollHandlers = useScrollHandlers<ScrollView>(
       "destination-scroll",
@@ -28,15 +29,17 @@ export default class PostsDestinationMenu extends React.Component{
       return(
         <TouchableOpacity
           key={destination.uid}
-          onPress={() => selected_service.set_active_destination(destination, this.props.payload?.type)}
+          onPress={() => {
+            selected_service.set_active_destination(destination, this.props.payload?.type);
+            SheetManager.hide(this.sheetId);
+          }}
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            paddingVertical: 12,
+            paddingVertical: 15,
             borderBottomWidth: is_last ? 0 : 1,
-            borderColor: App.theme_border_color(),
-            minWidth: 220 // Maybe don't do this?
+            borderColor: App.theme_border_color()
           }}
         >
           <Text style={ is_selected_blog ? { fontWeight: '700', color: App.theme_button_text_color() } : { color: App.theme_button_text_color() }}>
@@ -67,16 +70,15 @@ export default class PostsDestinationMenu extends React.Component{
         <ScrollView style={{maxHeight: 700, paddingBottom: 15}} {...this.scrollHandlers}>
           <View
             style={{
-              padding: 15,
+              padding: 0,
               alignItems: 'center',
               justifyContent: 'center',
-              borderRadius: 16,
               marginBottom: 25,
               flexDirection: "column"
             }}
           >
             <Text style={{ fontWeight: '800', marginBottom: 25, color: App.theme_text_color() }}>Select a blog</Text>
-            <View style={{ paddingHorizontal: 12, backgroundColor: App.theme_settings_group_background_color(), borderRadius: 8, flexDirection: "column"}}>
+            <View style={{ paddingHorizontal: 15, flexDirection: "column", width: "100%" }}>
               {this._render_destinations()}
             </View>
           </View>

@@ -356,6 +356,141 @@ class MicroBlogApi {
 			});
 		return push;
 	}
+	
+	async search_posts_and_pages(query, destination = null, is_pages = false) {
+		console.log('MicroBlogApi: search_posts_and_pages', query, destination, is_pages);
+		const search = axios
+			.get(`/micropub?q=source&mp-destination=${destination}&filter=${query}${is_pages ? "&mp-channel=pages" : ""}`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+			})
+			.then(response => {
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: search_posts_and_pages', error);
+				return API_ERROR;
+			});
+		return search;
+	}
+	
+	async bookmark_highlights() {
+		console.log('MicroBlogApi: bookmark_highlights');
+		const highlights = axios
+			.get(`/posts/bookmarks/highlights`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+			})
+			.then(response => {
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: bookmark_highlights', error);
+				return API_ERROR;
+			});
+		return highlights;
+	}
+	
+	async delete_highlight(id) {
+		console.log('MicroBlogApi:delete_highlight', id);
+		const data = axios
+			.delete(`/posts/bookmarks/highlights/${id}`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` }
+			})
+			.then(response => {
+				return response.data;
+			})
+			.catch(error => {
+				console.log(error);
+				return DELETE_ERROR;
+			});
+		return data;
+	}
+	
+	async bookmark_tags() {
+		console.log('MicroBlogApi: bookmark_tags');
+		const data = axios
+			.get(`/posts/bookmarks/tags`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+			})
+			.then(response => {
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: bookmark_tags', error);
+				return API_ERROR;
+			});
+		return data;
+	}
+	
+	async bookmark_recent_tags(count = 10) {
+		// Would be nice to have this optional in the above command.
+		// One day I'd like to work on a bit on more DRY'ness.
+		console.log('MicroBlogApi: bookmark_recent_tags');
+		const data = axios
+			.get(`/posts/bookmarks/tags?recent=1&count=${count}`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+			})
+			.then(response => {
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: bookmark_recent_tags', error);
+				return API_ERROR;
+			});
+		return data;
+	}
+	
+	async bookmark_by_id(id) {
+		console.log('MicroBlogApi: bookmark_by_id', id);
+		const data = axios
+			.get(`/posts/bookmarks/${id}`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+			})
+			.then(response => {
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: bookmark_by_id', error);
+				return API_ERROR;
+			});
+		return data;
+	}
+	
+	async save_tags_for_bookmark_by_id(id, tags) {
+		console.log('MicroBlogApi: save_tags_for_bookmark_by_id', id, tags);
+		const data = axios
+			.post(`/posts/bookmarks/${id}`, "", {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+				params: {
+					tags: tags
+				}
+			})
+			.then(response => {
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: save_tags_for_bookmark_by_id', error);
+				return API_ERROR;
+			});
+		return data;
+	}
   
 }
 

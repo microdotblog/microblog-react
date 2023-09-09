@@ -1,9 +1,9 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen, settingsScreen, postsScreen, pagesScreen, uploadsScreen, postOptionsSettingsScreen } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen, settingsScreen, postsScreen, pagesScreen, uploadsScreen, postOptionsSettingsScreen, addTagsBottomSheet } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
-import { Linking, Appearance, AppState, Platform, Dimensions } from 'react-native'
+import { Linking, Appearance, AppState, Platform, Dimensions, Alert } from 'react-native'
 import { Navigation } from "react-native-navigation";
 import Push from './Push'
 import { theme_options } from '../utils/navigation'
@@ -44,23 +44,31 @@ export default App = types.model('App', {
   found_users: types.optional(types.array(Contact), []),
   current_autocomplete: types.optional(types.string, ""),
   is_share_extension: types.optional(types.boolean, false),
-	toolbar_select_destination_open: types.optional(types.boolean, false)
+	toolbar_select_destination_open: types.optional(types.boolean, false),
+  post_search_is_open: types.optional(types.boolean, false),
+  post_search_query: types.optional(types.string, ""),
+  is_searching_posts: types.optional(types.boolean, false),
+  page_search_is_open: types.optional(types.boolean, false),
+  page_search_query: types.optional(types.string, ""),
+  is_searching_pages: types.optional(types.boolean, false),
+  is_loading_highlights: types.optional(types.boolean, false),
+  is_loading_bookmarks: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
   hydrate: flow(function* () {
     console.log("App:hydrate")
     self.is_loading = true
-    yield App.set_current_initial_theme()
-    yield App.set_current_initial_font_scale()
-    yield App.hydrate_last_tab_index()
 
     self.current_screen_name = TIMELINE_SCREEN
     self.current_screen_id = TIMELINE_SCREEN
     
-    Push.hydrate()
-    Settings.hydrate()
-    Auth.hydrate().then(() => {
+    Auth.hydrate().then(async () => {
+      await App.set_current_initial_theme()
+      await App.set_current_initial_font_scale()
+      await App.hydrate_last_tab_index()
+      Push.hydrate()
+      Settings.hydrate()
       startApp().then(() => {
         console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
         if(self.current_tab_index > 0){
@@ -171,6 +179,10 @@ export default App = types.model('App', {
         if (action != null && action_data != null) {
           if (action === "user" || action === "photo" || action === "open" || action === "reply") {
             self.navigate_to_screen(action, action_data)
+          }
+          else if (action === "tag"){
+            Auth.selected_user?.fetch_tags_for_bookmark(action_data)
+            addTagsBottomSheet()
           }
         }
       }
@@ -347,7 +359,7 @@ export default App = types.model('App', {
       else if (parts?.length >= 4) {
         App.open_url(url)
       }
-      else if (parts?.length === 1 && parts[0] === "summer"){
+      else if (parts?.length === 1 && (parts[0] === "summer" || parts[0] === "about")){
         App.open_url(url)
       }
       else {
@@ -615,6 +627,65 @@ export default App = types.model('App', {
     console.log("App:toggle_select_destination")
     self.toolbar_select_destination_open = !self.toolbar_select_destination_open
   }),
+  
+  toggle_post_search_is_open: flow(function* () {
+    console.log("App:toggle_post_search_is_open")
+    self.post_search_is_open = !self.post_search_is_open
+  }),
+  
+  toggle_page_search_is_open: flow(function* () {
+    console.log("App:toggle_page_search_is_open")
+    self.page_search_is_open = !self.page_search_is_open
+  }),
+  
+  set_posts_query: flow(function* (text, destination) {
+    console.log("App:set_posts_query", text)
+    self.post_search_query = text
+    if(text?.length > 2){
+      self.is_searching_posts = true
+      const results = yield MicroBlogApi.search_posts_and_pages(text, destination?.uid, false)
+      if(results !== API_ERROR && results.items != null){
+        destination.set_posts(results.items)
+      }
+      self.is_searching_posts = false
+    }
+    else if(self.post_search_query == ""){
+      Auth.selected_user.posting?.selected_service?.upate_posts_for_active_destination()
+    }
+  }),
+  
+  set_pages_query: flow(function* (text, destination) {
+    console.log("App:set_pages_query", text)
+    self.page_search_query = text
+    if(text?.length > 2){
+      self.is_searching_pages = true
+      const results = yield MicroBlogApi.search_posts_and_pages(text, destination?.uid, true)
+      if(results !== API_ERROR && results.items != null){
+        destination.set_pages(results.items)
+      }
+      self.is_searching_pages = false
+    }
+    else if(self.page_search_query == ""){
+      Auth.selected_user.posting?.selected_service?.upate_pages_for_active_destination()
+    }
+  }),
+  
+  set_is_loading_highlights: flow(function* (loading) {
+    console.log("App:set_is_loading_highlights", loading)
+    self.is_loading_highlights = loading
+  }),
+  
+  trigger_logout_for_user: flow(function* (user) {
+    console.log("App:trigger_logout_for_user")
+    Alert.alert(`Please sign in again`, `Your token for, @${user.username}, is no longer valid.`)
+    yield Auth.logout_user(user)
+    loginScreen()
+  }),
+  
+  set_is_loading_bookmarks: flow(function* (loading) {
+    console.log("App:set_is_loading_bookmarks", loading)
+    self.is_loading_bookmarks = loading
+  }),
 
 }))
 .views(self => ({
@@ -713,6 +784,24 @@ export default App = types.model('App', {
   },
   theme_profile_button_background_color() {
     return self.theme === "dark" ? "#212936" : "#EFEFEF"
+  },
+  theme_highlight_background_color(){
+    return self.theme === "dark" ? "#1F2937" : "rgb(254,249,195)"
+  },
+  theme_highlight_border_color(){
+    return self.theme === "dark" ? "#f2dede" : "rgb(254,240,138)"
+  },
+  theme_highlight_meta_text_color() {
+    return "gray"
+  },
+  theme_default_font_size(){
+    return 17
+  },
+  theme_tag_button_background_color() {
+    return self.theme === "dark" ? "#F9FAFB" : "#374151"
+  },
+  theme_tag_button_text_color() {
+    return self.theme === "dark" ? "#374151" : "#F9FAFB"
   },
   should_reload_web_view() {
     // When it returns true, this will trigger a reload of the webviews

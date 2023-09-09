@@ -28,7 +28,7 @@ export default class RepliesScreen extends React.Component{
           width: '100%',
           backgroundColor: App.theme_input_background_color(),
         }}>
-        <Text style={{color: App.theme_text_color()}}>Replies can be edited in the first 24 hours after posting.</Text>
+        <Text style={{color: App.theme_text_color(), fontSize: App.theme_default_font_size()}}>Replies can be edited in the first 24 hours after posting.</Text>
       </View>
     )
   }

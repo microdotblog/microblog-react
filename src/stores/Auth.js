@@ -20,15 +20,34 @@ export default Auth = types.model('Auth', {
     console.log("Auth:hydrate")
     yield Tokens.hydrate()
     const data = yield AsyncStorage.getItem('Auth')
-    if (data) {
-      applySnapshot(self, JSON.parse(data))
+    if (data && Tokens.tokens?.length > 0) {
       yield Auth.clear_cookies()
+      applySnapshot(self, JSON.parse(data))
       if(self.selected_user){
         self.is_selecting_user = false
       }
+      self.did_load_one_or_more_webviews = false
       console.log("Auth:hydrate:with_data")
     }
+    else{
+      yield Auth.destroy_all_auth_data()
+    }
     return self.is_logged_in()
+  }),
+  
+  destroy_all_auth_data: flow(function* () {
+    console.log("Auth:destroy_all_auth_data")
+    // It looks like we might have no auth data,
+    // so we should also try and clear any tokens we might have
+    yield Tokens.destroy_all_token_data()
+    yield AsyncStorage.clear()
+    CookieManager.clearAll()
+    // We most likely do not need the below as it should never hydrate
+    // in the first place
+    self.users = []
+    self.selected_user = null
+    self.is_selecting_user = true
+    self.did_load_one_or_more_webviews = false
   }),
   
   handle_new_login: flow(function* (data) {
@@ -69,6 +88,7 @@ export default Auth = types.model('Auth', {
     self.selected_user = user
     if (self.selected_user.posting.selected_service != null) {
       user.posting.selected_service.hydrate()
+      user.fetch_highlights()
       menuBottomSheet(true)
     }
     self.is_selecting_user = false
@@ -93,6 +113,8 @@ export default Auth = types.model('Auth', {
       self.is_selecting_user = false
     }
     else{
+      // As we have no users left, let's also delete all tokens.
+      Tokens.destroy_all_token_data()
       menuBottomSheet(true)
     }
   }),

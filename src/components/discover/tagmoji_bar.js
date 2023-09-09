@@ -6,6 +6,7 @@ import { tagmojiBottomSheet } from '../../screens'
 import App from '../../stores/App'
 import SearchIcon from '../../assets/icons/nav/discover.png';
 import { SFSymbol } from "react-native-sfsymbols";
+import { SvgXml } from 'react-native-svg';
 
 @observer
 export default class TagmojiBar extends React.Component{
@@ -19,7 +20,7 @@ export default class TagmojiBar extends React.Component{
             justifyContent: 'space-between',
             alignItems: 'center',
             paddingHorizontal: 15,
-            paddingVertical: Discover.search_shown ? 12 : 10,
+            paddingVertical: 10,
             width: '100%',
             backgroundColor: App.theme_input_background_color(),
           }}>
@@ -35,7 +36,7 @@ export default class TagmojiBar extends React.Component{
                 <TouchableOpacity
                   style={{
                     borderColor: App.theme_border_color(),
-                    borderWidth: 2,
+                    borderWidth: 1,
                     padding: 4,
                     borderRadius: 5
                   }}
@@ -48,12 +49,12 @@ export default class TagmojiBar extends React.Component{
                     justifyContent: "center",
                     alignItems: "center",
                     borderColor: App.theme_border_color(),
-                    borderWidth: 2,
+                    borderWidth: 1,
                     padding: 4,
                     paddingHorizontal: 6,
                     borderRadius: 5,
                     marginLeft: 5,
-                    marginRight: 8
+                    marginRight: 4
                   }}
                   onPress={Discover.toggle_search_bar}
                 >
@@ -77,7 +78,7 @@ export default class TagmojiBar extends React.Component{
                 justifyContent: "center",
                 alignItems: "center",
                 borderColor: App.theme_border_color(),
-                borderWidth: 2,
+                borderWidth: 1,
                 padding: 4,
                 borderRadius: 50,
                 marginRight: 8,
@@ -94,7 +95,17 @@ export default class TagmojiBar extends React.Component{
                 style={{ height: 12, width: 12 }}
               />
               :
-              <Image source={SearchIcon} style={{ height: 22, width: 22, tintColor: App.theme_button_text_color() }} />
+              <SvgXml
+                style={{
+                  height: 12,
+                  width: 12
+                }}
+                stroke={App.theme_button_text_color()}
+                strokeWidth={2}
+                xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>'
+              />
             }
             </TouchableOpacity>
             <TextInput
@@ -116,7 +127,7 @@ export default class TagmojiBar extends React.Component{
                 borderRadius: 15,
                 paddingHorizontal: 15,
                 paddingVertical: 4,
-                minWidth: "87%",
+                minWidth: "89%",
                 color: App.theme_text_color()
               }}
               onSubmitEditing={() => {Discover.trigger_search(); Keyboard.dismiss()}}
