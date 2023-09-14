@@ -12,7 +12,7 @@ export default class ProfileImage extends React.Component{
   render() {
     if(Auth.selected_user != null){
       return(
-        <TouchableOpacity style={{ width: 40, height: 30 }}
+        <TouchableOpacity style={{ width: 28, height: 28, marginRight: 12 }}
           onPress={() => {menuBottomSheet(); Auth.selected_user.check_token_validity()}}
           onLongPress={() => profileScreen(Auth.selected_user.username, App.current_screen_id)}
         >
