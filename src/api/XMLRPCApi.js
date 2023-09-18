@@ -203,7 +203,9 @@ class XMLRPCApi {
 				post_title: title,
 				post_content: content,
 				post_status: status === "published" ? "publish" : status,
-				categories: categories,
+				terms: {
+					category: categories
+				},
 				...featured_image_id && {
 					wp_post_thumbnail: featured_image_id
 				}
