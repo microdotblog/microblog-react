@@ -497,6 +497,10 @@ export default Posting = types.model('Posting', {
     self.show_title = !self.show_title
   }),
   
+  inline_asset: flow(function* (asset) {
+    self.post_text += `![${asset.alt_text != null ? asset.alt_text : ""}](${asset.remote_url})`
+  }),
+  
 }))
 .views(self => ({
   
