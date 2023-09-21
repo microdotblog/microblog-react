@@ -18,7 +18,8 @@ export default MediaAsset = types.model('MediaAsset', {
 	progress: types.optional(types.number, 0),
 	base64: types.maybe(types.string),
 	upload_id: types.maybe(types.number),
-	is_video: types.optional(types.boolean, false)
+	is_video: types.optional(types.boolean, false),
+	is_inline: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -66,6 +67,10 @@ export default MediaAsset = types.model('MediaAsset', {
 			console.log("MediaAsset:cancel_upload")
 			self.cancel_source.cancel("Upload canceled by the user.")
 		}
+	}),
+	
+	set_is_inline: flow(function* (option) {
+		self.is_inline = option
 	})
 
 }))
