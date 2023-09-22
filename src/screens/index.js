@@ -1076,11 +1076,14 @@ export const editPageScreen = (page) => {
   });
 }
 
-export const uploadsScreen = (component_id) => {
+export const uploadsScreen = (component_id, did_open_from_editor = false) => {
   const options = {
     component: {
       id: UPLOADS_SCREEN,
       name: UPLOADS_SCREEN,
+      passProps: {
+        did_open_from_editor: did_open_from_editor
+      },
       options: {
         topBar: {
           title: {

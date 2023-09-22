@@ -502,6 +502,10 @@ export default Posting = types.model('Posting', {
     asset.set_is_inline(true)
   }),
   
+  add_to_post_text: flow(function* (text) {
+    self.post_text += text
+  }),
+  
 }))
 .views(self => ({
   

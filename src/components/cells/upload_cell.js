@@ -46,6 +46,13 @@ export default class UploadCell extends React.Component {
 					}
 				}}
 				actions={[
+					...(this.props.add_to_editor ? [{
+						title: "Add to post",
+						id: "add_to_post",
+						image: Platform.select({
+							ios: 'plus'
+						})
+					}] : []),
 					{
 						title: "Copy Link",
 						id: "copy_link",
@@ -60,13 +67,13 @@ export default class UploadCell extends React.Component {
 							ios: 'curlybraces'
 						})
 					},
-					{
+					...(!upload.is_audio() && !upload.is_video() ? [{
 						title: "Copy Markdown",
 						id: "copy_markdown",
 						image: Platform.select({
 							ios: 'textformat'
 						})
-					},
+					}] : []),
 					{
 						title: "Open in Browser",
 						id: "open_in_browser",

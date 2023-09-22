@@ -4,7 +4,7 @@ import { Image, Platform, ScrollView, Text, TouchableOpacity, View } from 'react
 import { SFSymbol } from 'react-native-sfsymbols'
 import PhotoLibrary from '../../assets/icons/toolbar/photo_library.png'
 import SettingsIcon from '../../assets/icons/toolbar/settings.png'
-import { postingOptionsScreen, postOptionsSettingsScreen } from '../../screens'
+import { postingOptionsScreen, postOptionsSettingsScreen, uploadsScreen } from '../../screens'
 import App from '../../stores/App'
 import Auth from '../../stores/Auth'
 import Share from '../../stores/Share'
@@ -108,6 +108,34 @@ export default class PostToolbar extends React.Component{
 										/>
 									: 						
 									<Image source={PhotoLibrary} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
+								}
+								</TouchableOpacity>
+							</>
+						}
+						{
+							!this.props.is_post_edit && !App.is_share_extension &&
+							<>
+								<TouchableOpacity style={{minWidth: 35, marginLeft: 4, marginRight: 0}} onPress={() => uploadsScreen(this.props.componentId, true)}>
+								{
+									Platform.OS === 'ios' ?
+										<SFSymbol
+											name={'icloud.and.arrow.up'}
+											color={App.theme_text_color()}
+											style={{ height: 22, width: 22 }}
+											multicolor={true}
+										/>
+									: 						
+									<SvgXml
+										style={{
+											height: 22,
+											width: 22
+										}}
+										stroke={App.theme_button_text_color()}
+										strokeWidth={2}
+										xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+											<path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+										</svg>'
+									/>
 								}
 								</TouchableOpacity>
 							</>
