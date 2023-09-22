@@ -60,6 +60,7 @@ export const EDIT_POST_SCREEN = 'microblog.EditPostScreen';
 export const PAGES_SCREEN = 'microblog.PagesScreen';
 export const EDIT_PAGE_SCREEN = 'microblog.EditPageScreen';
 export const UPLOADS_SCREEN = 'microblog.UploadsScreen';
+export const UPLOADS_MODAL_SCREEN = 'microblog.modal.UploadsScreen';
 export const POST_OPTIONS_SETTINGS_SCREEN = 'microblog.modal.PostOptionsSettingsScreen';
 export const HIGHLIGHTS_SCREEN = 'microblog.HighlightsScreen';
 
@@ -133,6 +134,7 @@ export const Screens = {
   [ PAGES_SCREEN ]: PagesScreen,
   [ EDIT_PAGE_SCREEN ]: EditPageScreen,
   [ UPLOADS_SCREEN ]: UploadsScreen,
+  [ UPLOADS_MODAL_SCREEN ]: UploadsScreen,
   [ POST_OPTIONS_SETTINGS_SCREEN ]: PostOptionsSettingsScreen,
   [ HIGHLIGHTS_SCREEN ]: HighlightsScreen,
   // COMPONENTS
@@ -1079,8 +1081,8 @@ export const editPageScreen = (page) => {
 export const uploadsScreen = (component_id, did_open_from_editor = false) => {
   const options = {
     component: {
-      id: UPLOADS_SCREEN,
-      name: UPLOADS_SCREEN,
+      id: did_open_from_editor ? UPLOADS_MODAL_SCREEN : UPLOADS_SCREEN,
+      name: did_open_from_editor ? UPLOADS_MODAL_SCREEN : UPLOADS_SCREEN,
       passProps: {
         did_open_from_editor: did_open_from_editor
       },
