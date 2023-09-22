@@ -44,6 +44,10 @@ export default class UploadCell extends React.Component {
 					else if (event_id === "delete") {
 						Auth.selected_user.posting.selected_service?.trigger_upload_delete(upload)
 					}
+					else if(event_id === "add_to_post"){
+						this.props.trigger_pop()
+						Auth.selected_user.posting?.add_to_post_text(upload.best_post_markup())
+					}
 				}}
 				actions={[
 					...(this.props.add_to_editor ? [{
