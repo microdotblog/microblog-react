@@ -36,9 +36,10 @@ export default class NotificationsSheetMenu extends React.Component{
         <ScrollView
           style={{ 
             backgroundColor: App.theme_background_color_secondary(),
-            marginBottom: 80,
-            minHeight: 200,
             maxHeight: 500
+          }}
+          contentContainerStyle={{
+            marginBottom: 100
           }}
         >
           <PushNotifications />
