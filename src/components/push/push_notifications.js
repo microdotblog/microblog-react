@@ -34,7 +34,7 @@ export default class PushNotifications extends React.Component{
               }}
             >
               {
-                notification.from_avatar_url &&
+                notification.from_avatar_url ?
                 <Image
                   source={{ uri: notification.from_avatar_url }}
                   style={{
@@ -44,6 +44,16 @@ export default class PushNotifications extends React.Component{
                     marginBottom: 15
                   }}
                 />
+                :
+                <View
+                  style={{
+                    width: 25,
+                    height: 25,
+                    borderRadius: 50,
+                    marginBottom: 15,
+                    backgroundColor: App.theme_background_color_secondary()
+                  }}>
+                </View>
               }
             </View>
             <Text style={{ fontSize: 16, width: '80%', color: App.theme_text_color(), alignSelf: 'flex-start' }}>{notification.trimmed_message()}</Text>
