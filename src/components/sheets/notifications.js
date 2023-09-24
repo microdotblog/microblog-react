@@ -28,8 +28,8 @@ export default class NotificationsSheetMenu extends React.Component{
         }}
       >
         <View style={{ marginBottom: 15, justifyContent: "space-between", flexDirection: "row" }}>
-          <Text style={{color: App.theme_text_color()}}>Notifications</Text>
-          <TouchableOpacity onPress={Push.remove_all_notifications}>
+          <Text style={{color: App.theme_text_color(), fontWeight: '600'}}>Notifications</Text>
+          <TouchableOpacity style={{ color: App.theme_button_text_color() }} onPress={Push.remove_all_notifications}>
             <Text style={{color: App.theme_text_color()}}>Clear all</Text>
           </TouchableOpacity>
         </View>

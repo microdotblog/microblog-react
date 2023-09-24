@@ -68,7 +68,6 @@ export default class PushNotifications extends React.Component{
                   </svg>'
                 />
               }
-              
             </TouchableOpacity>
           </TouchableOpacity>
         </View>
