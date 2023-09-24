@@ -5,6 +5,7 @@ import Notification from './models/Notification'
 import Auth from './Auth'
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { Platform } from 'react-native'
+import { notificationsSheet } from "../screens"
 
 export default Push = types.model('Push', {
 	token: types.optional(types.string, ""),
@@ -50,6 +51,7 @@ export default Push = types.model('Push', {
 
 	register_token: flow(function* (user_token) {
 		console.log("Push:register_token")
+		
 		if (self.token != null && user_token != null && Auth.is_logged_in()) {
 			const data = yield MicroBlogApi.register_push(self.token, user_token)
 			if (data !== API_ERROR) {
@@ -113,6 +115,12 @@ export default Push = types.model('Push', {
 			destroy(existing_notification)
 		}
 		self.notifications.push(Notification.create(nice_notification_object))
+		Push.open_notification_sheet()
+	}),
+	
+	open_notification_sheet: flow(function* () {
+		console.log("Push::open_notification_sheet")
+		notificationsSheet()
 	}),
 
 }))

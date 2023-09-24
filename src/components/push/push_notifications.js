@@ -68,11 +68,7 @@ export default class PushNotifications extends React.Component{
   }
 
   render() {
-    return Push.valid_notifications() ?
-      <View style={{ position: 'absolute', bottom: 0, width: '100%' }}>
-        {this._render_notifications()}
-      </View>
-      : null
+    return Push.valid_notifications() ? this._render_notifications() : null
   }
 
 }

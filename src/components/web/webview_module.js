@@ -6,7 +6,6 @@ import App from '../../stores/App';
 import { ScrollView } from 'react-native-gesture-handler';
 import WebView from 'react-native-webview'
 import { Navigation } from "react-native-navigation";
-import PushNotifications from '../push/push_notifications'
 import WebLoadingViewModule from './loading_view'
 import WebErrorViewModule from './error_view'
 import { SheetProvider } from "react-native-actions-sheet";
@@ -121,7 +120,6 @@ export default class WebViewModule extends React.Component{
       >
         {this._webview()}
       </ScrollView>
-      <PushNotifications />
       </>
     )
   }
