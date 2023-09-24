@@ -9,7 +9,8 @@ import { notificationsSheet } from "../screens"
 
 export default Push = types.model('Push', {
 	token: types.optional(types.string, ""),
-	notifications: types.optional(types.array(Notification), [])
+	notifications: types.optional(types.array(Notification), []),
+	notificiations_open: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
@@ -83,6 +84,15 @@ export default Push = types.model('Push', {
 		console.log("Push::remove_notification", id)
 		PushNotification.cancelLocalNotification(id)
 	}),
+	
+	remove_all_notifications: flow(function* () {
+		console.log("Push::remove_all_notifications")
+		self.notifications.forEach(notification => {
+			Push.remove_notification(notification.id)
+			destroy(notification)
+		})
+		Push.close_notification_sheet()
+	}),
 
 	check_and_remove_notifications_with_post_id: flow(function* (post_id) {
 		console.log("Push::check_and_remove_notifications_with_post_id", post_id)
@@ -93,6 +103,9 @@ export default Push = types.model('Push', {
 					Push.remove_notification(notification.id)
 					destroy(notification)
 				})
+				if(self.notifications.length === 0){
+					Push.close_notification_sheet()
+				}
 			}
 		}
 	}),
@@ -120,7 +133,19 @@ export default Push = types.model('Push', {
 	
 	open_notification_sheet: flow(function* () {
 		console.log("Push::open_notification_sheet")
-		notificationsSheet()
+		if(!self.notificiations_open){
+			notificationsSheet()
+		}
+	}),
+	
+	close_notification_sheet: flow(function* () {
+		console.log("Push::close_notification_sheet")
+		notificationsSheet(true)
+	}),
+	
+	toggle_notifications_open: flow(function* (open = true) {
+		console.log("Push::toggle_notifications_open", open)
+		self.notificiations_open = open
 	}),
 
 }))

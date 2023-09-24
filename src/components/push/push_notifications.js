@@ -4,6 +4,7 @@ import Push from '../../stores/Push'
 import { View, Text, TouchableOpacity, Image, Platform } from 'react-native'
 import App from '../../stores/App'
 import { SFSymbol } from "react-native-sfsymbols";
+import { SvgXml } from 'react-native-svg';
 
 @observer
 export default class PushNotifications extends React.Component{
@@ -17,11 +18,11 @@ export default class PushNotifications extends React.Component{
             style={{
               padding: 10,
               backgroundColor: App.theme_button_background_color(),
-              borderTopWidth: 2,
-              borderTopColor: '#ccc',
+              marginBottom: 5,
               flexDirection: 'row',
               alignItems: 'flex-start',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
+              borderRadius: 17
             }}
             activeOpacity={.9}
           >
@@ -55,9 +56,17 @@ export default class PushNotifications extends React.Component{
                   <SFSymbol
                     name={'xmark'}
                     color={App.theme_text_color()}
-                    style={{ height: 20, width: 20 }}
+                    style={{ height: 18, width: 18 }}
                   />
-                : <Text style={{ color: App.theme_text_color(), fontSize: 22 }}>X</Text>
+                : 
+                <SvgXml
+                  height={22}
+                  width={22}
+                  color={App.theme_text_color()}
+                  xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>'
+                />
               }
               
             </TouchableOpacity>
