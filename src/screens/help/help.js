@@ -90,6 +90,24 @@ export default class HelpScreen extends React.Component{
 						</TouchableOpacity>
 					</View>
 				</View>
+				<View style={{ marginTop: 25 }}>
+					<Text style={{ fontWeight: "500", marginBottom: 15, color: App.theme_text_color() }}>For a more in-depth look at the principles and technology behind Micro.blog, read the book Indie Microblogging by Manton Reece:</Text>
+					<View style={{ alignItems: 'center' }}>
+						<TouchableOpacity
+							style={{
+								padding: 8,
+								paddingHorizontal: 15,
+								backgroundColor: App.theme_button_background_color(),
+								borderRadius: 20,
+								borderColor: App.theme_section_background_color(),
+								borderWidth: 1
+							}}
+							onPress={() => App.handle_url_from_webview("https://book.micro.blog")}
+						>
+							<Text style={{ color: App.theme_button_text_color() }}>Open book.micro.blog</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
 				<View style={{ marginTop: 25, paddingTop: 25, borderColor: App.theme_border_color(), borderTopWidth: 1 }}>
 					<Text style={{color: App.theme_text_color()}}>Micro.blog is a small team trying to make the web a little better.</Text>
 					<View
