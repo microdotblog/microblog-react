@@ -119,6 +119,21 @@ export default class PostingOptionsScreen extends React.Component{
 						</TouchableOpacity>
 					</View>
 				</View>
+				<View style={{ alignItems: 'center' }}>
+					<TouchableOpacity
+						style={{
+							padding: 8,
+							paddingHorizontal: 15,
+							backgroundColor: App.theme_button_background_color(),
+							borderRadius: 20,
+							borderColor: App.theme_section_background_color(),
+							borderWidth: 1
+						}}
+						onPress={() => App.open_url("https://help.micro.blog/t/markdown-reference/", true)}
+					>
+						<Text style={{ color: App.theme_button_text_color() }}>Markdown reference</Text>
+					</TouchableOpacity>
+				</View>
       </ScrollView>
     )
   }

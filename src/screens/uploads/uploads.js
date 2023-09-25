@@ -35,7 +35,7 @@ export default class UploadsScreen extends React.Component{
           width: '100%',
           backgroundColor: App.theme_input_background_color(),
         }}>
-        <TouchableOpacity onPress={() => postsDestinationBottomSheet(false, "uploads")}>
+        <TouchableOpacity onPress={() => !this.props.did_open_from_editor ? postsDestinationBottomSheet(false, "uploads") : null}>
           <Text style={{color: App.theme_text_color(), fontWeight: "500", fontSize: 16}}>
             {config.posts_destination()?.name}
           </Text>
@@ -48,7 +48,12 @@ export default class UploadsScreen extends React.Component{
   
   render_upload_item = ({ item }) => {
     return(
-      <UploadCell key={item.url} upload={item} />
+      <UploadCell
+        key={item.url}
+        upload={item}
+        add_to_editor={this.props.did_open_from_editor}
+        trigger_pop={() => Navigation.pop(this.props.componentId)}
+      />
     )
   }
   
