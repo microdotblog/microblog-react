@@ -2,6 +2,7 @@ import { types, flow, destroy } from 'mobx-state-tree';
 import MicroBlogApi from '../../api/MicroBlogApi'
 import App from '../App'
 import Auth from '../Auth'
+import Push from '../Push'
 
 export default Notification = types.model('Notification', {
 	id: types.identifier,
@@ -42,6 +43,7 @@ export default Notification = types.model('Notification', {
 				yield Auth.select_user(self.local_user())
 			}
 			App.navigate_to_screen("open", self.post_id)
+			Push.close_notification_sheet()
 		}
 	}),
 

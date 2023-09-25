@@ -54,14 +54,18 @@ To test notifications with the iOS simulator, you can use an app like [Sim Genie
 
 ```json
 {
-	"aps" : {
-		"alert" : {
-			"body" : "You should work harder..."
+		"aps": {
+				"alert": {
+						"body": "You should work harder..."
+				}
 		},
-	},
-	"from_user": {"username":"manton"},
-	"post_id": "12499040", 
-	"to_user": {"username":"vincent"}
+		"from_user": {
+				"username": "manton"
+		},
+		"post_id": "12499040",
+		"to_user": {
+				"username": "vincent"
+		}
 }
 ```
 

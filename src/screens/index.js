@@ -94,12 +94,14 @@ import TagmojiMenu from "../components/sheets/tagmoji";
 import PostsDestinationMenu from "../components/sheets/posts_destination";
 import TagsMenu from "../components/sheets/tags";
 import AddTagsMenu from "../components/sheets/add_tags";
+import NotificationsSheetsMenu from "../components/sheets/notifications";
 registerSheet("main_sheet", SheetMenu);
 registerSheet("profile_more_menu", ProfileMoreMenu);
 registerSheet("tagmoji_menu", TagmojiMenu);
 registerSheet("posts_destination_menu", PostsDestinationMenu);
 registerSheet("tags_menu", TagsMenu)
 registerSheet("add_tags_sheet", AddTagsMenu)
+registerSheet("notifications_sheet", NotificationsSheetsMenu)
 
 import Push from "../stores/Push"
 import { theme_options } from "../utils/navigation"
@@ -1204,4 +1206,11 @@ export const addTagsBottomSheet = (close = false) => {
     return SheetManager.show("add_tags_sheet")
   }
   SheetManager.hide("add_tags_sheet")
+}
+// TODO: Add a bit of DRY to these bottom sheets at some stage
+export const notificationsSheet = (close = false) => {
+  if(!close){
+    return SheetManager.show("notifications_sheet")
+  }
+  SheetManager.hide("notifications_sheet")
 }
