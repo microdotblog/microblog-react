@@ -35,16 +35,22 @@ export default class HelpScreen extends React.Component{
 				<TouchableOpacity
 					key={member.handle}
 					style={{
-						justifyContent: 'center',
-						alignItems: 'center',
+						width: '50%',
+						flexDirection: 'row',
+						alignItems: 'left',
 						padding: 5,
 						marginBottom: 15
 					}}
 					onPress={() => { App.handle_url_from_webview(`https://micro.blog/${ member.handle }`); Platform.OS === 'ios' && this._dismiss() }}
 				>
-					<Image source={{ uri: member.avatar }} style={{ width: 60, height: 60, borderRadius: 50, marginBottom: 5 }} />
-					<Text style={{ color: App.theme_text_color() }}>{member.name}</Text>
-					<Text style={{ color: '#337ab7' }}>@{member.handle}</Text>
+					<Image source={{ uri: member.avatar }} style={{ width: 36, height: 36, borderRadius: 18, marginBottom: 5 }} />
+					<View style={{
+						flexDirection: 'column',
+						paddingLeft: 7
+					}}>
+						<Text style={{ color: App.theme_text_color() }}>{member.name}</Text>
+						<Text style={{ color: '#337ab7' }}>@{member.handle}</Text>
+					</View>
 				</TouchableOpacity>
 			)
 		})
@@ -114,8 +120,8 @@ export default class HelpScreen extends React.Component{
 						style={{
 							flexDirection: 'row',
 							flexWrap: 'wrap',
-							justifyContent: 'space-around',
-							alignItems: 'center',
+							alignItems: 'left',
+							justifyContent: 'left',
 							marginTop: 15
 						}}>
 						{this._render_team()}
