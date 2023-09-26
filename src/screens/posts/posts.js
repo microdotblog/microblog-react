@@ -36,6 +36,7 @@ export default class PostsScreen extends React.Component{
           paddingHorizontal: 15,
           paddingVertical: 10,
           width: '100%',
+          height: 50,
           backgroundColor: App.theme_input_background_color(),
         }}>
         <TouchableOpacity onPress={() => postsDestinationBottomSheet(false, "posts")}>
@@ -73,6 +74,7 @@ export default class PostsScreen extends React.Component{
         paddingHorizontal: 8,
         paddingVertical: 11,
         width: '100%',
+        height: 50,
         backgroundColor: App.theme_input_background_color(),
         flexDirection: "row",
         alignItems: "center"
