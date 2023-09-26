@@ -3,6 +3,10 @@ import Post from "./Post";
 import Page from './Page';
 import Upload from './Upload'
 import TempUpload from './TempUpload'
+import Auth from '../../Auth';
+import App from '../../App';
+import { Navigation } from 'react-native-navigation';
+import { UPLOADS_MODAL_SCREEN } from '../../../screens';
 
 export default Destination = types.model('Destination', {
 	uid: types.identifier,
@@ -124,6 +128,15 @@ export default Destination = types.model('Destination', {
 			}
 			self.uploads.unshift(upload)
 			self.temp_uploads.remove(temp_upload)
+			// Because we're uploading from within the post editor, we also
+			// want to automatically set the upload within the post.
+			if(App.post_modal_is_open){
+				const asset = self.uploads.find(a => a.url === upload.url)
+				if(asset){
+					Auth.selected_user.posting?.add_to_post_text(asset.best_post_markup())
+					Navigation.pop(UPLOADS_MODAL_SCREEN)
+				}
+			}
 			//service.check_for_uploads_for_destination(self)
 		}
 	})

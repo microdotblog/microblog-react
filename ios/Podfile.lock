@@ -529,22 +529,20 @@ PODS:
     - React-jsi (= 0.72.4)
     - React-logger (= 0.72.4)
     - React-perflogger (= 0.72.4)
-  - ReactNativeNavigation (7.37.0):
+  - ReactNativeNavigation (7.34.0):
     - HMSegmentedControl
     - React-Core
-    - React-CoreModules
     - React-RCTImage
     - React-RCTText
-    - ReactNativeNavigation/Core (= 7.37.0)
-  - ReactNativeNavigation/Core (7.37.0):
+    - ReactNativeNavigation/Core (= 7.34.0)
+  - ReactNativeNavigation/Core (7.34.0):
     - HMSegmentedControl
     - React-Core
-    - React-CoreModules
     - React-RCTImage
     - React-RCTText
   - RNCAsyncStorage (1.19.3):
     - React-Core
-  - RNCClipboard (1.11.2):
+  - RNCClipboard (1.12.1):
     - React-Core
   - RNCPushNotificationIOS (1.11.0):
     - React-Core
@@ -556,11 +554,11 @@ PODS:
     - SDWebImageWebPCoder (~> 0.8.4)
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (2.12.1):
+  - RNGestureHandler (2.13.1):
     - React-Core
   - RNInAppBrowser (3.7.0):
     - React-Core
-  - RNReanimated (3.5.1):
+  - RNReanimated (3.5.4):
     - DoubleConversion
     - FBLazyVector
     - glog
@@ -591,7 +589,7 @@ PODS:
     - Yoga
   - RNShareMenu (6.0.0):
     - React
-  - RNSVG (13.13.0):
+  - RNSVG (13.14.0):
     - React-Core
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
@@ -912,18 +910,18 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 4941cc1b3cf08b792fbf666342c9fc95f1969035
   React-utils: b79f2411931f9d3ea5781404dcbb2fa8a837e13a
   ReactCommon: 4b2bdcb50a3543e1c2b2849ad44533686610826d
-  ReactNativeNavigation: 2651d0bc1479e9df0789b077ae93320dc2c9b73b
+  ReactNativeNavigation: 49a0f0edaf17fe3069da247d826ce0a13e32a63c
   RNCAsyncStorage: c913ede1fa163a71cea118ed4670bbaaa4b511bb
-  RNCClipboard: 3f0451a8100393908bea5c5c5b16f96d45f30bfc
+  RNCClipboard: d77213bfa269013bf4b857b7a9ca37ee062d8ef1
   RNCPushNotificationIOS: 64218f3c776c03d7408284a819b2abfda1834bc8
   RNDeviceInfo: aad3c663b25752a52bf8fce93f2354001dd185aa
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
-  RNGestureHandler: c0d04458598fcb26052494ae23dda8f8f5162b13
+  RNGestureHandler: 38aa38413896620338948fbb5c90579a7b1c3fde
   RNInAppBrowser: e36d6935517101ccba0e875bac8ad7b0cb655364
-  RNReanimated: 99aa8c96151abbc2d7e737a56ec62aca709f0c92
+  RNReanimated: ab2e96c6d5591c3dfbb38a464f54c8d17fb34a87
   RNShareMenu: cb9dac548c8bf147d06f0bf07296ad51ea9f5fc3
-  RNSVG: ed492aaf3af9ca01bc945f7a149d76d62e73ec82
+  RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
