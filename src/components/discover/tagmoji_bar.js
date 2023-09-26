@@ -22,12 +22,13 @@ export default class TagmojiBar extends React.Component{
             paddingHorizontal: 15,
             paddingVertical: 10,
             width: '100%',
+            height: 50,
             backgroundColor: App.theme_input_background_color(),
           }}>
           {
             !Discover.search_shown ?
             <>
-              <Text style={{color: App.theme_text_color(), maxWidth: '70%'}}>Some recent posts from the community</Text>
+              <Text style={{color: App.theme_text_color(), maxWidth: '70%'}}>Some posts from the community.</Text>
               <View 
                 style={{
                   flexDirection: 'row'
