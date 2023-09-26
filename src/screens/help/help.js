@@ -35,16 +35,22 @@ export default class HelpScreen extends React.Component{
 				<TouchableOpacity
 					key={member.handle}
 					style={{
-						justifyContent: 'center',
-						alignItems: 'center',
+						width: '50%',
+						flexDirection: 'row',
+						alignItems: 'left',
 						padding: 5,
 						marginBottom: 15
 					}}
 					onPress={() => { App.handle_url_from_webview(`https://micro.blog/${ member.handle }`); Platform.OS === 'ios' && this._dismiss() }}
 				>
-					<Image source={{ uri: member.avatar }} style={{ width: 60, height: 60, borderRadius: 50, marginBottom: 5 }} />
-					<Text style={{ color: App.theme_text_color() }}>{member.name}</Text>
-					<Text style={{ color: '#337ab7' }}>@{member.handle}</Text>
+					<Image source={{ uri: member.avatar }} style={{ width: 36, height: 36, borderRadius: 18, marginBottom: 5 }} />
+					<View style={{
+						flexDirection: 'column',
+						paddingLeft: 7
+					}}>
+						<Text style={{ color: App.theme_text_color() }}>{member.name}</Text>
+						<Text style={{ color: '#337ab7' }}>@{member.handle}</Text>
+					</View>
 				</TouchableOpacity>
 			)
 		})
@@ -90,14 +96,32 @@ export default class HelpScreen extends React.Component{
 						</TouchableOpacity>
 					</View>
 				</View>
+				<View style={{ marginTop: 25 }}>
+					<Text style={{ fontWeight: "500", marginBottom: 15, color: App.theme_text_color() }}>For a more in-depth look at the principles and technology behind Micro.blog, read the book Indie Microblogging by Manton Reece:</Text>
+					<View style={{ alignItems: 'center' }}>
+						<TouchableOpacity
+							style={{
+								padding: 8,
+								paddingHorizontal: 15,
+								backgroundColor: App.theme_button_background_color(),
+								borderRadius: 20,
+								borderColor: App.theme_section_background_color(),
+								borderWidth: 1
+							}}
+							onPress={() => App.handle_url_from_webview("https://book.micro.blog")}
+						>
+							<Text style={{ color: App.theme_button_text_color() }}>Open book.micro.blog</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
 				<View style={{ marginTop: 25, paddingTop: 25, borderColor: App.theme_border_color(), borderTopWidth: 1 }}>
 					<Text style={{color: App.theme_text_color()}}>Micro.blog is a small team trying to make the web a little better.</Text>
 					<View
 						style={{
 							flexDirection: 'row',
 							flexWrap: 'wrap',
-							justifyContent: 'space-around',
-							alignItems: 'center',
+							alignItems: 'left',
+							justifyContent: 'left',
 							marginTop: 15
 						}}>
 						{this._render_team()}
