@@ -36,7 +36,7 @@ export default class ImageOptionsScreen extends React.Component{
     const { posting } = Auth.selected_user
     const { asset, index } = this.props
     return(
-      <KeyboardAvoidingView behavior={"height"} style={{ flex: 1, height: "100%" }}>
+      <KeyboardAvoidingView behavior={"position"} style={{ flex: 1 }}>
         <ScrollView style={{ padding: 15 }} contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', width: "100%" }}>
           <View
             style={{
@@ -96,7 +96,7 @@ export default class ImageOptionsScreen extends React.Component{
                 marginVertical: 25,
                 borderRadius: 5,
                 backgroundColor: App.theme_button_background_color(),
-                width: "100%",
+                width: "100%"
               }}
               editable={!posting.is_sending_post}
               multiline={true}

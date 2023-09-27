@@ -28,6 +28,17 @@ export default Config = types.model('Config', {
     
     set_selected_posts_destination(destination){
       self.selected_posts_destination = destination.uid
+    },
+    
+    set_previously_selected_posts_destination(uid){
+      const default_destination = self.destination.find(d => d.uid === uid)
+      console.log("Config:set_previously_selected_posts_destination", default_destination)
+      if(default_destination){
+        this.set_default_destination(default_destination)
+      }
+      else{
+        this.hydrate_default_destination()
+      }
     }
     
   }))
