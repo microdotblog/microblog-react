@@ -18,7 +18,7 @@ export default class HighlightsHeader extends React.Component{
         {
           Auth.selected_user?.selected_tag == null ?
           <TouchableOpacity onPress={() => highlightsScreen()} style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={{ color: App.theme_text_color(), fontSize: 18 }}>{Auth.selected_user?.bookmark_highlights?.length} {Auth.selected_user?.bookmark_highlights?.length > 1 ? "highlights" : "highlight"}</Text>
+            <Text style={{ color: App.theme_text_color(), fontSize: 16 }}>{Auth.selected_user?.bookmark_highlights?.length} {Auth.selected_user?.bookmark_highlights?.length > 1 ? "highlights" : "highlight"}</Text>
             {
               App.is_loading_highlights &&
               <ActivityIndicator color="#f80" style={{marginLeft: 8}} />
@@ -52,7 +52,7 @@ export default class HighlightsHeader extends React.Component{
               <Image source={SearchIcon} style={{ height: 22, width: 22, tintColor: App.theme_button_text_color() }} />
             }
             </TouchableOpacity>
-            <Text style={{ color: App.theme_text_color(), fontSize: 18 }}>tag: {Auth.selected_user?.selected_tag}</Text>
+            <Text style={{ color: App.theme_text_color(), fontSize: 16 }}>tag: {Auth.selected_user?.selected_tag}</Text>
           </View>
         }
         {
