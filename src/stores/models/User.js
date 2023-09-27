@@ -28,7 +28,8 @@ export default User = types.model('User', {
     temporary_tags_for_bookmark: types.optional(types.array(types.string), []),// We'll use this to set the temporary bookmarks for a given bookmark.
     is_fetching_tags_for_bookmark: types.optional(types.boolean, false),
     is_updating_tags_for_bookmark: types.optional(types.boolean, false),
-    temporary_bookmark_id: types.maybeNull(types.string)
+    temporary_bookmark_id: types.maybeNull(types.string),
+    is_premium: types.maybeNull(types.boolean)
   })
   .actions(self => ({
 
@@ -227,6 +228,14 @@ export default User = types.model('User', {
         App.set_is_loading_bookmarks(false)
       }, 200)
       self.is_updating_tags_for_bookmark = false
+    }),
+    
+    check_user_is_premium: flow(function* () {
+      const data = yield MicroBlogApi.login_with_token(self.token())
+      if(data !== LOGIN_TOKEN_INVALID){
+        console.log("User:check_user_is_premium", data.is_premium)
+        self.is_premium = data.is_premium
+      }
     }),
     
   }))

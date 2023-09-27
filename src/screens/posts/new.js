@@ -23,6 +23,9 @@ export default class PostingScreen extends React.Component{
       Auth.selected_user.posting.selected_service.check_for_categories()
       Auth.selected_user.posting.reset_post_syndicates()
     }
+    if(Auth.selected_user?.is_premium == null || (Auth.selected_user?.is_premium != null && !Auth.selected_user?.is_premium)){
+      Auth.selected_user.check_user_is_premium()
+    }
   }
   
   componentDidAppear(){
