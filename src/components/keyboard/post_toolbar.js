@@ -113,7 +113,7 @@ export default class PostToolbar extends React.Component{
 							</>
 						}
 						{
-							!this.props.is_post_edit && !App.is_share_extension &&
+							!this.props.is_post_edit && !App.is_share_extension && (Auth.selected_user?.is_premium != null && Auth.selected_user?.is_premium) &&
 							<>
 								<TouchableOpacity style={{minWidth: 35, marginLeft: 4, marginRight: 0}} onPress={() => uploadsScreen(this.props.componentId, true)}>
 								{
