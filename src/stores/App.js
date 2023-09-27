@@ -728,6 +728,9 @@ export default App = types.model('App', {
   theme_section_background_color() {
     return self.theme === "dark" ? "#374151" : "#E5E7EB"
   },
+  theme_header_button_background_color() {
+    return self.theme === "dark" ? "#27303d" : "#f8f8f8"
+  },
   theme_border_color() {
     return self.theme === "dark" ? "#374151" : "#E5E7EB"
   },

@@ -48,6 +48,7 @@ export default class PagesScreen extends React.Component{
           style={{
             justifyContent: "center",
             alignItems: "center",
+            backgroundColor: App.theme_header_button_background_color(),
             borderColor: App.theme_border_color(),
             borderWidth: 1,
             padding: 4,
@@ -83,6 +84,7 @@ export default class PagesScreen extends React.Component{
         style={{
           justifyContent: "center",
           alignItems: "center",
+          backgroundColor: App.theme_header_button_background_color(),
           borderColor: App.theme_border_color(),
           borderWidth: 1,
           padding: 4,
