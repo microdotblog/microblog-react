@@ -679,13 +679,6 @@ export const replyScreen = () => {
 							    id: 'post_button',
 							    text: 'Post',
                   color: '#f80'
-                },
-                {
-                  id: 'profile_button',
-                  text: 'profile',
-                  component: {
-                    name: PROFILE_IMAGE
-                  }
                 }
 					    ]
             },
