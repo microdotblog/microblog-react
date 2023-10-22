@@ -29,11 +29,11 @@ export default class PostingScreen extends React.Component{
   }
   
   componentDidAppear(){
-    Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: true}});
+    Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: false}});
   }
   
   componentDidDisappear(){
-    Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: false}});
+    // Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: true}});
   }
   
   navigationButtonPressed = async ({ buttonId }) => {
