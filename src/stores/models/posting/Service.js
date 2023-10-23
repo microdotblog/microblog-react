@@ -39,8 +39,15 @@ export default Service = types.model('Service', {
             }
           ]
         }
-        self.config = config
-        self.config.hydrate_default_destination()
+        // Before we set the new config, let's check if we had a config beforehand
+        const previously_set_destination = self.config?.selected_posts_destination
+        self.config = config        
+        if(previously_set_destination != null){
+          self.config.set_previously_selected_posts_destination(previously_set_destination)
+        }
+        else{
+          self.config.hydrate_default_destination()
+        }
         self.check_for_syndicate_to_targets()
         if(App.is_share_extension){
           self.check_for_categories()
