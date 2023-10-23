@@ -4,7 +4,7 @@ import PushNotification from "react-native-push-notification";
 import Notification from './models/Notification'
 import Auth from './Auth'
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
-import { Platform } from 'react-native'
+import { Platform, PermissionsAndroid } from 'react-native'
 import { notificationsSheet } from "../screens"
 
 export default Push = types.model('Push', {
@@ -42,6 +42,9 @@ export default Push = types.model('Push', {
 
 		if (Platform.OS === 'ios') {
 			PushNotificationIOS.requestPermissions()
+		}
+		else if(Platform.OS === 'android'){
+			PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS)
 		}
 	}),
 	
