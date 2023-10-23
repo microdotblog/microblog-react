@@ -936,6 +936,13 @@ export const postsScreen = (component_id) => {
           },
           rightButtons: [
             {
+              id: 'post_button',
+              text: 'New',
+              component: {
+                name: NEW_POST_BUTTON
+              }
+            },
+            {
               id: 'refresh_indicator',
               text: 'refresh',
               component: {
