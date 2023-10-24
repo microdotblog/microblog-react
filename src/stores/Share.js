@@ -59,6 +59,11 @@ export default Share = types.model('Share', {
 			yield self.set_data()
 			self.trigger_loading(false)
 		}),
+		
+		hydrate_android_share: flow(function* (data) {
+			console.log('Share:hydrate_android_share', data)
+			
+		}),
 
 		trigger_loading: flow(function* (is_loading = true) {
 			console.log('Share:trigger_loading', is_loading)

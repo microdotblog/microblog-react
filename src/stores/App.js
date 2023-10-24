@@ -16,7 +16,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Contact from './models/posting/Contact'
 import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
 import Services from './Services';
-// import ShareMenu from 'react-native-share-menu'
+import ShareMenu from 'react-native-share-menu'
+import Share from './Share'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -124,12 +125,16 @@ export default App = types.model('App', {
         App.navigate_to_screen("post", value)
       }
     })
-    // ShareMenu.addNewShareListener((share) => {
-    //   console.log("App:set_up_url_listener:share", share)
-    // })
-    // ShareMenu.getInitialShare((share) => { 
-    //   console.log("App:set_up_url_listener:getInitialShare", share)
-    // })
+    if(Platform.OS === "android"){
+      ShareMenu.addNewShareListener((share) => {
+        console.log("App:set_up_url_listener:share", share)
+        Share.hydrate_android_share(share)
+      })
+      ShareMenu.getInitialShare(async (share) => { 
+        console.log("App:set_up_url_listener:getInitialShare", share)
+        Share.hydrate_android_share(share)
+      })
+    }
   }),
 
   set_current_screen_name_and_id: flow(function* (screen_name, screen_id) {
