@@ -20,6 +20,8 @@
 		4B1233D429ECCC0100174307 /* MBHighlightingTextManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1233D329ECCC0100174307 /* MBHighlightingTextManager.m */; };
 		4B1233D729ECD7D200174307 /* MBHighlightingTextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1233D529ECD7D200174307 /* MBHighlightingTextStorage.m */; };
 		4B1233D829ECD7D200174307 /* MBHighlightingTextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1233D529ECD7D200174307 /* MBHighlightingTextStorage.m */; };
+		4B3498672AE86AA900233BA2 /* RCTInputAccessoryShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3498662AE86AA900233BA2 /* RCTInputAccessoryShadowView.m */; };
+		4B3498682AE86AA900233BA2 /* RCTInputAccessoryShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3498662AE86AA900233BA2 /* RCTInputAccessoryShadowView.m */; };
 		4B7619D129EC9E7A0030A495 /* MBHighlightingTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B7619D029EC9E7A0030A495 /* MBHighlightingTextView.m */; };
 		4B7619D229EC9E7A0030A495 /* MBHighlightingTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B7619D029EC9E7A0030A495 /* MBHighlightingTextView.m */; };
 		4B8CE8AB2A1FCC69006D79CF /* GetURL.js in Resources */ = {isa = PBXBuildFile; fileRef = 4B8CE8AA2A1FCC69006D79CF /* GetURL.js */; };
@@ -90,6 +92,8 @@
 		4B1233D329ECCC0100174307 /* MBHighlightingTextManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MBHighlightingTextManager.m; path = MicroBlog_RN/MBHighlightingTextManager.m; sourceTree = "<group>"; };
 		4B1233D529ECD7D200174307 /* MBHighlightingTextStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBHighlightingTextStorage.m; path = MicroBlog_RN/MBHighlightingTextStorage.m; sourceTree = "<group>"; };
 		4B1233D629ECD7D200174307 /* MBHighlightingTextStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBHighlightingTextStorage.h; path = MicroBlog_RN/MBHighlightingTextStorage.h; sourceTree = "<group>"; };
+		4B3498652AE86AA900233BA2 /* RCTInputAccessoryShadowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RCTInputAccessoryShadowView.h; path = MicroBlog_RN/RCTInputAccessoryShadowView.h; sourceTree = "<group>"; };
+		4B3498662AE86AA900233BA2 /* RCTInputAccessoryShadowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RCTInputAccessoryShadowView.m; path = MicroBlog_RN/RCTInputAccessoryShadowView.m; sourceTree = "<group>"; };
 		4B7619CF29EC9E7A0030A495 /* MBHighlightingTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MBHighlightingTextView.h; path = MicroBlog_RN/MBHighlightingTextView.h; sourceTree = "<group>"; };
 		4B7619D029EC9E7A0030A495 /* MBHighlightingTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MBHighlightingTextView.m; path = MicroBlog_RN/MBHighlightingTextView.m; sourceTree = "<group>"; };
 		4B8CE8AA2A1FCC69006D79CF /* GetURL.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = GetURL.js; sourceTree = "<group>"; };
@@ -177,6 +181,8 @@
 				4B1233D529ECD7D200174307 /* MBHighlightingTextStorage.m */,
 				4B06FCA629FABD0800E97371 /* UIScrollViewDelegate+Zooming.h */,
 				4B06FCA729FABD0800E97371 /* UIScrollViewDelegate+Zooming.m */,
+				4B3498652AE86AA900233BA2 /* RCTInputAccessoryShadowView.h */,
+				4B3498662AE86AA900233BA2 /* RCTInputAccessoryShadowView.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
@@ -603,6 +609,7 @@
 			files = (
 				0221AB3829D4327B00838597 /* ReactShareViewController.swift in Sources */,
 				4B7619D229EC9E7A0030A495 /* MBHighlightingTextView.m in Sources */,
+				4B3498682AE86AA900233BA2 /* RCTInputAccessoryShadowView.m in Sources */,
 				4B1233D829ECD7D200174307 /* MBHighlightingTextStorage.m in Sources */,
 				0221AB3529D42CE500838597 /* ShareViewController.swift in Sources */,
 				4BAA745E2A24E56500953D91 /* MBHighlightingTextManager.m in Sources */,
@@ -619,6 +626,7 @@
 				4B1233D429ECCC0100174307 /* MBHighlightingTextManager.m in Sources */,
 				0251EE462716191A00B475D5 /* File.swift in Sources */,
 				4B06FCA829FABD0800E97371 /* UIScrollViewDelegate+Zooming.m in Sources */,
+				4B3498672AE86AA900233BA2 /* RCTInputAccessoryShadowView.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
