@@ -83,7 +83,7 @@ export default Share = types.model('Share', {
 			let mime_type = null
 			if (direct_data != null) {
 				console.log('Share:set_data:direct_data', direct_data)
-				data = direct_data.data
+				data = direct_data.data.split("#:~:text=")[0]
 				mime_type = direct_data.mimeType
 			}
 			else {
