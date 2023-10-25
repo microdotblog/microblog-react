@@ -69,7 +69,11 @@ export default class SharePostScreen extends React.Component {
 									<PostToolbar />
 								</InputAccessoryView>
 							</>
-							: null
+							: 
+							<>
+								<AssetToolbar />
+								<PostToolbar />
+							</>
 					}
 				</View>
 				: null

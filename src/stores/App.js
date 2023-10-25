@@ -93,6 +93,11 @@ export default App = types.model('App', {
     yield App.set_current_initial_theme()
   }),
 
+  dehydrate_share_extension: flow(function* () {
+    console.log("App:dehydrate_share_extension")
+    self.is_share_extension = false
+  }),
+
   set_is_loading: flow(function* (loading) {
     console.log("App:set_is_loading", loading)
     self.is_loading = loading

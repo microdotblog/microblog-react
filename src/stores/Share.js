@@ -200,7 +200,7 @@ export default Share = types.model('Share', {
 			if (saved) {
 				Platform.OS === "ios" ?
 					ShareMenuReactView.dismissExtension()
-				: Navigation.dismissAllModals()
+				: Navigation.dismissAllModals() && App.dehydrate_share_extension()
 			}
 			else {
 				self.error_message = "Something went wrong, trying to save your bookmark. Please try again."
@@ -214,7 +214,7 @@ export default Share = types.model('Share', {
 			if (sent) {
 				Platform.OS === "ios" ?
 					ShareMenuReactView.dismissExtension()
-				: Navigation.dismissAllModals()
+				: Navigation.dismissAllModals() && App.dehydrate_share_extension()
 			}
 			else {
 				self.error_message = "Something went wrong, trying to send your post. Please try again."
@@ -254,7 +254,7 @@ export default Share = types.model('Share', {
 		close: flow(function* () {
 			Platform.OS === "ios" ?
 				ShareMenuReactView.dismissExtension()
-			: Navigation.dismissAllModals()
+			: Navigation.dismissAllModals() && App.dehydrate_share_extension()
 		}),
 
 		clear_error_message: flow(function* () {
