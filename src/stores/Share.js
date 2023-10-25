@@ -5,7 +5,7 @@ import MicroBlogApi, { LOGIN_ERROR, LOGIN_TOKEN_INVALID, LOGIN_INCORRECT } from 
 import Tokens from "./Tokens";
 import User from './models/User';
 import string_checker from '../utils/string_checker'
-import { Platform } from 'react-native'
+import { Platform, Keyboard } from 'react-native'
 import { Navigation } from 'react-native-navigation'
 
 export default Share = types.model('Share', {
@@ -200,7 +200,7 @@ export default Share = types.model('Share', {
 			if (saved) {
 				Platform.OS === "ios" ?
 					ShareMenuReactView.dismissExtension()
-				: Navigation.dismissAllModals() && App.dehydrate_share_extension()
+				: Navigation.dismissAllModals() && App.dehydrate_share_extension() && Keyboard.dismiss()
 			}
 			else {
 				self.error_message = "Something went wrong, trying to save your bookmark. Please try again."
@@ -214,7 +214,7 @@ export default Share = types.model('Share', {
 			if (sent) {
 				Platform.OS === "ios" ?
 					ShareMenuReactView.dismissExtension()
-				: Navigation.dismissAllModals() && App.dehydrate_share_extension()
+				: Navigation.dismissAllModals() && App.dehydrate_share_extension() && Keyboard.dismiss()
 			}
 			else {
 				self.error_message = "Something went wrong, trying to send your post. Please try again."
@@ -254,7 +254,7 @@ export default Share = types.model('Share', {
 		close: flow(function* () {
 			Platform.OS === "ios" ?
 				ShareMenuReactView.dismissExtension()
-			: Navigation.dismissAllModals() && App.dehydrate_share_extension()
+			: Navigation.dismissAllModals() && App.dehydrate_share_extension() && Keyboard.dismiss()
 		}),
 
 		clear_error_message: flow(function* () {

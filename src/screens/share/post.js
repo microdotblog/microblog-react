@@ -71,7 +71,7 @@ export default class SharePostScreen extends React.Component {
 							</>
 							: 
 							<>
-							<TextInput
+								<TextInput
 									placeholderTextColor="lightgrey"
 									style={{
 										fontSize: 18,
