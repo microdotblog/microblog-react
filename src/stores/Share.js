@@ -83,8 +83,19 @@ export default Share = types.model('Share', {
 			let mime_type = null
 			if (direct_data != null) {
 				console.log('Share:set_data:direct_data', direct_data)
-				data = direct_data.data.split("#:~:text=")[0]
-				mime_type = direct_data.mimeType
+				if (direct_data.data.includes("#:~:text=")) {
+					// Messy...
+					mime_type = "application/json"
+					data = JSON.stringify({
+						text: decodeURIComponent(direct_data.data.split("#:~:text=")[ 1 ]),
+						url: direct_data.data.split("#:~:text=")[ 0 ]?.match(/(https?:\/\/[^\s]+)/g)[ 0 ],
+						title: direct_data.data.split("#:~:text=")[ 0 ]?.match(/(https?:\/\/[^\s]+)/g)[0]?.replace("https://", "").replace("http://", "").replace(/\/([^/]*)$/, "")
+					})
+				}
+				else {
+					data = direct_data.data.split("#:~:text=")[0]
+					mime_type = direct_data.mimeType
+				}
 			}
 			else {
 				const share_data = yield ShareMenuReactView.data()
