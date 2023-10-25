@@ -62,7 +62,7 @@ export default Share = types.model('Share', {
 		
 		hydrate_android_share: flow(function* (data) {
 			console.log('Share:hydrate_android_share', data)
-			
+			Share.hydrate()
 		}),
 
 		trigger_loading: flow(function* (is_loading = true) {

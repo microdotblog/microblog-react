@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen, settingsScreen, postsScreen, pagesScreen, uploadsScreen, postOptionsSettingsScreen, addTagsBottomSheet, UPLOADS_MODAL_SCREEN } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen, settingsScreen, postsScreen, pagesScreen, uploadsScreen, postOptionsSettingsScreen, addTagsBottomSheet, UPLOADS_MODAL_SCREEN, shareScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
@@ -128,11 +128,17 @@ export default App = types.model('App', {
     if(Platform.OS === "android"){
       ShareMenu.addNewShareListener((share) => {
         console.log("App:set_up_url_listener:share", share)
-        Share.hydrate_android_share(share)
+        if (share != null) {
+          Share.hydrate_android_share(share)
+          return shareScreen()
+        }        
       })
       ShareMenu.getInitialShare(async (share) => { 
         console.log("App:set_up_url_listener:getInitialShare", share)
-        Share.hydrate_android_share(share)
+        if (share != null) {
+          Share.hydrate_android_share(share)
+          return shareScreen()
+        }
       })
     }
   }),
@@ -211,7 +217,6 @@ export default App = types.model('App', {
         case "bookmark":
           return bookmarkScreen(action_data, self.current_screen_id)
         case "post":
-          console.log(self.current_screen_id, self.current_screen_name)
           Auth.selected_user.posting.set_post_text_from_action(action_data)
           if (!self.post_modal_is_open) {
             return postingScreen(action_data)
