@@ -198,7 +198,9 @@ export default Share = types.model('Share', {
 			Share.clear_error_message()
 			const saved = yield self.selected_user.posting.add_bookmark(url)
 			if (saved) {
-				ShareMenuReactView.dismissExtension()
+				Platform.OS === "ios" ?
+					ShareMenuReactView.dismissExtension()
+				: Navigation.dismissAllModals()
 			}
 			else {
 				self.error_message = "Something went wrong, trying to save your bookmark. Please try again."
@@ -210,7 +212,9 @@ export default Share = types.model('Share', {
 			Share.clear_error_message()
 			const sent = yield self.selected_user.posting.send_post()
 			if (sent) {
-				ShareMenuReactView.dismissExtension()
+				Platform.OS === "ios" ?
+					ShareMenuReactView.dismissExtension()
+				: Navigation.dismissAllModals()
 			}
 			else {
 				self.error_message = "Something went wrong, trying to send your post. Please try again."
