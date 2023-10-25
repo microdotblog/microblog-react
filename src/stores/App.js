@@ -128,14 +128,14 @@ export default App = types.model('App', {
     if(Platform.OS === "android"){
       ShareMenu.addNewShareListener((share) => {
         console.log("App:set_up_url_listener:share", share)
-        if (share != null) {
+        if (share?.data != null) {
           Share.hydrate_android_share(share)
           return shareScreen()
         }        
       })
       ShareMenu.getInitialShare(async (share) => { 
         console.log("App:set_up_url_listener:getInitialShare", share)
-        if (share != null) {
+        if (share?.data != null) {
           Share.hydrate_android_share(share)
           return shareScreen()
         }
