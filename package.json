@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "postinstall": "patch-package",
     "check-dependencies": "rnx-align-deps",
-    "fix-dependencies": "rnx-align-deps --write"
+    "fix-dependencies": "rnx-align-deps --write",
+    "pods": "npx pod-install ios"
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.15.8",
