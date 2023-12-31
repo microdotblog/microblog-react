@@ -33,6 +33,7 @@ import EditPageScreen from "./pages/edit"
 import UploadsScreen from "./uploads/uploads";
 import PostOptionsSettingsScreen from "./settings/post_options";
 import HighlightsScreen from "./bookmarks/highlights";
+import ShareScreen from "./share";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
 export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
@@ -63,6 +64,7 @@ export const UPLOADS_SCREEN = 'microblog.UploadsScreen';
 export const UPLOADS_MODAL_SCREEN = 'microblog.modal.UploadsScreen';
 export const POST_OPTIONS_SETTINGS_SCREEN = 'microblog.modal.PostOptionsSettingsScreen';
 export const HIGHLIGHTS_SCREEN = 'microblog.HighlightsScreen';
+export const SHARE_SCREEN = 'microblog.modal.ShareScreen';
 
 // COMPONENTS
 import ProfileImage from './../components/header/profile_image';
@@ -139,6 +141,7 @@ export const Screens = {
   [ UPLOADS_MODAL_SCREEN ]: UploadsScreen,
   [ POST_OPTIONS_SETTINGS_SCREEN ]: PostOptionsSettingsScreen,
   [ HIGHLIGHTS_SCREEN ]: HighlightsScreen,
+  [ SHARE_SCREEN ]: ShareScreen,
   // COMPONENTS
   [ PROFILE_IMAGE ]: ProfileImage,
   [ NEW_POST_BUTTON ]: NewPostButton,
@@ -1213,4 +1216,27 @@ export const notificationsSheet = (close = false) => {
     return SheetManager.show("notifications_sheet")
   }
   SheetManager.hide("notifications_sheet")
+}
+
+export const shareScreen = () => {
+  return Navigation.showModal({
+    stack: {
+      id: POSTING_STACK,
+      name: POSTING_STACK,
+      children: [ {
+        component: {
+          id: SHARE_SCREEN,
+          name: SHARE_SCREEN,
+          options: {
+            topBar: {
+              visible: false
+            },
+            layout: {
+              backgroundColor: App.theme_background_color()
+            }
+          }
+        },
+      }],
+    }
+  });
 }

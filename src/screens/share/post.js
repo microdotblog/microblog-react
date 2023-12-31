@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { InputAccessoryView, View, Text } from 'react-native'
+import { InputAccessoryView, View, Text, Platform , TextInput } from 'react-native'
 import Share from '../../stores/Share'
 import App from '../../stores/App'
 import AssetToolbar from '../../components/keyboard/asset_toolbar'
@@ -33,38 +33,74 @@ export default class SharePostScreen extends React.Component {
 								</Text>
 							</View>
 					}
-					<HighlightingText
-						placeholderTextColor="lightgrey"
-						style={{
-							height: 300,
-							fontSize: 18,
-							justifyContent: 'flex-start',
-							alignItems: 'flex-start',
-							marginTop: 4,
-							padding: 8,
-							color: App.theme_text_color()
-						}}
-						editable={!Share.selected_user?.posting.is_sending_post}
-						multiline={true}
-						scrollEnabled={true}
-						returnKeyType={'default'}
-						keyboardType={'default'}
-						autoFocus={true}
-						autoCorrect={true}
-						clearButtonMode={'while-editing'}
-						enablesReturnKeyAutomatically={true}
-						underlineColorAndroid={'transparent'}
-						value={Share.share_text}
-						onChangeText={({ nativeEvent: { text } }) => !Share.selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null}
-						onSelectionChange={({ nativeEvent: { selection } }) => {
-							Share.set_text_selection(selection)
-						}}
-						inputAccessoryViewID={this.input_accessory_view_id}
-					/>
-					<InputAccessoryView nativeID={this.input_accessory_view_id}>
-						<AssetToolbar />
-						<PostToolbar />
-					</InputAccessoryView>
+					{
+						Platform.OS === 'ios' ?
+							<>
+								<HighlightingText
+									placeholderTextColor="lightgrey"
+									style={{
+										height: 300,
+										fontSize: 18,
+										justifyContent: 'flex-start',
+										alignItems: 'flex-start',
+										marginTop: 4,
+										padding: 8,
+										color: App.theme_text_color()
+									}}
+									editable={!Share.selected_user?.posting.is_sending_post}
+									multiline={true}
+									scrollEnabled={true}
+									returnKeyType={'default'}
+									keyboardType={'default'}
+									autoFocus={true}
+									autoCorrect={true}
+									clearButtonMode={'while-editing'}
+									enablesReturnKeyAutomatically={true}
+									underlineColorAndroid={'transparent'}
+									value={Share.share_text}
+									onChangeText={({ nativeEvent: { text } }) => !Share.selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null}
+									onSelectionChange={({ nativeEvent: { selection } }) => {
+										Share.set_text_selection(selection)
+									}}
+									inputAccessoryViewID={this.input_accessory_view_id}
+								/>
+								<InputAccessoryView nativeID={this.input_accessory_view_id}>
+									<AssetToolbar />
+									<PostToolbar />
+								</InputAccessoryView>
+							</>
+							: 
+							<>
+								<TextInput
+									placeholderTextColor="lightgrey"
+									style={{
+										fontSize: 18,
+										justifyContent: 'flex-start',
+										alignItems: 'flex-start',
+										marginTop: 4,
+										padding: 8,
+										color: App.theme_text_color()
+									}}
+									editable={!Share.selected_user?.posting.is_sending_post}
+									multiline={true}
+									scrollEnabled={true}
+									returnKeyType={'default'}
+									keyboardType={'default'}
+									autoFocus={true}
+									autoCorrect={true}
+									clearButtonMode={'while-editing'}
+									enablesReturnKeyAutomatically={true}
+									underlineColorAndroid={'transparent'}
+									value={Share.share_text}
+									onChangeText={(text) => !Share.selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null}
+									onSelectionChange={({ nativeEvent: { selection } }) => {
+										Share.set_text_selection(selection)
+									}}
+								/>
+								<AssetToolbar />
+								<PostToolbar />
+							</>
+					}
 				</View>
 				: null
 		)

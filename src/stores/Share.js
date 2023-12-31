@@ -5,6 +5,8 @@ import MicroBlogApi, { LOGIN_ERROR, LOGIN_TOKEN_INVALID, LOGIN_INCORRECT } from 
 import Tokens from "./Tokens";
 import User from './models/User';
 import string_checker from '../utils/string_checker'
+import { Platform, Keyboard } from 'react-native'
+import { Navigation } from 'react-native-navigation'
 
 export default Share = types.model('Share', {
 	is_loading: types.optional(types.boolean, true),
@@ -31,7 +33,7 @@ export default Share = types.model('Share', {
 })
 	.actions(self => ({
 
-		hydrate: flow(function* () {
+		hydrate: flow(function* (shared_data = null) {
 			console.log('Share:hydrate', self)
 			yield self.trigger_loading()
 			yield App.prep_and_hydrate_share_extension()
@@ -50,14 +52,20 @@ export default Share = types.model('Share', {
 			if (data?.tokens) {
 				console.log('Share:hydrate:tokens', data.tokens)
 				for (const user_data of data.tokens) {
+					console.log("USER DATA", user_data)
 					const existing_user = self.users.find(u => u.username === user_data.username)
 					if (existing_user == null) {
 						yield self.login_account(user_data)
 					}
 				}
 			}
-			yield self.set_data()
+			yield self.set_data(shared_data)
 			self.trigger_loading(false)
+		}),
+		
+		hydrate_android_share: flow(function* (shared_data) {
+			console.log('Share:hydrate_android_share', shared_data)
+			Share.hydrate(shared_data)
 		}),
 
 		trigger_loading: flow(function* (is_loading = true) {
@@ -70,12 +78,32 @@ export default Share = types.model('Share', {
 			ShareMenuReactView.continueInApp()
 		}),
 
-		set_data: flow(function* () {
-			const share_data = yield ShareMenuReactView.data()
-			console.log('Share:set_data', share_data)
-			let data_array = share_data.data
-			let data = data_array[ 0 ].data
-			let mime_type = data_array[ 0 ].mimeType
+		set_data: flow(function* (direct_data = null) {
+			let data = null
+			let mime_type = null
+			if (direct_data != null) {
+				console.log('Share:set_data:direct_data', direct_data)
+				if (direct_data.data.includes("#:~:text=")) {
+					// Messy...
+					mime_type = "application/json"
+					data = JSON.stringify({
+						text: decodeURIComponent(direct_data.data.split("#:~:text=")[ 1 ]),
+						url: direct_data.data.split("#:~:text=")[ 0 ]?.match(/(https?:\/\/[^\s]+)/g)[ 0 ],
+						title: direct_data.data.split("#:~:text=")[ 0 ]?.match(/(https?:\/\/[^\s]+)/g)[0]?.replace("https://", "").replace("http://", "").replace(/\/([^/]*)$/, "")
+					})
+				}
+				else {
+					data = direct_data.data.split("#:~:text=")[0]
+					mime_type = direct_data.mimeType
+				}
+			}
+			else {
+				const share_data = yield ShareMenuReactView.data()
+				console.log('Share:set_data', share_data)
+				data_array = share_data.data
+				data = data_array[ 0 ].data
+				mime_type = data_array[ 0 ].mimeType
+			}
 			self.share_data = data
 			console.log('Share:set_data:data', data, mime_type)
 			if (mime_type === "image/jpeg" || mime_type === "image/png") {
@@ -181,7 +209,9 @@ export default Share = types.model('Share', {
 			Share.clear_error_message()
 			const saved = yield self.selected_user.posting.add_bookmark(url)
 			if (saved) {
-				ShareMenuReactView.dismissExtension()
+				Platform.OS === "ios" ?
+					ShareMenuReactView.dismissExtension()
+				: Navigation.dismissAllModals() && App.dehydrate_share_extension() && Keyboard.dismiss()
 			}
 			else {
 				self.error_message = "Something went wrong, trying to save your bookmark. Please try again."
@@ -193,7 +223,9 @@ export default Share = types.model('Share', {
 			Share.clear_error_message()
 			const sent = yield self.selected_user.posting.send_post()
 			if (sent) {
-				ShareMenuReactView.dismissExtension()
+				Platform.OS === "ios" ?
+					ShareMenuReactView.dismissExtension()
+				: Navigation.dismissAllModals() && App.dehydrate_share_extension() && Keyboard.dismiss()
 			}
 			else {
 				self.error_message = "Something went wrong, trying to send your post. Please try again."
@@ -231,7 +263,9 @@ export default Share = types.model('Share', {
 		}),
 
 		close: flow(function* () {
-			ShareMenuReactView.dismissExtension()
+			Platform.OS === "ios" ?
+				ShareMenuReactView.dismissExtension()
+			: Navigation.dismissAllModals() && App.dehydrate_share_extension() && Keyboard.dismiss()
 		}),
 
 		clear_error_message: flow(function* () {

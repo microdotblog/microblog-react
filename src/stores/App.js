@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen, settingsScreen, postsScreen, pagesScreen, uploadsScreen, postOptionsSettingsScreen, addTagsBottomSheet, UPLOADS_MODAL_SCREEN } from '../screens';
+import { startApp, loginScreen, profileScreen, conversationScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen, settingsScreen, postsScreen, pagesScreen, uploadsScreen, postOptionsSettingsScreen, addTagsBottomSheet, UPLOADS_MODAL_SCREEN, shareScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
@@ -16,7 +16,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Contact from './models/posting/Contact'
 import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
 import Services from './Services';
-// import ShareMenu from 'react-native-share-menu'
+import ShareMenu from 'react-native-share-menu'
+import Share from './Share'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -92,6 +93,11 @@ export default App = types.model('App', {
     yield App.set_current_initial_theme()
   }),
 
+  dehydrate_share_extension: flow(function* () {
+    console.log("App:dehydrate_share_extension")
+    self.is_share_extension = false
+  }),
+
   set_is_loading: flow(function* (loading) {
     console.log("App:set_is_loading", loading)
     self.is_loading = loading
@@ -124,12 +130,22 @@ export default App = types.model('App', {
         App.navigate_to_screen("post", value)
       }
     })
-    // ShareMenu.addNewShareListener((share) => {
-    //   console.log("App:set_up_url_listener:share", share)
-    // })
-    // ShareMenu.getInitialShare((share) => { 
-    //   console.log("App:set_up_url_listener:getInitialShare", share)
-    // })
+    if(Platform.OS === "android"){
+      ShareMenu.addNewShareListener((share) => {
+        console.log("App:set_up_url_listener:share", share)
+        if (share?.data != null) {
+          Share.hydrate_android_share(share)
+          return shareScreen()
+        }        
+      })
+      ShareMenu.getInitialShare(async (share) => { 
+        console.log("App:set_up_url_listener:getInitialShare", share)
+        if (share?.data != null) {
+          Share.hydrate_android_share(share)
+          return shareScreen()
+        }
+      })
+    }
   }),
 
   set_current_screen_name_and_id: flow(function* (screen_name, screen_id) {
@@ -206,7 +222,6 @@ export default App = types.model('App', {
         case "bookmark":
           return bookmarkScreen(action_data, self.current_screen_id)
         case "post":
-          console.log(self.current_screen_id, self.current_screen_name)
           Auth.selected_user.posting.set_post_text_from_action(action_data)
           if (!self.post_modal_is_open) {
             return postingScreen(action_data)

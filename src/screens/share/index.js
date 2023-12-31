@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react'
 import * as React from 'react'
-import { ActivityIndicator, Button, Text, View } from 'react-native'
+import { ActivityIndicator, Button, Text, View, Platform } from 'react-native'
 import App from '../../stores/App'
 import Share from '../../stores/Share'
 import SharePostScreen from './post'
@@ -12,7 +12,7 @@ export default class ShareScreen extends React.Component {
 
 	componentDidMount() {
 		console.log('ShareScreen:componentDidMount')
-		Share.hydrate()
+		Platform.OS === "ios" && Share.hydrate()
 	}
 
 	render() {
