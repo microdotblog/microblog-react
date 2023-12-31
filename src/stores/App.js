@@ -111,7 +111,7 @@ export default App = types.model('App', {
         Login.trigger_login_from_url(event.url)
       }
       else if(event?.url && event?.url.includes('/post?text=') && Auth.is_logged_in()){
-        App.navigate_to_screen("post", event.url)
+        App.navigate_to_screen("post", event.url, true)
       }
       else if(event?.url && event?.url.includes('/indieauth') && Auth.is_logged_in()){
         console.log("Micropub:Opened app with IndieAuth")
@@ -127,7 +127,7 @@ export default App = types.model('App', {
         Login.trigger_login_from_url(value)
       }
       else if(value?.includes('/post?text=') && Auth.is_logged_in()){
-        App.navigate_to_screen("post", value)
+        App.navigate_to_screen("post", value, true)
       }
     })
     if(Platform.OS === "android"){
@@ -205,7 +205,7 @@ export default App = types.model('App', {
     }
   }),
 
-  navigate_to_screen: flow(function* (action, action_data) {
+  navigate_to_screen: flow(function* (action, action_data, from_listener = false) {
     if(!self.is_scrolling){
       switch (action) {
         case "user":
@@ -222,9 +222,11 @@ export default App = types.model('App', {
         case "bookmark":
           return bookmarkScreen(action_data, self.current_screen_id)
         case "post":
-          Auth.selected_user.posting.set_post_text_from_action(action_data)
+          if(from_listener){
+            Auth.selected_user.posting.set_post_text_from_action(action_data)
+          }
           if (!self.post_modal_is_open) {
-            return postingScreen(action_data)
+            return postingScreen(!from_listener ? action_data : null)
           }
           return
       }
