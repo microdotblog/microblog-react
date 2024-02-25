@@ -1,7 +1,9 @@
 import { types } from 'mobx-state-tree';
 import { DOMParser } from "@xmldom/xmldom";
 
-let html_parser = new DOMParser();
+let html_parser = new DOMParser({ onError: (error) => {
+  // silently ignore errors
+}});
 
 export default Post = types.model('Post', {
   uid: types.identifierNumber,
