@@ -121,6 +121,7 @@ export default class PostingScreen extends React.Component{
               enablesReturnKeyAutomatically={true}
               underlineColorAndroid={'transparent'}
               value={posting.post_text}
+              selection={posting.text_selection_flat}
               onChangeText={({ nativeEvent: { text } }) => {
                 !posting.is_sending_post ? posting.set_post_text_from_typing(text) : null
               }}
