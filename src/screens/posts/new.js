@@ -29,11 +29,11 @@ export default class PostingScreen extends React.Component{
   }
   
   componentDidAppear(){
-    Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: true}});
+    Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: false}});
   }
   
   componentDidDisappear(){
-    Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: false}});
+    // Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: true}});
   }
   
   navigationButtonPressed = async ({ buttonId }) => {
@@ -104,7 +104,7 @@ export default class PostingScreen extends React.Component{
                 fontSize: 18,
                 justifyContent: 'flex-start',
                 alignItems: 'flex-start',
-                marginTop: 3,
+                marginTop: 0,
                 paddingBottom: posting.post_text_length() > posting.max_post_length() ? 150 : 0,
                 flex: 1,
                 padding: 8,
@@ -121,6 +121,7 @@ export default class PostingScreen extends React.Component{
               enablesReturnKeyAutomatically={true}
               underlineColorAndroid={'transparent'}
               value={posting.post_text}
+              selection={posting.text_selection_flat}
               onChangeText={({ nativeEvent: { text } }) => {
                 !posting.is_sending_post ? posting.set_post_text_from_typing(text) : null
               }}

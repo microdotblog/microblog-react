@@ -46,6 +46,36 @@ RCT_CUSTOM_VIEW_PROPERTY(value, NSString, MBHighlightingTextView)
   }
 }
 
+RCT_CUSTOM_VIEW_PROPERTY(selection, NSString, MBHighlightingTextView)
+{
+  if (json) {
+    NSInteger start_pos = 0;
+    NSInteger end_pos = 0;
+
+    NSString* s = [RCTConvert NSString:json];
+    if (s.length > 0) {
+      // start/end separated by a space, e.g. "0 5"
+      NSArray* pieces = [s componentsSeparatedByString:@" "];
+      start_pos = [[pieces firstObject] integerValue];
+      end_pos = [[pieces lastObject] integerValue];
+    }
+
+    self.textView.selectedRange = NSMakeRange(start_pos, end_pos - start_pos);
+  }
+}
+
+RCT_CUSTOM_VIEW_PROPERTY(autoFocus, BOOL, MBHighlightingTextView)
+{
+  if (json) {
+    BOOL needs_focus = [RCTConvert BOOL:json];
+    if (needs_focus) {
+      [self.textView becomeFirstResponder];
+    }
+  }
+}
+
+#pragma mark -
+
 + (CGFloat) preferredTimelineFontSize
 {
   UIFont* font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
@@ -109,7 +139,7 @@ RCT_CUSTOM_VIEW_PROPERTY(value, NSString, MBHighlightingTextView)
   };
   NSAttributedString* attr_s = [[NSAttributedString alloc] initWithString:s attributes:attr_info];
   self.textView.attributedText = attr_s;
-  self.textView.textContainerInset = UIEdgeInsetsMake (8, 5, 8, 5);
+  self.textView.textContainerInset = UIEdgeInsetsMake (10, 5, 10, 5);
   self.textView.font = [UIFont systemFontOfSize:[[self class] preferredPostingFontSize]];
   [self.textStorage setAttributedString:attr_s];
 

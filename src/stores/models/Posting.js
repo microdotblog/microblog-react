@@ -33,6 +33,7 @@ export default Posting = types.model('Posting', {
       end: types.optional(types.number, 0),
     }), {start: 0, end: 0}
   ),
+  text_selection_flat: types.optional(types.string, ""),
   is_editing_post: types.optional(types.boolean, false),
   post_url: types.maybeNull(types.string),
   show_title: types.optional(types.boolean, false)
@@ -68,6 +69,7 @@ export default Posting = types.model('Posting', {
     self.is_sending_post = false
     self.is_adding_bookmark = false
     self.is_editing_post = false
+    self.text_selection_flat = ""
     
     self.reset_post_syndicates()
 
@@ -212,7 +214,17 @@ export default Posting = types.model('Posting', {
     else {
       self.post_text = self.post_text.InsertTextStyle(action, self.text_selection, is_link)
     }
-    
+
+    let new_pos = self.text_selection.end;
+    if (is_link) {
+      new_pos += (action.length - 1);
+    }
+    else {
+      new_pos += (action.length * 2);
+    }
+    self.text_selection = { start: new_pos, end: new_pos };
+    self.text_selection_flat = `${new_pos} ${new_pos}`;
+    console.log("text_selection_flat", new_pos);
   }),
 
   handle_asset_action: flow(function* (component_id) {

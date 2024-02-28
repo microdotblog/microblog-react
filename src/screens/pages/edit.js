@@ -37,13 +37,6 @@ export default class PostEditScreen extends React.Component{
   }
   
   _input_outer_view = (component) => {
-    if (Platform.OS === 'ios') {
-      return (
-        <KeyboardAvoidingView behavior={'padding'} style={{ flex: 1 }}>
-        {component}
-        </KeyboardAvoidingView>
-      )
-    }
     return component
   }
   
@@ -79,46 +72,42 @@ export default class PostEditScreen extends React.Component{
           onChangeText={(text) => !posting.is_sending_post ? posting.set_post_title(text) : null}
           inputAccessoryViewID={this.input_accessory_view_id}
         />
-        {
-          this._input_outer_view(
-            <TextInput
-              placeholderTextColor="lightgrey"
-              style={{
-                fontSize: 18,
-                justifyContent: 'flex-start',
-                alignItems: 'flex-start',
-                marginTop: 3,
-                ...Platform.select({
-                  android: {
-                  marginBottom: posting.post_text_length() > posting.max_post_length() || posting.post_title ? posting.post_assets.length > 0 ? 135 : 80 : posting.post_assets.length > 0 ? 93 : 38,
-                  },
-                  ios: {
-                    paddingBottom: posting.post_text_length() > posting.max_post_length() ? 150 : 0,
-                    flex: 1
-                  }
-                }),
-                padding: 8,
-                color: App.theme_text_color()
-              }}
-              editable={!posting.is_sending_post}
-              multiline={true}
-              scrollEnabled={true}
-              returnKeyType={'default'}
-              keyboardType={'default'}
-              autoFocus={true}
-              autoCorrect={true}
-              clearButtonMode={'while-editing'}
-              enablesReturnKeyAutomatically={true}
-              underlineColorAndroid={'transparent'}
-              value={posting.post_text}
-              onChangeText={(text) => !posting.is_sending_post ? posting.set_post_text(text) : null}
-              onSelectionChange={({ nativeEvent: { selection } }) => {
-                posting.set_text_selection(selection)
-              }}
-              inputAccessoryViewID={this.input_accessory_view_id}
-            />
-          )
-        }
+        <TextInput
+          placeholderTextColor="lightgrey"
+          style={{
+            fontSize: 18,
+            justifyContent: 'flex-start',
+            alignItems: 'flex-start',
+            marginTop: 3,
+            ...Platform.select({
+              android: {
+              marginBottom: posting.post_text_length() > posting.max_post_length() || posting.post_title ? posting.post_assets.length > 0 ? 135 : 80 : posting.post_assets.length > 0 ? 93 : 38,
+              },
+              ios: {
+                paddingBottom: posting.post_text_length() > posting.max_post_length() ? 150 : 0,
+                flex: 1
+              }
+            }),
+            padding: 8,
+            color: App.theme_text_color()
+          }}
+          editable={!posting.is_sending_post}
+          multiline={true}
+          scrollEnabled={true}
+          returnKeyType={'default'}
+          keyboardType={'default'}
+          autoFocus={true}
+          autoCorrect={true}
+          clearButtonMode={'while-editing'}
+          enablesReturnKeyAutomatically={true}
+          underlineColorAndroid={'transparent'}
+          value={posting.post_text}
+          onChangeText={(text) => !posting.is_sending_post ? posting.set_post_text(text) : null}
+          onSelectionChange={({ nativeEvent: { selection } }) => {
+            posting.set_text_selection(selection)
+          }}
+          inputAccessoryViewID={this.input_accessory_view_id}
+        />
         {
           Platform.OS === 'ios' ?
             <InputAccessoryView nativeID={this.input_accessory_view_id}>

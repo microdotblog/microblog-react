@@ -1,7 +1,9 @@
 import { types } from 'mobx-state-tree';
 import { DOMParser } from "@xmldom/xmldom";
 
-let html_parser = new DOMParser();
+let html_parser = new DOMParser({ onError: (error) => {
+  // silently ignore errors
+}});
 
 export default Page = types.model('Page', {
   uid: types.identifierNumber,
@@ -14,8 +16,15 @@ export default Page = types.model('Page', {
   
   plain_text_content(){
     let html = "<p>" + self.content + "</p>";
-    let doc = html_parser.parseFromString(html, "text/html");
-    let text = doc.documentElement.textContent;
+    var text = "";
+    try {
+      let doc = html_parser.parseFromString(html, "text/html");
+      text = doc.documentElement.textContent;
+    }
+    catch (error) {
+      // if parse error, just show HTML
+      text = self.content;
+    }
 
     if (text.length > 300) {
       text = text.substring(0, 300) + '...'
