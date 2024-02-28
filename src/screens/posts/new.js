@@ -104,7 +104,7 @@ export default class PostingScreen extends React.Component{
                 fontSize: 18,
                 justifyContent: 'flex-start',
                 alignItems: 'flex-start',
-                marginTop: 3,
+                marginTop: 0,
                 paddingBottom: posting.post_text_length() > posting.max_post_length() ? 150 : 0,
                 flex: 1,
                 padding: 8,

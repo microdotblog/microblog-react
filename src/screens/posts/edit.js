@@ -43,13 +43,13 @@ export default class PostEditScreen extends React.Component{
   }
   
   _input_outer_view = (component) => {
-    if (Platform.OS === 'ios') {
-      return (
-        <KeyboardAvoidingView behavior={'padding'} style={{ flex: 1 }}>
-        {component}
-        </KeyboardAvoidingView>
-      )
-    }
+    // if (Platform.OS === 'ios') {
+    //   return (
+    //     <KeyboardAvoidingView behavior={'padding'} style={{ flex: 1 }}>
+    //     {component}
+    //     </KeyboardAvoidingView>
+    //   )
+    // }
     return component
   }
   
@@ -99,7 +99,7 @@ export default class PostEditScreen extends React.Component{
                 fontSize: 18,
                 justifyContent: 'flex-start',
                 alignItems: 'flex-start',
-                marginTop: 3,
+                marginTop: 0,
                 ...Platform.select({
                   android: {
                   marginBottom: posting.post_text_length() > posting.max_post_length() || posting.post_title ? posting.post_assets.length > 0 ? 135 : 80 : posting.post_assets.length > 0 ? 93 : 38,
