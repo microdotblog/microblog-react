@@ -35,7 +35,7 @@
     self.reactAccessoryView = v;
     
     if (self.inputAccessoryView == nil) {
-      [self becomeFirstResponder];
+//      [self becomeFirstResponder];
       self.inputAccessoryView = [self.reactAccessoryView inputAccessoryView];
       [self reloadInputViews];
     }
