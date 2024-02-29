@@ -115,7 +115,7 @@ export default class PostingScreen extends React.Component{
               scrollEnabled={true}
               returnKeyType={'default'}
               keyboardType={'default'}
-              autoFocus={false}
+              autoFocus={true}
               autoCorrect={true}
               clearButtonMode={'while-editing'}
               enablesReturnKeyAutomatically={true}
@@ -147,7 +147,7 @@ export default class PostingScreen extends React.Component{
               scrollEnabled={true}
               returnKeyType={'default'}
               keyboardType={'default'}
-              autoFocus={false}
+              autoFocus={true}
               autoCorrect={true}
               clearButtonMode={'while-editing'}
               enablesReturnKeyAutomatically={true}
