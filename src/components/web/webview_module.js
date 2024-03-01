@@ -75,7 +75,15 @@ export default class WebViewModule extends React.Component{
       decelerationRate="normal"
       onLoadEnd={(event) => {
         Auth.set_did_load_one_or_more_webviews();
-        this.setState({ opacity: 1.0 });
+        if (App.theme == "light") {
+          this.setState({ opacity: 1.0 });
+        }
+        else {
+          // to avoid dark mode flicker, we wait before revealing web view :-(
+          setTimeout(() => {
+            this.setState({ opacity: 1.0 });
+          }, 200);
+        }
       }}
       nestedScrollEnabled={true}
       onShouldStartLoadWithRequest={(event) => {
