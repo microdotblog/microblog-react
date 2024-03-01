@@ -160,7 +160,6 @@ export default Posting = types.model('Posting', {
     const post_success = self.selected_service.type === "xmlrpc" ?
       yield XMLRPCApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
       : yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status, self.post_syndicates.length === self.selected_service.active_destination()?.syndicates?.length ? null : self.post_syndicates)
-    self.is_sending_post = false
     if(post_success !== POST_ERROR && post_success !== XML_ERROR){
       self.post_text = ""
       self.post_title = null
@@ -174,8 +173,10 @@ export default Posting = types.model('Posting', {
         })
         self.post_syndicates = syndicate_targets
       }
+      self.is_sending_post = false
       return true
     }
+    self.is_sending_post = false
     return false
   }),
   

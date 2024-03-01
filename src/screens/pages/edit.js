@@ -119,7 +119,7 @@ export default class PostEditScreen extends React.Component{
           </>
         }
         {
-          posting.is_sending_post ?
+          posting.is_sending_post && (posting.post_text != "") ?
           <View 
             style={{ 
               position: 'absolute',
