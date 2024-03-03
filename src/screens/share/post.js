@@ -21,13 +21,13 @@ export default class SharePostScreen extends React.Component {
 				<View style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
 					{
 						Share.error_message != null &&
-						<View style={{ backgroundColor: App.theme_error_background_color(), padding: 8 }}>
+						<View style={{ backgroundColor: App.theme_error_background_color(), padding: 10 }}>
 							<Text style={{ color: App.theme_error_text_color(), fontWeight: "600" }}>{Share.error_message}</Text>
 						</View>
 					}
 					{
 						Share.can_save_as_bookmark() &&
-							<View style={{ backgroundColor: App.theme_section_background_color(), padding: 8 }}>
+							<View style={{ backgroundColor: App.theme_section_background_color(), padding: 10 }}>
 								<Text style={{ color: App.theme_text_color(), fontWeight: "500" }}>
 									You can save this URL as a bookmark or keep editing to create a new post.
 								</Text>
@@ -40,7 +40,7 @@ export default class SharePostScreen extends React.Component {
 							fontSize: 18,
 							justifyContent: 'flex-start',
 							alignItems: 'flex-start',
-							marginTop: 4,
+							marginTop: 0,
 							padding: 8,
 							color: App.theme_text_color()
 						}}
