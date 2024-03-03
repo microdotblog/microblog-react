@@ -68,7 +68,7 @@ export default class ShareScreen extends React.Component {
 							</View>
 							:
 							<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-								<Text style={{ color: App.theme_text_color(), fontSize: 17, textAlign: "center", marginBottom: 10}}>Please login, in the app, before using the Share Extension</Text>
+								<Text style={{ color: App.theme_text_color(), fontSize: 17, textAlign: "center", marginBottom: 10}}>Using the Micro.blog app, please sign in before using the share extension.</Text>
 								<Button title="Open App" onPress={Share.open_in_app} />
 							</View>
 				}
