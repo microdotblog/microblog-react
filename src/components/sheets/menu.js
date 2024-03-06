@@ -1,7 +1,7 @@
 import ActionSheet from "react-native-actions-sheet";
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Platform } from 'react-native';
 import Auth from './../../stores/Auth';
 import { loginScreen } from './../../screens/';
 import AccountSwitcher from '../menu/account_switcher'
@@ -16,7 +16,7 @@ export default class SheetMenu extends React.Component{
       <ActionSheet
         id={this.props.sheetId}
         snapPoints={[40,75,100]}
-        initialSnapIndex={[1]}
+        initialSnapIndex={[ Platform.isPad ? 2 : 1 ]}
         overdrawEnabled={true}
         useBottomSafeAreaPadding={true}
         gestureEnabled={true}

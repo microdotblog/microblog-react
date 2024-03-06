@@ -14,6 +14,10 @@ export default class ReplyEditScreen extends React.Component{
     Navigation.events().bindComponent(this)
     this.input_accessory_view_id = "input_toolbar";
   }
+
+  componentDidAppear(){
+    Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: false}});
+  }
   
   navigationButtonPressed = async ({ buttonId }) => {
     console.log("ReplyEditScreen:navigationButtonPressed::", buttonId)

@@ -42,16 +42,24 @@ export default class ShareScreen extends React.Component {
 												style={{ 
 													position: 'absolute',
 													top: 0,
-													height: 200,
+													height: '100%',
 													width: '100%',
 													flex: 1,
 													justifyContent: 'center',
 													alignItems: 'center',
-													zIndex: 10
+													zIndex: 10,
+													backgroundColor: App.theme_background_color(),
+													opacity: 0.7
 												}} 
 											>
-												<ActivityIndicator color="#f80" size={'large'} />
-												<Text style={{ marginTop: 12, color: App.theme_text_color() }}>{ Share.selected_user?.posting.is_sending_post ? "Sending post..." : "Saving bookmark..." }</Text>
+												<View style={{
+													height: 200,
+													justifyContent: 'center',
+													alignItems: 'center'              
+												}}>
+													<ActivityIndicator color="#f80" size={'large'} />
+													<Text style={{ marginTop: 12, color: App.theme_text_color() }}>{ Share.selected_user?.posting.is_sending_post ? "Sending post..." : "Saving bookmark..." }</Text>
+												</View>
 											</View>
 										: null
 									}
@@ -60,7 +68,7 @@ export default class ShareScreen extends React.Component {
 							</View>
 							:
 							<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-								<Text style={{ color: App.theme_text_color(), fontSize: 17, textAlign: "center", marginBottom: 10}}>Please login, in the app, before using the Share Extension</Text>
+								<Text style={{ color: App.theme_text_color(), fontSize: 17, textAlign: "center", marginBottom: 10}}>Using the Micro.blog app, please sign in before using the share extension.</Text>
 								<Button title="Open App" onPress={Share.open_in_app} />
 							</View>
 				}

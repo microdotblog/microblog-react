@@ -21,6 +21,7 @@ export default class WebViewModule extends React.Component{
       signin_endpoint: `hybrid/signin?token=${Auth.selected_user.token()}&redirect_to=${this.props.endpoint}&theme=${App.theme}&show_actions=true`,
       is_pull_to_refresh_enabled: true,
       scroll_view_height: 0,
+      opacity: 0.0
     }
     this.web_url = "https://micro.blog"
     Navigation.events().bindComponent(this, this.props.component_id)
@@ -69,10 +70,21 @@ export default class WebViewModule extends React.Component{
       ref={this.ref}
       source={{ uri: `${ this.web_url }/${ Auth.did_load_one_or_more_webviews ? this.props.endpoint : this.state.signin_endpoint }${ this.return_url_options() }` }}
       containerStyle={{ flex: 1 }}
-      startInLoadingState={true}
+      startInLoadingState={false}
       pullToRefreshEnabled={false}
       decelerationRate="normal"
-      onLoadEnd={Auth.set_did_load_one_or_more_webviews}
+      onLoadEnd={(event) => {
+        Auth.set_did_load_one_or_more_webviews();
+        if (App.theme == "light") {
+          this.setState({ opacity: 1.0 });
+        }
+        else {
+          // to avoid dark mode flicker, we wait before revealing web view :-(
+          setTimeout(() => {
+            this.setState({ opacity: 1.0 });
+          }, 200);
+        }
+      }}
       nestedScrollEnabled={true}
       onShouldStartLoadWithRequest={(event) => {
         if(event.url.indexOf(this.props.endpoint) <= -1){
@@ -90,7 +102,7 @@ export default class WebViewModule extends React.Component{
       onMessage={(event) => {
         App.handle_web_view_message(event.nativeEvent.data)
       }}
-      style={{ flex: 1, height: scroll_view_height, backgroundColor: App.theme_background_color() }}
+      style={{ flex: 1, height: scroll_view_height, backgroundColor: App.theme_background_color(), opacity: this.state.opacity }}
       renderLoading={() => <WebLoadingViewModule loading_text={this.props.loading_text} />}
       renderError={(name, code, description) => <WebErrorViewModule error_name={description} /> }
       injectedJavaScript={Platform.OS === 'ios' ? `const meta = document.createElement('meta'); meta.setAttribute('content', 'width=width, initial-scale=${ App.web_font_scale() }'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);` : null}

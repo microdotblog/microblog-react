@@ -682,13 +682,6 @@ export const replyScreen = () => {
 							    id: 'post_button',
 							    text: 'Post',
                   color: '#f80'
-                },
-                {
-                  id: 'profile_button',
-                  text: 'profile',
-                  component: {
-                    name: PROFILE_IMAGE
-                  }
                 }
 					    ]
             },
@@ -945,6 +938,13 @@ export const postsScreen = (component_id) => {
             text: "Posts"
           },
           rightButtons: [
+            {
+              id: 'post_button',
+              text: 'New',
+              component: {
+                name: NEW_POST_BUTTON
+              }
+            },
             {
               id: 'refresh_indicator',
               text: 'refresh',

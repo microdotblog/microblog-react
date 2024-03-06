@@ -5,8 +5,8 @@ import { Navigation } from 'react-native-navigation';
 import { Screens, POSTING_SCREEN } from '../../screens';
 import MediaAsset from '../../stores/models/posting/MediaAsset';
 import CheckmarkIcon from '../../assets/icons/checkmark.png';
-import ImageEditor from "@react-native-community/image-editor";
-import { Mayfair, Warm, Cool, Sepia, Vintage, Grayscale } from "react-native-image-filter-kit";
+// import ImageEditor from "@react-native-community/image-editor";
+// import { Mayfair, Warm, Cool, Sepia, Vintage, Grayscale } from "react-native-image-filter-kit";
 
 class FilterThumbnail extends React.Component {
 	constructor(props) {

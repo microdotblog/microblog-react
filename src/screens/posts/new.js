@@ -29,11 +29,11 @@ export default class PostingScreen extends React.Component{
   }
   
   componentDidAppear(){
-    Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: true}});
+    Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: false}});
   }
   
   componentDidDisappear(){
-    Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: false}});
+    // Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: true}});
   }
   
   navigationButtonPressed = async ({ buttonId }) => {
@@ -104,7 +104,7 @@ export default class PostingScreen extends React.Component{
                 fontSize: 18,
                 justifyContent: 'flex-start',
                 alignItems: 'flex-start',
-                marginTop: 3,
+                marginTop: 0,
                 paddingBottom: posting.post_text_length() > posting.max_post_length() ? 150 : 0,
                 flex: 1,
                 padding: 8,
@@ -121,6 +121,7 @@ export default class PostingScreen extends React.Component{
               enablesReturnKeyAutomatically={true}
               underlineColorAndroid={'transparent'}
               value={posting.post_text}
+              selection={posting.text_selection_flat}
               onChangeText={({ nativeEvent: { text } }) => {
                 !posting.is_sending_post ? posting.set_post_text_from_typing(text) : null
               }}
@@ -175,19 +176,25 @@ export default class PostingScreen extends React.Component{
           </>
         }
         {          
-          posting.is_sending_post ?
+          posting.is_sending_post && (posting.post_text != "") ?
           <View 
             style={{ 
               position: 'absolute',
               top: 0,
-              height: 200,
+              height: '100%',
               width: '100%',
-              justifyContent: 'center',
-              alignItems: 'center',
-              zIndex: 10
+              zIndex: 10,
+              backgroundColor: App.theme_background_color(),
+              opacity: 0.7
             }} 
           >
-            <ActivityIndicator color="#f80" size={'large'} />
+            <View style={{
+              height: 200,
+              justifyContent: 'center',
+              alignItems: 'center'              
+            }}>
+              <ActivityIndicator color="#f80" size={'large'} />
+            </View>
           </View>
           : null
         }

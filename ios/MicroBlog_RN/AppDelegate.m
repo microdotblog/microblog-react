@@ -36,11 +36,21 @@ static void InitializeFlipper(UIApplication *application) {
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
 [ReactNativeNavigation bootstrapWithBridge:bridge];
-  
-
+    
   return YES;
 }
 
+#if 0
+- (NSArray *) keyCommands
+{
+  UIKeyCommand* cmd = [UIKeyCommand keyCommandWithInput:@"N" modifierFlags:UIKeyModifierCommand action:@selector(handleKeyCommand:) discoverabilityTitle:@"New Post"];
+  return @[ cmd ];
+}
+#endif
+
+- (void) handleKeyCommand:(UIKeyCommand *)command
+{
+}
 
 - (NSArray<id<RCTBridgeModule>> *)extraModulesForBridge:(RCTBridge *)bridge {
   return [ReactNativeNavigation extraModulesForBridge:bridge];
