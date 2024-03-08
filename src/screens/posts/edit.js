@@ -67,7 +67,7 @@ export default class PostEditScreen extends React.Component{
               justifyContent: 'flex-start',
               alignItems: 'flex-start',
               padding: 8,
-              marginBottom: 4,
+              marginBottom: 0,
               fontWeight: '700',
               borderColor: App.theme_border_color(),
               borderBottomWidth: .5,
