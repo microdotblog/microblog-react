@@ -166,14 +166,15 @@ class MicroBlogApi {
 		if(CURRENT_REPLY_ID === reply_id){
 			return DUPLICATE_REPLY
 		}
-		CURRENT_REPLY_ID = reply_id
+		CURRENT_REPLY_ID = reply_id				
+
+		const params = new FormData();
+		params.append("id", id);
+		params.append("content", content);
+
 		const reply = axios
-			.post(`/posts/reply`, "" ,{
-				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
-				params: {
-					id: id,
-					content: content
-				}
+			.post('/posts/reply', params, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` }
 			})
 			.then(() => {
 				return true;
