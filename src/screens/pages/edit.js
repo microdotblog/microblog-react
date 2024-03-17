@@ -128,7 +128,7 @@ export default class PostEditScreen extends React.Component{
               width: '100%',
               zIndex: 10,
               backgroundColor: App.theme_background_color(),
-              opacity: 0.7
+              opacity: 0.8
             }} 
           >
             <View style={{
