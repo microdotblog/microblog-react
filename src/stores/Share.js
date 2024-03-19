@@ -30,7 +30,6 @@ export default Share = types.model('Share', {
 	toolbar_select_user_open: types.optional(types.boolean, false),
 	error_message: types.maybeNull(types.string),
 	image_options_open: types.optional(types.boolean, false),
-	did_error: types.optional(types.boolean, false),
 	temp_direct_shared_data: types.optional(types.string, ""),
 })
 	.actions(self => ({
@@ -49,7 +48,6 @@ export default Share = types.model('Share', {
 				self.share_image_data = null
 				self.error_message = null
 				self.image_options_open = false
-				self.did_error = false
 				self.temp_direct_shared_data = ""
 			}
 			const data = yield Tokens.hydrate(true)
@@ -122,6 +120,7 @@ export default Share = types.model('Share', {
 			else if(mime_type === "application/json"){
 				self.share_type = "json"
 			}
+			self.share_type = "blah"
 			if (self.share_type === "text") {
 				self.share_text = string_checker._validate_url(data) ? data : `> ${data}`
 				self.users.forEach(user => {
@@ -162,9 +161,7 @@ export default Share = types.model('Share', {
 				})
 			}
 			else {
-				// TODO?: Not supported
 				self.error_message = "We didn't recognise the data. Please try again."
-				self.did_error = true
 				self.is_loading = false
 			}
 		}),
@@ -298,7 +295,7 @@ export default Share = types.model('Share', {
 	}))
 	.views(self => ({
 		is_logged_in(){
-			return self.users.length && self.selected_user != null && self.selected_user.token() != null && !self.did_error
+			return self.users.length && self.selected_user != null && self.selected_user.token() != null
 		},
 		can_save_as_bookmark() {
 			return (self.share_type === "text" || self.share_type === "json") && self.share_text.length > 0 && (self.share_text.startsWith("http://") || self.share_text.startsWith("https://") || (self.share_text.startsWith("[") && self.share_text.endsWith(")"))) && (string_checker._validate_url(self.share_text) || string_checker._validate_url(self.share_url))
