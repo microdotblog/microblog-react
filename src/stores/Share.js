@@ -120,7 +120,6 @@ export default Share = types.model('Share', {
 			else if(mime_type === "application/json"){
 				self.share_type = "json"
 			}
-			self.share_type = "blah"
 			if (self.share_type === "text") {
 				self.share_text = string_checker._validate_url(data) ? data : `> ${data}`
 				self.users.forEach(user => {
