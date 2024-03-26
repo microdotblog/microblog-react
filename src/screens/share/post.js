@@ -55,8 +55,12 @@ export default class SharePostScreen extends React.Component {
 						enablesReturnKeyAutomatically={true}
 						underlineColorAndroid={'transparent'}
 						value={Share.share_text}
-						selection={Share.selected_user?.posting.text_selection_flat}
-						onChangeText={({ nativeEvent: { text } }) => !Share.selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null}
+						selection={Platform.OS === "ios" ? Share.selected_user?.posting.text_selection_flat : Share.text_selection}
+						onChangeText={
+							Platform.OS === 'ios'
+								? ({ nativeEvent: { text } }) => !Share.selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null
+								: (text) => !Share.selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null
+						 }
 						onSelectionChange={({ nativeEvent: { selection } }) => {
 							Share.set_text_selection(selection)
 						}}
