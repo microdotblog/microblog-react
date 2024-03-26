@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { InputAccessoryView, View, Text } from 'react-native'
+import { InputAccessoryView, View, Text, Platform } from 'react-native'
 import Share from '../../stores/Share'
 import App from '../../stores/App'
 import AssetToolbar from '../../components/keyboard/asset_toolbar'
@@ -36,7 +36,7 @@ export default class SharePostScreen extends React.Component {
 					<HighlightingText
 						placeholderTextColor="lightgrey"
 						style={{
-							height: 300,
+							height: Platform.OS === "ios" ? 300 : "auto",
 							fontSize: 18,
 							justifyContent: 'flex-start',
 							alignItems: 'flex-start',
@@ -62,10 +62,18 @@ export default class SharePostScreen extends React.Component {
 						}}
 						inputAccessoryViewID={this.input_accessory_view_id}
 					/>
-					<InputAccessoryView nativeID={this.input_accessory_view_id}>
-						<AssetToolbar />
-						<PostToolbar />
-					</InputAccessoryView>
+					{
+						Platform.OS === "ios" ?
+						<InputAccessoryView nativeID={this.input_accessory_view_id}>
+							<AssetToolbar />
+							<PostToolbar />
+						</InputAccessoryView>
+						:
+						<>
+							<AssetToolbar />
+							<PostToolbar />
+						</>
+					}
 				</View>
 				: null
 		)
