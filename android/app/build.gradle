@@ -89,7 +89,7 @@ android {
         applicationId "blog.micro.android"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 51
+        versionCode 52
         versionName "2.1"
     }
 
