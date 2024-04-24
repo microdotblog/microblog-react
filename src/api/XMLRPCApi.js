@@ -17,7 +17,7 @@ export const XML_ERROR = 9
 async function xmlRpcCall(url, methodName, params) {
 
 	const xmlPayload = xmlrpc.make_request(methodName, params)
-	// console.log("XML-RPC request", xmlPayload)
+	// console.log("XML-RPC request", url, xmlPayload)
 
 	try {
 		const response = await fetch(url, {
@@ -32,7 +32,7 @@ async function xmlRpcCall(url, methodName, params) {
 		const options = {}
 		const parser = new XMLParser(options)
 		const xmlResponse = await response.text()
-		console.log("XML-RPC response", xmlResponse)
+		console.log("XML-RPC response", response.status, xmlResponse)
 		const jsonResponse = parser.parse(xmlResponse)
 
 		if (jsonResponse[ "methodResponse" ][ "fault" ] != null) {
@@ -200,7 +200,7 @@ class XMLRPCApi {
 			// special params if WordPress
 			verb = "wp.newPost"
 			var info = {
-				post_title: title,
+				post_title: title == null ? "" : title,
 				post_content: content,
 				post_status: status === "published" ? "publish" : status,
 				terms: {
