@@ -59,7 +59,18 @@ export default class ProfileHeader extends React.Component{
   _render_profile = () => {
     const { profile, more_expanded } = this.state;
     const long_bio = profile._microblog.bio ? profile._microblog.bio.trim().replace(/&amp;/g, "&") : null
-    const short_bio = long_bio ? long_bio.slice(0, 90).replace(/\n/g, " ") : null
+
+    // Prevent emojis from being improperly split
+    const EBNF_regex =
+      /\p{RI}\p{RI}|\p{Emoji}(\p{EMod}|\u{FE0F}\u{20E3}?|[\u{E0020}-\u{E007E}]+\u{E007F})?(\u{200D}\p{Emoji}(\p{EMod}|\u{FE0F}\u{20E3}?|[\u{E0020}-\u{E007E}]+\u{E007F})?)*|./gsu;
+    const short_bio = long_bio
+      ? long_bio
+          .match(EBNF_regex)
+          .slice(0, 90)
+          .join('')
+          .replace(/\n/g, ' ')
+      : null;
+
     const show_expand_option = long_bio?.length > short_bio?.length
     return(
       <View style={{ padding: 12, backgroundColor: App.theme_button_background_color(), width: '100%' }}>
