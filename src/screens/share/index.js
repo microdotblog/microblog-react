@@ -25,7 +25,11 @@ export default class ShareScreen extends React.Component {
 					Share.is_loading ?
 						<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
 							<ActivityIndicator color={App.theme_accent_color()} size="large" />
-							<Text style={{ color: App.theme_text_color(), fontSize: 17, textAlign: "center", marginBottom: 10}}>{Share.temp_direct_shared_data}</Text>
+							{
+								Platform.OS === "ios" ?
+								<Text style={{ color: App.theme_text_color(), fontSize: 17, textAlign: "center", marginBottom: 10}}>{Share.temp_direct_shared_data}</Text>
+								: null
+							}
 						</View>
 						:
 						Share.is_logged_in() ?

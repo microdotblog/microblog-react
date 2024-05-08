@@ -3,6 +3,8 @@ import { startApp, loginScreen, profileScreen, conversationScreen, discoverTopic
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
+import ShareMenu from 'react-native-share-menu'
+import Share from './Share'
 import { Linking, Appearance, AppState, Platform, Dimensions, Alert } from 'react-native'
 import { Navigation } from "react-native-navigation";
 import Push from './Push'
@@ -16,8 +18,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Contact from './models/posting/Contact'
 import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
 import Services from './Services';
-// import ShareMenu from 'react-native-share-menu'
-// import Share from './Share'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
