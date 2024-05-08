@@ -11,7 +11,8 @@
     "postinstall": "patch-package",
     "check-dependencies": "rnx-align-deps",
     "fix-dependencies": "rnx-align-deps --write",
-    "pods": "npx pod-install ios"
+    "pods": "npx pod-install ios",
+    "adb": "adb reverse tcp:8081 tcp:8081"
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.15.8",

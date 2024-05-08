@@ -29,7 +29,8 @@ export default Share = types.model('Share', {
 	selected_user: types.maybeNull(types.reference(User)),
 	toolbar_select_user_open: types.optional(types.boolean, false),
 	error_message: types.maybeNull(types.string),
-	image_options_open: types.optional(types.boolean, false)
+	image_options_open: types.optional(types.boolean, false),
+	temp_direct_shared_data: types.optional(types.string, ""),
 })
 	.actions(self => ({
 
@@ -47,6 +48,7 @@ export default Share = types.model('Share', {
 				self.share_image_data = null
 				self.error_message = null
 				self.image_options_open = false
+				self.temp_direct_shared_data = ""
 			}
 			const data = yield Tokens.hydrate(true)
 			if (data?.tokens) {
@@ -81,6 +83,14 @@ export default Share = types.model('Share', {
 		set_data: flow(function* (direct_data = null) {
 			let data = null
 			let mime_type = null
+			if(Platform.OS === "ios"){
+				// TEMP: SHARED DATA:::
+				let shared_data = yield ShareMenuReactView.data()
+				if(shared_data){
+					self.temp_direct_shared_data = JSON.stringify(shared_data)
+				}
+				// TEMP: SHARED DATA^^^
+			}
 			if (direct_data != null) {
 				console.log('Share:set_data:direct_data', direct_data)
 				if (direct_data.data.includes("#:~:text=")) {
@@ -152,7 +162,8 @@ export default Share = types.model('Share', {
 				})
 			}
 			else {
-				// TODO?: Not supported
+				self.error_message = "We didn't recognise the data. Please try again."
+				self.is_loading = false
 			}
 		}),
 		
