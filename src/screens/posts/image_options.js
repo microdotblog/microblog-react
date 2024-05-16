@@ -58,7 +58,7 @@ export default class ImageOptionsScreen extends React.Component{
 
     return(
       <KeyboardAvoidingView behavior={"padding"} style={{ flex: 1 }}>
-        <ScrollView style={{ padding: 15 }} contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', width: "100%" }}>
+        <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', width: "100%", }}>
           <View
             style={{
               position: 'relative',
@@ -111,17 +111,15 @@ export default class ImageOptionsScreen extends React.Component{
               style={{
                 fontSize: 20,
                 padding: 9,
-                paddingTop: 9,
+                paddingTop: 13,
+                paddingBottom: 143,
                 fontWeight: '400',
                 color: App.theme_text_color(),
-                marginVertical: 25,
-                borderRadius: 5,
-                backgroundColor: App.theme_button_background_color(),
-                width: "100%"
+                width: "100%",
               }}
               editable={!posting.is_sending_post}
               multiline={true}
-              scrollEnabled={true}
+              scrollEnabled={false}
               returnKeyType={'default'}
               keyboardType={'default'}
               autoFocus={false}
