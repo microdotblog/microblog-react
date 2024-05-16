@@ -53,23 +53,23 @@ export default class ImageOptionsScreen extends React.Component{
               position: 'relative',
               justifyContent: 'center',
               alignItems: 'center',
-              width: 250,
-              height: 250,
+              width: mediaWidth,
+              height: mediaHeight,
               backgroundColor: '#E5E7EB'
             }}
           >
             {
               asset.is_video ?
-              <Video 
+              <Video
                 source={{ uri: asset.uri }}
-                poster={asset.remote_poster_url ? asset.remote_poster_url : asset.uri} style={{width: 250, height: 250}}
+                poster={asset.remote_poster_url ? asset.remote_poster_url : asset.uri} style={{width: mediaWidth, height: mediaHeight}}
                 mixWithOthers={"mix"}
                 controls
                 repeat
               />
               // <Image source={{ uri: asset.remote_poster_url ? asset.remote_poster_url : asset.uri }} style={{ width: 250, height: 250, borderRadius: 5 }} />
               :
-              <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} style={{ width: 250, height: 250, borderRadius: 5 }} />
+              <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} style={{ width: mediaWidth, height: mediaHeight }} />
             }
             {
               asset.is_uploading ?
