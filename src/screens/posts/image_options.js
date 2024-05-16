@@ -47,13 +47,18 @@ export default class ImageOptionsScreen extends React.Component{
   render() {
     const { posting } = Auth.selected_user
     const { asset } = this.props
+    
+    const maxMediaHeight = 300; // cap media height
     const windowWidth = Dimensions.get('window').width;
-
     let mediaWidth = windowWidth;
     let mediaHeight = windowWidth; // default to 1:1
     if (asset.width && asset.height) {
       mediaWidth = windowWidth;
       mediaHeight = windowWidth / (asset.width / asset.height);
+      if (mediaHeight > maxMediaHeight) {
+        mediaHeight = maxMediaHeight;
+        mediaWidth = asset.width * (maxMediaHeight / asset.height);
+      }
     }
 
     return(
