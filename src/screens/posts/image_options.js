@@ -3,12 +3,13 @@ import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity, ScrollView, Image, ActivityIndicator, TextInput, KeyboardAvoidingView, Alert } from 'react-native';
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
+import { Dimensions } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Video from 'react-native-video';
 
 @observer
 export default class ImageOptionsScreen extends React.Component{
-  
+
   _handle_image_remove = (image, index) => {
     const { posting } = Auth.selected_user
     const existing_index = posting.post_assets?.findIndex(file => file.uri === image.uri)
@@ -31,10 +32,11 @@ export default class ImageOptionsScreen extends React.Component{
       );
     }
   }
-  
+
   render() {
     const { posting } = Auth.selected_user
     const { asset, index } = this.props
+    const windowWidth = Dimensions.get('window').width;
     return(
       <KeyboardAvoidingView behavior={"position"} style={{ flex: 1 }}>
         <ScrollView style={{ padding: 15 }} contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', width: "100%" }}>
