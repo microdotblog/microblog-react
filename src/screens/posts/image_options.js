@@ -93,23 +93,17 @@ export default class ImageOptionsScreen extends React.Component{
               asset.is_uploading ?
                 <>
                   <ActivityIndicator color="#f80" size={"large"} style={{ position: 'absolute' }} />
-                  <View
-                    style={{
-                      width: `${ asset.progress }%`,
-                      height: 5,
-                      backgroundColor: App.theme_accent_color(),
-                      position: 'absolute',
-                      left: 0,
-                      bottom: 0,
-                      borderBottomLeftRadius: 5,
-                      borderBottomRightRadius: asset.progress === 100 ? 5 : 0,
-                      zIndex: 2
-                    }}
-                  />
                 </>
               : null
             }
           </View>
+          <View
+            style={{
+              width: `${ asset.progress }%`,
+              height: 5,
+              backgroundColor: asset.is_uploading ? App.theme_accent_color() : "transparent",
+            }}
+          />
           {
             !asset.is_video &&
             <TextInput
@@ -118,8 +112,8 @@ export default class ImageOptionsScreen extends React.Component{
               style={{
                 fontSize: 20,
                 padding: 9,
-                paddingTop: 13,
-                paddingBottom: 143,
+                paddingTop: 9,
+                paddingBottom: 143, // enlarge textinput click area; arbitrary number
                 fontWeight: '400',
                 color: App.theme_text_color(),
                 width: "100%",
