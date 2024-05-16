@@ -485,7 +485,7 @@ export const conversationScreen = (conversation_id, component_id) => {
         }
       }
     };
-    
+
     return Navigation.push(component_id, options);
   }
 }
@@ -714,7 +714,7 @@ export const addBoomarkScreen = () => {
       children: [ {
         component: {
           id: ADD_BOOKMARK_SCREEN,
-          name: ADD_BOOKMARK_SCREEN,          
+          name: ADD_BOOKMARK_SCREEN,
           options: {
             topBar: {
               title: {
@@ -772,6 +772,7 @@ export const helpScreen = () => {
 
 export const imageOptionsScreen = (asset, index, component_id) => {
   console.log("Screens:imageOptionsScreen", asset, index, component_id);
+
   const options = {
     component: {
       id: IMAGE_OPTIONS_SCREEN,
@@ -785,6 +786,13 @@ export const imageOptionsScreen = (asset, index, component_id) => {
           title: {
             text: asset.is_video ? "Video options" : "Image options"
           },
+          rightButtons: [
+            {
+               id: 'removeImage',
+               text: "Remove",
+               color: 'red',
+            }
+          ]
         }
       }
     }
@@ -795,9 +803,9 @@ export const imageOptionsScreen = (asset, index, component_id) => {
 
 export const imageCropScreen = async (asset, component_id) => {
   console.log("Screens:imageCropScreen");
-  
+
   const new_asset = await asset.save_to_temp()
-  
+
   const options = {
     component: {
       id: IMAGE_CROP_SCREEN,

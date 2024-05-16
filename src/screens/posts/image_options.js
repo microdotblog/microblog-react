@@ -10,6 +10,17 @@ import Video from 'react-native-video';
 @observer
 export default class ImageOptionsScreen extends React.Component{
 
+  constructor(props) {
+    super(props);
+    Navigation.events().registerNavigationButtonPressedListener(({ buttonId }) => {
+      if (buttonId === 'removeImage') {
+        const { asset, index } = this.props
+          this._handle_image_remove(asset, index)
+      }
+    });
+  }
+  
+
   _handle_image_remove = (image, index) => {
     const { posting } = Auth.selected_user
     const existing_index = posting.post_assets?.findIndex(file => file.uri === image.uri)
@@ -35,7 +46,7 @@ export default class ImageOptionsScreen extends React.Component{
 
   render() {
     const { posting } = Auth.selected_user
-    const { asset, index } = this.props
+    const { asset } = this.props
     const windowWidth = Dimensions.get('window').width;
 
     let mediaWidth = windowWidth;
@@ -122,27 +133,9 @@ export default class ImageOptionsScreen extends React.Component{
               onChangeText={(text) => !posting.is_sending_post ? asset.set_alt_text(text) : null}
             />
           }
-          <View
-            style={{
-              width: "100%",
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => this._handle_image_remove(asset, index)}
-              key={asset.uri}
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginVertical: asset.is_video ? 25 : 0,
-              }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', width: "100%", justifyContent: 'center' }}>
-                <Text style={{color: 'red'}}>{asset.is_uploading ? "Cancel Upload & Remove" : "Remove"}</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     )
   }
-  
+
 }
