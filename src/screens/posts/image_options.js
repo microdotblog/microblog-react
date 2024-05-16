@@ -37,6 +37,14 @@ export default class ImageOptionsScreen extends React.Component{
     const { posting } = Auth.selected_user
     const { asset, index } = this.props
     const windowWidth = Dimensions.get('window').width;
+
+    let mediaWidth = windowWidth;
+    let mediaHeight = windowWidth; // default to 1:1
+    if (asset.width && asset.height) {
+      mediaWidth = windowWidth;
+      mediaHeight = windowWidth / (asset.width / asset.height);
+    }
+
     return(
       <KeyboardAvoidingView behavior={"position"} style={{ flex: 1 }}>
         <ScrollView style={{ padding: 15 }} contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', width: "100%" }}>
