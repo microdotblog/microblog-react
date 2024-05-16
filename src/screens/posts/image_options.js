@@ -13,7 +13,7 @@ export default class ImageOptionsScreen extends React.Component{
   constructor(props) {
     super(props);
     Navigation.events().registerNavigationButtonPressedListener(({ buttonId }) => {
-      if (buttonId === 'removeImage') {
+      if (buttonId === 'remove_image') {
         const { asset, index } = this.props
           this._handle_image_remove(asset, index)
       }
@@ -48,16 +48,18 @@ export default class ImageOptionsScreen extends React.Component{
     const { posting } = Auth.selected_user
     const { asset } = this.props
     
-    const maxMediaHeight = 300; // cap media height
-    const windowWidth = Dimensions.get('window').width;
-    let mediaWidth = windowWidth;
-    let mediaHeight = windowWidth; // default to 1:1
+    const max_media_height = 300; // cap media height
+    const window_width = Dimensions.get('window').width;
+    let media_width = window_width;
+    let media_height = window_width; // default to 1:1
+
     if (asset.width && asset.height) {
-      mediaWidth = windowWidth;
-      mediaHeight = windowWidth / (asset.width / asset.height);
-      if (mediaHeight > maxMediaHeight) {
-        mediaHeight = maxMediaHeight;
-        mediaWidth = asset.width * (maxMediaHeight / asset.height);
+      const aspect_ratio = asset.width / asset.height;
+      media_height = window_width / aspect_ratio;
+      
+      if (media_height > max_media_height) {
+        media_height = max_media_height;
+        media_width = max_media_height * aspect_ratio;
       }
     }
 
@@ -69,8 +71,8 @@ export default class ImageOptionsScreen extends React.Component{
               position: 'relative',
               justifyContent: 'center',
               alignItems: 'center',
-              width: mediaWidth,
-              height: mediaHeight,
+              width: media_width,
+              height: media_height,
               backgroundColor: '#E5E7EB'
             }}
           >
@@ -78,14 +80,14 @@ export default class ImageOptionsScreen extends React.Component{
               asset.is_video ?
               <Video
                 source={{ uri: asset.uri }}
-                poster={asset.remote_poster_url ? asset.remote_poster_url : asset.uri} style={{width: mediaWidth, height: mediaHeight}}
+                poster={asset.remote_poster_url ? asset.remote_poster_url : asset.uri} style={{width: media_width, height: media_height}}
                 mixWithOthers={"mix"}
                 controls
                 repeat
               />
               // <Image source={{ uri: asset.remote_poster_url ? asset.remote_poster_url : asset.uri }} style={{ width: 250, height: 250, borderRadius: 5 }} />
               :
-              <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} style={{ width: mediaWidth, height: mediaHeight }} />
+              <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} style={{ width: media_width, height: media_height }} />
             }
             {
               asset.is_uploading ?

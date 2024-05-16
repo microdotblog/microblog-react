@@ -788,7 +788,7 @@ export const imageOptionsScreen = (asset, index, component_id) => {
           },
           rightButtons: [
             {
-               id: 'removeImage',
+               id: 'remove_image',
                text: "Remove",
                color: 'red',
             }
