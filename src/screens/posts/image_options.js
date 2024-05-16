@@ -64,16 +64,17 @@ export default class ImageOptionsScreen extends React.Component{
     }
 
     return(
-      <KeyboardAvoidingView behavior={"padding"} style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', width: "100%", }}>
+      <KeyboardAvoidingView behavior={"padding"} style={{ flex: 1, backgroundColor: App.theme_button_background_color() }}>
+        <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', width: "100%" }}>
           <View
             style={{
+              flex: 1,
+              width: '100%',
+              height: '100%',
               position: 'relative',
               justifyContent: 'center',
               alignItems: 'center',
-              width: media_width,
-              height: media_height,
-              backgroundColor: '#E5E7EB'
+              backgroundColor: App.theme_background_color(),
             }}
           >
             {
