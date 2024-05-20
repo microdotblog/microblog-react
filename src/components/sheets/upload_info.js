@@ -44,7 +44,7 @@ export default class UploadInfoSheet extends React.Component {
 						<Text style={{ paddingBottom: 20 }}>{this.upload.url}</Text>
 					</TouchableOpacity>
 					
-					<Text style={{ paddingBottom: 15 }}>{this.upload.alt}</Text>
+					<Text style={{ paddingBottom: 15 }}>🤖 {this.upload.alt}</Text>
 					
 					{ this.upload.alt.length > 0 && 
 						<View style={{ alignSelf: "flex-start" }}>
