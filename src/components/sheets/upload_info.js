@@ -43,30 +43,31 @@ export default class UploadInfoSheet extends React.Component {
 					}}>
 						<Text style={{ paddingBottom: 20 }}>{this.upload.url}</Text>
 					</TouchableOpacity>
-					
-					<Text style={{ paddingBottom: 15 }}>🤖 {this.upload.alt}</Text>
-					
+									
 					{ this.upload.alt.length > 0 && 
-						<View style={{ alignSelf: "flex-start" }}>
-							<TouchableOpacity
-								style={{
-									padding: 8,
-									paddingHorizontal: 15,
-									backgroundColor: App.theme_button_background_color(),
-									borderRadius: 20,
-									borderColor: App.theme_section_background_color(),
-									borderWidth: 1
-								}}
-								onPress={() => {
-									Clipboard.setString(this.upload.alt);
-									SheetManager.hide(this.props.sheetId);
-									setTimeout(function() {
-										Toast.showWithGravity("Text copied", Toast.SHORT, Toast.CENTER);
-									}, 200);
-								}}
-							>
-								<Text style={{ color: App.theme_button_text_color() }}>Copy Text</Text>
-							</TouchableOpacity>
+						<View>
+							<Text style={{ paddingBottom: 15 }}>🤖 {this.upload.alt}</Text>
+							<View style={{ alignSelf: "flex-start" }}>
+								<TouchableOpacity
+									style={{
+										padding: 8,
+										paddingHorizontal: 15,
+										backgroundColor: App.theme_button_background_color(),
+										borderRadius: 20,
+										borderColor: App.theme_section_background_color(),
+										borderWidth: 1
+									}}
+									onPress={() => {
+										Clipboard.setString(this.upload.alt);
+										SheetManager.hide(this.props.sheetId);
+										setTimeout(function() {
+											Toast.showWithGravity("Text copied", Toast.SHORT, Toast.CENTER);
+										}, 200);
+									}}
+								>
+									<Text style={{ color: App.theme_button_text_color() }}>Copy Text</Text>
+								</TouchableOpacity>
+							</View>
 						</View>
 					}
 				</View>
