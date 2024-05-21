@@ -52,6 +52,9 @@ export default App = types.model('App', {
   page_search_is_open: types.optional(types.boolean, false),
   page_search_query: types.optional(types.string, ""),
   is_searching_pages: types.optional(types.boolean, false),
+  uploads_search_is_open: types.optional(types.boolean, false),
+  uploads_search_query: types.optional(types.string, ""),
+  is_searching_uploads: types.optional(types.boolean, false),
   is_loading_highlights: types.optional(types.boolean, false),
   is_loading_bookmarks: types.optional(types.boolean, false)
 })
@@ -654,6 +657,11 @@ export default App = types.model('App', {
     console.log("App:toggle_page_search_is_open")
     self.page_search_is_open = !self.page_search_is_open
   }),
+
+  toggle_uploads_search_is_open: flow(function* () {
+    console.log("App:toggle_uploads_search_is_open")
+    self.uploads_search_is_open = !self.uploads_search_is_open
+  }),
   
   set_posts_query: flow(function* (text, destination) {
     console.log("App:set_posts_query", text)
@@ -684,6 +692,22 @@ export default App = types.model('App', {
     }
     else if(self.page_search_query == ""){
       Auth.selected_user.posting?.selected_service?.upate_pages_for_active_destination()
+    }
+  }),
+
+  set_uploads_query: flow(function* (text, destination) {
+    console.log("App:set_uploads_query", text)
+    self.uploads_search_query = text
+    if(text?.length > 2){
+      self.is_searching_uploads = true
+      const results = yield MicroBlogApi.search_uploads(text, destination?.uid)
+      if(results !== API_ERROR && results.items != null){
+        destination.set_uploads(results.items)
+      }
+      self.is_searching_uploads = false
+    }
+    else if(self.uploads_search_query == ""){
+      Auth.selected_user.posting?.selected_service?.upate_uploads_for_active_destination()
     }
   }),
   
