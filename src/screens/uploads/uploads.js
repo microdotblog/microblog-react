@@ -19,10 +19,17 @@ export default class UploadsScreen extends React.Component{
   constructor (props) {
     super(props)
     Navigation.events().bindComponent(this)
+    this.flatListRef = React.createRef()
   }
   
   componentDidAppear(){
     Auth.selected_user.posting?.selected_service?.upate_uploads_for_active_destination()
+  }
+  
+  _scroll_to_top = () => {
+    if (this.flatListRef.current) {
+      this.flatListRef.current.scrollToOffset({ animated: false, offset: 0 });
+    }
   }
   
   _return_header = () => {
@@ -139,8 +146,13 @@ export default class UploadsScreen extends React.Component{
           minWidth: "85%",
           color: App.theme_text_color()
         }}
-        onSubmitEditing={() => {Keyboard.dismiss()}}
-        onChangeText={(text) => App.set_uploads_query(text, config.posts_destination())}
+        onSubmitEditing={() => {
+          Keyboard.dismiss();
+        }}
+        onChangeText={(text) => {
+          App.set_uploads_query(text, config.posts_destination());
+          this._scroll_to_top();
+        }}
         value={App.uploads_search_query}
       />
       </View>      
@@ -165,6 +177,7 @@ export default class UploadsScreen extends React.Component{
     const { config } = selected_service
     return(
       <FlatList
+        ref={this.flatListRef}
         data={config.uploads_for_destination()}
         extraData={config.uploads_for_destination()?.length && !selected_service.is_loading_uploads}
         keyExtractor={this._key_extractor}
