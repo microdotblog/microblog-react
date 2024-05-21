@@ -129,7 +129,7 @@ export default class TagmojiBar extends React.Component{
                 borderColor: App.theme_border_color(), 
                 borderWidth: 1,
                 borderRadius: 15,
-                paddingHorizontal: 15,
+                paddingHorizontal: 10,
                 paddingVertical: 4,
                 minWidth: "89%",
                 color: App.theme_text_color()
