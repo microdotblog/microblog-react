@@ -93,7 +93,10 @@ export default class PagesScreen extends React.Component{
           width: 28,
           height: 28
         }}
-        onPress={App.toggle_page_search_is_open}
+        onPress={() => {
+          App.toggle_page_search_is_open();
+          App.set_pages_query("", null);
+        }}
       >
       {
         Platform.OS === "ios" ?

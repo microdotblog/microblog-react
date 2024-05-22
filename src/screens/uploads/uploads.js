@@ -101,7 +101,10 @@ export default class UploadsScreen extends React.Component{
           width: 28,
           height: 28
         }}
-        onPress={App.toggle_uploads_search_is_open}
+        onPress={() => {
+          App.toggle_uploads_search_is_open();
+          App.set_uploads_query("", null);
+        }}
       >
       {
         Platform.OS === "ios" ?

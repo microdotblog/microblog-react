@@ -93,7 +93,10 @@ export default class PostsScreen extends React.Component{
           width: 28,
           height: 28
         }}
-        onPress={App.toggle_post_search_is_open}
+        onPress={() => {
+          App.toggle_post_search_is_open();
+          App.set_posts_query("", null);
+        }}
       >
       {
         Platform.OS === "ios" ?
