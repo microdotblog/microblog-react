@@ -5,7 +5,8 @@ import Toast from 'react-native-simple-toast';
 export default Upload = types.model('Upload', {
 	url: types.identifier,
 	published: types.maybe(types.string),
-	poster: types.maybe(types.string)
+	poster: types.maybe(types.string),
+	alt: types.maybe(types.string)
 })
 	.actions(self => ({
 

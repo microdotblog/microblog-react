@@ -97,6 +97,7 @@ import PostsDestinationMenu from "../components/sheets/posts_destination";
 import TagsMenu from "../components/sheets/tags";
 import AddTagsMenu from "../components/sheets/add_tags";
 import NotificationsSheetsMenu from "../components/sheets/notifications";
+import UploadInfoSheet from "../components/sheets/upload_info";
 registerSheet("main_sheet", SheetMenu);
 registerSheet("profile_more_menu", ProfileMoreMenu);
 registerSheet("tagmoji_menu", TagmojiMenu);
@@ -104,6 +105,7 @@ registerSheet("posts_destination_menu", PostsDestinationMenu);
 registerSheet("tags_menu", TagsMenu)
 registerSheet("add_tags_sheet", AddTagsMenu)
 registerSheet("notifications_sheet", NotificationsSheetsMenu)
+registerSheet("upload_info_sheet", UploadInfoSheet)
 
 import Push from "../stores/Push"
 import { theme_options } from "../utils/navigation"
