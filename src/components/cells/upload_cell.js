@@ -6,6 +6,7 @@ import FastImage from 'react-native-fast-image'
 import { SvgXml } from 'react-native-svg';
 import { SFSymbol } from "react-native-sfsymbols";
 import { MenuView } from '@react-native-menu/menu';
+import { SheetManager } from "react-native-actions-sheet";
 import Auth from '../../stores/Auth'
 
 @observer
@@ -101,6 +102,14 @@ export default class UploadCell extends React.Component {
 		}
 	}
 
+	get_info(upload) {
+		SheetManager.show("upload_info_sheet", {
+			payload: {
+				upload: upload
+			}
+		});
+	}
+
 	render() {
 		const { upload } = this.props
 		if (this.props.add_to_editor) {
@@ -133,6 +142,9 @@ export default class UploadCell extends React.Component {
 						}
 						else if (event_id === "copy_markdown") {
 							upload.copy_markdown_to_clipboard()
+						}
+						else if (event_id === "get_info") {
+							this.get_info(upload)
 						}
 						else if (event_id === "open_in_browser") {
 							App.open_url(upload.url)
@@ -167,6 +179,13 @@ export default class UploadCell extends React.Component {
 								ios: 'textformat'
 							})
 						}] : []),
+						{
+							title: "Get Info",
+							id: "get_info",
+							image: Platform.select({
+								ios: 'info.circle'
+							})
+						},
 						{
 							title: "Open in Browser",
 							id: "open_in_browser",

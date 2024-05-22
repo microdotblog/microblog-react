@@ -26,7 +26,7 @@ export default class PostEditScreen extends React.Component{
       const sent = await Auth.selected_user.posting.send_update_post()
       if(sent){
         this._dismiss()
-        Auth.selected_user.posting.selected_service.upate_posts_for_active_destination()
+        Auth.selected_user.posting.selected_service.update_posts_for_active_destination()
       }
     }
     else{
