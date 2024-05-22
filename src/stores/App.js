@@ -675,7 +675,7 @@ export default App = types.model('App', {
       self.is_searching_posts = false
     }
     else if(self.post_search_query == ""){
-      Auth.selected_user.posting?.selected_service?.upate_posts_for_active_destination()
+      Auth.selected_user.posting?.selected_service?.update_posts_for_active_destination()
     }
   }),
   
@@ -691,7 +691,7 @@ export default App = types.model('App', {
       self.is_searching_pages = false
     }
     else if(self.page_search_query == ""){
-      Auth.selected_user.posting?.selected_service?.upate_pages_for_active_destination()
+      Auth.selected_user.posting?.selected_service?.update_pages_for_active_destination()
     }
   }),
 
@@ -707,7 +707,7 @@ export default App = types.model('App', {
       self.is_searching_uploads = false
     }
     else if(self.uploads_search_query == ""){
-      Auth.selected_user.posting?.selected_service?.upate_uploads_for_active_destination()
+      Auth.selected_user.posting?.selected_service?.update_uploads_for_active_destination()
     }
   }),
   

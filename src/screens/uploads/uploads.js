@@ -23,7 +23,7 @@ export default class UploadsScreen extends React.Component{
   }
   
   componentDidAppear(){
-    Auth.selected_user.posting?.selected_service?.upate_uploads_for_active_destination()
+    Auth.selected_user.posting?.selected_service?.update_uploads_for_active_destination()
   }
   
   _scroll_to_top = () => {

@@ -21,7 +21,7 @@ export default class PagesScreen extends React.Component{
   }
   
   componentDidAppear(){
-    Auth.selected_user.posting?.selected_service?.upate_pages_for_active_destination()
+    Auth.selected_user.posting?.selected_service?.update_pages_for_active_destination()
   }
   
   _return_header = () => {

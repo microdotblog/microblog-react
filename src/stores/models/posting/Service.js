@@ -116,7 +116,7 @@ export default Service = types.model('Service', {
     }
   }),
   
-  upate_posts_for_active_destination: flow(function* () {
+  update_posts_for_active_destination: flow(function* () {
     const active_destination = self.config.posts_destination()
     if(active_destination){
       self.check_for_posts_for_destination(active_destination)
@@ -165,7 +165,7 @@ export default Service = types.model('Service', {
     const status = yield MicroPubApi.delete_post(self.service_object(), post.url)
     if(status !== DELETE_ERROR){
       App.show_toast("Post was deleted.")
-      self.upate_posts_for_active_destination()
+      self.update_posts_for_active_destination()
     }
     else{
       Alert.alert("Whoops", "Could not delete post. Please try again.")
@@ -177,7 +177,7 @@ export default Service = types.model('Service', {
     const status = yield MicroPubApi.publish_draft(self.service_object(), post.content, post.url, post.name)
     if(status !== DELETE_ERROR){
       App.show_toast("Post was published.")
-      self.upate_posts_for_active_destination()
+      self.update_posts_for_active_destination()
     }
     else{
       Alert.alert("Error Publishing", "Could not publish the draft. Please try again.")
@@ -197,14 +197,14 @@ export default Service = types.model('Service', {
     }
   }),
   
-  upate_pages_for_active_destination: flow(function* () {
+  update_pages_for_active_destination: flow(function* () {
     const active_destination = self.config.posts_destination()
     if(active_destination){
       self.check_for_pages_for_destination(active_destination)
     }
   }),
   
-  upate_uploads_for_active_destination: flow(function* () {
+  update_uploads_for_active_destination: flow(function* () {
     const active_destination = self.config.posts_destination()
     if(active_destination){
       self.check_for_uploads_for_destination(active_destination)
@@ -249,7 +249,7 @@ export default Service = types.model('Service', {
     const status = yield MicroPubApi.delete_upload(self.service_object(), upload.url)
     if(status !== DELETE_ERROR){
       App.show_toast("Upload was deleted.")
-      self.upate_uploads_for_active_destination()
+      self.update_uploads_for_active_destination()
     }
     else{
       Alert.alert("Whoops", "Could not delete upload. Please try again.")
