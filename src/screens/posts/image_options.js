@@ -53,21 +53,38 @@ export default class ImageOptionsScreen extends React.Component{
     }
   }
   
-  _download_image_info = () => {
+  _download_image_info = (remaining_count = 10) => {
     const posting = Auth.selected_user.posting;
     const service = posting.selected_service.service_object();
     const destination = service.destination;
-    const { asset } = this.props;
 
     MicroPubApi.get_uploads(service, destination).then(results => {
-      if (results.items != null) {
-        for (let item of results.items) {
-          if (item.url == asset.remote_url) {
+      let found = this._check_uploads_for_text(results);
+      if (!found && (remaining_count > 0)) {
+        // if alt text not found, wait and try again
+        setTimeout(() => {
+          this._download_image_info(remaining_count - 1);
+        }, 3000);
+      }
+    });
+  }
+
+  _check_uploads_for_text(results) {
+    const { asset } = this.props;
+    let found = false;
+    
+    if (results.items != null) {
+      for (let item of results.items) {
+        if (item.url == asset.remote_url) {
+          if (item.alt.length > 0) {
+            found = true;
             this.setState({ isLoadingAlt: false, generatedAltText: item.alt });
           }
         }
       }
-    });
+    }
+    
+    return found;
   }
 
   render() {
@@ -133,10 +150,11 @@ export default class ImageOptionsScreen extends React.Component{
             }}
           />
           { true && 
-            <View style={{ flexDirection: "row", alignItems: "center", width: "100%", padding: 8 }}>
+            <View style={{ flexDirection: "row", minHeight: 40, alignItems: "center", width: "100%", padding: 8 }}>
               { this.state.isLoadingAlt ? 
                 <>
-                  <Text numberOfLines={1} style={{ flex: 1, color: App.theme_text_color() }}>🤖 Loading auto-generated text...</Text>
+                  <Text numberOfLines={1} style={{ color: App.theme_text_color() }}>🤖</Text>
+                  <ActivityIndicator color="#f80" size={"small"} style={{ paddingLeft: 5 }} />
                 </>
               :
                 <>
