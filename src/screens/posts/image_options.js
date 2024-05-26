@@ -5,13 +5,23 @@ import Auth from '../../stores/Auth';
 import App from '../../stores/App'
 import { Dimensions } from 'react-native';
 import { Navigation } from 'react-native-navigation';
+import Clipboard from '@react-native-clipboard/clipboard';
 import Video from 'react-native-video';
+import MicroPubApi from '../../api/MicroPubApi';
 
 @observer
 export default class ImageOptionsScreen extends React.Component{
 
   constructor(props) {
     super(props);
+    this.state = {
+      isLoadingAlt: true,
+      generatedAltText: "",
+      copyButtonTitle: "Copy Text"
+    };
+    
+    this._download_image_info();
+    
     Navigation.events().registerNavigationButtonPressedListener(({ buttonId }) => {
       if (buttonId === 'remove_image') {
         const { asset, index } = this.props
@@ -20,7 +30,6 @@ export default class ImageOptionsScreen extends React.Component{
     });
   }
   
-
   _handle_image_remove = (image, index) => {
     const { posting } = Auth.selected_user
     const existing_index = posting.post_assets?.findIndex(file => file.uri === image.uri)
@@ -43,12 +52,29 @@ export default class ImageOptionsScreen extends React.Component{
       );
     }
   }
+  
+  _download_image_info = () => {
+    const posting = Auth.selected_user.posting;
+    const service = posting.selected_service.service_object();
+    const destination = service.destination;
+    const { asset } = this.props;
+
+    MicroPubApi.get_uploads(service, destination).then(results => {
+      if (results.items != null) {
+        for (let item of results.items) {
+          if (item.url == asset.remote_url) {
+            this.setState({ isLoadingAlt: false, generatedAltText: item.alt });
+          }
+        }
+      }
+    });
+  }
 
   render() {
     const { posting } = Auth.selected_user
     const { asset } = this.props
-    
-    const max_media_height = 300; // cap media height
+        
+    const max_media_height = 250; // cap media height
     const window_width = Dimensions.get('window').width;
     let media_width = window_width;
     let media_height = window_width; // default to 1:1
@@ -103,17 +129,47 @@ export default class ImageOptionsScreen extends React.Component{
               width: `${ asset.progress }%`,
               height: 5,
               backgroundColor: asset.is_uploading ? App.theme_accent_color() : "transparent",
+              justifyContent: "left",
             }}
           />
+          { true && 
+            <View style={{ flexDirection: "row", alignItems: "center", width: "100%", padding: 8 }}>
+              { this.state.isLoadingAlt ? 
+                <>
+                  <Text numberOfLines={1} style={{ flex: 1, color: App.theme_text_color() }}>🤖 Loading auto-generated text...</Text>
+                </>
+              :
+                <>
+                  <Text numberOfLines={1} style={{ flex: 1, color: App.theme_text_color() }}>🤖 {this.state.generatedAltText}</Text>
+                  <TouchableOpacity
+                    style={{
+                      marginLeft: 5,
+                      padding: 4,
+                      backgroundColor: App.theme_button_background_color(),
+                      borderRadius: 20,
+                      borderColor: App.theme_section_background_color(),
+                      borderWidth: 1
+                    }}
+                    onPress={() => {
+                      Clipboard.setString(this.state.generatedAltText);
+                      this.setState({ copyButtonTitle: "✓ Copied" });
+                    }}
+                  >
+                    <Text style={{ fontSize: 12, color: App.theme_button_text_color() }}>{this.state.copyButtonTitle}</Text>
+                  </TouchableOpacity>
+                </>
+              }
+            </View>
+          }
+          
           {
             !asset.is_video &&
             <TextInput
               placeholder="Accessibility description"
               placeholderTextColor={App.theme_placeholder_alt_text_color()}
               style={{
-                fontSize: 20,
-                padding: 9,
-                paddingTop: 9,
+                fontSize: 16,
+                padding: 8,
                 paddingBottom: 143, // enlarge textinput click area; arbitrary number
                 fontWeight: '400',
                 color: App.theme_text_color(),
