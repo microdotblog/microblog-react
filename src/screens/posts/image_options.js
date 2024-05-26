@@ -3,12 +3,24 @@ import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity, ScrollView, Image, ActivityIndicator, TextInput, KeyboardAvoidingView, Alert } from 'react-native';
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
+import { Dimensions } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Video from 'react-native-video';
 
 @observer
 export default class ImageOptionsScreen extends React.Component{
+
+  constructor(props) {
+    super(props);
+    Navigation.events().registerNavigationButtonPressedListener(({ buttonId }) => {
+      if (buttonId === 'remove_image') {
+        const { asset, index } = this.props
+          this._handle_image_remove(asset, index)
+      }
+    });
+  }
   
+
   _handle_image_remove = (image, index) => {
     const { posting } = Auth.selected_user
     const existing_index = posting.post_assets?.findIndex(file => file.uri === image.uri)
@@ -31,57 +43,68 @@ export default class ImageOptionsScreen extends React.Component{
       );
     }
   }
-  
+
   render() {
     const { posting } = Auth.selected_user
-    const { asset, index } = this.props
+    const { asset } = this.props
+    
+    const max_media_height = 300; // cap media height
+    const window_width = Dimensions.get('window').width;
+    let media_width = window_width;
+    let media_height = window_width; // default to 1:1
+
+    if (asset.width && asset.height) {
+      const aspect_ratio = asset.width / asset.height;
+      media_height = window_width / aspect_ratio;
+      
+      if (media_height > max_media_height) {
+        media_height = max_media_height;
+        media_width = max_media_height * aspect_ratio;
+      }
+    }
+
     return(
-      <KeyboardAvoidingView behavior={"position"} style={{ flex: 1 }}>
-        <ScrollView style={{ padding: 15 }} contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', width: "100%" }}>
+      <KeyboardAvoidingView behavior={"padding"} style={{ flex: 1, backgroundColor: App.theme_button_background_color() }}>
+        <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', width: "100%" }}>
           <View
             style={{
+              flex: 1,
+              width: '100%',
+              height: '100%',
               position: 'relative',
               justifyContent: 'center',
               alignItems: 'center',
-              width: 250,
-              height: 250,
-              backgroundColor: '#E5E7EB'
+              backgroundColor: App.theme_background_color(),
             }}
           >
             {
               asset.is_video ?
-              <Video 
+              <Video
                 source={{ uri: asset.uri }}
-                poster={asset.remote_poster_url ? asset.remote_poster_url : asset.uri} style={{width: 250, height: 250}}
+                poster={asset.remote_poster_url ? asset.remote_poster_url : asset.uri} style={{width: media_width, height: media_height}}
                 mixWithOthers={"mix"}
                 controls
                 repeat
               />
               // <Image source={{ uri: asset.remote_poster_url ? asset.remote_poster_url : asset.uri }} style={{ width: 250, height: 250, borderRadius: 5 }} />
               :
-              <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} style={{ width: 250, height: 250, borderRadius: 5 }} />
+              <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} style={{ width: media_width, height: media_height }} />
             }
             {
               asset.is_uploading ?
                 <>
                   <ActivityIndicator color="#f80" size={"large"} style={{ position: 'absolute' }} />
-                  <View
-                    style={{
-                      width: `${ asset.progress }%`,
-                      height: 5,
-                      backgroundColor: App.theme_accent_color(),
-                      position: 'absolute',
-                      left: 0,
-                      bottom: 0,
-                      borderBottomLeftRadius: 5,
-                      borderBottomRightRadius: asset.progress === 100 ? 5 : 0,
-                      zIndex: 2
-                    }}
-                  />
                 </>
               : null
             }
           </View>
+          <View
+            style={{
+              width: `${ asset.progress }%`,
+              height: 5,
+              backgroundColor: asset.is_uploading ? App.theme_accent_color() : "transparent",
+            }}
+          />
           {
             !asset.is_video &&
             <TextInput
@@ -91,16 +114,14 @@ export default class ImageOptionsScreen extends React.Component{
                 fontSize: 20,
                 padding: 9,
                 paddingTop: 9,
+                paddingBottom: 143, // enlarge textinput click area; arbitrary number
                 fontWeight: '400',
                 color: App.theme_text_color(),
-                marginVertical: 25,
-                borderRadius: 5,
-                backgroundColor: App.theme_button_background_color(),
-                width: "100%"
+                width: "100%",
               }}
               editable={!posting.is_sending_post}
               multiline={true}
-              scrollEnabled={true}
+              scrollEnabled={false}
               returnKeyType={'default'}
               keyboardType={'default'}
               autoFocus={false}
@@ -112,27 +133,9 @@ export default class ImageOptionsScreen extends React.Component{
               onChangeText={(text) => !posting.is_sending_post ? asset.set_alt_text(text) : null}
             />
           }
-          <View
-            style={{
-              width: "100%",
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => this._handle_image_remove(asset, index)}
-              key={asset.uri}
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginVertical: asset.is_video ? 25 : 0,
-              }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', width: "100%", justifyContent: 'center' }}>
-                <Text style={{color: 'red'}}>{asset.is_uploading ? "Cancel Upload & Remove" : "Remove"}</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     )
   }
-  
+
 }
