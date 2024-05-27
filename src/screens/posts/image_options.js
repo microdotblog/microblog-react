@@ -147,14 +147,15 @@ export default class ImageOptionsScreen extends React.Component{
               : null
             }
           </View>
-          <View
-            style={{
-              width: `${ asset.progress }%`,
-              height: 5,
-              backgroundColor: asset.is_uploading ? App.theme_accent_color() : "transparent",
-              justifyContent: "left",
-            }}
-          />
+          <View style={{ width: "100%", justContent: "left" }}>
+            <View
+              style={{
+                width: `${ asset.progress }%`,
+                height: 5,
+                backgroundColor: asset.is_uploading ? App.theme_accent_color() : "transparent"
+              }}
+            />
+          </View>
           { true && 
             <View style={{ flexDirection: "row", minHeight: 40, alignItems: "center", width: "100%", padding: 8 }}>
               { this.state.isLoadingAlt ? 
