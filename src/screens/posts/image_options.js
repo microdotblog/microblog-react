@@ -44,7 +44,13 @@ export default class ImageOptionsScreen extends React.Component{
           },
           {
             text: "Remove",
-            onPress: () => { Navigation.popToRoot(this.props.componentId) ; posting.remove_asset(index) },
+            onPress: () => {
+              // delay, seems to create problems otherwise
+              setTimeout(() => {
+                Navigation.popToRoot(this.props.componentId);
+                posting.remove_asset(index)
+              }, 500);
+            },
             style: 'destructive'
           },
         ],
