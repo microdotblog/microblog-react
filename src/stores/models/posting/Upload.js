@@ -11,13 +11,21 @@ export default Upload = types.model('Upload', {
 	.actions(self => ({
 
 		copy_html_to_clipboard() {
-			let html = `<img src="${ self.url }" />`
+			let html = "";
+			if (self.alt && self.alt.length > 0) {
+				html = `<img src="${ self.url }" alt="${ self.alt.replace('"', '') }">`
+			}
+			else {
+				html = `<img src="${ self.url }">`
+			}
+
 			if (self.is_video()) {
 				html = `<video controls src="${ self.url }"></video>`
 			}
 			else if (self.is_audio()) {
 				html = `<audio controls src="${ self.url }"></audio>`
 			}
+
 			Clipboard.setString(html)
 			Toast.showWithGravity("HTML copied", Toast.SHORT, Toast.CENTER)
 		},
