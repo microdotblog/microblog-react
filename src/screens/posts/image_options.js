@@ -70,7 +70,7 @@ export default class ImageOptionsScreen extends React.Component{
         // if alt text not found, wait and try again
         setTimeout(() => {
           this._download_image_info(remaining_count - 1);
-        }, 3000);
+        }, 4000);
       }
     });
   }
@@ -113,7 +113,7 @@ export default class ImageOptionsScreen extends React.Component{
     }
 
     return(
-      <KeyboardAvoidingView behavior={"padding"} style={{ flex: 1, backgroundColor: App.theme_button_background_color() }}>
+      <KeyboardAvoidingView behavior={"padding"} style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
         <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', width: "100%" }}>
           <View
             style={{
@@ -156,7 +156,7 @@ export default class ImageOptionsScreen extends React.Component{
               }}
             />
           </View>
-          { true && 
+          { (this.state.isLoadingAlt || (this.state.generatedAltText.length > 0)) && 
             <View style={{ flexDirection: "row", minHeight: 40, alignItems: "center", width: "100%", padding: 8 }}>
               { this.state.isLoadingAlt ? 
                 <>
@@ -170,6 +170,8 @@ export default class ImageOptionsScreen extends React.Component{
                     style={{
                       marginLeft: 5,
                       padding: 4,
+                      paddingLeft: 6,
+                      paddingRight: 6,
                       backgroundColor: App.theme_button_background_color(),
                       borderRadius: 20,
                       borderColor: App.theme_section_background_color(),
