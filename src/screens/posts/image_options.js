@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, ScrollView, Image, ActivityIndicator, TextInput, KeyboardAvoidingView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Image, ActivityIndicator, TextInput, KeyboardAvoidingView, Alert, Dimensions } from 'react-native';
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
-import { Dimensions } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Video from 'react-native-video';
@@ -137,7 +136,6 @@ export default class ImageOptionsScreen extends React.Component{
                 controls
                 repeat
               />
-              // <Image source={{ uri: asset.remote_poster_url ? asset.remote_poster_url : asset.uri }} style={{ width: 250, height: 250, borderRadius: 5 }} />
               :
               <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} style={{ width: media_width, height: media_height }} />
             }
