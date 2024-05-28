@@ -15,12 +15,14 @@ export default class ImageOptionsScreen extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      isLoadingAlt: true,
+      isLoadingAlt: Auth.selected_user.is_using_ai,
       generatedAltText: "",
       copyButtonTitle: "Copy Text"
     };
     
-    this._download_image_info();
+    if (Auth.selected_user.is_using_ai) {
+      this._download_image_info();
+    }
     
     Navigation.events().registerNavigationButtonPressedListener(({ buttonId }) => {
       if (buttonId === 'remove_image') {
