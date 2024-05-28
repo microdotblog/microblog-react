@@ -23,13 +23,13 @@ export default class ImageOptionsScreen extends React.Component{
     if (Auth.selected_user.is_using_ai) {
       this._download_image_info();
     }
-    
-    Navigation.events().registerNavigationButtonPressedListener(({ buttonId }) => {
-      if (buttonId === 'remove_image') {
-        const { asset, index } = this.props
-          this._handle_image_remove(asset, index)
-      }
-    });
+  }
+
+  navigationButtonPressed = async ({ buttonId }) => {
+    if (buttonId === 'remove_image') {
+      const { asset, index } = this.props;
+      this._handle_image_remove(asset, index);
+    }
   }
   
   _handle_image_remove = (image, index) => {
