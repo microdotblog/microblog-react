@@ -36,7 +36,14 @@ export default Upload = types.model('Upload', {
 		},
 
 		copy_markdown_to_clipboard() {
-			let markdown = `![](${ self.url })`
+			let markdown = ""
+			if (self.alt && self.alt.length > 0) {
+				markdown = `![${ self.alt.replace('"', '') }](${ self.url })`
+			}
+			else {
+				markdown = `![](${ self.url })`
+			}
+
 			Clipboard.setString(markdown)
 			Toast.showWithGravity("Markdown copied", Toast.SHORT, Toast.CENTER)
 		}
