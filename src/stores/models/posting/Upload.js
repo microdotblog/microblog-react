@@ -5,18 +5,27 @@ import Toast from 'react-native-simple-toast';
 export default Upload = types.model('Upload', {
 	url: types.identifier,
 	published: types.maybe(types.string),
-	poster: types.maybe(types.string)
+	poster: types.maybe(types.string),
+	alt: types.maybe(types.string)
 })
 	.actions(self => ({
 
 		copy_html_to_clipboard() {
-			let html = `<img src="${ self.url }" />`
+			let html = "";
+			if (self.alt && self.alt.length > 0) {
+				html = `<img src="${ self.url }" alt="${ self.alt.replace('"', '') }">`
+			}
+			else {
+				html = `<img src="${ self.url }">`
+			}
+
 			if (self.is_video()) {
 				html = `<video controls src="${ self.url }"></video>`
 			}
 			else if (self.is_audio()) {
 				html = `<audio controls src="${ self.url }"></audio>`
 			}
+
 			Clipboard.setString(html)
 			Toast.showWithGravity("HTML copied", Toast.SHORT, Toast.CENTER)
 		},
@@ -27,7 +36,14 @@ export default Upload = types.model('Upload', {
 		},
 
 		copy_markdown_to_clipboard() {
-			let markdown = `![](${ self.url })`
+			let markdown = ""
+			if (self.alt && self.alt.length > 0) {
+				markdown = `![${ self.alt.replace('"', '') }](${ self.url })`
+			}
+			else {
+				markdown = `![](${ self.url })`
+			}
+
 			Clipboard.setString(markdown)
 			Toast.showWithGravity("Markdown copied", Toast.SHORT, Toast.CENTER)
 		}

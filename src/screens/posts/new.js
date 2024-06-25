@@ -19,12 +19,16 @@ export default class PostingScreen extends React.Component{
   }
   
   componentDidMount() {
-    if (Auth.selected_user.posting.selected_service != null) {
-      Auth.selected_user.posting.selected_service.check_for_categories()
-      Auth.selected_user.posting.reset_post_syndicates()
-    }
-    if(Auth.selected_user?.is_premium == null || (Auth.selected_user?.is_premium != null && !Auth.selected_user?.is_premium)){
-      Auth.selected_user.check_user_is_premium()
+    const u = Auth.selected_user;
+    if (u != null) {
+      if (u.posting.selected_service != null) {
+        u.posting.selected_service.check_for_categories()
+        u.posting.reset_post_syndicates()
+      }
+
+      if (u.is_premium == null || u.is_using_ai == null || (u.is_premium != null && !u.is_premium)) {
+        u.check_user_is_premium()
+      }
     }
   }
   

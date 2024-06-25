@@ -29,7 +29,8 @@ export default User = types.model('User', {
     is_fetching_tags_for_bookmark: types.optional(types.boolean, false),
     is_updating_tags_for_bookmark: types.optional(types.boolean, false),
     temporary_bookmark_id: types.maybeNull(types.string),
-    is_premium: types.maybeNull(types.boolean)
+    is_premium: types.maybeNull(types.boolean),
+    is_using_ai: types.maybeNull(types.boolean)
   })
   .actions(self => ({
 
@@ -233,8 +234,9 @@ export default User = types.model('User', {
     check_user_is_premium: flow(function* () {
       const data = yield MicroBlogApi.login_with_token(self.token())
       if(data !== LOGIN_TOKEN_INVALID){
-        console.log("User:check_user_is_premium", data.is_premium)
+        console.log("User:check_user_is_premium / AI", data.is_premium, data.is_using_ai)
         self.is_premium = data.is_premium
+        self.is_using_ai = data.is_using_ai
       }
     }),
     

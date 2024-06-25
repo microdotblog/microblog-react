@@ -376,6 +376,25 @@ class MicroBlogApi {
 			});
 		return search;
 	}
+
+	async search_uploads(query, destination = null) {
+		console.log('MicroBlogApi: search_uploads', query, destination);
+		const search = axios
+			.get(`/micropub/media?q=source&mp-destination=${destination}&filter=${query}`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+			})
+			.then(response => {
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: search_uploads', error);
+				return API_ERROR;
+			});
+		return search;
+	}
 	
 	async bookmark_highlights() {
 		console.log('MicroBlogApi: bookmark_highlights');

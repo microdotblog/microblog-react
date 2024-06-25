@@ -96,10 +96,12 @@ export default Destination = types.model('Destination', {
 			const url = entry.url || ""
 			const published = entry.published || ""
 			const poster = entry.poster || ""
+			const alt = entry.alt || ""
 			const upload = {
 				url: url,
 				published: published,
-				poster: poster
+				poster: poster,
+				alt: alt
 			}
 			if (url === "") {
 				return acc;

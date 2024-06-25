@@ -21,7 +21,7 @@ export default class PostsScreen extends React.Component{
   }
   
   componentDidAppear(){
-    Auth.selected_user.posting?.selected_service?.upate_posts_for_active_destination()
+    Auth.selected_user.posting?.selected_service?.update_posts_for_active_destination()
   }
   
   _return_header = () => {
@@ -93,7 +93,10 @@ export default class PostsScreen extends React.Component{
           width: 28,
           height: 28
         }}
-        onPress={App.toggle_post_search_is_open}
+        onPress={() => {
+          App.toggle_post_search_is_open();
+          App.set_posts_query("", null);
+        }}
       >
       {
         Platform.OS === "ios" ?
@@ -133,7 +136,7 @@ export default class PostsScreen extends React.Component{
           borderColor: App.theme_border_color(), 
           borderWidth: 1,
           borderRadius: 15,
-          paddingHorizontal: 15,
+          paddingHorizontal: 10,
           paddingVertical: 4,
           minWidth: "85%",
           color: App.theme_text_color()

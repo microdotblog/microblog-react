@@ -5,6 +5,7 @@ import { Navigation } from 'react-native-navigation';
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
 import PostToolbar from '../../components/keyboard/post_toolbar'
+import HighlightingText from '../../components/text/highlighting_text';
 
 @observer
 export default class PostEditScreen extends React.Component{
@@ -21,7 +22,7 @@ export default class PostEditScreen extends React.Component{
       const sent = await Auth.selected_user.posting.send_update_post()
       if(sent){
         this._dismiss()
-        Auth.selected_user.posting.selected_service.upate_pages_for_active_destination()
+        Auth.selected_user.posting.selected_service.update_pages_for_active_destination()
       }
     }
     else{
@@ -72,42 +73,85 @@ export default class PostEditScreen extends React.Component{
           onChangeText={(text) => !posting.is_sending_post ? posting.set_post_title(text) : null}
           inputAccessoryViewID={this.input_accessory_view_id}
         />
-        <TextInput
-          placeholderTextColor="lightgrey"
-          style={{
-            fontSize: 18,
-            justifyContent: 'flex-start',
-            alignItems: 'flex-start',
-            marginTop: 3,
-            ...Platform.select({
-              android: {
-              marginBottom: posting.post_text_length() > posting.max_post_length() || posting.post_title ? posting.post_assets.length > 0 ? 135 : 80 : posting.post_assets.length > 0 ? 93 : 38,
-              },
-              ios: {
-                paddingBottom: posting.post_text_length() > posting.max_post_length() ? 150 : 0,
-                flex: 1
-              }
-            }),
-            padding: 8,
-            color: App.theme_text_color()
-          }}
-          editable={!posting.is_sending_post}
-          multiline={true}
-          scrollEnabled={true}
-          returnKeyType={'default'}
-          keyboardType={'default'}
-          autoFocus={true}
-          autoCorrect={true}
-          clearButtonMode={'while-editing'}
-          enablesReturnKeyAutomatically={true}
-          underlineColorAndroid={'transparent'}
-          value={posting.post_text}
-          onChangeText={(text) => !posting.is_sending_post ? posting.set_post_text(text) : null}
-          onSelectionChange={({ nativeEvent: { selection } }) => {
-            posting.set_text_selection(selection)
-          }}
-          inputAccessoryViewID={this.input_accessory_view_id}
-        />
+        { Platform.OS === 'ios' ?
+          <HighlightingText
+            placeholderTextColor="lightgrey"
+            style={{
+              minHeight: 300,
+              fontSize: 18,
+              justifyContent: 'flex-start',
+              alignItems: 'flex-start',
+              marginTop: 0,
+              ...Platform.select({
+                android: {
+                  marginBottom: posting.post_text_length() > posting.max_post_length() || posting.post_title ? posting.post_assets.length > 0 ? 135 : 80 : posting.post_assets.length > 0 ? 93 : 38,
+                },
+                ios: {
+                  paddingBottom: posting.post_text_length() > posting.max_post_length() ? 150 : 0,
+                  flex: 1
+                }
+              }),
+              padding: 8,
+              color: App.theme_text_color()
+            }}
+            editable={!posting.is_sending_post}
+            multiline={true}
+            scrollEnabled={true}
+            returnKeyType={'default'}
+            keyboardType={'default'}
+            autoFocus={false}
+            autoCorrect={true}
+            clearButtonMode={'while-editing'}
+            enablesReturnKeyAutomatically={true}
+            underlineColorAndroid={'transparent'}
+            value={posting.post_text}
+            selection={posting.text_selection_flat}
+            onChangeText={({ nativeEvent: { text } }) => {
+              !posting.is_sending_post ? posting.set_post_text_from_typing(text) : null
+            }}
+            onSelectionChange={({ nativeEvent: { selection } }) => {
+              posting.set_text_selection(selection)
+            }}
+            inputAccessoryViewID={this.input_accessory_view_id}
+          />        
+        :
+          <TextInput
+            placeholderTextColor="lightgrey"
+            style={{
+              fontSize: 18,
+              justifyContent: 'flex-start',
+              alignItems: 'flex-start',
+              marginTop: 3,
+              ...Platform.select({
+                android: {
+                marginBottom: posting.post_text_length() > posting.max_post_length() || posting.post_title ? posting.post_assets.length > 0 ? 135 : 80 : posting.post_assets.length > 0 ? 93 : 38,
+                },
+                ios: {
+                  paddingBottom: posting.post_text_length() > posting.max_post_length() ? 150 : 0,
+                  flex: 1
+                }
+              }),
+              padding: 8,
+              color: App.theme_text_color()
+            }}
+            editable={!posting.is_sending_post}
+            multiline={true}
+            scrollEnabled={true}
+            returnKeyType={'default'}
+            keyboardType={'default'}
+            autoFocus={true}
+            autoCorrect={true}
+            clearButtonMode={'while-editing'}
+            enablesReturnKeyAutomatically={true}
+            underlineColorAndroid={'transparent'}
+            value={posting.post_text}
+            onChangeText={(text) => !posting.is_sending_post ? posting.set_post_text(text) : null}
+            onSelectionChange={({ nativeEvent: { selection } }) => {
+              posting.set_text_selection(selection)
+            }}
+            inputAccessoryViewID={this.input_accessory_view_id}
+          />
+        }
         {
           Platform.OS === 'ios' ?
             <InputAccessoryView nativeID={this.input_accessory_view_id}>
