@@ -21,6 +21,7 @@ import Services from './Services';
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
+let NAVIGATION = null;
 
 export default App = types.model('App', {
   is_loading: types.optional(types.boolean, false),
@@ -155,6 +156,13 @@ export default App = types.model('App', {
       })
     }
   }),
+  
+  set_navigation: flow(function*(navigation = null) {
+    if (navigation) {
+      console.log("App:set_navigation")
+      NAVIGATION = navigation
+    }
+  }),
 
   set_current_screen_name_and_id: flow(function* (screen_name, screen_id) {
     console.log("App:set_current_screen_name_and_id", screen_name, screen_id)
@@ -212,34 +220,41 @@ export default App = types.model('App', {
       }
     }
   }),
-
-  navigate_to_screen: flow(function* (action, action_data, from_listener = false) {
-    if(!self.is_scrolling){
-      switch (action) {
-        case "user":
-          return profileScreen(action_data, self.current_screen_id)
-        case "open":
-          return conversationScreen(action_data, self.current_screen_id)
-        case "photo":
-          return App.set_image_modal_data_and_activate(action_data)
-        case "discover/topic":
-          return discoverTopicScreen(action_data, self.current_screen_id)
-        case "reply":
-          Reply.hydrate(action_data)
-          return replyScreen(action_data, self.current_screen_id)
-        case "bookmark":
-          return bookmarkScreen(action_data, self.current_screen_id)
-        case "post":
-          if(from_listener){
-            Auth.selected_user.posting.set_post_text_from_action(action_data)
-          }
-          if (!self.post_modal_is_open) {
-            return postingScreen(!from_listener ? action_data : null)
-          }
-          return
-      }
+  
+  navigate_to_screen: flow(function*(screen_name = null) {
+    console.log("App:navigate_to_screen", screen_name)
+    if (screen_name != null && NAVIGATION != null && !self.is_scrolling) {
+      NAVIGATION.navigate(screen_name)
     }
   }),
+
+  // navigate_to_screen: flow(function* (action, action_data, from_listener = false) {
+  //   if(!self.is_scrolling){
+  //     switch (action) {
+  //       case "user":
+  //         return profileScreen(action_data, self.current_screen_id)
+  //       case "open":
+  //         return conversationScreen(action_data, self.current_screen_id)
+  //       case "photo":
+  //         return App.set_image_modal_data_and_activate(action_data)
+  //       case "discover/topic":
+  //         return discoverTopicScreen(action_data, self.current_screen_id)
+  //       case "reply":
+  //         Reply.hydrate(action_data)
+  //         return replyScreen(action_data, self.current_screen_id)
+  //       case "bookmark":
+  //         return bookmarkScreen(action_data, self.current_screen_id)
+  //       case "post":
+  //         if(from_listener){
+  //           Auth.selected_user.posting.set_post_text_from_action(action_data)
+  //         }
+  //         if (!self.post_modal_is_open) {
+  //           return postingScreen(!from_listener ? action_data : null)
+  //         }
+  //         return
+  //     }
+  //   }
+  // }),
 
   navigate_to_screen_from_menu: flow(function* (screen, open_as_modal = false) {
     console.log("App:navigate_to_screen_from_menu", screen)
