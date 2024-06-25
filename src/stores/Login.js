@@ -3,8 +3,8 @@ import MicroBlogApi, { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_INCORRECT, LOGIN_TOKEN_
 import StringChecker from './../utils/string_checker';
 import { Alert, Platform } from 'react-native';
 import Auth from './Auth';
-import { Navigation } from 'react-native-navigation';
-import { menuBottomSheet } from './../screens/'
+// import { Navigation } from 'react-native-navigation';
+// import { menuBottomSheet } from './../screens/'
 
 export default Login = types.model('Login', {
   input_value: types.optional(types.string, ""),
@@ -85,8 +85,8 @@ export default Login = types.model('Login', {
       const result = yield Auth.handle_new_login(login)
       if(result){
         // THIS IS ALWAYS TRUE FOR NOW 😇
-        menuBottomSheet(true)
-        Navigation.dismissAllModals()
+        // menuBottomSheet(true)
+        // Navigation.dismissAllModals()
         self.reset()
       }
       else{

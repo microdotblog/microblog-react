@@ -69,25 +69,18 @@ export default App = types.model('App', {
     self.current_screen_id = TIMELINE_SCREEN
     
     Auth.hydrate().then(async () => {
+      console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
+      if(!Auth.is_logged_in()){
+        App.navigate_to_screen("Login")
+      }
       await App.set_current_initial_theme()
       await App.set_current_initial_font_scale()
       await App.hydrate_last_tab_index()
       Push.hydrate()
       Settings.hydrate()
-      // startApp().then(() => {
-      //   console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
       //   if(self.current_tab_index > 0){
       //     App.navigate_to_tab_index(self.current_tab_index)
       //   }
-      //   if(!Auth.is_logged_in()){
-      //     loginScreen()
-      //   }
-      //   App.set_is_loading(false)
-      //   App.set_up_url_listener()
-      //   if (Auth.is_logged_in()) {
-      //     Push.handle_first_notification()
-      //   }
-      // })
       App.set_is_loading(false)
       App.set_up_url_listener()
       if (Auth.is_logged_in()) {
@@ -516,24 +509,7 @@ export default App = types.model('App', {
     console.log("App:change_current_theme", color)
     self.is_switching_theme = true
     self.theme = color
-    yield App.update_navigation_screens()
     self.is_switching_theme = false
-  }),
-
-  update_navigation_screens: flow(function* () {
-    console.log("App:update_navigation_screens")
-    if(self.is_share_extension) return
-    const options = theme_options({})
-    // We set default options here so that any new screen, that might not be in the stack, will pick them up.
-    Navigation.setDefaultOptions(options)
-    Object.entries(Screens).forEach(([ key ]) => {
-      if (key != null &&
-        !key.includes("microblog.component") &&
-        key !== "__initBottomSheet__") {
-        console.log("App:update_navigation_screens:screen", key)
-        Navigation.mergeOptions(key, options)
-      }
-    })
   }),
   
   set_current_initial_font_scale: flow(function* () {
@@ -881,6 +857,9 @@ export default App = types.model('App', {
   },
   web_font_scale(){
     return App.font_scale > 2 ? 2 : App.font_scale
+  },
+  navigation(){
+    return NAVIGATION
   }
 }))
 .create();

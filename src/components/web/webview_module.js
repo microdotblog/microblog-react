@@ -5,7 +5,6 @@ import Auth from '../../stores/Auth';
 import App from '../../stores/App';
 import { ScrollView } from 'react-native-gesture-handler';
 import WebView from 'react-native-webview'
-import { Navigation } from "react-native-navigation";
 import WebLoadingViewModule from './loading_view'
 import WebErrorViewModule from './error_view'
 import { SheetProvider } from "react-native-actions-sheet";
@@ -24,24 +23,20 @@ export default class WebViewModule extends React.Component{
       opacity: 0.0
     }
     this.web_url = "https://micro.blog"
-    Navigation.events().bindComponent(this, this.props.component_id)
-  }
-
-  componentDidAppear = () => {
-    console.log("WebViewModule:componentDidAppear::", this.props.endpoint)
-    App.set_current_web_view_ref(this.ref.current)
   }
 
   componentDidMount = () => {
-    this.bottom_tab_selected_listener = Navigation.events().registerBottomTabSelectedListener(({ selectedTabIndex, unselectedTabIndex }) => {
-      if (selectedTabIndex === unselectedTabIndex && App.current_screen_id === this.props.component_id) {
-        this.ref.current?.injectJavaScript(`window.scrollTo({ top: 0, behavior: 'smooth' })`)
-      }
-    });
-  }
-
-  componentWillUnmount = () => {
-    this.bottom_tab_selected_listener.remove()
+    // console.log("WebViewModule:componentDidAppear::", this.props.endpoint)
+    // App.set_current_web_view_ref(this.ref.current)
+    // App.navigation().addListener('focus', () => {
+    //   // do something
+    //   console.log("focus")
+    // });
+    // this.bottom_tab_selected_listener = Navigation.events().registerBottomTabSelectedListener(({ selectedTabIndex, unselectedTabIndex }) => {
+    //   if (selectedTabIndex === unselectedTabIndex && App.current_screen_id === this.props.component_id) {
+    //     this.ref.current?.injectJavaScript(`window.scrollTo({ top: 0, behavior: 'smooth' })`)
+    //   }
+    // });
   }
   
   on_refresh = () => {
