@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import Auth from './../../stores/Auth';
-import { Navigation } from 'react-native-navigation';
 import Push from '../../stores/Push'
 import GenericScreenComponent from '../../components/generic/generic_screen'
 
@@ -10,7 +9,6 @@ export default class MentionsScreen extends React.Component{
 
   constructor (props) {
 		super(props)
-		Navigation.events().bindComponent(this)
   }
 
   componentDidAppear = async () => {
