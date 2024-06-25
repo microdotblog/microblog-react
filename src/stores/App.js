@@ -73,20 +73,25 @@ export default App = types.model('App', {
       await App.hydrate_last_tab_index()
       Push.hydrate()
       Settings.hydrate()
-      startApp().then(() => {
-        console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
-        if(self.current_tab_index > 0){
-          App.navigate_to_tab_index(self.current_tab_index)
-        }
-        if(!Auth.is_logged_in()){
-          loginScreen()
-        }
-        App.set_is_loading(false)
-        App.set_up_url_listener()
-        if (Auth.is_logged_in()) {
-          Push.handle_first_notification()
-        }
-      })
+      // startApp().then(() => {
+      //   console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
+      //   if(self.current_tab_index > 0){
+      //     App.navigate_to_tab_index(self.current_tab_index)
+      //   }
+      //   if(!Auth.is_logged_in()){
+      //     loginScreen()
+      //   }
+      //   App.set_is_loading(false)
+      //   App.set_up_url_listener()
+      //   if (Auth.is_logged_in()) {
+      //     Push.handle_first_notification()
+      //   }
+      // })
+      App.set_is_loading(false)
+      App.set_up_url_listener()
+      if (Auth.is_logged_in()) {
+        Push.handle_first_notification()
+      }
     })
   }),
 
@@ -730,6 +735,9 @@ export default App = types.model('App', {
 
 }))
 .views(self => ({
+  is_dark_mode() {
+    return self.theme === "dark"
+  },
   theme_accent_color(){
     return "#f80"
   },
