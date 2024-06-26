@@ -1,22 +1,11 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TextInput, Button, ActivityIndicator, Platform, KeyboardAvoidingView, Keyboard, TouchableOpacity } from 'react-native';
+import { Text, TextInput, Button, ActivityIndicator, Platform, KeyboardAvoidingView, Keyboard, TouchableOpacity } from 'react-native';
 import Login from './../../stores/Login';
 import App from '../../stores/App'
 
 @observer
 export default class LoginScreen extends React.Component{
-  
-  constructor (props) {
-    super(props)
-  }
-  
-  // navigationButtonPressed = async ({ buttonId }) => {
-  //   console.log("navigationButtonPressed::", buttonId)
-  //   if(buttonId === "back_button"){
-  //     Navigation.dismissModal(this.props.componentId)
-  //   }
-  // }
   
   render() {
     return(
@@ -72,20 +61,6 @@ export default class LoginScreen extends React.Component{
         <Text style={{fontWeight: "300", color: App.theme_text_color(), lineHeight: 22, textAlign: "center", marginBottom: 5, marginTop: Login.is_loading ? 0 : 8}}>
           By using the app you accept our <TouchableOpacity onPress={() => App.open_url(App.terms_url)}><Text style={{fontWeight: "600", color: App.theme_text_color(), textDecorationLine: "underline"}}>terms of service</Text></TouchableOpacity>, <TouchableOpacity onPress={() => App.open_url(App.privacy_url)}><Text style={{fontWeight: "600", color: App.theme_text_color(), textDecorationLine: "underline"}}>privacy policy</Text></TouchableOpacity>, and <TouchableOpacity onPress={() => App.open_url(App.guidelines_url)}><Text style={{fontWeight: "600", color: App.theme_text_color(), textDecorationLine: "underline"}}>community guidelines</Text></TouchableOpacity>.
         </Text>
-        {
-          Login.message !== null && Login.message !== "" ?
-          <View 
-            style={{
-              backgroundColor: '#6EE7B7',
-              padding: 8,
-              paddingHorizontal: 12,
-              borderRadius: 5,
-              elevation: 2
-            }}>
-            <Text style={{color: "#064E3B", fontWeight: "600"}}>{Login.message}</Text>
-          </View>
-          : null
-        }
       </KeyboardAvoidingView>
     )
   }

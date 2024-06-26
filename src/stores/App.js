@@ -18,6 +18,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Contact from './models/posting/Contact'
 import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
 import Services from './Services';
+import { SheetManager } from "react-native-actions-sheet";
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -147,6 +148,23 @@ export default App = types.model('App', {
           return shareScreen()
         }
       })
+    }
+  }),
+  
+  open_sheet: flow(function*(sheet_name = null) {
+    console.log("App:open_sheet", sheet_name)
+    if (sheet_name != null) {
+      const sheet_is_open = SheetManager.get(sheet_name)?.current?.isOpen()
+      if (!sheet_is_open) {
+        SheetManager.show(sheet_name)
+      }
+    }
+  }),
+  
+  close_sheet: flow(function*(sheet_name = null) {
+    console.log("App:close_sheet", sheet_name)
+    if (sheet_name != null) {
+      SheetManager.hide(sheet_name)
     }
   }),
   

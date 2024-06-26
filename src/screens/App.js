@@ -7,6 +7,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import App from './../stores/App';
 import TabNavigator from './stacks/TabNavigator';
 import LoginScreen from './login/login';
+import ImageModalModule from '../components/images/image_modal';
+import "./../components/sheets/sheets";
 
 const Stack = createNativeStackNavigator();
 
@@ -35,9 +37,16 @@ export default class MainApp extends React.Component {
             name="Login"
             component={LoginScreen}
             options={{
-              presentation: "modal",
               title: "Sign in",
-              headerShown: true
+              headerShown: true,
+              headerBackTitle: "Back"
+            }}
+          />
+          <Stack.Screen
+            name="Image"
+            component={ImageModalModule}
+            options={{
+              presentation: "modal",
             }}
           />
         </Stack.Navigator>
