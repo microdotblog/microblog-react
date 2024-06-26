@@ -6,6 +6,7 @@ import TimelineStack from './TimelineStack';
 import MentionsStack from './MentionsStack';
 import BookmarksStack from './BookmarksStack';
 import DiscoverStack from './DiscoverStack';
+import TabIcon from '../../components/tabs/tab';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,10 +20,13 @@ export default class TabNavigator extends React.Component{
   render() {
     return(
       <Tab.Navigator
-        screenOptions={{ 
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            return <TabIcon route={route} focused={focused} size={size} color={color} />;
+          },
           headerShown: false,
           tabBarActiveTintColor: App.theme_accent_color()
-        }}
+        })}
       >
         <Tab.Screen
           name="TimelineStack"
