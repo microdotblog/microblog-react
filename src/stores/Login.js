@@ -3,6 +3,7 @@ import MicroBlogApi, { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_INCORRECT, LOGIN_TOKEN_
 import StringChecker from './../utils/string_checker';
 import { Alert, Platform } from 'react-native';
 import Auth from './Auth';
+import App from './App';
 import { SheetManager } from "react-native-actions-sheet";
 
 export default Login = types.model('Login', {
@@ -63,7 +64,7 @@ export default Login = types.model('Login', {
     if(login === LOGIN_SUCCESS){
       console.log("LOGIN:trigger_login:email_login:SUCCESS")
       self.message = `Email sent! Check your email on this device and tap the "Open in Micro.blog for ${Platform.OS === 'ios' ? "iOS" : "Android"}" button.`
-      SheetManager.show("login-message-sheet")
+      App.open_sheet("login-message-sheet")
     }
     else if(login === LOGIN_INCORRECT){
       self.show_error = true
@@ -85,8 +86,8 @@ export default Login = types.model('Login', {
       const result = yield Auth.handle_new_login(login)
       if(result){
         // THIS IS ALWAYS TRUE FOR NOW 😇
-        // menuBottomSheet(true)
-        // Navigation.dismissAllModals()
+        App.close_sheet("main_sheet")
+        App.navigation().goBack()
         self.reset()
       }
       else{

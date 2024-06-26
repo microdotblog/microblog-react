@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen, settingsScreen, postsScreen, pagesScreen, uploadsScreen, postOptionsSettingsScreen, addTagsBottomSheet, UPLOADS_MODAL_SCREEN, shareScreen } from '../screens';
+import { profileScreen, conversationScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen, settingsScreen, postsScreen, pagesScreen, uploadsScreen, postOptionsSettingsScreen, addTagsBottomSheet, UPLOADS_MODAL_SCREEN, shareScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
@@ -8,7 +8,6 @@ import Share from './Share'
 import { Linking, Appearance, AppState, Platform, Dimensions, Alert } from 'react-native'
 import { Navigation } from "react-native-navigation";
 import Push from './Push'
-import { theme_options } from '../utils/navigation'
 import Toast from 'react-native-simple-toast';
 import { InAppBrowser } from 'react-native-inappbrowser-reborn'
 import Discover from './Discover'
@@ -232,10 +231,25 @@ export default App = types.model('App', {
     }
   }),
   
-  navigate_to_screen: flow(function*(screen_name = null) {
+  navigate_to_screen: flow(function*(screen_name = null, action_data, from_listener = false) {
     console.log("App:navigate_to_screen", screen_name)
     if (screen_name != null && NAVIGATION != null && !self.is_scrolling) {
-      NAVIGATION.navigate(screen_name)
+      switch (screen_name) {
+        case "photo":
+          return App.set_image_modal_data_and_activate(action_data)
+        case "reply":
+          Reply.hydrate(action_data)
+          return NAVIGATION.navigate("Reply")
+        default:
+          NAVIGATION.navigate(screen_name)
+      }
+    }
+  }),
+  
+  go_back: flow(function*() {
+    console.log("App:go_back")
+    if (NAVIGATION != null) {
+      NAVIGATION.goBack()
     }
   }),
 
@@ -246,8 +260,6 @@ export default App = types.model('App', {
   //         return profileScreen(action_data, self.current_screen_id)
   //       case "open":
   //         return conversationScreen(action_data, self.current_screen_id)
-  //       case "photo":
-  //         return App.set_image_modal_data_and_activate(action_data)
   //       case "discover/topic":
   //         return discoverTopicScreen(action_data, self.current_screen_id)
   //       case "reply":
@@ -734,7 +746,7 @@ export default App = types.model('App', {
     console.log("App:trigger_logout_for_user")
     Alert.alert(`Please sign in again`, `Your token for, @${user.username}, is no longer valid.`)
     yield Auth.logout_user(user)
-    loginScreen()
+    App.navigate_to_screen("Login")
   }),
   
   set_is_loading_bookmarks: flow(function* (loading) {

@@ -7,7 +7,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import App from './../stores/App';
 import TabNavigator from './stacks/TabNavigator';
 import LoginScreen from './login/login';
-import ImageModalModule from '../components/images/image_modal';
+import ReplyScreen from './conversation/reply';
+import CloseModalButton from '../components/header/close';
 import "./../components/sheets/sheets";
 
 const Stack = createNativeStackNavigator();
@@ -42,13 +43,22 @@ export default class MainApp extends React.Component {
               headerBackTitle: "Back"
             }}
           />
-          <Stack.Screen
-            name="Image"
-            component={ImageModalModule}
-            options={{
+          <Stack.Group
+            screenOptions={{
               presentation: "modal",
+              headerShown: true,
+              headerLeft: () => <CloseModalButton />
             }}
-          />
+          >
+            <Stack.Screen
+              name="Reply"
+              component={ReplyScreen}
+              options={{
+                headerTitle: "New Reply",
+                gestureEnabled: false
+              }}
+            />
+          </Stack.Group>
         </Stack.Navigator>
         </NavigationContainer>
       </SheetProvider>

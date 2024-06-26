@@ -12,13 +12,8 @@ export default class ReplyScreen extends React.Component{
   
 	constructor (props) {
 		super(props)
-		Navigation.events().bindComponent(this)
 		this.input_accessory_view_id = "input_toolbar";
 	}
-
-  componentDidAppear(){
-    Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: false}});
-  }
   
   navigationButtonPressed = async ({ buttonId }) => {
 		console.log("ReplyScreen:navigationButtonPressed::", buttonId)
@@ -35,7 +30,7 @@ export default class ReplyScreen extends React.Component{
   
   _dismiss = () => {
     Keyboard.dismiss()
-		Navigation.dismissModal(this.props.componentId)
+		//Navigation.dismissModal(this.props.componentId)
 	}
   
   render() {
