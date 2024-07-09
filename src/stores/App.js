@@ -167,6 +167,11 @@ export default App = types.model('App', {
     }
   }),
   
+  close_all_sheets: flow(function*() {
+    console.log("App:close_all_sheets")
+    SheetManager.hideAll()
+  }),
+  
   set_navigation: flow(function*(navigation = null) {
     if (navigation) {
       console.log("App:set_navigation")
@@ -240,6 +245,8 @@ export default App = types.model('App', {
         case "reply":
           Reply.hydrate(action_data)
           return NAVIGATION.navigate("Reply")
+        case "user":
+          return NAVIGATION.push("Profile", { username: action_data })
         default:
           NAVIGATION.navigate(screen_name)
       }

@@ -32,28 +32,32 @@ export default class TabNavigator extends React.Component{
           name="TimelineStack"
           component={TimelineStack}
           options={{
-            tabBarLabel: "Timeline"
+            tabBarLabel: "Timeline",
+            headerTitle: "Timeline"
           }}
         />
         <Tab.Screen
           name="MentionsStack"
           component={MentionsStack}
           options={{
-            tabBarLabel: "Mentions"
+            tabBarLabel: "Mentions",
+            headerTitle: "Mentions"
           }}
         />
         <Tab.Screen
           name="BookmarksStack"
           component={BookmarksStack}
           options={{
-            tabBarLabel: "Bookmarks"
+            tabBarLabel: "Bookmarks",
+            headerTitle: "Bookmarks"
           }}
         />
         <Tab.Screen
           name="DiscoverStack"
           component={DiscoverStack}
           options={{
-            tabBarLabel: "Discover"
+            tabBarLabel: "Discover",
+            headerTitle: "Discover"
           }}
         />
       </Tab.Navigator>

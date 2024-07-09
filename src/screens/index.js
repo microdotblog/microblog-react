@@ -137,39 +137,6 @@ export const menuBottomSheet = (close = false) => {
   SheetManager.hide("main_sheet")
 }
 
-export const profileScreen = (username, component_id, close_bottom_sheet = true) => {
-  console.log("Screens:profileScreen", username, component_id);
-  if (close_bottom_sheet) {
-    menuBottomSheet(true)
-  }
-  const options = {
-    component: {
-			name: PROFILE_SCREEN,
-			passProps: {
-        username: username
-			},
-			options: {
-				topBar: {
-          title: {
-            text: `@${username}`
-          },
-          rightButtons: [
-            {
-              id: 'post_button',
-              text: 'New',
-              component: {
-                name: NEW_POST_BUTTON
-              }
-            }
-          ],
-				}
-			}
-		}
-	};
-
-  return Navigation.push(component_id, options);
-}
-
 export const conversationScreen = (conversation_id, component_id) => {
   console.log("Screens:conversationScreen", conversation_id, component_id);
   Reply.hydrate(conversation_id)

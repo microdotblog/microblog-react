@@ -8,7 +8,9 @@ import App from './../stores/App';
 import TabNavigator from './stacks/TabNavigator';
 import LoginScreen from './login/login';
 import ReplyScreen from './conversation/reply';
+import ProfileScreen from './profile/profile';
 import CloseModalButton from '../components/header/close';
+import NewPostButton from '../components/header/new_post';
 import "./../components/sheets/sheets";
 
 const Stack = createNativeStackNavigator();
@@ -57,6 +59,21 @@ export default class MainApp extends React.Component {
                 headerTitle: "New Reply",
                 gestureEnabled: false
               }}
+            />
+          </Stack.Group>
+          <Stack.Group
+            screenOptions={{
+              headerShown: true,
+              headerBackTitleVisible: false
+            }}
+          >
+            <Stack.Screen
+              name="Profile"
+              component={ProfileScreen}
+              options={({ navigation, route }) => ({
+                headerTitle: `@${route.params.username}`,
+                headerRight: () => <NewPostButton />
+              })}
             />
           </Stack.Group>
         </Stack.Navigator>

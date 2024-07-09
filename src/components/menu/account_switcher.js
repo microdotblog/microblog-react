@@ -4,7 +4,6 @@ import { View, Text, TouchableOpacity, Image, Platform } from 'react-native';
 import Auth from './../../stores/Auth';
 import App from './../../stores/App';
 import FastImage from 'react-native-fast-image';
-import { loginScreen, profileScreen } from './../../screens/';
 import { SFSymbol } from 'react-native-sfsymbols';
 // IMAGES
 import AddAccountImage from './../../assets/icons/add_account.png';
@@ -15,7 +14,7 @@ export default class AccountSwitcher extends React.Component{
   _render_current_user = () => {
     return(
 			<TouchableOpacity
-				onPress={() => profileScreen(Auth.selected_user.username, App.current_screen_id)}
+				onPress={() => App.navigate_to_screen("user", Auth.selected_user.username)}
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -116,7 +115,10 @@ export default class AccountSwitcher extends React.Component{
   _render_add_account_button = () => {
     return(
       <TouchableOpacity
-        onPress={loginScreen}
+        onPress={() => {
+          App.close_sheet("main_sheet");
+          App.navigation().navigate("Login");
+        }}
         style={{
           flexDirection: 'row',
           alignItems: 'center',
