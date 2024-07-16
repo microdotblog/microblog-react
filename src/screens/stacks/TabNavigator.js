@@ -13,13 +13,14 @@ const Tab = createBottomTabNavigator();
 @observer
 export default class TabNavigator extends React.Component{
   
-  async componentDidMount(){
+  async componentDidMount() {
     App.set_navigation(this.props.navigation)
   }
 
   render() {
     return(
       <Tab.Navigator
+        id='tab_navigator'
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             return <TabIcon route={route} focused={focused} size={size} color={color} />;
@@ -27,6 +28,16 @@ export default class TabNavigator extends React.Component{
           headerShown: false,
           tabBarActiveTintColor: App.theme_accent_color()
         })}
+        screenListeners={{
+          tabPress: (e) => {
+            console.log("tabPress", e)
+            // App.set_current_tab_index(e.data.index)
+          },
+          state: (e) => {
+            console.log("state", e.data.state.index)
+            App.set_current_tab_index(e.data.state.index)
+          }
+        }}
       >
         <Tab.Screen
           name="TimelineStack"

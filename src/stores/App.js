@@ -173,7 +173,7 @@ export default App = types.model('App', {
   }),
   
   set_navigation: flow(function*(navigation = null) {
-    if (navigation) {
+    if (navigation && NAVIGATION == null) {
       console.log("App:set_navigation")
       NAVIGATION = navigation
     }
