@@ -4,16 +4,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DiscoverScreen from '../discover/discover';
 import ProfileImage from './../../components/header/profile_image';
 import NewPostButton from '../../components/header/new_post';
+import ProfileScreen from '../../screens/profile/profile';
 
-const Stack = createNativeStackNavigator();
+const DiscoverStack = createNativeStackNavigator();
 
 @observer
-export default class DiscoverStack extends React.Component{
+export default class Discover extends React.Component{
 
   render() {
     return(
-      <Stack.Navigator>
-        <Stack.Screen
+      <DiscoverStack.Navigator>
+        <DiscoverStack.Screen
           name="Discover"
           component={DiscoverScreen}
           options={{
@@ -21,7 +22,21 @@ export default class DiscoverStack extends React.Component{
             headerRight: () => <NewPostButton />
           }}
         />
-      </Stack.Navigator>
+        <DiscoverStack.Group
+          screenOptions={{
+            headerBackTitleVisible: false
+          }}
+        >
+          <DiscoverStack.Screen
+            name="Profile"
+            component={ProfileScreen}
+            options={({ route }) => ({
+              headerTitle: `@${route.params?.username}`,
+              headerRight: () => <NewPostButton />
+            })}
+          />
+        </DiscoverStack.Group>
+      </DiscoverStack.Navigator>
     )
   }
 

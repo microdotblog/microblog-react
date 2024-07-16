@@ -59,7 +59,16 @@ export default App = types.model('App', {
   is_loading_highlights: types.optional(types.boolean, false),
   is_loading_bookmarks: types.optional(types.boolean, false)
 })
+.volatile(self => ({
+  navigation_ref: null,
+}))
 .actions(self => ({
+  
+  set_navigation: flow(function* (navigation = null) {
+    if (navigation) {
+      self.navigation_ref = navigation
+    }
+  }),
 
   hydrate: flow(function* () {
     console.log("App:hydrate")
@@ -171,13 +180,6 @@ export default App = types.model('App', {
     console.log("App:close_all_sheets")
     SheetManager.hideAll()
   }),
-  
-  set_navigation: flow(function*(navigation = null) {
-    if (navigation && NAVIGATION == null) {
-      console.log("App:set_navigation")
-      NAVIGATION = navigation
-    }
-  }),
 
   set_current_screen_name_and_id: flow(function* (screen_name, screen_id) {
     console.log("App:set_current_screen_name_and_id", screen_name, screen_id)
@@ -238,17 +240,17 @@ export default App = types.model('App', {
   
   navigate_to_screen: flow(function*(screen_name = null, action_data, from_listener = false) {
     console.log("App:navigate_to_screen", screen_name)
-    if (screen_name != null && NAVIGATION != null && !self.is_scrolling) {
+    if (screen_name != null && self.navigation_ref != null && !self.is_scrolling) {
       switch (screen_name) {
         case "photo":
           return App.set_image_modal_data_and_activate(action_data)
         case "reply":
           Reply.hydrate(action_data)
-          return NAVIGATION.navigate("Reply")
+          return self.navigation_ref.navigate("Reply")
         case "user":
-          return NAVIGATION.push("Profile", { username: action_data })
+          return self.navigation_ref.push("Profile", { username: action_data })
         default:
-          NAVIGATION.navigate(screen_name)
+          self.navigation_ref.navigate(screen_name)
       }
     }
   }),
@@ -896,7 +898,7 @@ export default App = types.model('App', {
     return App.font_scale > 2 ? 2 : App.font_scale
   },
   navigation(){
-    return NAVIGATION
+    return self.navigation_ref
   }
 }))
 .create();

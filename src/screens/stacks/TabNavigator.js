@@ -17,6 +17,10 @@ export default class TabNavigator extends React.Component{
     App.set_navigation(this.props.navigation)
   }
 
+  componentDidUpdate() {
+    App.set_navigation(this.props.navigation)
+  }
+
   render() {
     return(
       <Tab.Navigator
@@ -29,12 +33,7 @@ export default class TabNavigator extends React.Component{
           tabBarActiveTintColor: App.theme_accent_color()
         })}
         screenListeners={{
-          tabPress: (e) => {
-            console.log("tabPress", e)
-            // App.set_current_tab_index(e.data.index)
-          },
           state: (e) => {
-            console.log("state", e.data.state.index)
             App.set_current_tab_index(e.data.state.index)
           }
         }}
