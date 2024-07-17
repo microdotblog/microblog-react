@@ -386,38 +386,6 @@ export const addBoomarkScreen = () => {
   });
 }
 
-export const helpScreen = () => {
-  return Navigation.showModal({
-    stack: {
-      id: HELP_SCREEN,
-      name: HELP_SCREEN,
-      children: [ {
-        component: {
-          id: HELP_SCREEN,
-          name: HELP_SCREEN,
-          options: {
-            topBar: {
-              title: {
-                text: 'Help',
-              },
-              leftButtons: [
-                {
-                  id: 'back_button',
-                  text: 'Back',
-                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
-                },
-              ],
-            },
-            layout: {
-              backgroundColor: App.theme_background_color()
-            }
-          }
-        },
-      }],
-    }
-  });
-}
-
 export const imageOptionsScreen = (asset, index, component_id) => {
   console.log("Screens:imageOptionsScreen", asset, index, component_id);
 

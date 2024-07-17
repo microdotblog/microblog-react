@@ -286,40 +286,10 @@ export default App = types.model('App', {
 
   navigate_to_screen_from_menu: flow(function* (screen, open_as_modal = false) {
     console.log("App:navigate_to_screen_from_menu", screen)
-    menuBottomSheet(true)
-    let tab_index = null
-    let should_pop = false
+    App.close_sheet("main_sheet")
     switch (screen) {
-      case "Timeline":
-        tab_index = 0;
-        should_pop = self.current_screen_id !== "microblog.TimelineScreen"
-        if(should_pop){
-          Navigation.popToRoot("microblog.TimelineScreen")
-        }
-        break;
-      case "Mentions":
-        tab_index = 1;
-        should_pop = self.current_screen_id !== "microblog.MentionsScreen"
-        if(should_pop){
-          Navigation.popToRoot("microblog.MentionsScreen")
-        }
-        break;
-      case "Discover":
-        tab_index = 3;
-        should_pop = self.current_screen_id !== "microblog.DiscoverScreen"
-        if(should_pop){
-          Navigation.popToRoot("microblog.DiscoverScreen")
-        }
-        break;
-      case "Bookmarks":
-        tab_index = 2;
-        should_pop = self.current_screen_id !== "microblog.BookmarksScreen"
-        if(should_pop){
-          Navigation.popToRoot("microblog.BookmarksScreen")
-        }
-        break;
       case "Help":
-        return helpScreen()
+        return self.navigate_to_screen("Help")
       case "Settings":
         return settingsScreen()
       case "Replies":

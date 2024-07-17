@@ -12,6 +12,7 @@ import ProfileScreen from './profile/profile';
 import CloseModalButton from '../components/header/close';
 import NewPostButton from '../components/header/new_post';
 import PostReplyButton from '../components/header/post_reply';
+import HelpScreen from './help/help';
 
 import "./../components/sheets/sheets";
 
@@ -63,6 +64,14 @@ export default class MainApp extends React.Component {
                     gestureEnabled: true,
                     headerRight: () => <PostReplyButton conversation_id={route.params?.conversation_id} />
                   })}
+                />
+                <Stack.Screen
+                  name="Help"
+                  component={HelpScreen}
+                  options={{
+                    title: "Help",
+                    gestureEnabled: true,
+                  }}
                 />
               </Stack.Group>
             </Stack.Navigator>
