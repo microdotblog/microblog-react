@@ -53,6 +53,7 @@ export default class MainApp extends React.Component {
                 screenOptions={{
                   presentation: "modal",
                   headerShown: true,
+                  gestureEnabled: true,
                   headerLeft: () => <CloseModalButton />
                 }}
               >
@@ -73,25 +74,20 @@ export default class MainApp extends React.Component {
                     gestureEnabled: true,
                   }}
                 />
-                <Stack.Group screenOptions={{
-                  gestureEnabled: true
-                }}>
-                  <Stack.Screen
-                    name="Settings"
-                    component={SettingsScreen}
-                    options={{
-                      title: "Settings"
-                    }}
-                  />
-                  <Stack.Screen
-                    name="PostService"
-                    component={PostOptionsSettingsScreen}
-                    options={{
-                      title: "Posting Options"
-                    }}
-                  />
-                </Stack.Group>
-                
+                <Stack.Screen
+                  name="Settings"
+                  component={SettingsScreen}
+                  options={{
+                    title: "Settings"
+                  }}
+                />
+                <Stack.Screen
+                  name="PostService"
+                  component={PostOptionsSettingsScreen}
+                  options={{
+                    title: "Posting Options"
+                  }}
+                />
               </Stack.Group>
             </Stack.Navigator>
           </NavigationContainer>
