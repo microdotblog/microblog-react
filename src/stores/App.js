@@ -86,13 +86,13 @@ export default App = types.model('App', {
       await App.hydrate_last_tab_index()
       Push.hydrate()
       Settings.hydrate()
-      //   if(self.current_tab_index > 0){
-      //     App.navigate_to_tab_index(self.current_tab_index)
-      //   }
       App.set_is_loading(false)
       App.set_up_url_listener()
       if (Auth.is_logged_in()) {
         Push.handle_first_notification()
+        if (self.current_tab_index > 0 && self.navigation_ref != null) {
+          App.navigate_to_tab_index(self.current_tab_index)
+        }
       }
     })
   }),
@@ -610,12 +610,11 @@ export default App = types.model('App', {
   
   navigate_to_tab_index: flow(function* (tab_index) {
     console.log("App:navigate_to_tab_index", tab_index)
-    App.set_current_tab_index(tab_index)
-    Navigation.mergeOptions('ROOT', {
-      bottomTabs: {
-        currentTabIndex: tab_index
-      }
-    });
+    const tab_names = ['TimelineStack', 'MentionsStack', 'BookmarksStack', 'DiscoverStack']
+    const target_tab = tab_names[ tab_index ]
+    if (target_tab != null) { 
+      self.navigation_ref.navigate(target_tab)
+    }
   }),
 
   check_usernames: flow(function* (text) {
