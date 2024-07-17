@@ -27,7 +27,8 @@ export default class Discover extends React.Component{
         />
         <DiscoverStack.Group
           screenOptions={{
-            headerBackTitleVisible: false
+            headerBackTitleVisible: false,
+            headerTintColor: App.theme_text_color()
           }}
         >
           <DiscoverStack.Screen

@@ -26,7 +26,8 @@ export default class Mentions extends React.Component{
         />
         <MentionsStack.Group
           screenOptions={{
-            headerBackTitleVisible: false
+            headerBackTitleVisible: false,
+            headerTintColor: App.theme_text_color()
           }}
         >
           <MentionsStack.Screen

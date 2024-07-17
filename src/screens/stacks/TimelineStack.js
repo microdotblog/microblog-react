@@ -26,7 +26,8 @@ export default class Timeline extends React.Component{
         />
         <TimelineStack.Group
           screenOptions={{
-            headerBackTitleVisible: false
+            headerBackTitleVisible: false,
+            headerTintColor: App.theme_text_color()
           }}
         >
           <TimelineStack.Screen

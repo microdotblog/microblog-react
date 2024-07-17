@@ -37,7 +37,7 @@ export default class MainApp extends React.Component {
               card: App.theme_navbar_background_color()
             }
           }}>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Navigator screenOptions={{ headerShown: false, headerTintColor: App.theme_text_color() }}>
               <Stack.Screen name="Tabs" component={TabNavigator}/>
               <Stack.Screen
                 name="Login"
