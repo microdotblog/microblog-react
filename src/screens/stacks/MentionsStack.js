@@ -5,6 +5,8 @@ import MentionsScreen from '../mentions/mentions';
 import ProfileImage from './../../components/header/profile_image';
 import NewPostButton from '../../components/header/new_post';
 import ProfileScreen from '../../screens/profile/profile';
+import ConversationScreen from '../../screens/conversation/conversation';
+import ReplyButton from '../../components/header/reply';
 
 const MentionsStack = createNativeStackNavigator();
 
@@ -33,6 +35,14 @@ export default class Mentions extends React.Component{
             options={({ route }) => ({
               headerTitle: `@${route.params?.username}`,
               headerRight: () => <NewPostButton />
+            })}
+          />
+          <MentionsStack.Screen
+            name="Conversation"
+            component={ConversationScreen}
+            options={({ route }) => ({
+              headerTitle: `Conversation`,
+              headerRight: () => <ReplyButton conversation_id={route.params?.conversation_id} />
             })}
           />
         </MentionsStack.Group>

@@ -6,6 +6,8 @@ import ProfileImage from './../../components/header/profile_image';
 import NewPostButton from '../../components/header/new_post';
 import ProfileScreen from '../../screens/profile/profile';
 import DiscoverTopicScreen from '../../screens/discover/topic';
+import ConversationScreen from '../../screens/conversation/conversation';
+import ReplyButton from '../../components/header/reply';
 
 const DiscoverStack = createNativeStackNavigator();
 
@@ -42,6 +44,14 @@ export default class Discover extends React.Component{
             options={({ route }) => ({
               headerTitle: `${route.params?.topic.emoji} ${route.params?.topic.title}`,
               headerRight: () => <NewPostButton />
+            })}
+          />
+          <DiscoverStack.Screen
+            name="Conversation"
+            component={ConversationScreen}
+            options={({ route }) => ({
+              headerTitle: `Conversation`,
+              headerRight: () => <ReplyButton conversation_id={route.params?.conversation_id} />
             })}
           />
         </DiscoverStack.Group>

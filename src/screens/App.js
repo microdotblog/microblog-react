@@ -11,6 +11,8 @@ import ReplyScreen from './conversation/reply';
 import ProfileScreen from './profile/profile';
 import CloseModalButton from '../components/header/close';
 import NewPostButton from '../components/header/new_post';
+import PostReplyButton from '../components/header/post_reply';
+
 import "./../components/sheets/sheets";
 
 const Stack = createNativeStackNavigator();
@@ -56,10 +58,11 @@ export default class MainApp extends React.Component {
                 <Stack.Screen
                   name="Reply"
                   component={ReplyScreen}
-                  options={{
+                  options={({ route }) => ({
                     headerTitle: "New Reply",
-                    gestureEnabled: false
-                  }}
+                    gestureEnabled: true,
+                    headerRight: () => <PostReplyButton conversation_id={route.params?.conversation_id} />
+                  })}
                 />
               </Stack.Group>
             </Stack.Navigator>

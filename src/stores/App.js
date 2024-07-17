@@ -245,7 +245,7 @@ export default App = types.model('App', {
           return App.set_image_modal_data_and_activate(action_data)
         case "reply":
           Reply.hydrate(action_data)
-          return self.navigation_ref.navigate("Reply")
+          return self.navigation_ref.navigate("Reply", { conversation_id: action_data })
         case "user":
           return self.navigation_ref.push("Profile", { username: action_data })
         case "discover/topic":
@@ -253,7 +253,7 @@ export default App = types.model('App', {
         case "open":
           Reply.hydrate(action_data)
           Push.check_and_remove_notifications_with_post_id(action_data)
-          return self.navigation_ref.push("Conversation", { conversation_id: action_data })
+          return self.navigation_ref.navigate("Conversation", { conversation_id: action_data })
         default:
           self.navigation_ref.navigate(screen_name)
       }
@@ -270,8 +270,6 @@ export default App = types.model('App', {
   // navigate_to_screen: flow(function* (action, action_data, from_listener = false) {
   //   if(!self.is_scrolling){
   //     switch (action) {
-  //       case "open":
-  //         return conversationScreen(action_data, self.current_screen_id)
   //       case "bookmark":
   //         return bookmarkScreen(action_data, self.current_screen_id)
   //       case "post":
