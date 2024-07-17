@@ -8,11 +8,11 @@ import App from './../stores/App';
 import TabNavigator from './stacks/TabNavigator';
 import LoginScreen from './login/login';
 import ReplyScreen from './conversation/reply';
-import ProfileScreen from './profile/profile';
 import CloseModalButton from '../components/header/close';
-import NewPostButton from '../components/header/new_post';
 import PostReplyButton from '../components/header/post_reply';
 import HelpScreen from './help/help';
+import SettingsScreen from './settings/settings';
+import PostOptionsSettingsScreen from './settings/post_options';
 
 import "./../components/sheets/sheets";
 
@@ -73,6 +73,25 @@ export default class MainApp extends React.Component {
                     gestureEnabled: true,
                   }}
                 />
+                <Stack.Group screenOptions={{
+                  gestureEnabled: true
+                }}>
+                  <Stack.Screen
+                    name="Settings"
+                    component={SettingsScreen}
+                    options={{
+                      title: "Settings"
+                    }}
+                  />
+                  <Stack.Screen
+                    name="PostService"
+                    component={PostOptionsSettingsScreen}
+                    options={{
+                      title: "Posting Options"
+                    }}
+                  />
+                </Stack.Group>
+                
               </Stack.Group>
             </Stack.Navigator>
           </NavigationContainer>

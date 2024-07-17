@@ -22,7 +22,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
   }
   
   render() {
-    const { user } = this.props
+    const { user } = this.props.route.params
     return(
       <KeyboardAvoidingView behavior={Platform.OS === "android" ? Services.show_credentials && !Services.did_set_up_successfully ? "position" : "height" : "position"} style={{ flex: 1, padding: 15, backgroundColor: App.theme_background_color() }}>
         <View style={{ flexDirection: "column", marginTop: 12 }}>

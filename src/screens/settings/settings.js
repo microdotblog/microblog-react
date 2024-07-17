@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, ScrollView, Switch, Platform, ActivityIndicator } from 'react-native';
-import { Navigation } from 'react-native-navigation';
 import FastImage from 'react-native-fast-image';
 import App from '../../stores/App'
 import Auth from '../../stores/Auth';
@@ -10,21 +9,6 @@ import UserPostingSettings from '../../components/settings/user_posting'
 
 @observer
 export default class SettingsScreen extends React.Component{
-
-	constructor (props) {
-		super(props)
-		Navigation.events().bindComponent(this)
-	}
-	
-	navigationButtonPressed = async ({ buttonId }) => {
-    if(buttonId === "back_button"){
-      this._dismiss()
-    }
-	}
-	
-	_dismiss = () => {
-		Navigation.dismissModal(this.props.componentId)
-	}
 	
 	_render_browser_settings = () => {
 		return(

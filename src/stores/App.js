@@ -254,6 +254,9 @@ export default App = types.model('App', {
           Reply.hydrate(action_data)
           Push.check_and_remove_notifications_with_post_id(action_data)
           return self.navigation_ref.navigate("Conversation", { conversation_id: action_data })
+        case "post_service":
+          yield Services.hydrate_with_user(action_data)
+          return self.navigation_ref.navigate("PostService", { user: action_data })
         default:
           self.navigation_ref.navigate(screen_name)
       }
@@ -291,7 +294,7 @@ export default App = types.model('App', {
       case "Help":
         return self.navigate_to_screen("Help")
       case "Settings":
-        return settingsScreen()
+        return self.navigate_to_screen("Settings")
       case "Replies":
         return repliesScreen(self.current_screen_id)
       case "Posts":
@@ -301,7 +304,7 @@ export default App = types.model('App', {
       case "Uploads":
         return uploadsScreen(self.current_screen_id)
       case "PostService":
-        return postOptionsSettingsScreen(Auth.selected_user, self.current_screen_id, open_as_modal)
+        return self.navigate_to_screen("post_service", Auth.selected_user)
     }
     console.log("App:navigate_to_screen_from_menu:index", screen, tab_index, self.current_screen_id, should_pop)
     if(tab_index != null){
