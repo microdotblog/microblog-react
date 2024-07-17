@@ -2,9 +2,8 @@ import * as React from 'react';
 import { useRef } from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import ActionSheet, { useScrollHandlers, ActionSheetRef} from "react-native-actions-sheet";
+import ActionSheet, { useScrollHandlers, ActionSheetRef } from "react-native-actions-sheet";
 import Discover from '../../stores/Discover'
-import { tagmojiBottomSheet } from '../../screens'
 import App from '../../stores/App'
 import SheetHeader from "./header";
 
@@ -41,7 +40,7 @@ export default class TagmojiMenu extends React.Component{
 									width: '45%',
 									padding: 8,
 								}}
-								onPress={() => { tagmojiBottomSheet(true); App.navigate_to_screen("discover/topic", tagmoji) }}
+								onPress={() => { App.close_sheet("tagmoji_menu"); App.navigate_to_screen("discover/topic", tagmoji) }}
 							>
 								<Text style={{ marginRight: 5, fontSize: 17 }}>{tagmoji.emoji}</Text>
 								<Text style={{ fontSize: 17, color: App.theme_text_color() }}>{tagmoji.name}</Text>

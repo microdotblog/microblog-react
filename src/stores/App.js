@@ -21,7 +21,6 @@ import { SheetManager } from "react-native-actions-sheet";
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
-let NAVIGATION = null;
 
 export default App = types.model('App', {
   is_loading: types.optional(types.boolean, false),
@@ -249,6 +248,12 @@ export default App = types.model('App', {
           return self.navigation_ref.navigate("Reply")
         case "user":
           return self.navigation_ref.push("Profile", { username: action_data })
+        case "discover/topic":
+          return self.navigation_ref.push("DiscoverTopic", { topic: action_data })
+        case "open":
+          Reply.hydrate(action_data)
+          Push.check_and_remove_notifications_with_post_id(action_data)
+          return self.navigation_ref.push("Conversation", { conversation_id: action_data })
         default:
           self.navigation_ref.navigate(screen_name)
       }
@@ -257,23 +262,16 @@ export default App = types.model('App', {
   
   go_back: flow(function*() {
     console.log("App:go_back")
-    if (NAVIGATION != null) {
-      NAVIGATION.goBack()
+    if (self.navigation_ref != null) {
+      self.navigation_ref.goBack()
     }
   }),
 
   // navigate_to_screen: flow(function* (action, action_data, from_listener = false) {
   //   if(!self.is_scrolling){
   //     switch (action) {
-  //       case "user":
-  //         return profileScreen(action_data, self.current_screen_id)
   //       case "open":
   //         return conversationScreen(action_data, self.current_screen_id)
-  //       case "discover/topic":
-  //         return discoverTopicScreen(action_data, self.current_screen_id)
-  //       case "reply":
-  //         Reply.hydrate(action_data)
-  //         return replyScreen(action_data, self.current_screen_id)
   //       case "bookmark":
   //         return bookmarkScreen(action_data, self.current_screen_id)
   //       case "post":

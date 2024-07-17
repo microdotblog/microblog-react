@@ -2,7 +2,6 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import Discover from '../../stores/Discover'
 import { TouchableOpacity, View, Text, Platform, Image, TextInput, Keyboard } from 'react-native';
-import { tagmojiBottomSheet } from '../../screens'
 import App from '../../stores/App'
 import SearchIcon from '../../assets/icons/nav/discover.png';
 import { SFSymbol } from "react-native-sfsymbols";
@@ -42,7 +41,7 @@ export default class TagmojiBar extends React.Component{
                     padding: 4,
                     borderRadius: 5
                   }}
-                  onPress={() => tagmojiBottomSheet()}
+                  onPress={() => App.open_sheet("tagmoji_menu")}
                 >
                   <Text>{Discover.random_tagmoji}</Text>
                 </TouchableOpacity>

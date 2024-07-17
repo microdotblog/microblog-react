@@ -286,43 +286,6 @@ export const postingScreen = (markdown = null) => {
   });
 }
 
-export const tagmojiBottomSheet = (close = false) => {
-  if(!close){
-    return SheetManager.show("tagmoji_menu")
-  }
-  SheetManager.hide("tagmoji_menu")
-}
-
-export const discoverTopicScreen = (topic, component_id) => {
-  const options = {
-    component: {
-      id: 'DISCOVER_TOPIC_SCREEN',
-			name: DISCOVER_TOPIC_SCREEN,
-			passProps: {
-        topic_name: topic.name
-			},
-			options: {
-				topBar: {
-          title: {
-            text: `${topic.emoji} ${topic.title}`
-          },
-          rightButtons: [
-            {
-              id: 'post_button',
-              text: 'New',
-              component: {
-                name: NEW_POST_BUTTON
-              }
-            }
-          ],
-				}
-			}
-		}
-	};
-
-  return Navigation.push(component_id, options);
-}
-
 export const postingOptionsScreen = (component_id) => {
   const options = {
     component: {

@@ -12,11 +12,6 @@ import App from '../../stores/App'
 @observer
 export default class ProfileScreen extends React.Component{
   
-  constructor(props){
-    super(props)
-    console.log("PROPS", this.props.route.params.username)
-  }
-  
   render() {
     const { username } = this.props.route.params
     return(
