@@ -257,6 +257,8 @@ export default App = types.model('App', {
         case "post_service":
           yield Services.hydrate_with_user(action_data)
           return self.navigation_ref.navigate("PostService", { user: action_data })
+        case "add_bookmark":
+          return self.navigation_ref.navigate("AddBookmark")
         default:
           self.navigation_ref.navigate(screen_name)
       }
@@ -463,7 +465,7 @@ export default App = types.model('App', {
     else if (message === "bookmark_removed") {
       Toast.showWithGravity("Bookmark removed!", Toast.SHORT, Toast.CENTER)
     }
-    if (message === "bookmark_removed" && App.current_screen_id === "BOOKMARKS_SCREEN") {
+    if (message === "bookmark_removed") {
       if (CURRENT_WEB_VIEW_REF) {
         try {
           CURRENT_WEB_VIEW_REF.injectJavaScript(`window.scrollTo({ top: 0 })`)

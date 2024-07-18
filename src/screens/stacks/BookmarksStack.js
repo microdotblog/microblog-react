@@ -6,6 +6,8 @@ import ProfileImage from './../../components/header/profile_image';
 import ProfileScreen from '../../screens/profile/profile';
 import ConversationScreen from '../../screens/conversation/conversation';
 import ReplyButton from '../../components/header/reply';
+import AddBookmarkButton from '../../components/header/add_bookmark';
+import AddBookmarkScreen from '../../screens/bookmarks/add_bookmark';
 
 const BookmarksStack = createNativeStackNavigator();
 
@@ -19,7 +21,8 @@ export default class Bookmarks extends React.Component{
           name="Bookmarks"
           component={BookmarksScreen}
           options={{
-            headerLeft: () => <ProfileImage />
+            headerLeft: () => <ProfileImage />,
+            headerRight: () => <AddBookmarkButton />
           }}
         />
         <BookmarksStack.Group

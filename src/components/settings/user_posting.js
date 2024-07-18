@@ -5,7 +5,6 @@ import FastImage from 'react-native-fast-image';
 import App from '../../stores/App'
 import Auth from '../../stores/Auth';
 import { SvgXml } from 'react-native-svg';
-import { postOptionsSettingsScreen } from '../../screens';
 
 @observer
 export default class UserPostingSettings extends React.Component{

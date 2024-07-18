@@ -1,32 +1,22 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { Text, TextInput, Button, ActivityIndicator, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
-import { Navigation } from 'react-native-navigation';
 import App from '../../stores/App'
-import LoginMessage from '../../components/info/login_message';
 
 @observer
 export default class AddBookmarkScreen extends React.Component{
 
 	constructor (props) {
 		super(props)
-		Navigation.events().bindComponent(this)
 		this.state = {
 			url: ""
 		}
 		this._input_ref = React.createRef()
   }
-
-  navigationButtonPressed = async ({ buttonId }) => {
-    console.log("navigationButtonPressed::", buttonId)
-    if(buttonId === "back_button"){
-      this._dismiss()
-    }
-	}
 	
 	_dismiss = () => {
     Keyboard.dismiss()
-		Navigation.dismissModal(this.props.componentId)
+		App.go_back()
 	}
 
 	_add_bookmark = async () => {
@@ -40,9 +30,6 @@ export default class AddBookmarkScreen extends React.Component{
 	}
   
 	render() {
-    if(!Auth.is_logged_in()){
-      return <LoginMessage title="Bookmarks" />
-    }
 		const { posting } = Auth.selected_user
     return(
       <KeyboardAvoidingView behavior={ Platform.OS === "ios" ? "padding" : "height" } style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 15, backgroundColor: App.theme_background_color() }}>

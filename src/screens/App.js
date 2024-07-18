@@ -13,6 +13,7 @@ import PostReplyButton from '../components/header/post_reply';
 import HelpScreen from './help/help';
 import SettingsScreen from './settings/settings';
 import PostOptionsSettingsScreen from './settings/post_options';
+import AddBookmarkScreen from './bookmarks/add_bookmark';
 
 import "./../components/sheets/sheets";
 
@@ -86,6 +87,13 @@ export default class MainApp extends React.Component {
                   component={PostOptionsSettingsScreen}
                   options={{
                     title: "Posting Options"
+                  }}
+                />
+                <Stack.Screen
+                  name="AddBookmark"
+                  component={AddBookmarkScreen}
+                  options={{
+                    headerTitle: "Add bookmark"
                   }}
                 />
               </Stack.Group>
