@@ -24,7 +24,8 @@ export default class TabNavigator extends React.Component{
   render() {
     return(
       <Tab.Navigator
-        id='tab_navigator'
+        id="tab_navigator"
+        initialRouteName="TimelineStack"
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             return <TabIcon route={route} focused={focused} size={size} color={color} />;
