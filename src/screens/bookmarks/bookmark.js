@@ -11,7 +11,7 @@ export default class BookmarkScreen extends React.Component{
     return (
       <GenericScreenComponent
         can_show_web_view={Auth.is_logged_in() && !Auth.is_selecting_user && !App.is_loading_bookmarks}
-        endpoint={`hybrid/bookmarks/${this.props.bookmark_id}`}
+        endpoint={`hybrid/bookmarks/${this.props.route.params.bookmark_id}`}
         component_id={this.props.componentId}
         title="Bookmarks"
       />

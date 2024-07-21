@@ -237,7 +237,7 @@ export default App = types.model('App', {
     }
   }),
   
-  navigate_to_screen: flow(function*(screen_name = null, action_data, from_listener = false) {
+  navigate_to_screen: flow(function*(screen_name = null, action_data = null, from_listener = false) {
     console.log("App:navigate_to_screen", screen_name)
     if (screen_name != null && self.navigation_ref != null && !self.is_scrolling) {
       switch (screen_name) {
@@ -259,6 +259,10 @@ export default App = types.model('App', {
           return self.navigation_ref.navigate("PostService", { user: action_data })
         case "add_bookmark":
           return self.navigation_ref.navigate("AddBookmark")
+        case "highlights":
+          return self.navigation_ref.navigate("Highlights")
+        case "bookmark":
+          return self.navigation_ref.navigate("Bookmark", { bookmark_id: action_data })
         default:
           self.navigation_ref.navigate(screen_name)
       }

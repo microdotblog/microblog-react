@@ -7,7 +7,9 @@ import ProfileScreen from '../../screens/profile/profile';
 import ConversationScreen from '../../screens/conversation/conversation';
 import ReplyButton from '../../components/header/reply';
 import AddBookmarkButton from '../../components/header/add_bookmark';
-import AddBookmarkScreen from '../../screens/bookmarks/add_bookmark';
+import HighlightsScreen from '../bookmarks/highlights';
+import BookmarkScreen from '../bookmarks/bookmark';
+import NewPostButton from '../../components/header/new_post';
 
 const BookmarksStack = createNativeStackNavigator();
 
@@ -45,6 +47,21 @@ export default class Bookmarks extends React.Component{
             options={({ route }) => ({
               headerTitle: `Conversation`,
               headerRight: () => <ReplyButton conversation_id={route.params?.conversation_id} />
+            })}
+          />
+          <BookmarksStack.Screen
+            name="Highlights"
+            component={HighlightsScreen}
+            options={{
+              headerTitle: "Highlights"
+            }}
+          />
+          <BookmarksStack.Screen
+            name="Bookmark"
+            component={BookmarkScreen}
+            options={({ route }) => ({
+              headerTitle: `Bookmark`,
+              headerRight: () => <NewPostButton />
             })}
           />
         </BookmarksStack.Group>

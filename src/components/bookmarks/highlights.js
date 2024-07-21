@@ -17,7 +17,7 @@ export default class HighlightsHeader extends React.Component{
       <View style={{ padding: 11, paddingHorizontal: 15, backgroundColor: App.theme_input_background_color(), width: '100%', flexDirection: "row", justifyContent: "space-between" }}>
         {
           Auth.selected_user?.selected_tag == null ?
-          <TouchableOpacity onPress={() => highlightsScreen()} style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => App.navigate_to_screen("highlights")} style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text style={{ color: App.theme_text_color(), fontSize: 16 }}>{Auth.selected_user?.bookmark_highlights?.length} {Auth.selected_user?.bookmark_highlights?.length > 1 ? "highlights" : "highlight"}</Text>
             {
               App.is_loading_highlights &&
