@@ -5,7 +5,6 @@ import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
 import { Navigation } from 'react-native-navigation';
-import { postsDestinationBottomSheet } from '..'
 import { SheetProvider } from "react-native-actions-sheet";
 import UploadCell from '../../components/cells/upload_cell'
 import TempUploadCell from '../../components/cells/temp_upload_cell'
@@ -47,7 +46,7 @@ export default class UploadsScreen extends React.Component{
           height: 50,
           backgroundColor: App.theme_input_background_color(),
         }}>
-        <TouchableOpacity onPress={() => !this.props.did_open_from_editor ? postsDestinationBottomSheet(false, "uploads") : null}>
+        <TouchableOpacity onPress={() => !this.props.did_open_from_editor ? App.open_sheet("posts_destination_menu", { type: "uploads" }) : null}>
           <Text style={{color: App.theme_text_color(), fontWeight: "500", fontSize: 16}}>
             {config.posts_destination()?.name}
           </Text>

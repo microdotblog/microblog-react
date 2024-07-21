@@ -10,6 +10,7 @@ import AddBookmarkButton from '../../components/header/add_bookmark';
 import HighlightsScreen from '../bookmarks/highlights';
 import BookmarkScreen from '../bookmarks/bookmark';
 import NewPostButton from '../../components/header/new_post';
+import RefreshActivity from '../../components/header/refresh_activity';
 
 const BookmarksStack = createNativeStackNavigator();
 
@@ -53,7 +54,8 @@ export default class Bookmarks extends React.Component{
             name="Highlights"
             component={HighlightsScreen}
             options={{
-              headerTitle: "Highlights"
+              headerTitle: "Highlights",
+              headerRight: () => <RefreshActivity type="highlights" />
             }}
           />
           <BookmarksStack.Screen

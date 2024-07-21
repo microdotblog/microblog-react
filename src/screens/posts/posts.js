@@ -6,7 +6,6 @@ import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
 import { Navigation } from 'react-native-navigation';
 import PostCell from '../../components/cells/post_cell';
-import { postsDestinationBottomSheet } from '..'
 import { SheetProvider } from "react-native-actions-sheet";
 import SearchIcon from '../../assets/icons/nav/discover.png';
 import { SFSymbol } from "react-native-sfsymbols";
@@ -39,7 +38,7 @@ export default class PostsScreen extends React.Component{
           height: 50,
           backgroundColor: App.theme_input_background_color(),
         }}>
-        <TouchableOpacity onPress={() => postsDestinationBottomSheet(false, "posts")}>
+        <TouchableOpacity onPress={() => App.open_sheet("posts_destination_menu", { type: "posts" })}>
           <Text style={{color: App.theme_text_color(), fontWeight: "500", fontSize: 16}}>
             {config.posts_destination()?.name}
           </Text>

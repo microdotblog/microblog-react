@@ -2,25 +2,14 @@ import { Navigation } from "react-native-navigation";
 import * as React from 'react';
 import { Platform } from 'react-native';
 import { SheetManager } from "react-native-actions-sheet";
-import Reply from '../stores/Reply';
 import Replies from '../stores/Replies'
 
 // SCREENS
-import TimelineScreen from './timeline/timeline';
-import MentionsScreen from './mentions/mentions';
-import DiscoverScreen from './discover/discover';
-import LoginScreen from './login/login';
-import ProfileScreen from './profile/profile';
-import ConversationScreen from "./conversation/conversation";
-import BookmarksScreen from "./bookmarks/bookmarks";
 import FollowingScreen from "./following/following";
 import PostingScreen from "./posts/new";
 import DiscoverTopicScreen from "./discover/topic";
 import PostingOptionsScreen from "./posts/options";
 import ReplyScreen from "./conversation/reply";
-import BookmarkScreen from "./bookmarks/bookmark";
-import AddBookmarkScreen from "./bookmarks/add_bookmark";
-import HelpScreen from "./help/help";
 import ImageOptionsScreen from "./posts/image_options";
 import ImageCropScreen from "./posts/image_crop";
 import RepliesScreen from "./replies/replies";
@@ -83,30 +72,18 @@ export const NEW_UPLOAD_BUTTON = 'microblog.component.NewUploadButton'
 
 // ICONS
 import ArrowBackIcon from './../assets/icons/arrow_back.png';
-import ReplyIcon from './../assets/icons/reply.png';
 
-import Push from "../stores/Push"
 import App from "../stores/App"
 import Auth from "../stores/Auth"
 import Services from "../stores/Services"
 
 // Set up screens & components
 export const Screens = {
-  [ TIMELINE_SCREEN ]: TimelineScreen,
-  [ MENTIONS_SCREEN ]: MentionsScreen,
-  [ DISCOVER_SCREEN ]: DiscoverScreen,
-  [ LOGIN_SCREEN ]: LoginScreen,
-  [ PROFILE_SCREEN ]: ProfileScreen,
-  [ CONVERSATION_SCREEN ]: ConversationScreen,
-  [ BOOKMARKS_SCREEN ]: BookmarksScreen,
   [ FOLLOWING_SCREEN ]: FollowingScreen,
   [ POSTING_SCREEN ]: PostingScreen,
   [ DISCOVER_TOPIC_SCREEN ]: DiscoverTopicScreen,
   [ POSTING_OPTIONS_SCREEN ]: PostingOptionsScreen,
   [ REPLY_SCREEN ]: ReplyScreen,
-  [ BOOKMARK_SCREEN ]: BookmarkScreen,
-  [ ADD_BOOKMARK_SCREEN ]: AddBookmarkScreen,
-  [ HELP_SCREEN ]: HelpScreen,
   [ IMAGE_OPTIONS_SCREEN ]: ImageOptionsScreen,
   [ IMAGE_CROP_SCREEN ]: ImageCropScreen,
   [ REPLIES_SCREEN ]: RepliesScreen,
@@ -128,89 +105,6 @@ export const Screens = {
   [ REFRESH_ACTIVITY ]: RefreshActivity,
   [ TAB ]: Tab,
   [ NEW_UPLOAD_BUTTON ]: NewUploadButton,
-}
-
-export const menuBottomSheet = (close = false) => {
-  if(!close){
-    return SheetManager.show("main_sheet")
-  }
-  SheetManager.hide("main_sheet")
-}
-
-export const conversationScreen = (conversation_id, component_id) => {
-  console.log("Screens:conversationScreen", conversation_id, component_id);
-  Reply.hydrate(conversation_id)
-  Push.check_and_remove_notifications_with_post_id(conversation_id)
-  if(App.current_screen_name === CONVERSATION_SCREEN ){
-    Navigation.updateProps(component_id, {
-      conversation_id: conversation_id
-    })
-  }
-  else{
-    const options = {
-      component: {
-        id: `CONVERSATION_SCREEN_${conversation_id}`,
-        name: CONVERSATION_SCREEN,
-        passProps: {
-          conversation_id: conversation_id
-        },
-        options: {
-          topBar: {
-            title: {
-              text: "Conversation"
-            },
-            rightButtons: Reply.replying_enabled() ? [
-              {
-                id: 'reply_button',
-                text: 'Reply',
-                icon: Platform.OS === 'ios' ? { system: 'arrowshape.turn.up.left.fill' } : ReplyIcon
-              }
-            ] : null,
-          }
-        }
-      }
-    };
-
-    return Navigation.push(component_id, options);
-  }
-}
-
-export const bookmarkScreen = (bookmark_id, component_id) => {
-  console.log("Screens:bookmarkScreen", bookmark_id, component_id);
-  const options = {
-    component: {
-      id: 'BOOKMARK_SCREEN',
-      name: BOOKMARK_SCREEN,
-      passProps: {
-        bookmark_id: bookmark_id
-			},
-      options: {
-        topBar: {
-          title: {
-            text: "Bookmark"
-          },
-          rightButtons: [
-            {
-              id: 'post_button',
-              text: 'New',
-              component: {
-                name: NEW_POST_BUTTON
-              }
-            },
-            {
-              id: 'profile_button',
-              text: 'profile',
-              component: {
-                name: PROFILE_IMAGE
-              }
-            }
-          ],
-        }
-      }
-    }
-  };
-
-  return Navigation.push(component_id, options);
 }
 
 export const followingScreen = (username, component_id) => {
@@ -302,88 +196,6 @@ export const postingOptionsScreen = (component_id) => {
 	};
 
   return Navigation.push(component_id, options);
-}
-
-export const replyScreen = () => {
-  return Navigation.showModal({
-    stack: {
-      id: REPLY_SCREEN,
-      name: REPLY_SCREEN,
-      children: [ {
-        component: {
-          id: REPLY_SCREEN,
-          name: REPLY_SCREEN,
-          options: {
-            topBar: {
-              title: {
-                text: 'New Reply',
-              },
-              leftButtons: [
-                {
-                  id: 'back_button',
-                  text: 'Back',
-                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
-                },
-              ],
-              rightButtons: [
-						    {
-							    id: 'post_button',
-							    text: 'Post',
-                  color: '#f80'
-                }
-					    ]
-            },
-            layout: {
-              backgroundColor: App.theme_background_color()
-            }
-          }
-        },
-      }],
-    }
-  });
-}
-
-export const profileMoreBottomSheet = (username, close = false) => {
-  if(!close){
-    return SheetManager.show("profile_more_menu", {
-      payload: {
-        username: username
-      }
-    })
-  }
-  SheetManager.hide("profile_more_menu")
-}
-
-export const addBoomarkScreen = () => {
-  return Navigation.showModal({
-    stack: {
-      id: ADD_BOOKMARK_SCREEN,
-      name: ADD_BOOKMARK_SCREEN,
-      children: [ {
-        component: {
-          id: ADD_BOOKMARK_SCREEN,
-          name: ADD_BOOKMARK_SCREEN,
-          options: {
-            topBar: {
-              title: {
-                text: 'Add bookmark',
-              },
-              leftButtons: [
-                {
-                  id: 'back_button',
-                  text: 'Back',
-                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
-                },
-              ]
-            },
-            layout: {
-              backgroundColor: App.theme_background_color()
-            }
-          }
-        },
-      }],
-    }
-  });
 }
 
 export const imageOptionsScreen = (asset, index, component_id) => {
@@ -519,38 +331,6 @@ export const replyEditScreen = () => {
   });
 }
 
-export const settingsScreen = () => {
-  return Navigation.showModal({
-    stack: {
-      id: SETTINGS_SCREEN,
-      name: SETTINGS_SCREEN,
-      children: [ {
-        component: {
-          id: SETTINGS_SCREEN,
-          name: SETTINGS_SCREEN,
-          options: {
-            topBar: {
-              title: {
-                text: 'Settings',
-              },
-              leftButtons: [
-                {
-                  id: 'back_button',
-                  text: 'Back',
-                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
-                },
-              ],
-            },
-            layout: {
-              backgroundColor: App.theme_background_color()
-            }
-          }
-        },
-      }],
-    }
-  });
-}
-
 export const postsScreen = (component_id) => {
   const options = {
     component: {
@@ -586,15 +366,6 @@ export const postsScreen = (component_id) => {
   };
 
   return Navigation.push(component_id, options);
-}
-
-export const postsDestinationBottomSheet = (close = false, type = null) => {
-  if(!close){
-    return SheetManager.show("posts_destination_menu", {
-      payload: { type: type }
-    })
-  }
-  SheetManager.hide("posts_destination_menu")
 }
 
 export const editPostScreen = (post) => {
@@ -819,27 +590,6 @@ export const highlightsScreen = (component_id) => {
   };
 
   return Navigation.push(component_id, options);
-}
-
-export const tagsBottomSheet = (close = false) => {
-  if(!close){
-    return SheetManager.show("tags_menu")
-  }
-  SheetManager.hide("tags_menu")
-}
-
-export const addTagsBottomSheet = (close = false) => {
-  if(!close){
-    return SheetManager.show("add_tags_sheet")
-  }
-  SheetManager.hide("add_tags_sheet")
-}
-// TODO: Add a bit of DRY to these bottom sheets at some stage
-export const notificationsSheet = (close = false) => {
-  if(!close){
-    return SheetManager.show("notifications_sheet")
-  }
-  SheetManager.hide("notifications_sheet")
 }
 
 export const shareScreen = () => {

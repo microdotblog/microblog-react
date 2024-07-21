@@ -1,17 +1,15 @@
 import { types, flow } from 'mobx-state-tree';
-import { profileScreen, conversationScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen, settingsScreen, postsScreen, pagesScreen, uploadsScreen, postOptionsSettingsScreen, addTagsBottomSheet, UPLOADS_MODAL_SCREEN, shareScreen } from '../screens';
+import { POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen, postsScreen, pagesScreen, uploadsScreen,  UPLOADS_MODAL_SCREEN, shareScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
 import ShareMenu from 'react-native-share-menu'
 import Share from './Share'
 import { Linking, Appearance, AppState, Platform, Dimensions, Alert } from 'react-native'
-import { Navigation } from "react-native-navigation";
 import Push from './Push'
 import Toast from 'react-native-simple-toast';
 import { InAppBrowser } from 'react-native-inappbrowser-reborn'
 import Discover from './Discover'
-import { menuBottomSheet } from "./../screens"
 import Settings from "./Settings"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Contact from './models/posting/Contact'
@@ -158,12 +156,12 @@ export default App = types.model('App', {
     }
   }),
   
-  open_sheet: flow(function*(sheet_name = null) {
+  open_sheet: flow(function*(sheet_name = null, payload = null) {
     console.log("App:open_sheet", sheet_name)
     if (sheet_name != null) {
       const sheet_is_open = SheetManager.get(sheet_name)?.current?.isOpen()
       if (!sheet_is_open) {
-        SheetManager.show(sheet_name)
+        SheetManager.show(sheet_name, { payload: payload })
       }
     }
   }),
@@ -230,7 +228,7 @@ export default App = types.model('App', {
           }
           else if (action === "tag"){
             Auth.selected_user?.fetch_tags_for_bookmark(action_data)
-            addTagsBottomSheet()
+            App.open_sheet("add_tags_sheet")
           }
         }
       }
@@ -279,8 +277,6 @@ export default App = types.model('App', {
   // navigate_to_screen: flow(function* (action, action_data, from_listener = false) {
   //   if(!self.is_scrolling){
   //     switch (action) {
-  //       case "bookmark":
-  //         return bookmarkScreen(action_data, self.current_screen_id)
   //       case "post":
   //         if(from_listener){
   //           Auth.selected_user.posting.set_post_text_from_action(action_data)

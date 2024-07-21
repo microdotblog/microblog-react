@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity, ActivityIndicator, Platform } from 'react-native';
 import App from './../../stores/App';
 import Auth from '../../stores/Auth';
-import { highlightsScreen, tagsBottomSheet } from './../../screens/'
 import { SvgXml } from 'react-native-svg';
 import { SFSymbol } from "react-native-sfsymbols";
 import SearchIcon from '../../assets/icons/nav/discover.png';
@@ -71,7 +70,7 @@ export default class HighlightsHeader extends React.Component{
               const event_id = nativeEvent.event
               if (event_id === 'all_tags') {
                 console.log('all_tags')
-                tagsBottomSheet()
+                App.open_sheet("tags_menu")
               } else{
                 // Let's not do anything too fancy and just try and set the tag given by the event_id
                 console.log('tag', event_id)

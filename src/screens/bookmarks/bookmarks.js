@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Platform } from 'react-native';
 import { observer } from 'mobx-react';
 import Auth from './../../stores/Auth';
 import GenericScreenComponent from '../../components/generic/generic_screen'

@@ -4,7 +4,7 @@ import { View, Text, ActivityIndicator, Image, TouchableOpacity, ScrollView } fr
 import MicroBlogApi, { API_ERROR } from './../../api/MicroBlogApi';
 import App from './../../stores/App';
 import Hyperlink from 'react-native-hyperlink'
-import { followingScreen, profileMoreBottomSheet } from './../../screens/'
+import { followingScreen } from './../../screens/'
 import MoreIconHorizontal from './../../assets/icons/more_ios.png'
 import MoreIconHorizontalWhite from './../../assets/icons/more_ios_white.png'
 
@@ -38,7 +38,7 @@ export default class ProfileHeader extends React.Component{
   }
 
   _toggle_more = () => {
-    profileMoreBottomSheet(this.props.username)
+    App.open_sheet("profile_more_menu", { username: this.props.username })
   }
   
   _load_profile = async () => {
