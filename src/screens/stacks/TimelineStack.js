@@ -7,6 +7,7 @@ import NewPostButton from '../../components/header/new_post';
 import ProfileScreen from '../../screens/profile/profile';
 import ConversationScreen from '../../screens/conversation/conversation';
 import ReplyButton from '../../components/header/reply';
+import FollowingScreen from '../../screens/following/following';
 
 const TimelineStack = createNativeStackNavigator();
 
@@ -44,6 +45,14 @@ export default class Timeline extends React.Component{
             options={({ route }) => ({
               headerTitle: `Conversation`,
               headerRight: () => <ReplyButton conversation_id={route.params?.conversation_id} />
+            })}
+          />
+          <TimelineStack.Screen
+            name="Following"
+            component={FollowingScreen}
+            options={({ route }) => ({
+              headerTitle: `Following`,
+              headerRight: () => <NewPostButton />
             })}
           />
         </TimelineStack.Group>

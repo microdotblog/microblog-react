@@ -1,11 +1,9 @@
 import { Navigation } from "react-native-navigation";
 import * as React from 'react';
 import { Platform } from 'react-native';
-import { SheetManager } from "react-native-actions-sheet";
 import Replies from '../stores/Replies'
 
 // SCREENS
-import FollowingScreen from "./following/following";
 import PostingScreen from "./posts/new";
 import DiscoverTopicScreen from "./discover/topic";
 import PostingOptionsScreen from "./posts/options";
@@ -14,14 +12,12 @@ import ImageOptionsScreen from "./posts/image_options";
 import ImageCropScreen from "./posts/image_crop";
 import RepliesScreen from "./replies/replies";
 import ReplyEditScreen from "./replies/edit";
-import SettingsScreen from "./settings/settings";
 import PostsScreen from "./posts/posts";
 import EditPostScreen from "./posts/edit";
 import PagesScreen from "./pages/pages"
 import EditPageScreen from "./pages/edit"
 import UploadsScreen from "./uploads/uploads";
 import PostOptionsSettingsScreen from "./settings/post_options";
-import HighlightsScreen from "./bookmarks/highlights";
 import ShareScreen from "./share";
 
 export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
@@ -31,7 +27,6 @@ export const LOGIN_SCREEN = 'microblog.modal.LoginScreen';
 export const PROFILE_SCREEN = 'microblog.ProfileScreen';
 export const CONVERSATION_SCREEN = 'microblog.ConversationScreen';
 export const BOOKMARKS_SCREEN = 'microblog.BookmarksScreen';
-export const FOLLOWING_SCREEN = 'microblog.FollowingScreen';
 export const POSTING_STACK = 'microblog.modal.PostingStack';
 export const POSTING_SCREEN = 'microblog.modal.PostingScreen';
 export const DISCOVER_TOPIC_SCREEN = 'microblog.DiscoverTopicScreen';
@@ -60,14 +55,12 @@ import ProfileImage from './../components/header/profile_image';
 import NewPostButton from './../components/header/new_post';
 import ScreenTitle from "../components/header/screen_title";
 import RefreshActivity from "../components/header/refresh_activity";
-import Tab from "../components/tabs/tab";
 import NewUploadButton from "../components/header/new_upload";
 
 export const PROFILE_IMAGE = 'microblog.component.ProfileImage'
 export const NEW_POST_BUTTON = 'microblog.component.NewPostButton'
 export const SCREEN_TITLE = 'microblog.component.ScreenTitle'
 export const REFRESH_ACTIVITY = 'microblog.component.RefreshActivity'
-export const TAB = 'microblog.component.tab'
 export const NEW_UPLOAD_BUTTON = 'microblog.component.NewUploadButton'
 
 // ICONS
@@ -79,7 +72,6 @@ import Services from "../stores/Services"
 
 // Set up screens & components
 export const Screens = {
-  [ FOLLOWING_SCREEN ]: FollowingScreen,
   [ POSTING_SCREEN ]: PostingScreen,
   [ DISCOVER_TOPIC_SCREEN ]: DiscoverTopicScreen,
   [ POSTING_OPTIONS_SCREEN ]: PostingOptionsScreen,
@@ -88,7 +80,6 @@ export const Screens = {
   [ IMAGE_CROP_SCREEN ]: ImageCropScreen,
   [ REPLIES_SCREEN ]: RepliesScreen,
   [ REPLY_EDIT_SCREEN ]: ReplyEditScreen,
-  [ SETTINGS_SCREEN ]: SettingsScreen,
   [ POSTS_SCREEN ]: PostsScreen,
   [ EDIT_POST_SCREEN ]: EditPostScreen,
   [ PAGES_SCREEN ]: PagesScreen,
@@ -96,45 +87,13 @@ export const Screens = {
   [ UPLOADS_SCREEN ]: UploadsScreen,
   [ UPLOADS_MODAL_SCREEN ]: UploadsScreen,
   [ POST_OPTIONS_SETTINGS_SCREEN ]: PostOptionsSettingsScreen,
-  [ HIGHLIGHTS_SCREEN ]: HighlightsScreen,
   [ SHARE_SCREEN ]: ShareScreen,
   // COMPONENTS
   [ PROFILE_IMAGE ]: ProfileImage,
   [ NEW_POST_BUTTON ]: NewPostButton,
   [ SCREEN_TITLE ]: ScreenTitle,
   [ REFRESH_ACTIVITY ]: RefreshActivity,
-  [ TAB ]: Tab,
   [ NEW_UPLOAD_BUTTON ]: NewUploadButton,
-}
-
-export const followingScreen = (username, component_id) => {
-  console.log("Screens:followingScreen", username, component_id);
-  const options = {
-    component: {
-			name: FOLLOWING_SCREEN,
-			passProps: {
-        username: username
-			},
-			options: {
-				topBar: {
-          title: {
-            text: `Following`
-          },
-          rightButtons: [
-            {
-              id: 'post_button',
-              text: 'New',
-              component: {
-                name: NEW_POST_BUTTON
-              }
-            }
-          ],
-				}
-			}
-		}
-	};
-
-  return Navigation.push(component_id, options);
 }
 
 export const postingScreen = (markdown = null) => {
@@ -559,37 +518,6 @@ export const postOptionsSettingsScreen = async (user, component_id, open_as_moda
   else{
     return Navigation.push(component_id, component);
   }
-}
-
-export const highlightsScreen = (component_id) => {
-  component_id = component_id ?? App.current_screen_id
-  const options = {
-    component: {
-      id: HIGHLIGHTS_SCREEN,
-      name: HIGHLIGHTS_SCREEN,
-      options: {
-        topBar: {
-          title: {
-            text: "Highlights"
-          },
-          rightButtons: [
-            {
-              id: 'refresh_indicator',
-              text: 'refresh',
-              component: {
-                name: REFRESH_ACTIVITY,
-                passProps: {
-                  type: "highlights"
-                }
-              }
-            }
-          ]
-        }
-      }
-    }
-  };
-
-  return Navigation.push(component_id, options);
 }
 
 export const shareScreen = () => {

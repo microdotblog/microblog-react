@@ -8,6 +8,7 @@ import ProfileScreen from '../../screens/profile/profile';
 import DiscoverTopicScreen from '../../screens/discover/topic';
 import ConversationScreen from '../../screens/conversation/conversation';
 import ReplyButton from '../../components/header/reply';
+import FollowingScreen from '../../screens/following/following';
 
 const DiscoverStack = createNativeStackNavigator();
 
@@ -53,6 +54,14 @@ export default class Discover extends React.Component{
             options={({ route }) => ({
               headerTitle: `Conversation`,
               headerRight: () => <ReplyButton conversation_id={route.params?.conversation_id} />
+            })}
+          />
+          <DiscoverStack.Screen
+            name="Following"
+            component={FollowingScreen}
+            options={({ route }) => ({
+              headerTitle: `Following`,
+              headerRight: () => <NewPostButton />
             })}
           />
         </DiscoverStack.Group>

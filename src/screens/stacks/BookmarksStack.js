@@ -11,6 +11,7 @@ import HighlightsScreen from '../bookmarks/highlights';
 import BookmarkScreen from '../bookmarks/bookmark';
 import NewPostButton from '../../components/header/new_post';
 import RefreshActivity from '../../components/header/refresh_activity';
+import FollowingScreen from '../../screens/following/following';
 
 const BookmarksStack = createNativeStackNavigator();
 
@@ -63,6 +64,14 @@ export default class Bookmarks extends React.Component{
             component={BookmarkScreen}
             options={({ route }) => ({
               headerTitle: `Bookmark`,
+              headerRight: () => <NewPostButton />
+            })}
+          />
+          <BookmarksStack.Screen
+            name="Following"
+            component={FollowingScreen}
+            options={({ route }) => ({
+              headerTitle: `Following`,
               headerRight: () => <NewPostButton />
             })}
           />

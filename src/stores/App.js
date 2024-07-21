@@ -88,9 +88,10 @@ export default App = types.model('App', {
       App.set_up_url_listener()
       if (Auth.is_logged_in()) {
         Push.handle_first_notification()
-        if (self.current_tab_index > 0 && self.navigation_ref != null) {
-          App.navigate_to_tab_index(self.current_tab_index)
-        }
+        // Disabled this for now as it's causing some navigation issues
+        // if (self.current_tab_index > 0 && self.navigation_ref != null) {
+        //   App.navigate_to_tab_index(self.current_tab_index)
+        // }
       }
     })
   }),
@@ -261,6 +262,8 @@ export default App = types.model('App', {
           return self.navigation_ref.navigate("Highlights")
         case "bookmark":
           return self.navigation_ref.navigate("Bookmark", { bookmark_id: action_data })
+        case "following":
+          return self.navigation_ref.navigate("Following", { username: action_data })
         default:
           self.navigation_ref.navigate(screen_name)
       }
