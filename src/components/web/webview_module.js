@@ -65,7 +65,7 @@ export default class WebViewModule extends React.Component{
       ref={this.ref}
       source={{ uri: `${ this.web_url }/${ Auth.did_load_one_or_more_webviews ? this.props.endpoint : this.state.signin_endpoint }${ this.return_url_options() }` }}
       containerStyle={{ flex: 1 }}
-      startInLoadingState={false}
+      startInLoadingState={this.props.should_show_loading}
       pullToRefreshEnabled={false}
       decelerationRate="normal"
       onLoadEnd={(event) => {

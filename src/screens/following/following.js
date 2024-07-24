@@ -18,6 +18,7 @@ export default class FollowingScreen extends React.Component{
         component_id={this.props.componentId}
         title="Users following"
         loading_text="Loading users..."
+        shold_show_loading
       />
     )
   }

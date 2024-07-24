@@ -259,11 +259,11 @@ export default App = types.model('App', {
         case "add_bookmark":
           return self.navigation_ref.navigate("AddBookmark")
         case "highlights":
-          return self.navigation_ref.navigate("Highlights")
+          return self.navigation_ref.push("Highlights")
         case "bookmark":
-          return self.navigation_ref.navigate("Bookmark", { bookmark_id: action_data })
+          return self.navigation_ref.push("Bookmark", { bookmark_id: action_data })
         case "following":
-          return self.navigation_ref.navigate("Following", { username: action_data })
+          return self.navigation_ref.push("Following", { username: action_data })
         default:
           self.navigation_ref.navigate(screen_name)
       }
