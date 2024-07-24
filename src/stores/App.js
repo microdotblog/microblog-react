@@ -264,6 +264,8 @@ export default App = types.model('App', {
           return self.navigation_ref.push("Bookmark", { bookmark_id: action_data })
         case "following":
           return self.navigation_ref.push("Following", { username: action_data })
+        case "uploads":
+          return self.navigation_ref.push("Uploads")
         default:
           self.navigation_ref.navigate(screen_name)
       }
@@ -307,7 +309,7 @@ export default App = types.model('App', {
       case "Pages":
         return pagesScreen(self.current_screen_id)
       case "Uploads":
-        return uploadsScreen(self.current_screen_id)
+        return self.navigate_to_screen("uploads")
       case "PostService":
         return self.navigate_to_screen("post_service", Auth.selected_user)
     }

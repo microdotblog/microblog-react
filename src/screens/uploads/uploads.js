@@ -17,11 +17,10 @@ export default class UploadsScreen extends React.Component{
   
   constructor (props) {
     super(props)
-    Navigation.events().bindComponent(this)
     this.flatListRef = React.createRef()
   }
-  
-  componentDidAppear(){
+
+  componentDidMount() {
     Auth.selected_user.posting?.selected_service?.update_uploads_for_active_destination()
   }
   

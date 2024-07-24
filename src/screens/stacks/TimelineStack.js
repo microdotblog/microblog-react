@@ -8,6 +8,10 @@ import ProfileScreen from '../../screens/profile/profile';
 import ConversationScreen from '../../screens/conversation/conversation';
 import ReplyButton from '../../components/header/reply';
 import FollowingScreen from '../../screens/following/following';
+import UploadsScreen from '../../screens/uploads/uploads';
+import RefreshActivity from '../../components/header/refresh_activity'
+import NewUploadButton from '../../components/header/new_upload'
+import { View } from 'react-native'
 
 const TimelineStack = createNativeStackNavigator();
 
@@ -53,6 +57,21 @@ export default class Timeline extends React.Component{
             options={({ route }) => ({
               headerTitle: `Following`,
               headerRight: () => <NewPostButton />
+            })}
+          />
+          <TimelineStack.Screen
+            name="Uploads"
+            component={UploadsScreen}
+            options={({ route }) => ({
+              headerTitle: `Uploads`,
+              headerRight: () => {
+                return (
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
+                    <RefreshActivity type="uploads" />
+                    <NewUploadButton />
+                  </View>
+                )
+              }
             })}
           />
         </TimelineStack.Group>

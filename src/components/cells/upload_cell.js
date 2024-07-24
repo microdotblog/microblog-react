@@ -103,10 +103,8 @@ export default class UploadCell extends React.Component {
 	}
 
 	get_info(upload) {
-		SheetManager.show("upload_info_sheet", {
-			payload: {
-				upload: upload
-			}
+		App.open_sheet("upload_info_sheet", {
+			upload: upload
 		});
 	}
 
