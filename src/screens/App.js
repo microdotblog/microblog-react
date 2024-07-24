@@ -19,6 +19,7 @@ import ReplyEditScreen from './replies/edit';
 import UpdateReplyButton from '../components/header/update_reply';
 import PageEditScreen from './pages/edit';
 import UpdatePageButton from '../components/header/update_page';
+import Posting from './stacks/PostingStack';
 
 import "./../components/sheets/sheets";
 
@@ -52,7 +53,7 @@ export default class MainApp extends React.Component {
             }
           }}>
             <Stack.Navigator initialRouteName="Tabs" screenOptions={{ headerShown: false, headerTintColor: App.theme_text_color() }}>
-              <Stack.Screen name="Tabs" component={TabNavigator}/>
+              <Stack.Screen name="Tabs" component={TabNavigator} />
               <Stack.Screen
                 name="Login"
                 component={LoginScreen}
@@ -124,6 +125,13 @@ export default class MainApp extends React.Component {
                     headerTitle: "Edit Page",
                     gestureEnabled: false,
                     headerRight: () => <UpdatePageButton />
+                  }}
+                />
+                <Stack.Screen
+                  name="Posting"
+                  component={Posting}
+                  options={{
+                    headerTitle: "New Post"
                   }}
                 />
               </Stack.Group>

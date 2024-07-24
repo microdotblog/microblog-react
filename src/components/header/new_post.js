@@ -20,7 +20,7 @@ export default class NewPostButton extends React.Component{
             alignItems: 'center',
             marginRight: Platform.OS === "android" ? 12 : 0
            }}
-          onPress={() => postingScreen()}
+          onPress={() => App.navigate_to_screen("Posting")}
         >
           {
             Platform.OS === 'ios' ? 

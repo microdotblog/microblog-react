@@ -6,7 +6,6 @@ import PostingScreen from "./posts/new";
 import PostingOptionsScreen from "./posts/options";
 import ImageOptionsScreen from "./posts/image_options";
 import ImageCropScreen from "./posts/image_crop";
-import PostsScreen from "./posts/posts";
 import EditPostScreen from "./posts/edit";
 import PostOptionsSettingsScreen from "./settings/post_options";
 import ShareScreen from "./share";
@@ -16,7 +15,6 @@ export const POSTING_SCREEN = 'microblog.modal.PostingScreen';
 export const POSTING_OPTIONS_SCREEN = 'microblog.modal.PostingOptionsScreen';
 export const IMAGE_OPTIONS_SCREEN = 'microblog.modal.ImageOptionsScreen';
 export const IMAGE_CROP_SCREEN = 'microblog.modal.ImageCropScreen';
-export const POSTS_SCREEN = 'microblog.PostsScreen';
 export const EDIT_POST_SCREEN = 'microblog.EditPostScreen';
 export const POST_OPTIONS_SETTINGS_SCREEN = 'microblog.modal.PostOptionsSettingsScreen';
 export const SHARE_SCREEN = 'microblog.modal.ShareScreen';
@@ -44,7 +42,6 @@ export const Screens = {
   [ POSTING_OPTIONS_SCREEN ]: PostingOptionsScreen,
   [ IMAGE_OPTIONS_SCREEN ]: ImageOptionsScreen,
   [ IMAGE_CROP_SCREEN ]: ImageCropScreen,
-  [ POSTS_SCREEN ]: PostsScreen,
   [ EDIT_POST_SCREEN ]: EditPostScreen,
   [ POST_OPTIONS_SETTINGS_SCREEN ]: PostOptionsSettingsScreen,
   [ SHARE_SCREEN ]: ShareScreen,
@@ -168,43 +165,6 @@ export const imageCropScreen = async (asset, component_id) => {
               id: 'add_image_button',
               text: 'Add Photo',
               color: App.theme_accent_color()
-            }
-          ]
-        }
-      }
-    }
-  };
-
-  return Navigation.push(component_id, options);
-}
-
-export const postsScreen = (component_id) => {
-  const options = {
-    component: {
-      id: POSTS_SCREEN,
-      name: POSTS_SCREEN,
-      options: {
-        topBar: {
-          title: {
-            text: "Posts"
-          },
-          rightButtons: [
-            {
-              id: 'post_button',
-              text: 'New',
-              component: {
-                name: NEW_POST_BUTTON
-              }
-            },
-            {
-              id: 'refresh_indicator',
-              text: 'refresh',
-              component: {
-                name: REFRESH_ACTIVITY,
-                passProps: {
-                  type: "posts"
-                }
-              }
             }
           ]
         }

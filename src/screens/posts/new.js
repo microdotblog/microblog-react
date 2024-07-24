@@ -14,7 +14,6 @@ export default class PostingScreen extends React.Component{
   
   constructor(props) {
 		super(props)
-		Navigation.events().bindComponent(this);
     this.input_accessory_view_id = "input_toolbar";
   }
   
@@ -30,14 +29,6 @@ export default class PostingScreen extends React.Component{
         u.check_user_is_premium()
       }
     }
-  }
-  
-  componentDidAppear(){
-    Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: false}});
-  }
-  
-  componentDidDisappear(){
-    // Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: true}});
   }
   
   navigationButtonPressed = async ({ buttonId }) => {
