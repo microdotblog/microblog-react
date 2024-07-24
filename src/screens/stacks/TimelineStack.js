@@ -13,6 +13,7 @@ import UploadsScreen from '../../screens/uploads/uploads';
 import RefreshActivity from '../../components/header/refresh_activity'
 import NewUploadButton from '../../components/header/new_upload'
 import RepliesScreen from '../replies/replies';
+import PagesScreen from '../pages/pages';
 
 const TimelineStack = createNativeStackNavigator();
 
@@ -81,6 +82,14 @@ export default class Timeline extends React.Component{
             options={({ route }) => ({
               headerTitle: "Replies",
               headerRight: () => <RefreshActivity type="replies" />
+            })}
+          />
+          <TimelineStack.Screen
+            name="Pages"
+            component={PagesScreen}
+            options={({ route }) => ({
+              headerTitle: "Pages",
+              headerRight: () => <RefreshActivity type="pages" />
             })}
           />
         </TimelineStack.Group>

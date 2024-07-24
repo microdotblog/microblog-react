@@ -41,7 +41,7 @@ export default class PostCell extends React.Component{
           borderBottomWidth: .5,
           backgroundColor: App.theme_background_color_secondary()
         }}
-        onPress={() => editPageScreen(page)}
+        onPress={() => App.navigate_to_screen("PageEdit", page)}
       >
         {
           page.name &&

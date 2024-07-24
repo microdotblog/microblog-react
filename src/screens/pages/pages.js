@@ -4,7 +4,6 @@ import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyb
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
-import { Navigation } from 'react-native-navigation';
 import PageCell from '../../components/cells/page_cell';
 import { SheetProvider } from "react-native-actions-sheet";
 import SearchIcon from '../../assets/icons/nav/discover.png';
@@ -14,12 +13,7 @@ import { SvgXml } from 'react-native-svg';
 @observer
 export default class PagesScreen extends React.Component{
   
-  constructor (props) {
-    super(props)
-    Navigation.events().bindComponent(this)
-  }
-  
-  componentDidAppear(){
+  componentDidMount(){
     Auth.selected_user.posting?.selected_service?.update_pages_for_active_destination()
   }
   

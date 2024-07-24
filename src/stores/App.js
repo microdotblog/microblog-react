@@ -272,6 +272,9 @@ export default App = types.model('App', {
           return self.navigation_ref.navigate("Replies")
         case "reply_edit":
           return self.navigation_ref.navigate("ReplyEdit")
+        case "PageEdit":
+          Auth.selected_user?.posting.hydrate_page_edit(action_data)
+          return self.navigation_ref.navigate("PageEdit")
         default:
           self.navigation_ref.navigate(screen_name)
       }
@@ -313,7 +316,7 @@ export default App = types.model('App', {
       case "Posts":
         return postsScreen(self.current_screen_id)
       case "Pages":
-        return pagesScreen(self.current_screen_id)
+        return self.navigate_to_screen("Pages")
       case "Uploads":
         return self.navigate_to_screen("uploads")
       case "PostService":

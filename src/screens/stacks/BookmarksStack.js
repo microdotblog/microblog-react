@@ -16,6 +16,7 @@ import FollowingScreen from '../../screens/following/following';
 import UploadsScreen from '../../screens/uploads/uploads';
 import NewUploadButton from '../../components/header/new_upload'
 import RepliesScreen from '../replies/replies';
+import PagesScreen from '../pages/pages';
 
 const BookmarksStack = createNativeStackNavigator();
 
@@ -100,6 +101,14 @@ export default class Bookmarks extends React.Component{
             options={({ route }) => ({
               headerTitle: "Replies",
               headerRight: () => <RefreshActivity type="replies" />
+            })}
+          />
+          <BookmarksStack.Screen
+            name="Pages"
+            component={PagesScreen}
+            options={({ route }) => ({
+              headerTitle: "Pages",
+              headerRight: () => <RefreshActivity type="pages" />
             })}
           />
         </BookmarksStack.Group>

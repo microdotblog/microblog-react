@@ -1,40 +1,17 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, Keyboard, ActivityIndicator, Platform, KeyboardAvoidingView, InputAccessoryView } from 'react-native';
-import { Navigation } from 'react-native-navigation';
+import { View, TextInput, ActivityIndicator, Platform, InputAccessoryView } from 'react-native';
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
 import PostToolbar from '../../components/keyboard/post_toolbar'
 import HighlightingText from '../../components/text/highlighting_text';
 
 @observer
-export default class PostEditScreen extends React.Component{
+export default class PageEditScreen extends React.Component{
   
   constructor(props) {
     super(props)
-    Navigation.events().bindComponent(this);
     this.input_accessory_view_id = "input_toolbar";
-  }
-  
-  navigationButtonPressed = async ({ buttonId }) => {
-    console.log("navigationButtonPressed::", buttonId)
-    if(buttonId === "post_button"){
-      const sent = await Auth.selected_user.posting.send_update_post()
-      if(sent){
-        this._dismiss()
-        Auth.selected_user.posting.selected_service.update_pages_for_active_destination()
-      }
-    }
-    else{
-      this._dismiss()
-      Auth.selected_user.posting.clear_post()
-    }
-  }
-  
-  _dismiss = () => {
-    Keyboard.dismiss()
-    Navigation.dismissModal(this.props.componentId)
-    Auth.selected_user.posting.clear_post()
   }
   
   _input_outer_view = (component) => {

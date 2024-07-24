@@ -17,6 +17,8 @@ import PostOptionsSettingsScreen from './settings/post_options';
 import AddBookmarkScreen from './bookmarks/add_bookmark';
 import ReplyEditScreen from './replies/edit';
 import UpdateReplyButton from '../components/header/update_reply';
+import PageEditScreen from './pages/edit';
+import UpdatePageButton from '../components/header/update_page';
 
 import "./../components/sheets/sheets";
 
@@ -113,6 +115,15 @@ export default class MainApp extends React.Component {
                     headerTitle: "Update Reply",
                     gestureEnabled: false,
                     headerRight: () => <UpdateReplyButton />
+                  }}
+                />
+                <Stack.Screen
+                  name="PageEdit"
+                  component={PageEditScreen}
+                  options={{
+                    headerTitle: "Edit Page",
+                    gestureEnabled: false,
+                    headerRight: () => <UpdatePageButton />
                   }}
                 />
               </Stack.Group>
