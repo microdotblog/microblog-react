@@ -1,53 +1,33 @@
 import { Navigation } from "react-native-navigation";
-import * as React from 'react';
 import { Platform } from 'react-native';
 import Replies from '../stores/Replies'
 
 // SCREENS
 import PostingScreen from "./posts/new";
-import DiscoverTopicScreen from "./discover/topic";
 import PostingOptionsScreen from "./posts/options";
 import ReplyScreen from "./conversation/reply";
 import ImageOptionsScreen from "./posts/image_options";
 import ImageCropScreen from "./posts/image_crop";
-import RepliesScreen from "./replies/replies";
 import ReplyEditScreen from "./replies/edit";
 import PostsScreen from "./posts/posts";
 import EditPostScreen from "./posts/edit";
 import PagesScreen from "./pages/pages"
 import EditPageScreen from "./pages/edit"
-import UploadsScreen from "./uploads/uploads";
 import PostOptionsSettingsScreen from "./settings/post_options";
 import ShareScreen from "./share";
 
-export const TIMELINE_SCREEN = 'microblog.TimelineScreen';
-export const MENTIONS_SCREEN = 'microblog.MentionsScreen';
-export const DISCOVER_SCREEN = 'microblog.DiscoverScreen';
-export const LOGIN_SCREEN = 'microblog.modal.LoginScreen';
-export const PROFILE_SCREEN = 'microblog.ProfileScreen';
-export const CONVERSATION_SCREEN = 'microblog.ConversationScreen';
-export const BOOKMARKS_SCREEN = 'microblog.BookmarksScreen';
 export const POSTING_STACK = 'microblog.modal.PostingStack';
 export const POSTING_SCREEN = 'microblog.modal.PostingScreen';
-export const DISCOVER_TOPIC_SCREEN = 'microblog.DiscoverTopicScreen';
 export const POSTING_OPTIONS_SCREEN = 'microblog.modal.PostingOptionsScreen';
 export const REPLY_SCREEN = 'microblog.modal.ReplyScreen';
-export const BOOKMARK_SCREEN = 'microblog.BookmarkScreen';
-export const ADD_BOOKMARK_SCREEN = 'microblog.modal.AddBookmarkScreen';
-export const HELP_SCREEN = 'microblog.modal.HelpScreen';
 export const IMAGE_OPTIONS_SCREEN = 'microblog.modal.ImageOptionsScreen';
 export const IMAGE_CROP_SCREEN = 'microblog.modal.ImageCropScreen';
-export const REPLIES_SCREEN = 'micrblog.RepliesScreen';
 export const REPLY_EDIT_SCREEN = 'microblog.ReplyEditScreen';
-export const SETTINGS_SCREEN = 'microblog.modal.SettingsScreen';
 export const POSTS_SCREEN = 'microblog.PostsScreen';
 export const EDIT_POST_SCREEN = 'microblog.EditPostScreen';
 export const PAGES_SCREEN = 'microblog.PagesScreen';
 export const EDIT_PAGE_SCREEN = 'microblog.EditPageScreen';
-export const UPLOADS_SCREEN = 'microblog.UploadsScreen';
-export const UPLOADS_MODAL_SCREEN = 'microblog.modal.UploadsScreen';
 export const POST_OPTIONS_SETTINGS_SCREEN = 'microblog.modal.PostOptionsSettingsScreen';
-export const HIGHLIGHTS_SCREEN = 'microblog.HighlightsScreen';
 export const SHARE_SCREEN = 'microblog.modal.ShareScreen';
 
 // COMPONENTS
@@ -73,19 +53,15 @@ import Services from "../stores/Services"
 // Set up screens & components
 export const Screens = {
   [ POSTING_SCREEN ]: PostingScreen,
-  [ DISCOVER_TOPIC_SCREEN ]: DiscoverTopicScreen,
   [ POSTING_OPTIONS_SCREEN ]: PostingOptionsScreen,
   [ REPLY_SCREEN ]: ReplyScreen,
   [ IMAGE_OPTIONS_SCREEN ]: ImageOptionsScreen,
   [ IMAGE_CROP_SCREEN ]: ImageCropScreen,
-  [ REPLIES_SCREEN ]: RepliesScreen,
   [ REPLY_EDIT_SCREEN ]: ReplyEditScreen,
   [ POSTS_SCREEN ]: PostsScreen,
   [ EDIT_POST_SCREEN ]: EditPostScreen,
   [ PAGES_SCREEN ]: PagesScreen,
   [ EDIT_PAGE_SCREEN ]: EditPageScreen,
-  [ UPLOADS_SCREEN ]: UploadsScreen,
-  [ UPLOADS_MODAL_SCREEN ]: UploadsScreen,
   [ POST_OPTIONS_SETTINGS_SCREEN ]: PostOptionsSettingsScreen,
   [ SHARE_SCREEN ]: ShareScreen,
   // COMPONENTS
@@ -210,37 +186,6 @@ export const imageCropScreen = async (asset, component_id) => {
               id: 'add_image_button',
               text: 'Add Photo',
               color: App.theme_accent_color()
-            }
-          ]
-        }
-      }
-    }
-  };
-
-  return Navigation.push(component_id, options);
-}
-
-export const repliesScreen = (component_id) => {
-  Replies.hydrate()
-  const options = {
-    component: {
-      id: REPLIES_SCREEN,
-      name: REPLIES_SCREEN,
-      options: {
-        topBar: {
-          title: {
-            text: "Replies"
-          },
-          rightButtons: [
-            {
-              id: 'refresh_indicator',
-              text: 'refresh',
-              component: {
-                name: REFRESH_ACTIVITY,
-                passProps: {
-                  type: "replies"
-                }
-              }
             }
           ]
         }
@@ -435,46 +380,6 @@ export const editPageScreen = (page) => {
       }],
     }
   });
-}
-
-export const uploadsScreen = (component_id, did_open_from_editor = false) => {
-  const options = {
-    component: {
-      id: did_open_from_editor ? UPLOADS_MODAL_SCREEN : UPLOADS_SCREEN,
-      name: did_open_from_editor ? UPLOADS_MODAL_SCREEN : UPLOADS_SCREEN,
-      passProps: {
-        did_open_from_editor: did_open_from_editor
-      },
-      options: {
-        topBar: {
-          title: {
-            text: "Uploads"
-          },
-          rightButtons: [
-            {
-              id: 'upload_button',
-              text: 'upload',
-              component: {
-                name: NEW_UPLOAD_BUTTON
-              }
-            },
-            {
-              id: 'refresh_indicator',
-              text: 'refresh',
-              component: {
-                name: REFRESH_ACTIVITY,
-                passProps: {
-                  type: "uploads"
-                }
-              }
-            }
-          ]
-        }
-      }
-    }
-  };
-
-  return Navigation.push(component_id, options);
 }
 
 export const postOptionsSettingsScreen = async (user, component_id, open_as_modal = false) => {

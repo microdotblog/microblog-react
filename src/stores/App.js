@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen, postsScreen, pagesScreen, uploadsScreen,  UPLOADS_MODAL_SCREEN, shareScreen } from '../screens';
+import { POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, postsScreen, pagesScreen,  UPLOADS_MODAL_SCREEN, shareScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
@@ -16,6 +16,7 @@ import Contact from './models/posting/Contact'
 import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
 import Services from './Services';
 import { SheetManager } from "react-native-actions-sheet";
+import Replies from './Replies'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -266,6 +267,11 @@ export default App = types.model('App', {
           return self.navigation_ref.push("Following", { username: action_data })
         case "uploads":
           return self.navigation_ref.push("Uploads")
+        case "replies":
+          Replies.hydrate()
+          return self.navigation_ref.navigate("Replies")
+        case "reply_edit":
+          return self.navigation_ref.navigate("ReplyEdit")
         default:
           self.navigation_ref.navigate(screen_name)
       }
@@ -303,7 +309,7 @@ export default App = types.model('App', {
       case "Settings":
         return self.navigate_to_screen("Settings")
       case "Replies":
-        return repliesScreen(self.current_screen_id)
+        return self.navigate_to_screen("replies")
       case "Posts":
         return postsScreen(self.current_screen_id)
       case "Pages":

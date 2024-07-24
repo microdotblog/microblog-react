@@ -12,6 +12,7 @@ import FollowingScreen from '../../screens/following/following';
 import UploadsScreen from '../../screens/uploads/uploads';
 import RefreshActivity from '../../components/header/refresh_activity'
 import NewUploadButton from '../../components/header/new_upload'
+import RepliesScreen from '../replies/replies';
 
 const MentionsStack = createNativeStackNavigator();
 
@@ -72,6 +73,14 @@ export default class Mentions extends React.Component{
                   </View>
                 )
               }
+            })}
+          />
+          <MentionsStack.Screen
+            name="Replies"
+            component={RepliesScreen}
+            options={({ route }) => ({
+              headerTitle: "Replies",
+              headerRight: () => <RefreshActivity type="replies" />
             })}
           />
         </MentionsStack.Group>

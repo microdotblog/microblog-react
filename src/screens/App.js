@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { View, ActivityIndicator } from 'react-native';
 import { observer } from 'mobx-react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -14,6 +15,8 @@ import HelpScreen from './help/help';
 import SettingsScreen from './settings/settings';
 import PostOptionsSettingsScreen from './settings/post_options';
 import AddBookmarkScreen from './bookmarks/add_bookmark';
+import ReplyEditScreen from './replies/edit';
+import UpdateReplyButton from '../components/header/update_reply';
 
 import "./../components/sheets/sheets";
 
@@ -27,6 +30,13 @@ export default class MainApp extends React.Component {
   }
   
   render() {
+    if(App.is_loading){
+      return(
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: App.theme_background_color() }}>
+          <ActivityIndicator color={App.theme_accent_color()} size="large" />
+        </View>
+      )
+    }
     return(
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SheetProvider>
@@ -94,6 +104,15 @@ export default class MainApp extends React.Component {
                   component={AddBookmarkScreen}
                   options={{
                     headerTitle: "Add bookmark"
+                  }}
+                />
+                <Stack.Screen
+                  name="ReplyEdit"
+                  component={ReplyEditScreen}
+                  options={{
+                    headerTitle: "Update Reply",
+                    gestureEnabled: false,
+                    headerRight: () => <UpdateReplyButton />
                   }}
                 />
               </Stack.Group>

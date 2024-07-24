@@ -15,6 +15,7 @@ import RefreshActivity from '../../components/header/refresh_activity';
 import FollowingScreen from '../../screens/following/following';
 import UploadsScreen from '../../screens/uploads/uploads';
 import NewUploadButton from '../../components/header/new_upload'
+import RepliesScreen from '../replies/replies';
 
 const BookmarksStack = createNativeStackNavigator();
 
@@ -78,7 +79,7 @@ export default class Bookmarks extends React.Component{
               headerRight: () => <NewPostButton />
             })}
           />
-          <MentionsStack.Screen
+          <BookmarksStack.Screen
             name="Uploads"
             component={UploadsScreen}
             options={({ route }) => ({
@@ -91,6 +92,14 @@ export default class Bookmarks extends React.Component{
                   </View>
                 )
               }
+            })}
+          />
+          <BookmarksStack.Screen
+            name="Replies"
+            component={RepliesScreen}
+            options={({ route }) => ({
+              headerTitle: "Replies",
+              headerRight: () => <RefreshActivity type="replies" />
             })}
           />
         </BookmarksStack.Group>

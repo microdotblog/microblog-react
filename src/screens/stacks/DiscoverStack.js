@@ -13,6 +13,7 @@ import FollowingScreen from '../../screens/following/following';
 import UploadsScreen from '../../screens/uploads/uploads';
 import RefreshActivity from '../../components/header/refresh_activity'
 import NewUploadButton from '../../components/header/new_upload'
+import RepliesScreen from '../replies/replies';
 
 const DiscoverStack = createNativeStackNavigator();
 
@@ -81,6 +82,14 @@ export default class Discover extends React.Component{
                   </View>
                 )
               }
+            })}
+          />
+          <DiscoverStack.Screen
+            name="Replies"
+            component={RepliesScreen}
+            options={({ route }) => ({
+              headerTitle: "Replies",
+              headerRight: () => <RefreshActivity type="replies" />
             })}
           />
         </DiscoverStack.Group>

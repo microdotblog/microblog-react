@@ -6,7 +6,6 @@ import FastImage from 'react-native-fast-image'
 import { SvgXml } from 'react-native-svg';
 import { SFSymbol } from "react-native-sfsymbols";
 import { MenuView } from '@react-native-menu/menu';
-import { SheetManager } from "react-native-actions-sheet";
 import Auth from '../../stores/Auth'
 
 @observer
