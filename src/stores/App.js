@@ -272,7 +272,7 @@ export default App = types.model('App', {
   
   go_back: flow(function*() {
     console.log("App:go_back")
-    if (self.navigation_ref != null) {
+    if (self.navigation_ref != null && self.navigation_ref.canGoBack()) {
       self.navigation_ref.goBack()
     }
   }),

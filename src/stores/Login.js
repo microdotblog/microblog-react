@@ -17,7 +17,6 @@ export default Login = types.model('Login', {
 .actions(self => ({
   
   set_input_value: flow(function* (value) {
-    console.log("LOGIN:set_input_value", value)
     self.input_value = value
     if(self.show_error){
       self.reset_errors()
