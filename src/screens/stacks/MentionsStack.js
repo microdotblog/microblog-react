@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { View } from 'react-native';
 import { observer } from 'mobx-react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MentionsScreen from '../mentions/mentions';
@@ -8,6 +9,9 @@ import ProfileScreen from '../../screens/profile/profile';
 import ConversationScreen from '../../screens/conversation/conversation';
 import ReplyButton from '../../components/header/reply';
 import FollowingScreen from '../../screens/following/following';
+import UploadsScreen from '../../screens/uploads/uploads';
+import RefreshActivity from '../../components/header/refresh_activity'
+import NewUploadButton from '../../components/header/new_upload'
 
 const MentionsStack = createNativeStackNavigator();
 
@@ -53,6 +57,21 @@ export default class Mentions extends React.Component{
             options={({ route }) => ({
               headerTitle: `Following`,
               headerRight: () => <NewPostButton />
+            })}
+          />
+          <MentionsStack.Screen
+            name="Uploads"
+            component={UploadsScreen}
+            options={({ route }) => ({
+              headerTitle: `Uploads`,
+              headerRight: () => {
+                return (
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
+                    <RefreshActivity type="uploads" />
+                    <NewUploadButton />
+                  </View>
+                )
+              }
             })}
           />
         </MentionsStack.Group>

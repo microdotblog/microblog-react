@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { View } from 'react-native';
 import { observer } from 'mobx-react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TimelineScreen from '../timeline/timeline';
@@ -11,7 +12,6 @@ import FollowingScreen from '../../screens/following/following';
 import UploadsScreen from '../../screens/uploads/uploads';
 import RefreshActivity from '../../components/header/refresh_activity'
 import NewUploadButton from '../../components/header/new_upload'
-import { View } from 'react-native'
 
 const TimelineStack = createNativeStackNavigator();
 

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { View } from 'react-native';
 import { observer } from 'mobx-react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BookmarksScreen from '../bookmarks/bookmarks';
@@ -12,6 +13,8 @@ import BookmarkScreen from '../bookmarks/bookmark';
 import NewPostButton from '../../components/header/new_post';
 import RefreshActivity from '../../components/header/refresh_activity';
 import FollowingScreen from '../../screens/following/following';
+import UploadsScreen from '../../screens/uploads/uploads';
+import NewUploadButton from '../../components/header/new_upload'
 
 const BookmarksStack = createNativeStackNavigator();
 
@@ -73,6 +76,21 @@ export default class Bookmarks extends React.Component{
             options={({ route }) => ({
               headerTitle: `Following`,
               headerRight: () => <NewPostButton />
+            })}
+          />
+          <MentionsStack.Screen
+            name="Uploads"
+            component={UploadsScreen}
+            options={({ route }) => ({
+              headerTitle: `Uploads`,
+              headerRight: () => {
+                return (
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
+                    <RefreshActivity type="uploads" />
+                    <NewUploadButton />
+                  </View>
+                )
+              }
             })}
           />
         </BookmarksStack.Group>
