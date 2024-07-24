@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, postsScreen, pagesScreen,  UPLOADS_MODAL_SCREEN, shareScreen } from '../screens';
+import { POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, UPLOADS_MODAL_SCREEN, shareScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
@@ -275,6 +275,8 @@ export default App = types.model('App', {
         case "PageEdit":
           Auth.selected_user?.posting.hydrate_page_edit(action_data)
           return self.navigation_ref.navigate("PageEdit")
+        case "Posts":
+          return self.navigation_ref.navigate("Posts")
         default:
           self.navigation_ref.navigate(screen_name)
       }
@@ -314,7 +316,7 @@ export default App = types.model('App', {
       case "Replies":
         return self.navigate_to_screen("replies")
       case "Posts":
-        return postsScreen(self.current_screen_id)
+        return self.navigate_to_screen("Posts")
       case "Pages":
         return self.navigate_to_screen("Pages")
       case "Uploads":

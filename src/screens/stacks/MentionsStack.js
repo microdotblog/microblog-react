@@ -14,6 +14,7 @@ import RefreshActivity from '../../components/header/refresh_activity'
 import NewUploadButton from '../../components/header/new_upload'
 import RepliesScreen from '../replies/replies';
 import PagesScreen from '../pages/pages';
+import PostsScreen from '../posts/posts';
 
 const MentionsStack = createNativeStackNavigator();
 
@@ -90,6 +91,14 @@ export default class Mentions extends React.Component{
             options={({ route }) => ({
               headerTitle: "Pages",
               headerRight: () => <RefreshActivity type="pages" />
+            })}
+          />
+          <MentionsStack.Screen
+            name="Posts"
+            component={PostsScreen}
+            options={({ route }) => ({
+              headerTitle: "Posts",
+              headerRight: () => <RefreshActivity type="posts" />
             })}
           />
         </MentionsStack.Group>
