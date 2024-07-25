@@ -7,7 +7,6 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { RectButton } from 'react-native-gesture-handler';
 import { SvgXml } from 'react-native-svg';
 import FastImage from 'react-native-fast-image';
-import { editPostScreen } from '../../screens';
 
 @observer
 export default class PostCell extends React.Component{

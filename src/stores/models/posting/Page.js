@@ -10,7 +10,8 @@ export default Page = types.model('Page', {
   name: types.maybe(types.string),
   content: types.maybe(types.string),
   published: types.maybe(types.string),
-  url: types.maybe(types.string)
+  url: types.maybe(types.string),
+  template: types.optional(types.boolean, false)
 })
 .views(self => ({
   

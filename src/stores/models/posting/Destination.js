@@ -67,18 +67,19 @@ export default Destination = types.model('Destination', {
 	set_pages(entries) {
 		console.log("Destination:set_pages", entries.length)
 		const pages = entries.reduce((acc, entry) => {
-			// MAYBE MAKE THIS MORE GENERIC? DRY.
 			const uid =  entry.properties.uid && entry.properties.uid[0] ? parseInt(entry.properties.uid[0], 10) : 0
 			const name = entry.properties.name ? entry.properties.name[0] : ""
 			const content = entry.properties.content ? entry.properties.content[0] : ""
 			const published = entry.properties.published ? entry.properties.published[0] : ""
-			const url = entry.properties.url ? entry.properties.url[0] : ""
+			const url = entry.properties.url ? entry.properties.url[ 0 ] : ""
+			const template = entry.properties[ "microblog-template" ] ? entry.properties[ "microblog-template" ][ 0 ] : false
 			const post = {
 				uid: uid,
 				name: name,
 				content: content,
 				published: published,
-				url: url
+				url: url,
+				template: template
 			}
 			if (uid === 0 || url === "") {
 				return acc;

@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import App from '../../stores/App'
 import FastImage from 'react-native-fast-image';
-import { editPageScreen } from '../../screens';
 
 @observer
 export default class PostCell extends React.Component{
@@ -39,9 +38,11 @@ export default class PostCell extends React.Component{
           padding: 15,
           borderColor: App.theme_alt_background_div_color(),
           borderBottomWidth: .5,
-          backgroundColor: App.theme_background_color_secondary()
+          backgroundColor: App.theme_background_color_secondary(),
+          opacity: page.template ? .5 : 1
         }}
-        onPress={() => App.navigate_to_screen("PageEdit", page)}
+        onPress={() => page.template ? null : App.navigate_to_screen("PageEdit", page)}
+        disabled={page.template}
       >
         {
           page.name &&
