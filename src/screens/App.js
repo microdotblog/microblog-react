@@ -131,7 +131,9 @@ export default class MainApp extends React.Component {
                   name="Posting"
                   component={Posting}
                   options={{
-                    headerTitle: "New Post"
+                    headerTitle: "New Post",
+                    gestureEnabled: false,
+                    headerShown: false
                   }}
                 />
               </Stack.Group>
