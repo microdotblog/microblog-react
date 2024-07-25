@@ -96,7 +96,7 @@ export default class HighlightCell extends React.Component{
             borderBottomWidth: .5,
             backgroundColor: App.theme_highlight_background_color()
           }}
-          onPress={() => postingScreen(highlight.markdown())}
+          onPress={() => App.navigate_to_screen("Posting", highlight.markdown())}
         >
           {
             highlight.content_text && 

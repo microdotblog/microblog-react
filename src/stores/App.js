@@ -277,6 +277,12 @@ export default App = types.model('App', {
           return self.navigation_ref.navigate("PageEdit")
         case "Posts":
           return self.navigation_ref.navigate("Posts")
+        case "Posting":
+          if (action_data != null) {
+            // Action data is usually markdown text from a highlight
+            Auth.selected_user?.posting.hydrate_post_with_markdown(action_data)
+          }
+          return self.navigation_ref.navigate("Posting")
         default:
           self.navigation_ref.navigate(screen_name)
       }

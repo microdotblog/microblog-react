@@ -18,7 +18,8 @@ export default class Posting extends React.Component{
 					gestureEnabled: false,
           headerShown: true,
           headerBackTitle: "Back",
-          headerTintColor: App.theme_text_color()
+          headerTintColor: App.theme_text_color(),
+          headerBackTitleVisible: false
 				}}
 			>
         <PostingStack.Screen
