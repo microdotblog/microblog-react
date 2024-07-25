@@ -2,8 +2,6 @@ import { Navigation } from "react-native-navigation";
 import { Platform } from 'react-native';
 
 // SCREENS
-import PostingScreen from "./posts/new";
-import PostingOptionsScreen from "./posts/options";
 import ImageOptionsScreen from "./posts/image_options";
 import ImageCropScreen from "./posts/image_crop";
 import EditPostScreen from "./posts/edit";
@@ -11,23 +9,12 @@ import PostOptionsSettingsScreen from "./settings/post_options";
 import ShareScreen from "./share";
 
 export const POSTING_STACK = 'microblog.modal.PostingStack';
-export const POSTING_SCREEN = 'microblog.modal.PostingScreen';
 export const POSTING_OPTIONS_SCREEN = 'microblog.modal.PostingOptionsScreen';
 export const IMAGE_OPTIONS_SCREEN = 'microblog.modal.ImageOptionsScreen';
 export const IMAGE_CROP_SCREEN = 'microblog.modal.ImageCropScreen';
 export const EDIT_POST_SCREEN = 'microblog.EditPostScreen';
 export const POST_OPTIONS_SETTINGS_SCREEN = 'microblog.modal.PostOptionsSettingsScreen';
 export const SHARE_SCREEN = 'microblog.modal.ShareScreen';
-
-// COMPONENTS
-import ProfileImage from './../components/header/profile_image';
-import NewPostButton from './../components/header/new_post';
-import ScreenTitle from "../components/header/screen_title";
-
-export const PROFILE_IMAGE = 'microblog.component.ProfileImage'
-export const NEW_POST_BUTTON = 'microblog.component.NewPostButton'
-export const SCREEN_TITLE = 'microblog.component.ScreenTitle'
-export const REFRESH_ACTIVITY = 'microblog.component.RefreshActivity'
 
 // ICONS
 import ArrowBackIcon from './../assets/icons/arrow_back.png';
@@ -38,78 +25,11 @@ import Services from "../stores/Services"
 
 // Set up screens & components
 export const Screens = {
-  [ POSTING_SCREEN ]: PostingScreen,
-  [ POSTING_OPTIONS_SCREEN ]: PostingOptionsScreen,
   [ IMAGE_OPTIONS_SCREEN ]: ImageOptionsScreen,
   [ IMAGE_CROP_SCREEN ]: ImageCropScreen,
   [ EDIT_POST_SCREEN ]: EditPostScreen,
   [ POST_OPTIONS_SETTINGS_SCREEN ]: PostOptionsSettingsScreen,
-  [ SHARE_SCREEN ]: ShareScreen,
-  // COMPONENTS
-  [ PROFILE_IMAGE ]: ProfileImage,
-  [ NEW_POST_BUTTON ]: NewPostButton,
-  [ SCREEN_TITLE ]: ScreenTitle
-}
-
-export const postingScreen = (markdown = null) => {
-  const { post_status } = Auth.selected_user?.posting
-  if(markdown != null){
-    Auth.selected_user?.posting.hydrate_post_with_markdown(markdown)
-  }
-  return Navigation.showModal({
-    stack: {
-      id: POSTING_STACK,
-      name: POSTING_STACK,
-      children: [ {
-        component: {
-          id: POSTING_SCREEN,
-          name: POSTING_SCREEN,
-          options: {
-            topBar: {
-              title: {
-                text: 'New Post',
-              },
-              leftButtons: [
-                {
-                  id: 'back_button',
-                  text: 'Back',
-                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
-                },
-              ],
-              rightButtons: [
-						    {
-							    id: 'post_button',
-							    text: post_status === "draft" ? "Save" : "Post",
-                  color: '#f80'
-                },
-					    ]
-            },
-            layout: {
-              backgroundColor: App.theme_background_color()
-            }
-          }
-        },
-      }],
-    }
-  });
-}
-
-export const postingOptionsScreen = (component_id) => {
-  const options = {
-    component: {
-      id: POSTING_OPTIONS_SCREEN,
-			name: POSTING_OPTIONS_SCREEN,
-			options: {
-				topBar: {
-					title: {
-            text: "Posting Options"
-          },
-				}
-			}
-		}
-	};
-
-  return Navigation.push(component_id, options);
+  [ SHARE_SCREEN ]: ShareScreen
 }
 
 export const imageOptionsScreen = (asset, index, component_id) => {

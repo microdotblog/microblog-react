@@ -283,6 +283,9 @@ export default App = types.model('App', {
             Auth.selected_user?.posting.hydrate_post_with_markdown(action_data)
           }
           return self.navigation_ref.navigate("Posting")
+        case "PostEdit":
+          Auth.selected_user?.posting.hydrate_post_edit(action_data)
+          return self.navigation_ref.navigate("PostEdit")
         default:
           self.navigation_ref.navigate(screen_name)
       }

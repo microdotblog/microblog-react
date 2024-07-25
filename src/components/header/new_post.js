@@ -2,7 +2,6 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { TouchableOpacity, Image, Platform } from 'react-native';
 import Auth from './../../stores/Auth';
-import { postingScreen } from './../../screens'
 import PostAddIcon from './../../assets/icons/post_add.png';
 import App from '../../stores/App'
 import { SFSymbol } from "react-native-sfsymbols";

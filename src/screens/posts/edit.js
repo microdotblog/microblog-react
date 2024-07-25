@@ -14,17 +14,6 @@ export default class PostEditScreen extends React.Component{
     this.input_accessory_view_id = "input_toolbar";
   }
   
-  _input_outer_view = (component) => {
-    // if (Platform.OS === 'ios') {
-    //   return (
-    //     <KeyboardAvoidingView behavior={'padding'} style={{ flex: 1 }}>
-    //     {component}
-    //     </KeyboardAvoidingView>
-    //   )
-    // }
-    return component
-  }
-  
   render() {
     const { posting } = Auth.selected_user
     return(
@@ -62,8 +51,7 @@ export default class PostEditScreen extends React.Component{
           : null
         }
         {
-          this._input_outer_view(
-            Platform.OS === 'ios' ?
+          Platform.OS === 'ios' ?
             <HighlightingText
               placeholderTextColor="lightgrey"
               style={{
@@ -141,7 +129,6 @@ export default class PostEditScreen extends React.Component{
               }}
               inputAccessoryViewID={this.input_accessory_view_id}
             />
-          )
         }
         {
           Platform.OS === 'ios' ?

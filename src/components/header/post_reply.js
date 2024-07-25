@@ -15,7 +15,6 @@ export default class PostReplyButton extends React.Component {
 				onPress={async() => {
           if(this.props.conversation_id != null && Reply.conversation_id != null){
 						let sent = await Reply.send_reply()
-						console.log("Reply:send_reply", sent)
 						if (sent) {
 							Keyboard.dismiss()
 							App.go_back()

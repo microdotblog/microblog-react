@@ -20,8 +20,10 @@ import UpdateReplyButton from '../components/header/update_reply';
 import PageEditScreen from './pages/edit';
 import UpdatePageButton from '../components/header/update_page';
 import Posting from './stacks/PostingStack';
+import PostEditScreen from './posts/edit';
 
 import "./../components/sheets/sheets";
+import UpdatePostButton from '../components/header/update_post'
 
 const Stack = createNativeStackNavigator();
 
@@ -125,6 +127,15 @@ export default class MainApp extends React.Component {
                     headerTitle: "Edit Page",
                     gestureEnabled: false,
                     headerRight: () => <UpdatePageButton />
+                  }}
+                />
+                <Stack.Screen
+                  name="PostEdit"
+                  component={PostEditScreen}
+                  options={{
+                    headerTitle: "Edit Post",
+                    gestureEnabled: false,
+                    headerRight: () => <UpdatePostButton />
                   }}
                 />
                 <Stack.Screen

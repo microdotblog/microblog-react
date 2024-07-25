@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import PostingScreen from '../../screens/posts/new';
 import PostingOptionsScreen from '../../screens/posts/options';
 import CloseModalButton from '../../components/header/close';
+import PostButton from '../../components/header/post_button';
 
 const PostingStack = createNativeStackNavigator();
 
@@ -27,6 +28,7 @@ export default class Posting extends React.Component{
           component={PostingScreen}
           options={{
             headerTitle: "New Post",
+            headerRight: () => <PostButton />,
             headerLeft: () => <CloseModalButton />
           }}
         />
