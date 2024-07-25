@@ -286,6 +286,8 @@ export default App = types.model('App', {
         case "PostEdit":
           Auth.selected_user?.posting.hydrate_post_edit(action_data)
           return self.navigation_ref.navigate("PostEdit")
+        case "ImageOptions":
+          return self.navigation_ref.navigate("ImageOptions", action_data)
         default:
           self.navigation_ref.navigate(screen_name)
       }
@@ -765,6 +767,9 @@ export default App = types.model('App', {
   },
   theme_accent_color(){
     return "#f80"
+  },
+  theme_warning_text_color(){
+    return "red"
   },
   theme_background_color() {
     return self.theme === "dark" ? "#1d2530" : "#fff"

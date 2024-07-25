@@ -2,17 +2,11 @@ import { Navigation } from "react-native-navigation";
 import { Platform } from 'react-native';
 
 // SCREENS
-import ImageOptionsScreen from "./posts/image_options";
 import ImageCropScreen from "./posts/image_crop";
-import EditPostScreen from "./posts/edit";
 import PostOptionsSettingsScreen from "./settings/post_options";
 import ShareScreen from "./share";
 
-export const POSTING_STACK = 'microblog.modal.PostingStack';
-export const POSTING_OPTIONS_SCREEN = 'microblog.modal.PostingOptionsScreen';
-export const IMAGE_OPTIONS_SCREEN = 'microblog.modal.ImageOptionsScreen';
 export const IMAGE_CROP_SCREEN = 'microblog.modal.ImageCropScreen';
-export const EDIT_POST_SCREEN = 'microblog.EditPostScreen';
 export const POST_OPTIONS_SETTINGS_SCREEN = 'microblog.modal.PostOptionsSettingsScreen';
 export const SHARE_SCREEN = 'microblog.modal.ShareScreen';
 
@@ -20,47 +14,13 @@ export const SHARE_SCREEN = 'microblog.modal.ShareScreen';
 import ArrowBackIcon from './../assets/icons/arrow_back.png';
 
 import App from "../stores/App"
-import Auth from "../stores/Auth"
 import Services from "../stores/Services"
 
 // Set up screens & components
 export const Screens = {
-  [ IMAGE_OPTIONS_SCREEN ]: ImageOptionsScreen,
   [ IMAGE_CROP_SCREEN ]: ImageCropScreen,
-  [ EDIT_POST_SCREEN ]: EditPostScreen,
   [ POST_OPTIONS_SETTINGS_SCREEN ]: PostOptionsSettingsScreen,
   [ SHARE_SCREEN ]: ShareScreen
-}
-
-export const imageOptionsScreen = (asset, index, component_id) => {
-  console.log("Screens:imageOptionsScreen", asset, index, component_id);
-
-  const options = {
-    component: {
-      id: IMAGE_OPTIONS_SCREEN,
-      name: IMAGE_OPTIONS_SCREEN,
-      passProps: {
-        asset: asset,
-        index: index
-      },
-      options: {
-        topBar: {
-          title: {
-            text: asset.is_video ? "Video options" : "Image options"
-          },
-          rightButtons: [
-            {
-               id: 'remove_image',
-               text: "Remove",
-               color: 'red',
-            }
-          ]
-        }
-      }
-    }
-  };
-
-  return Navigation.push(component_id, options);
 }
 
 export const imageCropScreen = async (asset, component_id) => {
@@ -93,46 +53,6 @@ export const imageCropScreen = async (asset, component_id) => {
   };
 
   return Navigation.push(component_id, options);
-}
-
-export const editPostScreen = (post) => {
-  Auth.selected_user?.posting.hydrate_post_edit(post)
-  return Navigation.showModal({
-    stack: {
-      id: EDIT_POST_SCREEN,
-      name: EDIT_POST_SCREEN,
-      children: [ {
-        component: {
-          id: EDIT_POST_SCREEN,
-          name: EDIT_POST_SCREEN,
-          options: {
-            topBar: {
-              title: {
-                text: 'Edit Post',
-              },
-              leftButtons: [
-                {
-                  id: 'back_button',
-                  text: 'Back',
-                  icon: Platform.OS === 'ios' ? { system: 'xmark' } : ArrowBackIcon
-                },
-              ],
-              rightButtons: [
-                {
-                  id: 'post_button',
-                  text: 'Update',
-                  color: '#f80'
-                }
-              ]
-            },
-            layout: {
-              backgroundColor: App.theme_background_color()
-            }
-          }
-        },
-      } ],
-    }
-  })
 }
 
 export const postOptionsSettingsScreen = async (user, component_id, open_as_modal = false) => {

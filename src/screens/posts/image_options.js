@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity, ScrollView, Image, ActivityIndicator, TextInput, KeyboardAvoidingView, Alert, Dimensions } from 'react-native';
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
-import { Navigation } from 'react-native-navigation';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Video from 'react-native-video';
 import MicroPubApi from '../../api/MicroPubApi';
@@ -21,42 +20,6 @@ export default class ImageOptionsScreen extends React.Component{
     
     if (Auth.selected_user.is_using_ai) {
       this._download_image_info();
-    }
-  }
-
-  navigationButtonPressed = async ({ buttonId }) => {
-    if (buttonId === 'remove_image') {
-      const { asset, index } = this.props;
-      this._handle_image_remove(asset, index);
-    }
-  }
-  
-  _handle_image_remove = (image, index) => {
-    const { posting } = Auth.selected_user
-    const existing_index = posting.post_assets?.findIndex(file => file.uri === image.uri)
-    if (existing_index > -1) {
-      Alert.alert(
-        "Remove upload?",
-        "Are you sure you want to remove this upload from this post?",
-        [
-          {
-            text: "Cancel",
-            style: 'cancel',
-          },
-          {
-            text: "Remove",
-            onPress: () => {
-              // delay, seems to create problems otherwise
-              setTimeout(() => {
-                Navigation.popToRoot(this.props.componentId);
-                posting.remove_asset(index)
-              }, 500);
-            },
-            style: 'destructive'
-          },
-        ],
-        {cancelable: false},
-      );
     }
   }
   
@@ -77,7 +40,7 @@ export default class ImageOptionsScreen extends React.Component{
   }
 
   _check_uploads_for_text(results) {
-    const { asset } = this.props;
+    const { asset } = this.props.route.params;
     let found = false;
     
     if (results.items != null) {
@@ -96,7 +59,7 @@ export default class ImageOptionsScreen extends React.Component{
 
   render() {
     const { posting } = Auth.selected_user
-    const { asset } = this.props
+    const { asset } = this.props.route.params
         
     const max_media_height = 250; // cap media height
     const window_width = Dimensions.get('window').width;

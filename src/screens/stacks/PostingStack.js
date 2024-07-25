@@ -5,6 +5,8 @@ import PostingScreen from '../../screens/posts/new';
 import PostingOptionsScreen from '../../screens/posts/options';
 import CloseModalButton from '../../components/header/close';
 import PostButton from '../../components/header/post_button';
+import RemoveImageButton from '../../components/header/remove_image';
+import ImageOptionsScreen from '../../screens/posts/image_options';
 
 const PostingStack = createNativeStackNavigator();
 
@@ -38,6 +40,14 @@ export default class Posting extends React.Component{
           options={{
             headerTitle: "Posting Options"
           }}
+        />
+        <PostingStack.Screen
+          name="ImageOptions"
+          component={ImageOptionsScreen}
+          options={({ route }) => ({
+            headerTitle: "Image Options",
+            headerRight: () => <RemoveImageButton asset={route.params?.asset} index={route.params?.index} />
+          })}
         />
       </PostingStack.Navigator>
     )

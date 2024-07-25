@@ -321,9 +321,9 @@ export default Posting = types.model('Posting', {
     }
   }),
   
-  asset_option_screen: flow(function* (asset, index, component_id) {
+  asset_option_screen: flow(function* (asset, index) {
     console.log("Posting:asset_option_screen", asset)
-    return imageOptionsScreen(asset, index, component_id)
+    return App.navigate_to_screen("ImageOptions", { asset: asset, index: index })
   }),
   
   remove_asset: flow(function* (media_index) {
