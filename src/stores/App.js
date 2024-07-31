@@ -56,6 +56,7 @@ export default App = types.model('App', {
 .volatile(self => ({
   navigation_ref: null,
   current_tab_key: null,
+  current_raw_tab_key: null,
 }))
 .actions(self => ({
   
@@ -176,6 +177,7 @@ export default App = types.model('App', {
 
   set_current_tab_key: flow(function* (tab_key) {
     console.log("App:set_current_tab_key", tab_key)
+    self.current_raw_tab_key = tab_key
     if (tab_key.includes("Timeline")) {
       self.current_tab_key = "Timeline"
     }
@@ -498,6 +500,18 @@ export default App = types.model('App', {
         } catch (error) {
           console.log("App:handle_web_view_message:bookmark_added:error", error)
         }
+      }
+    }
+  }),
+
+  scroll_web_view_to_top: flow(function* (target) {
+    // TODO: Make sure to scroll web view to top if on current tab
+    console.log("App:scroll_web_view_to_top", target, self.current_raw_tab_key)
+    if (target != null && self.current_raw_tab_key == target) {
+      try {
+        CURRENT_WEB_VIEW_REF.injectJavaScript(`window.scrollTo({ top: 0, behavior: 'smooth' })`)
+      } catch (error) {
+        console.log("App:scroll_web_view_to_top:error", error)
       }
     }
   }),

@@ -41,8 +41,7 @@ export default class TabNavigator extends React.Component{
             App.set_current_tab_key(e.target)
           },
           tabPress: (e) => {
-            // TODO: Make sure to scroll web view to top if on current tab
-            console.log("tabPress", e)
+            App.scroll_web_view_to_top(e.target)
           }
         }}
       >
