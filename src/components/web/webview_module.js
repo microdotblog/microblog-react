@@ -26,9 +26,6 @@ const WebViewModule = observer((props) => {
   );
 
   const on_refresh = () => {
-    setState(prevState => ({
-      ...prevState
-    }));
     webViewRef.current?.reload();
   };
 
