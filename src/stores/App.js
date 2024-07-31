@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, UPLOADS_MODAL_SCREEN, shareScreen } from '../screens';
+import { shareScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
@@ -23,10 +23,6 @@ let CURRENT_WEB_VIEW_REF = null
 
 export default App = types.model('App', {
   is_loading: types.optional(types.boolean, false),
-  current_screen_name: types.maybeNull(types.string),
-  current_screen_id: types.maybeNull(types.string),
-  previous_screen_name: types.maybeNull(types.string),
-  previous_screen_id: types.maybeNull(types.string),
   image_modal_is_open: types.optional(types.boolean, false),
   current_image_url: types.maybeNull(types.string),
   is_scrolling: types.optional(types.boolean, false),
@@ -59,6 +55,7 @@ export default App = types.model('App', {
 })
 .volatile(self => ({
   navigation_ref: null,
+  current_tab_key: null,
 }))
 .actions(self => ({
   
@@ -71,9 +68,6 @@ export default App = types.model('App', {
   hydrate: flow(function* () {
     console.log("App:hydrate")
     self.is_loading = true
-
-    self.current_screen_name = TIMELINE_SCREEN
-    self.current_screen_id = TIMELINE_SCREEN
     
     Auth.hydrate().then(async () => {
       console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
@@ -180,33 +174,24 @@ export default App = types.model('App', {
     SheetManager.hideAll()
   }),
 
-  set_current_screen_name_and_id: flow(function* (screen_name, screen_id) {
-    console.log("App:set_current_screen_name_and_id", screen_name, screen_id)
-    self.post_modal_is_open = screen_id === POSTING_OPTIONS_SCREEN || screen_id === POSTING_SCREEN || screen_id === UPLOADS_MODAL_SCREEN
-
-    if(screen_name.includes("microblog.component") || Platform.OS === 'ios' && screen_name.includes("microblog.modal")){
-      if(Platform.OS === 'ios' && screen_name.includes("microblog.modal")){
-        self.previous_screen_id = self.current_screen_id
-        self.previous_screen_name = self.current_screen_name
-      }
-      return
+  set_current_tab_key: flow(function* (tab_key) {
+    console.log("App:set_current_tab_key", tab_key)
+    if (tab_key.includes("Timeline")) {
+      self.current_tab_key = "Timeline"
     }
-
-    self.current_screen_name = screen_name
-    self.current_screen_id = screen_id
-
-    if (screen_id === "DISCOVER_SCREEN") {
+    else if (tab_key.includes("Mentions")) {
+      self.current_tab_key = "Mentions"
+    }
+    else if (tab_key.includes("Bookmarks")) {
+      self.current_tab_key = "Bookmarks"
+    }
+    else if (tab_key.includes("Discover")) {
+      self.current_tab_key = "Discover"
       Discover.shuffle_random_emoji()
     }
-  }),
-  
-  set_previous_screen_name_and_id: flow(function* () {
-    console.log("App:set_previous_screen_name_and_id", self.previous_screen_id, self.previous_screen_name)
-    if(self.previous_screen_id != null && self.previous_screen_name != null){
-      self.current_screen_id = self.previous_screen_id
-      self.current_screen_name = self.previous_screen_name
+    else {
+      self.current_tab_key = tab_key
     }
-    self.post_modal_is_open = false
   }),
 
   handle_url: flow(function* (url) {
@@ -245,51 +230,51 @@ export default App = types.model('App', {
           return App.set_image_modal_data_and_activate(action_data)
         case "reply":
           Reply.hydrate(action_data)
-          return self.navigation_ref.navigate("Reply", { conversation_id: action_data })
+          return self.navigation_ref.push("Reply", { conversation_id: action_data })
         case "user":
-          return self.navigation_ref.push("Profile", { username: action_data })
+          return self.navigation_ref.push(`${self.current_tab_key}-Profile`, { username: action_data })
         case "discover/topic":
           return self.navigation_ref.push("DiscoverTopic", { topic: action_data })
         case "open":
           Reply.hydrate(action_data)
           Push.check_and_remove_notifications_with_post_id(action_data)
-          return self.navigation_ref.navigate("Conversation", { conversation_id: action_data })
+          return self.navigation_ref.push(`${self.current_tab_key}-Conversation`, { conversation_id: action_data })
         case "post_service":
           yield Services.hydrate_with_user(action_data)
-          return self.navigation_ref.navigate("PostService", { user: action_data })
+          return self.navigation_ref.push("PostService", { user: action_data })
         case "add_bookmark":
-          return self.navigation_ref.navigate("AddBookmark")
+          return self.navigation_ref.push("AddBookmark")
         case "highlights":
           return self.navigation_ref.push("Highlights")
         case "bookmark":
           return self.navigation_ref.push("Bookmark", { bookmark_id: action_data })
         case "following":
-          return self.navigation_ref.push("Following", { username: action_data })
+          return self.navigation_ref.push(`${self.current_tab_key}-Following`, { username: action_data })
         case "uploads":
-          return self.navigation_ref.push("Uploads")
+          return self.navigation_ref.push(`${self.current_tab_key}-Uploads`)
         case "replies":
           Replies.hydrate()
-          return self.navigation_ref.navigate("Replies")
+          return self.navigation_ref.push(`${self.current_tab_key}-Replies`)
         case "reply_edit":
-          return self.navigation_ref.navigate("ReplyEdit")
+          return self.navigation_ref.push("ReplyEdit")
         case "PageEdit":
           Auth.selected_user?.posting.hydrate_page_edit(action_data)
-          return self.navigation_ref.navigate("PageEdit")
+          return self.navigation_ref.push("PageEdit")
         case "Posts":
-          return self.navigation_ref.navigate("Posts")
+          return self.navigation_ref.push(`${self.current_tab_key}-Posts`)
         case "Posting":
           if (action_data != null) {
             // Action data is usually markdown text from a highlight
             Auth.selected_user?.posting.hydrate_post_with_markdown(action_data)
           }
-          return self.navigation_ref.navigate("Posting")
+          return self.navigation_ref.push("Posting")
         case "PostEdit":
           Auth.selected_user?.posting.hydrate_post_edit(action_data)
-          return self.navigation_ref.navigate("PostEdit")
+          return self.navigation_ref.push("PostEdit")
         case "ImageOptions":
-          return self.navigation_ref.navigate("ImageOptions", action_data)
+          return self.navigation_ref.push("ImageOptions", action_data)
         default:
-          self.navigation_ref.navigate(screen_name)
+          self.navigation_ref.push(screen_name)
       }
     }
   }),

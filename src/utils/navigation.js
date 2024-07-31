@@ -20,7 +20,7 @@ Navigation.events().registerComponentDidAppearListener(({ componentName, compone
     case componentName.includes("microblog.component"):
       return
     default:
-      App.set_current_screen_name_and_id(componentName, componentId)
+      //App.set_current_screen_name_and_id(componentName, componentId)
       break;
   }
 })
@@ -29,7 +29,7 @@ Navigation.events().registerModalDismissedListener(({ componentId }) => {
   console.log("registerModalDismissedListener", componentId)
   if(componentId !== App.bottom_sheet_last_id){
     Navigation.dismissAllModals()
-    App.set_previous_screen_name_and_id()
+    //App.set_previous_screen_name_and_id()
   }
   if(componentId === "microblog.ReplyEditScreen"){
     Replies.hydrate()

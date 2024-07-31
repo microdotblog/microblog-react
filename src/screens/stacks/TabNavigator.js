@@ -36,6 +36,13 @@ export default class TabNavigator extends React.Component{
         screenListeners={{
           state: (e) => {
             App.set_current_tab_index(e.data.state.index)
+          },
+          focus: (e) => {
+            App.set_current_tab_key(e.target)
+          },
+          tabPress: (e) => {
+            // TODO: Make sure to scroll web view to top if on current tab
+            console.log("tabPress", e)
           }
         }}
       >
