@@ -9,6 +9,10 @@ import ReplyCell from '../../components/cells/reply_cell';
 
 @observer
 export default class RepliesScreen extends React.Component{
+
+  componentDidMount() {
+    Replies.hydrate()
+  }
   
   _return_header = () => {
     return(

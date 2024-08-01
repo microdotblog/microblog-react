@@ -48,9 +48,9 @@ export default class Posting extends React.Component{
         <PostingStack.Screen
           name="ImageOptions"
           component={ImageOptionsScreen}
-          options={({ route }) => ({
+          options={({ route, navigation }) => ({
             headerTitle: "Image Options",
-            headerRight: () => <RemoveImageButton asset={route.params?.asset} index={route.params?.index} />
+            headerRight: () => <RemoveImageButton navigation={navigation} asset={route.params?.asset} index={route.params?.index} />
           })}
         />
         <PostingStack.Screen

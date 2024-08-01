@@ -24,10 +24,9 @@ export default class RemoveImageButton extends React.Component {
           {
             text: "Remove",
             onPress: () => {
+              this.props.navigation.goBack()
               // delay, seems to create problems otherwise
 							setTimeout(() => {
-								// TODO: Make sure we go back to the posting screen without removing the modal
-								App.navigation_ref.dispatch(StackActions.replace("Posting"))
                 posting.remove_asset(index)
               }, 500);
             },

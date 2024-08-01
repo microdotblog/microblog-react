@@ -1,10 +1,10 @@
 import { types, flow } from 'mobx-state-tree';
-import { shareScreen } from '../screens';
+//import { shareScreen } from '../screens';
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
-import ShareMenu from 'react-native-share-menu'
-import Share from './Share'
+// import ShareMenu from 'react-native-share-menu'
+// import Share from './Share'
 import { Linking, Appearance, AppState, Platform, Dimensions, Alert } from 'react-native'
 import Push from './Push'
 import Toast from 'react-native-simple-toast';
@@ -16,8 +16,6 @@ import Contact from './models/posting/Contact'
 import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
 import Services from './Services';
 import { SheetManager } from "react-native-actions-sheet";
-import Replies from './Replies'
-import { StackActions } from '@react-navigation/native';
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -262,7 +260,6 @@ export default App = types.model('App', {
         case "uploads":
           return self.navigation_ref.push(`${self.current_tab_key}-Uploads`)
         case "replies":
-          Replies.hydrate()
           return self.navigation_ref.push(`${self.current_tab_key}-Replies`)
         case "reply_edit":
           return self.navigation_ref.push("ReplyEdit")
