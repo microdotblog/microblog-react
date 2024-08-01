@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { ScrollView, View, Text, Image, TouchableOpacity } from 'react-native';
-import { Navigation } from 'react-native-navigation';
 import { Screens, POSTING_SCREEN } from '../../screens';
 import MediaAsset from '../../stores/models/posting/MediaAsset';
 import CheckmarkIcon from '../../assets/icons/checkmark.png';
@@ -151,12 +150,12 @@ export default class ImageCropScreen extends React.Component{
 						height: crop_size
 					})
 					Auth.selected_user.posting.attach_asset(media_asset)
-					Navigation.pop(POSTING_SCREEN)
+					// Navigation.pop(POSTING_SCREEN)
 				})
 			}
 			else {
 				Auth.selected_user.posting.attach_asset(this.asset)
-				Navigation.pop(POSTING_SCREEN)
+				// Navigation.pop(POSTING_SCREEN)
 			}
 		}
 	}

@@ -5824,7 +5824,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hoist-non-react-statics@npm:3.x.x, hoist-non-react-statics@npm:^3.3.0":
+"hoist-non-react-statics@npm:^3.3.0":
   version: 3.3.2
   resolution: "hoist-non-react-statics@npm:3.3.2"
   dependencies:
@@ -7240,7 +7240,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:4.17.x, lodash@npm:^4.17.21":
+"lodash@npm:^4.17.21":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: 10c0/d8cbea072bb08655bb4c989da418994b073a608dffa608b09ac04b43a791b12aeae7cd7ad919aa4c925f33b48490b5cfe6c1f71d827956071dae2e7bb3a6b74c
@@ -7689,7 +7689,6 @@ __metadata:
     react-native-image-picker: "npm:^4.6.0"
     react-native-image-viewing: "npm:^0.2.1"
     react-native-inappbrowser-reborn: "npm:^3.7.0"
-    react-native-navigation: "npm:^7.38.0"
     react-native-push-notification: "npm:^8.1.1"
     react-native-reanimated: "npm:^3.6.1"
     react-native-safe-area-context: "npm:^4.10.5"
@@ -8646,7 +8645,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:*, prop-types@npm:15.x.x, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:*, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -8743,13 +8742,6 @@ __metadata:
   version: 17.0.2
   resolution: "react-is@npm:17.0.2"
   checksum: 10c0/2bdb6b93fbb1820b024b496042cce405c57e2f85e777c9aabd55f9b26d145408f9f74f5934676ffdc46f3dcff656d78413a6e43968e7b3f92eea35b3052e9053
-  languageName: node
-  linkType: hard
-
-"react-lifecycles-compat@npm:2.0.0":
-  version: 2.0.0
-  resolution: "react-lifecycles-compat@npm:2.0.0"
-  checksum: 10c0/fcf79779d7651370ecf5669923dcdcf9c6062997f7ad00cd72b4e4f6df1d190df502bbea70ad068689e8f90f172b8d7d86b7e098cd7e2cefef28ce0e33b06e13
   languageName: node
   linkType: hard
 
@@ -8870,28 +8862,6 @@ __metadata:
   peerDependencies:
     react-native: ">=0.56"
   checksum: 10c0/b14d564925eec2c95fc6f8931b68f9ae7c418b5ccad2494748282ee9f7460f7094eec3c6e3a6304062124277624c0f6f647f41a7950ab263b7ebb7c6b0d50d4d
-  languageName: node
-  linkType: hard
-
-"react-native-navigation@npm:^7.38.0":
-  version: 7.40.1
-  resolution: "react-native-navigation@npm:7.40.1"
-  dependencies:
-    hoist-non-react-statics: "npm:3.x.x"
-    lodash: "npm:4.17.x"
-    prop-types: "npm:15.x.x"
-    react-lifecycles-compat: "npm:2.0.0"
-    tslib: "npm:1.9.3"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-    remx: "*"
-  peerDependenciesMeta:
-    remx:
-      optional: true
-  bin:
-    rnn-link: autolink/postlink/run.js
-  checksum: 10c0/6a41fd40b252aae1377c67e7d000d03b581897d7243a448b081534ee6acd6d000ad6d3fdd5c2701f4a68508d8669cf8ae6bf73ebf8d6655b3ae000eb1a0dd1a7
   languageName: node
   linkType: hard
 
@@ -10180,13 +10150,6 @@ __metadata:
   version: 0.0.3
   resolution: "tr46@npm:0.0.3"
   checksum: 10c0/047cb209a6b60c742f05c9d3ace8fa510bff609995c129a37ace03476a9b12db4dbf975e74600830ef0796e18882b2381fb5fb1f6b4f96b832c374de3ab91a11
-  languageName: node
-  linkType: hard
-
-"tslib@npm:1.9.3":
-  version: 1.9.3
-  resolution: "tslib@npm:1.9.3"
-  checksum: 10c0/752ee37e2cb12193732494d465241e7297dacf20b20f34a7591ab03713a4939183543d30d51fe2313ce3ae478044ac1fa10e4f19ad826ca5c81552372879c5a2
   languageName: node
   linkType: hard
 
