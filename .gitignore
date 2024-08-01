@@ -76,3 +76,4 @@ buck-out/
 vendor
 ios/.xcode.env.local
 /vendor/bundle/
+.yarn/install-state.gz
