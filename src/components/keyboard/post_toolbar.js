@@ -4,7 +4,6 @@ import { Image, Platform, ScrollView, Text, TouchableOpacity, View } from 'react
 import { SFSymbol } from 'react-native-sfsymbols'
 import PhotoLibrary from '../../assets/icons/toolbar/photo_library.png'
 import SettingsIcon from '../../assets/icons/toolbar/settings.png'
-import { uploadsScreen } from '../../screens'
 import App from '../../stores/App'
 import Auth from '../../stores/Auth'
 import Share from '../../stores/Share'
@@ -14,7 +13,8 @@ import { SvgXml } from 'react-native-svg';
 export default class PostToolbar extends React.Component{
 
 	_render_users_select() {
-		if (App.is_share_extension && Share.users.length > 1 && Share.toolbar_select_user_open) {
+		const { users } = Platform.OS === "ios" ? Share : Auth
+		if (App.is_share_extension && users?.length > 1 && Share.toolbar_select_user_open) {
 			return (
 				<View style={{ backgroundColor: App.theme_section_background_color(), padding: 5 }}>
 					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} style={{ overflow: 'hidden', maxWidth: "100%" }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -37,7 +37,7 @@ export default class PostToolbar extends React.Component{
 	}
 
 	_render_destinations() {
-		const { posting } = App.is_share_extension ? Share.selected_user : Auth.selected_user
+		const { posting } = this.props.posting != null ? this.props : Auth.selected_user
 		if (posting?.selected_service?.config?.active_destination() != null && posting?.selected_service?.config?.destination?.length > 1 && App.toolbar_select_destination_open) {
 			return (
 				<View style={{ backgroundColor: App.theme_section_background_color(), padding: 5 }}>
@@ -60,7 +60,7 @@ export default class PostToolbar extends React.Component{
 	}
   
 	render() {
-		const { posting } = App.is_share_extension ? Share.selected_user : Auth.selected_user
+		const { posting } = this.props.posting != null ? this.props : Auth.selected_user
 		return (
 			<View
 				style={{

@@ -40,7 +40,7 @@ export default class MainApp extends React.Component {
           console.log("App:set_up_url_listener:share", share)
           if (share?.data != null) {
             Share.hydrate_android_share(share)
-            App.navigate_to_screen("ShareMenu")
+            App.navigate_to_screen("Share")
           }        
         })
         ShareMenu.getInitialShare(async (share) => { 

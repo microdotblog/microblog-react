@@ -9,7 +9,7 @@ import Share from '../../stores/Share'
 export default class AssetToolbar extends React.Component{
   
   render() {
-    const { posting } = App.is_share_extension ? Share.selected_user : Auth.selected_user
+    const { posting } = this.props.posting != null ? this.props : Auth.selected_user
     if(posting.post_assets.length > 0){
       return(
         <ScrollView

@@ -3,6 +3,7 @@ import { observer } from 'mobx-react'
 import { InputAccessoryView, View, Text, Platform } from 'react-native'
 import Share from '../../stores/Share'
 import App from '../../stores/App'
+import Auth from '../../stores/Auth';
 import AssetToolbar from '../../components/keyboard/asset_toolbar'
 import PostToolbar from '../../components/keyboard/post_toolbar'
 import HighlightingText from '../../components/text/highlighting_text';
@@ -16,8 +17,9 @@ export default class SharePostScreen extends React.Component {
 	}
 
 	render() {
+		const { selected_user } = Platform.OS === "ios" ? Share : Auth
 		return (
-			Share.is_logged_in() && Share.selected_user?.posting != null ?
+			Share.is_logged_in() && selected_user?.posting != null ?
 				<View style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
 					{
 						Share.error_message != null &&
@@ -44,7 +46,7 @@ export default class SharePostScreen extends React.Component {
 							padding: 8,
 							color: App.theme_text_color()
 						}}
-						editable={!Share.selected_user?.posting.is_sending_post}
+						editable={!selected_user?.posting.is_sending_post}
 						multiline={true}
 						scrollEnabled={true}
 						returnKeyType={'default'}
@@ -55,11 +57,11 @@ export default class SharePostScreen extends React.Component {
 						enablesReturnKeyAutomatically={true}
 						underlineColorAndroid={'transparent'}
 						value={Share.share_text}
-						selection={Platform.OS === "ios" ? Share.selected_user?.posting.text_selection_flat : Share.text_selection}
+						selection={Platform.OS === "ios" ? selected_user?.posting.text_selection_flat : Share.text_selection}
 						onChangeText={
 							Platform.OS === 'ios'
-								? ({ nativeEvent: { text } }) => !Share.selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null
-								: (text) => !Share.selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null
+								? ({ nativeEvent: { text } }) => !selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null
+								: (text) => !selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null
 						 }
 						onSelectionChange={({ nativeEvent: { selection } }) => {
 							Share.set_text_selection(selection)
@@ -69,13 +71,13 @@ export default class SharePostScreen extends React.Component {
 					{
 						Platform.OS === "ios" ?
 						<InputAccessoryView nativeID={this.input_accessory_view_id}>
-							<AssetToolbar />
-							<PostToolbar />
+							<AssetToolbar posting={selected_user?.posting} />
+							<PostToolbar posting={selected_user?.posting} />
 						</InputAccessoryView>
 						:
 						<>
-							<AssetToolbar />
-							<PostToolbar />
+							<AssetToolbar posting={selected_user?.posting} />
+							<PostToolbar posting={selected_user?.posting} />
 						</>
 					}
 				</View>
