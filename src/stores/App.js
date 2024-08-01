@@ -248,7 +248,9 @@ export default App = types.model('App', {
           Auth.selected_user?.posting.hydrate_page_edit(action_data)
           return self.navigation_ref.push("PageEdit")
         case "Posts":
-          return self.navigation_ref.push(`${self.current_tab_key}-Posts`)
+          return self.navigation_ref.push(`${ self.current_tab_key }-Posts`)
+        case "Pages":
+          return self.navigation_ref.push(`${ self.current_tab_key }-Pages`)
         case "Posting":
           if (action_data != null && !from_listener) {
             // Action data is usually markdown text from a highlight,
