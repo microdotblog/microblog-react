@@ -166,8 +166,8 @@ export default class UploadsScreen extends React.Component{
       <UploadCell
         key={item.url}
         upload={item}
-        add_to_editor={this.props.did_open_from_editor}
-        trigger_pop={() => App.go_back()}
+        add_to_editor={this.props.route?.params?.did_open_from_editor}
+        trigger_pop={() => this.props.navigation.goBack()}
       />
     )
   }

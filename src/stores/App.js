@@ -17,6 +17,7 @@ import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
 import Services from './Services';
 import { SheetManager } from "react-native-actions-sheet";
 import Replies from './Replies'
+import { StackActions } from '@react-navigation/native';
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -285,6 +286,8 @@ export default App = types.model('App', {
           return self.navigation_ref.push("PostEdit")
         case "ImageOptions":
           return self.navigation_ref.push("ImageOptions", action_data)
+        case "PostUploads":
+          return self.navigation_ref.push(`PostUploads`, { did_open_from_editor: true })
         default:
           self.navigation_ref.push(screen_name)
       }

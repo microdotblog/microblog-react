@@ -116,7 +116,7 @@ export default class PostToolbar extends React.Component{
 							!this.props.is_post_edit && !App.is_share_extension && (Auth.selected_user?.is_premium != null && Auth.selected_user?.is_premium) &&
 							<>
 								{/* TODO: Add uploads screen */}
-								<TouchableOpacity style={{minWidth: 30, marginLeft: 4, marginRight: 0}} onPress={() => uploadsScreen(this.props.componentId, true)}>
+								<TouchableOpacity style={{minWidth: 30, marginLeft: 4, marginRight: 0}} onPress={() => App.navigate_to_screen("PostUploads")}>
 								{
 									Platform.OS === 'ios' ?
 										<SFSymbol
