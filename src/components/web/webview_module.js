@@ -14,7 +14,8 @@ const WebViewModule = observer((props) => {
   const [state, setState] = React.useState({
     endpoint: props.endpoint,
     signin_endpoint: `hybrid/signin?token=${Auth.selected_user.token()}&redirect_to=${props.endpoint}&theme=${App.theme}&show_actions=true`,
-    opacity: 0.0
+    opacity: 0.0,
+    is_pull_to_refresh_enabled: true
   });
 
   const web_url = "https://micro.blog";
@@ -71,6 +72,10 @@ const WebViewModule = observer((props) => {
           return true;
         }}
         onScroll={(e) => {
+          if (e.nativeEvent.contentOffset != null && e.nativeEvent.contentOffset.y != null) {
+            const y = e.nativeEvent.contentOffset.y
+            setState(prevState => ({ ...prevState, is_pull_to_refresh_enabled: y <= 0.15 }));
+          }
           App.set_is_scrolling();
         }}
         onMessage={(event) => {
@@ -95,7 +100,7 @@ const WebViewModule = observer((props) => {
           <RefreshControl
             onRefresh={on_refresh}
             refreshing={false}
-            enabled={true}
+            enabled={state.is_pull_to_refresh_enabled}
           />
         }
       >
