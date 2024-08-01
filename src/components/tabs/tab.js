@@ -47,7 +47,7 @@ export default class Tab extends React.Component {
       return iconNameOrAsset ? (
         <Image
           source={iconNameOrAsset}
-          style={{ width: 20, height: 20, tintColor: color }}
+          style={{ width: 24, height: 24, tintColor: color }}
         />
       ) : null;
     }
