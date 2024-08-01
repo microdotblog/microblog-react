@@ -86,14 +86,14 @@ export default Share = types.model('Share', {
 		set_data: flow(function* (direct_data = null) {
 			let data = null
 			let mime_type = null
-			if(Platform.OS === "ios"){
-				// TEMP: SHARED DATA:::
-				let shared_data = yield ShareMenuReactView.data()
-				if(shared_data){
-					self.temp_direct_shared_data = JSON.stringify(shared_data)
-				}
-				// TEMP: SHARED DATA^^^
-			}
+			// if(Platform.OS === "ios"){
+			// 	// TEMP: SHARED DATA:::
+			// 	let shared_data = yield ShareMenuReactView.data()
+			// 	if(shared_data){
+			// 		self.temp_direct_shared_data = JSON.stringify(shared_data)
+			// 	}
+			// 	// TEMP: SHARED DATA^^^
+			// }
 			if (direct_data != null) {
 				console.log('Share:set_data:direct_data', direct_data)
 				if (direct_data.data.includes("#:~:text=")) {
