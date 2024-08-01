@@ -6,6 +6,7 @@ import Tokens from "./Tokens";
 import User from './models/User';
 import string_checker from '../utils/string_checker'
 import { Platform, Keyboard } from 'react-native'
+import App from "./App"
 
 export default Share = types.model('Share', {
 	is_loading: types.optional(types.boolean, true),
@@ -219,11 +220,9 @@ export default Share = types.model('Share', {
 			Share.clear_error_message()
 			const saved = yield self.selected_user.posting.add_bookmark(url)
 			if (saved) {
-				// TODO: Dismiss share extension
-				ShareMenuReactView.dismissExtension()
-				// Platform.OS === "ios" ?
-				// 	ShareMenuReactView.dismissExtension()
-				// : Navigation.dismissAllModals() && App.dehydrate_share_extension() && Keyboard.dismiss()
+				Platform.OS === "ios" ?
+					ShareMenuReactView.dismissExtension()
+				: App.go_back() && App.dehydrate_share_extension() && Keyboard.dismiss()
 			}
 			else {
 				self.error_message = "Something went wrong, trying to save your bookmark. Please try again."
@@ -235,11 +234,9 @@ export default Share = types.model('Share', {
 			Share.clear_error_message()
 			const sent = yield self.selected_user.posting.send_post()
 			if (sent) {
-				// TODO: Dismiss share extension
-				ShareMenuReactView.dismissExtension()
-				// Platform.OS === "ios" ?
-				// 	ShareMenuReactView.dismissExtension()
-				// : Navigation.dismissAllModals() && App.dehydrate_share_extension() && Keyboard.dismiss()
+				Platform.OS === "ios" ?
+					ShareMenuReactView.dismissExtension()
+				: App.go_back() && App.dehydrate_share_extension() && Keyboard.dismiss()
 			}
 			else {
 				self.error_message = "Something went wrong, trying to send your post. Please try again."
@@ -277,11 +274,9 @@ export default Share = types.model('Share', {
 		}),
 
 		close: flow(function* () {
-			// TODO: Dismiss share extension
-			ShareMenuReactView.dismissExtension()
-			// Platform.OS === "ios" ?
-			// 	ShareMenuReactView.dismissExtension()
-			// : Navigation.dismissAllModals() && App.dehydrate_share_extension() && Keyboard.dismiss()
+			Platform.OS === "ios" ?
+				ShareMenuReactView.dismissExtension()
+			: App.go_back() && App.dehydrate_share_extension() && Keyboard.dismiss()
 		}),
 
 		clear_error_message: flow(function* () {

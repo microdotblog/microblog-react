@@ -59,7 +59,7 @@ export default class ShareScreen extends React.Component {
 													justifyContent: 'center',
 													alignItems: 'center'              
 												}}>
-													<ActivityIndicator color="#f80" size={'large'} />
+													<ActivityIndicator color={App.theme_accent_color()} size={'large'} />
 													<Text style={{ marginTop: 12, color: App.theme_text_color() }}>{ Share.selected_user?.posting.is_sending_post ? "Sending post..." : "Saving bookmark..." }</Text>
 												</View>
 											</View>
