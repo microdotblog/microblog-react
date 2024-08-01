@@ -116,7 +116,7 @@ export default App = types.model('App', {
         Login.trigger_login_from_url(event.url)
       }
       else if(event?.url && event?.url.includes('/post?text=') && Auth.is_logged_in()){
-        App.navigate_to_screen("post", event.url, true)
+        App.navigate_to_screen("Posting", event.url, true)
       }
       else if(event?.url && event?.url.includes('/indieauth') && Auth.is_logged_in()){
         console.log("Micropub:Opened app with IndieAuth")
@@ -132,24 +132,25 @@ export default App = types.model('App', {
         Login.trigger_login_from_url(value)
       }
       else if(value?.includes('/post?text=') && Auth.is_logged_in()){
-        App.navigate_to_screen("post", value, true)
+        App.navigate_to_screen("Posting", value, true)
       }
     })
-    if(Platform.OS === "android"){
-      ShareMenu.addNewShareListener((share) => {
-        console.log("App:set_up_url_listener:share", share)
-        if (share?.data != null) {
-          Share.hydrate_android_share(share)
-          return shareScreen()
-        }        
-      })
-      ShareMenu.getInitialShare(async (share) => { 
-        console.log("App:set_up_url_listener:getInitialShare", share)
-        if (share?.data != null) {
-          Share.hydrate_android_share(share)
-          return shareScreen()
-        }
-      })
+    if (Platform.OS === "android") {
+      // TODO
+      // ShareMenu.addNewShareListener((share) => {
+      //   console.log("App:set_up_url_listener:share", share)
+      //   if (share?.data != null) {
+      //     Share.hydrate_android_share(share)
+      //     return shareScreen()
+      //   }        
+      // })
+      // ShareMenu.getInitialShare(async (share) => { 
+      //   console.log("App:set_up_url_listener:getInitialShare", share)
+      //   if (share?.data != null) {
+      //     Share.hydrate_android_share(share)
+      //     return shareScreen()
+      //   }
+      // })
     }
   }),
   
@@ -270,9 +271,13 @@ export default App = types.model('App', {
         case "Posts":
           return self.navigation_ref.push(`${self.current_tab_key}-Posts`)
         case "Posting":
-          if (action_data != null) {
-            // Action data is usually markdown text from a highlight
+          if (action_data != null && !from_listener) {
+            // Action data is usually markdown text from a highlight,
+            // unless it's from the url listener.
             Auth.selected_user?.posting.hydrate_post_with_markdown(action_data)
+          }
+          else if (action_data != null && from_listener) {
+            Auth.selected_user.posting.set_post_text_from_action(action_data)
           }
           return self.navigation_ref.push("Posting")
         case "PostEdit":
@@ -293,22 +298,7 @@ export default App = types.model('App', {
     }
   }),
 
-  // navigate_to_screen: flow(function* (action, action_data, from_listener = false) {
-  //   if(!self.is_scrolling){
-  //     switch (action) {
-  //       case "post":
-  //         if(from_listener){
-  //           Auth.selected_user.posting.set_post_text_from_action(action_data)
-  //         }
-  //         if (!self.post_modal_is_open) {
-  //           return postingScreen(!from_listener ? action_data : null)
-  //         }
-  //         return
-  //     }
-  //   }
-  // }),
-
-  navigate_to_screen_from_menu: flow(function* (screen, open_as_modal = false) {
+  navigate_to_screen_from_menu: flow(function* (screen) {
     console.log("App:navigate_to_screen_from_menu", screen)
     App.close_sheet("main_sheet")
     switch (screen) {
