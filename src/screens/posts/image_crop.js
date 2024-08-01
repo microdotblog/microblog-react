@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { ScrollView, View, Text, Image, TouchableOpacity } from 'react-native';
-import { Screens, POSTING_SCREEN } from '../../screens';
 import MediaAsset from '../../stores/models/posting/MediaAsset';
 import CheckmarkIcon from '../../assets/icons/checkmark.png';
 // import ImageEditor from "@react-native-community/image-editor";
@@ -107,8 +106,6 @@ export default class ImageCropScreen extends React.Component{
 		
 		this.onSelectFilter = this.onSelectFilter.bind(this)
 		this.isSelectedFilter = this.isSelectedFilter.bind(this)
-		
-		Navigation.events().bindComponent(this)
 	}
 	
 	navigationButtonPressed = async ({ buttonId }) => {

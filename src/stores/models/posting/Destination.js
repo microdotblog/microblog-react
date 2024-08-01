@@ -135,6 +135,7 @@ export default Destination = types.model('Destination', {
 				const asset = self.uploads.find(a => a.url === upload.url)
 				if(asset){
 					Auth.selected_user.posting?.add_to_post_text(asset.best_post_markup())
+					// TODO: Should we bring this back?
 					// Navigation.pop(UPLOADS_MODAL_SCREEN)
 				}
 			}

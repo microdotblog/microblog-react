@@ -3,7 +3,6 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity, Platform } from 'react-native';
 import Auth from './../../stores/Auth';
-import { loginScreen } from './../../screens/';
 import AccountSwitcher from '../menu/account_switcher'
 import MenuNavigation from '../menu/nav'
 import App from '../../stores/App';
@@ -39,7 +38,7 @@ export default class SheetMenu extends React.Component{
               <AccountSwitcher />
               :
               <TouchableOpacity
-                onPress={loginScreen}
+                onPress={App.navigate_to_screen("Login")}
                 style={{
                   padding: 8,
                   paddingHorizontal: 16,
