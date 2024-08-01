@@ -26,6 +26,7 @@ import "./../components/sheets/sheets";
 import UpdatePostButton from '../components/header/update_post'
 import Share from '../stores/Share'
 import ShareMenu from 'react-native-share-menu'
+import ShareScreen from './share'
 
 const Stack = createNativeStackNavigator();
 
@@ -39,14 +40,14 @@ export default class MainApp extends React.Component {
           console.log("App:set_up_url_listener:share", share)
           if (share?.data != null) {
             Share.hydrate_android_share(share)
-            // return shareScreen()
+            App.navigate_to_screen("ShareMenu")
           }        
         })
         ShareMenu.getInitialShare(async (share) => { 
           console.log("App:set_up_url_listener:getInitialShare", share)
           if (share?.data != null) {
             Share.hydrate_android_share(share)
-            // return shareScreen()
+            App.navigate_to_screen("Share")
           }
         })
       }
@@ -166,6 +167,18 @@ export default class MainApp extends React.Component {
                     headerShown: false
                   }}
                 />
+                {
+                  Platform.OS === "android" &&
+                  <Stack.Screen
+                    name="Share"
+                    component={ShareScreen}
+                    options={{
+                      headerTitle: "Share",
+                      gestureEnabled: false,
+                      headerShown: false
+                    }}
+                  />
+                }
               </Stack.Group>
             </Stack.Navigator>
           </NavigationContainer>

@@ -9,7 +9,7 @@ import HighlightCell from '../../components/cells/highlight_cell';
 @observer
 export default class HighlightsScreen extends React.Component{
   
-  componentDidAppear(){
+  componentDidMount(){
     if(Auth.is_logged_in() && Auth.selected_user != null){
       Auth.selected_user.fetch_highlights()
     }

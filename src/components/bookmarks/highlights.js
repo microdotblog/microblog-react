@@ -5,7 +5,6 @@ import App from './../../stores/App';
 import Auth from '../../stores/Auth';
 import { SvgXml } from 'react-native-svg';
 import { SFSymbol } from "react-native-sfsymbols";
-import SearchIcon from '../../assets/icons/nav/discover.png';
 import { MenuView } from '@react-native-menu/menu';
 
 @observer
@@ -48,7 +47,17 @@ export default class HighlightsHeader extends React.Component{
                 style={{ height: 12, width: 12 }}
               />
               :
-              <Image source={SearchIcon} style={{ height: 22, width: 22, tintColor: App.theme_button_text_color() }} />
+              <SvgXml
+                style={{
+                  height: 12,
+                  width: 12
+                }}
+                color={App.theme_button_text_color()}
+                strokeWidth={2}
+                xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>'
+              />
             }
             </TouchableOpacity>
             <Text style={{ color: App.theme_text_color(), fontSize: 16 }}>tag: {Auth.selected_user?.selected_tag}</Text>
