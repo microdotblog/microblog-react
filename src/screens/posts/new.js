@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, Keyboard, ActivityIndicator, InputAccessoryView, Platform } from 'react-native';
+import { View, TextInput, ActivityIndicator, InputAccessoryView, Platform } from 'react-native';
 import Auth from '../../stores/Auth';
 import App from '../../stores/App';
 import PostToolbar from '../../components/keyboard/post_toolbar';
@@ -28,24 +28,6 @@ export default class PostingScreen extends React.Component{
         u.check_user_is_premium()
       }
     }
-  }
-  
-  // navigationButtonPressed = async ({ buttonId }) => {
-  //   console.log("navigationButtonPressed::", buttonId)
-  //   if(buttonId === "post_button"){
-  //     const sent = await Auth.selected_user.posting.send_post()
-  //     if(sent){
-  //       this._dismiss()
-  //     }
-  //   }
-  //   else{
-  //     this._dismiss()
-  //   }
-  // }
-  
-  _dismiss = () => {
-    Keyboard.dismiss()
-		//Navigation.dismissModal(this.props.componentId)
   }
   
   _input_outer_view = (component) => {
@@ -187,7 +169,7 @@ export default class PostingScreen extends React.Component{
               justifyContent: 'center',
               alignItems: 'center'              
             }}>
-              <ActivityIndicator color="#f80" size={'large'} />
+              <ActivityIndicator color={App.theme_accent_color()} size={'large'} />
             </View>
           </View>
           : null
