@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, Platform } from 'react-native';
 import { observer } from 'mobx-react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -24,6 +24,8 @@ import PostEditScreen from './posts/edit';
 
 import "./../components/sheets/sheets";
 import UpdatePostButton from '../components/header/update_post'
+import Share from '../stores/Share'
+import ShareMenu from 'react-native-share-menu'
 
 const Stack = createNativeStackNavigator();
 
@@ -31,7 +33,24 @@ const Stack = createNativeStackNavigator();
 export default class MainApp extends React.Component {
 
   async componentDidMount() {
-    App.hydrate()
+    App.hydrate().then( () => {
+      if (Platform.OS == "android") {
+        ShareMenu.addNewShareListener((share) => {
+          console.log("App:set_up_url_listener:share", share)
+          if (share?.data != null) {
+            Share.hydrate_android_share(share)
+            // return shareScreen()
+          }        
+        })
+        ShareMenu.getInitialShare(async (share) => { 
+          console.log("App:set_up_url_listener:getInitialShare", share)
+          if (share?.data != null) {
+            Share.hydrate_android_share(share)
+            // return shareScreen()
+          }
+        })
+      }
+    })
   }
   
   render() {

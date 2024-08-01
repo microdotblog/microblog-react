@@ -1,21 +1,19 @@
 import { types, flow } from 'mobx-state-tree';
-//import { shareScreen } from '../screens';
+import { Linking, Appearance, AppState, Platform, Dimensions, Alert } from 'react-native'
+import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
+import Toast from 'react-native-simple-toast';
+import { InAppBrowser } from 'react-native-inappbrowser-reborn'
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SheetManager } from "react-native-actions-sheet";
+
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
-// import ShareMenu from 'react-native-share-menu'
-// import Share from './Share'
-import { Linking, Appearance, AppState, Platform, Dimensions, Alert } from 'react-native'
-import Push from './Push'
-import Toast from 'react-native-simple-toast';
-import { InAppBrowser } from 'react-native-inappbrowser-reborn'
 import Discover from './Discover'
 import Settings from "./Settings"
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import Contact from './models/posting/Contact'
-import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
 import Services from './Services';
-import { SheetManager } from "react-native-actions-sheet";
+import Contact from './models/posting/Contact'
+import Push from './Push'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -134,23 +132,6 @@ export default App = types.model('App', {
         App.navigate_to_screen("Posting", value, true)
       }
     })
-    if (Platform.OS === "android") {
-      // TODO
-      // ShareMenu.addNewShareListener((share) => {
-      //   console.log("App:set_up_url_listener:share", share)
-      //   if (share?.data != null) {
-      //     Share.hydrate_android_share(share)
-      //     return shareScreen()
-      //   }        
-      // })
-      // ShareMenu.getInitialShare(async (share) => { 
-      //   console.log("App:set_up_url_listener:getInitialShare", share)
-      //   if (share?.data != null) {
-      //     Share.hydrate_android_share(share)
-      //     return shareScreen()
-      //   }
-      // })
-    }
   }),
   
   open_sheet: flow(function*(sheet_name = null, payload = null) {
