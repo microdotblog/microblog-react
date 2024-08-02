@@ -5,7 +5,7 @@ import User from './models/User'
 import Tokens from './Tokens'
 import CookieManager from '@react-native-cookies/cookies';
 import Push from './Push'
-import { menuBottomSheet } from '../screens'
+import App from './App'
 import Toast from 'react-native-simple-toast';
 
 export default Auth = types.model('Auth', {
@@ -89,7 +89,7 @@ export default Auth = types.model('Auth', {
     if (self.selected_user.posting.selected_service != null) {
       user.posting.selected_service.hydrate()
       user.fetch_highlights()
-      menuBottomSheet(true)
+      App.close_sheet("main_sheet")
     }
     self.is_selecting_user = false
     setTimeout(() => {
@@ -115,7 +115,8 @@ export default Auth = types.model('Auth', {
     else{
       // As we have no users left, let's also delete all tokens.
       Tokens.destroy_all_token_data()
-      menuBottomSheet(true)
+      App.close_sheet("main_sheet")
+      App.navigate_to_screen("Login")
     }
   }),
   

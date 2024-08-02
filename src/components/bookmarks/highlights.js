@@ -3,10 +3,8 @@ import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity, ActivityIndicator, Platform } from 'react-native';
 import App from './../../stores/App';
 import Auth from '../../stores/Auth';
-import { highlightsScreen, tagsBottomSheet } from './../../screens/'
 import { SvgXml } from 'react-native-svg';
 import { SFSymbol } from "react-native-sfsymbols";
-import SearchIcon from '../../assets/icons/nav/discover.png';
 import { MenuView } from '@react-native-menu/menu';
 
 @observer
@@ -17,7 +15,7 @@ export default class HighlightsHeader extends React.Component{
       <View style={{ padding: 11, paddingHorizontal: 15, backgroundColor: App.theme_input_background_color(), width: '100%', flexDirection: "row", justifyContent: "space-between" }}>
         {
           Auth.selected_user?.selected_tag == null ?
-          <TouchableOpacity onPress={() => highlightsScreen()} style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => App.navigate_to_screen("highlights")} style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text style={{ color: App.theme_text_color(), fontSize: 16 }}>{Auth.selected_user?.bookmark_highlights?.length} {Auth.selected_user?.bookmark_highlights?.length > 1 ? "highlights" : "highlight"}</Text>
             {
               App.is_loading_highlights &&
@@ -49,7 +47,17 @@ export default class HighlightsHeader extends React.Component{
                 style={{ height: 12, width: 12 }}
               />
               :
-              <Image source={SearchIcon} style={{ height: 22, width: 22, tintColor: App.theme_button_text_color() }} />
+              <SvgXml
+                style={{
+                  height: 12,
+                  width: 12
+                }}
+                color={App.theme_button_text_color()}
+                strokeWidth={2}
+                xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>'
+              />
             }
             </TouchableOpacity>
             <Text style={{ color: App.theme_text_color(), fontSize: 16 }}>tag: {Auth.selected_user?.selected_tag}</Text>
@@ -71,7 +79,7 @@ export default class HighlightsHeader extends React.Component{
               const event_id = nativeEvent.event
               if (event_id === 'all_tags') {
                 console.log('all_tags')
-                tagsBottomSheet()
+                App.open_sheet("tags_menu")
               } else{
                 // Let's not do anything too fancy and just try and set the tag given by the event_id
                 console.log('tag', event_id)

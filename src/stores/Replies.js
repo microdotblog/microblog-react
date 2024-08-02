@@ -3,7 +3,6 @@ import MicroBlogApi, { API_ERROR, DELETE_ERROR } from '../api/MicroBlogApi';
 import Reply from './models/Reply'
 import App from './App'
 import { Alert } from 'react-native';
-import { replyEditScreen  } from '../screens';
 import Auth from './Auth';
 
 export default Replies = types.model('Replies', {
@@ -36,7 +35,7 @@ export default Replies = types.model('Replies', {
   select_reply_and_open_edit: flow(function* (reply) {
     console.log("Reply:select_reply", reply)
     self.selected_reply = reply
-    replyEditScreen()
+    App.navigate_to_screen("reply_edit")
   }),
   
   delete_reply: flow(function* (reply) {

@@ -4,7 +4,6 @@ import { Image, Platform, ScrollView, Text, TouchableOpacity, View } from 'react
 import { SFSymbol } from 'react-native-sfsymbols'
 import PhotoLibrary from '../../assets/icons/toolbar/photo_library.png'
 import SettingsIcon from '../../assets/icons/toolbar/settings.png'
-import { postingOptionsScreen, postOptionsSettingsScreen, uploadsScreen } from '../../screens'
 import App from '../../stores/App'
 import Auth from '../../stores/Auth'
 import Share from '../../stores/Share'
@@ -14,7 +13,8 @@ import { SvgXml } from 'react-native-svg';
 export default class PostToolbar extends React.Component{
 
 	_render_users_select() {
-		if (App.is_share_extension && Share.users.length > 1 && Share.toolbar_select_user_open) {
+		const { users } = Platform.OS === "ios" ? Share : Auth
+		if (App.is_share_extension && users?.length > 1 && Share.toolbar_select_user_open) {
 			return (
 				<View style={{ backgroundColor: App.theme_section_background_color(), padding: 5 }}>
 					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} style={{ overflow: 'hidden', maxWidth: "100%" }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -37,7 +37,7 @@ export default class PostToolbar extends React.Component{
 	}
 
 	_render_destinations() {
-		const { posting } = App.is_share_extension ? Share.selected_user : Auth.selected_user
+		const { posting } = this.props.posting != null ? this.props : Auth.selected_user
 		if (posting?.selected_service?.config?.active_destination() != null && posting?.selected_service?.config?.destination?.length > 1 && App.toolbar_select_destination_open) {
 			return (
 				<View style={{ backgroundColor: App.theme_section_background_color(), padding: 5 }}>
@@ -60,7 +60,7 @@ export default class PostToolbar extends React.Component{
 	}
   
 	render() {
-		const { posting } = App.is_share_extension ? Share.selected_user : Auth.selected_user
+		const { posting } = this.props.posting != null ? this.props : Auth.selected_user
 		return (
 			<View
 				style={{
@@ -115,7 +115,8 @@ export default class PostToolbar extends React.Component{
 						{
 							!this.props.is_post_edit && !App.is_share_extension && (Auth.selected_user?.is_premium != null && Auth.selected_user?.is_premium) &&
 							<>
-								<TouchableOpacity style={{minWidth: 30, marginLeft: 4, marginRight: 0}} onPress={() => uploadsScreen(this.props.componentId, true)}>
+								{/* TODO: Add uploads screen */}
+								<TouchableOpacity style={{minWidth: 30, marginLeft: 4, marginRight: 0}} onPress={() => App.navigate_to_screen("PostUploads")}>
 								{
 									Platform.OS === 'ios' ?
 										<SFSymbol
@@ -171,19 +172,16 @@ export default class PostToolbar extends React.Component{
 								/>				
 							}
 						</TouchableOpacity>
-						{/* <TouchableOpacity style={{minWidth: 35}} onPress={() => posting.toggle_title()}>
-							<Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"T"}</Text>
-						</TouchableOpacity> */}
 						{
 							!this.props.is_post_edit && posting.selected_service?.config?.active_destination() != null && (posting.selected_service?.config?.destination?.length > 1 || (!posting.selected_service?.is_microblog && !App.is_share_extension)) ?
-							<TouchableOpacity style={{marginLeft: 8, marginRight: 8}} onPress={() => {!posting.selected_service?.is_microblog ? postOptionsSettingsScreen(App.is_share_extension ? Share.selected_user : Auth.selected_user, this.props.componentId) : App.toggle_select_destination()}}>
+							<TouchableOpacity style={{marginLeft: 8, marginRight: 8}} onPress={() => {!posting.selected_service?.is_microblog ? App.navigate_to_screen("post_service", App.is_share_extension ? Share.selected_user : Auth.selected_user) : App.toggle_select_destination()}}>
 								<Text style={{ fontSize: 16, fontWeight: '500', textAlign: 'center', color: App.theme_text_color() }}>
 									{posting.selected_service.config.active_destination().name}
 								</Text>
 							</TouchableOpacity>
 							: 
 							!this.props.is_post_edit && posting.selected_service?.config?.active_destination() == null && !posting.selected_service?.is_microblog && !App.is_share_extension ?
-							<TouchableOpacity style={{marginLeft: 8, marginRight: 8}} onPress={() => {!posting.selected_service?.is_microblog ? postOptionsSettingsScreen(App.is_share_extension ? Share.selected_user : Auth.selected_user, this.props.componentId) : App.toggle_select_destination()}}>
+							<TouchableOpacity style={{marginLeft: 8, marginRight: 8}} onPress={() => {!posting.selected_service?.is_microblog ? App.navigate_to_screen("post_service", App.is_share_extension ? Share.selected_user : Auth.selected_user) : App.toggle_select_destination()}}>
 								<Text style={{ fontSize: 16, fontWeight: '500', textAlign: 'center', color: App.theme_text_color() }}>
 									{posting.selected_service?.name}
 								</Text>
@@ -204,7 +202,7 @@ export default class PostToolbar extends React.Component{
 						{
 							!this.props.is_post_edit && !App.is_share_extension &&
 							<TouchableOpacity
-								onPress={() => postingOptionsScreen(this.props.componentId)}
+								onPress={() => App.navigate_to_screen("PostingOptions")}
 							>
 							{
 								Platform.OS === 'ios' ?

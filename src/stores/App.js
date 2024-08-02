@@ -1,33 +1,25 @@
 import { types, flow } from 'mobx-state-tree';
-import { startApp, loginScreen, profileScreen, conversationScreen, discoverTopicScreen, replyScreen, bookmarkScreen, helpScreen, Screens, postingScreen, POSTING_SCREEN, POSTING_OPTIONS_SCREEN, TIMELINE_SCREEN, repliesScreen, settingsScreen, postsScreen, pagesScreen, uploadsScreen, postOptionsSettingsScreen, addTagsBottomSheet, UPLOADS_MODAL_SCREEN, shareScreen } from '../screens';
+import { Linking, Appearance, AppState, Platform, Dimensions, Alert } from 'react-native'
+import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
+import Toast from 'react-native-simple-toast';
+import { InAppBrowser } from 'react-native-inappbrowser-reborn'
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SheetManager } from "react-native-actions-sheet";
+
 import Auth from './Auth';
 import Login from './Login';
 import Reply from './Reply';
-import { Linking, Appearance, AppState, Platform, Dimensions, Alert } from 'react-native'
-import { Navigation } from "react-native-navigation";
-import Push from './Push'
-import { theme_options } from '../utils/navigation'
-import Toast from 'react-native-simple-toast';
-import { InAppBrowser } from 'react-native-inappbrowser-reborn'
 import Discover from './Discover'
-import { menuBottomSheet } from "./../screens"
 import Settings from "./Settings"
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import Contact from './models/posting/Contact'
-import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
 import Services from './Services';
-// import ShareMenu from 'react-native-share-menu'
-// import Share from './Share'
+import Contact from './models/posting/Contact'
+import Push from './Push'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
 
 export default App = types.model('App', {
   is_loading: types.optional(types.boolean, false),
-  current_screen_name: types.maybeNull(types.string),
-  current_screen_id: types.maybeNull(types.string),
-  previous_screen_name: types.maybeNull(types.string),
-  previous_screen_id: types.maybeNull(types.string),
   image_modal_is_open: types.optional(types.boolean, false),
   current_image_url: types.maybeNull(types.string),
   is_scrolling: types.optional(types.boolean, false),
@@ -58,35 +50,42 @@ export default App = types.model('App', {
   is_loading_highlights: types.optional(types.boolean, false),
   is_loading_bookmarks: types.optional(types.boolean, false)
 })
+.volatile(self => ({
+  navigation_ref: null,
+  current_tab_key: null,
+  current_raw_tab_key: null,
+}))
 .actions(self => ({
+  
+  set_navigation: flow(function* (navigation = null) {
+    if (navigation) {
+      self.navigation_ref = navigation
+    }
+  }),
 
   hydrate: flow(function* () {
     console.log("App:hydrate")
     self.is_loading = true
-
-    self.current_screen_name = TIMELINE_SCREEN
-    self.current_screen_id = TIMELINE_SCREEN
     
     Auth.hydrate().then(async () => {
+      console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
+      if(!Auth.is_logged_in()){
+        App.navigate_to_screen("Login")
+      }
       await App.set_current_initial_theme()
       await App.set_current_initial_font_scale()
       await App.hydrate_last_tab_index()
       Push.hydrate()
       Settings.hydrate()
-      startApp().then(() => {
-        console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
-        if(self.current_tab_index > 0){
-          App.navigate_to_tab_index(self.current_tab_index)
-        }
-        if(!Auth.is_logged_in()){
-          loginScreen()
-        }
-        App.set_is_loading(false)
-        App.set_up_url_listener()
-        if (Auth.is_logged_in()) {
-          Push.handle_first_notification()
-        }
-      })
+      App.set_is_loading(false)
+      App.set_up_url_listener()
+      if (Auth.is_logged_in()) {
+        Push.handle_first_notification()
+        // Disabled this for now as it's causing some navigation issues
+        // if (self.current_tab_index > 0 && self.navigation_ref != null) {
+        //   App.navigate_to_tab_index(self.current_tab_index)
+        // }
+      }
     })
   }),
 
@@ -114,7 +113,7 @@ export default App = types.model('App', {
         Login.trigger_login_from_url(event.url)
       }
       else if(event?.url && event?.url.includes('/post?text=') && Auth.is_logged_in()){
-        App.navigate_to_screen("post", event.url, true)
+        App.navigate_to_screen("Posting", event.url, true)
       }
       else if(event?.url && event?.url.includes('/indieauth') && Auth.is_logged_in()){
         console.log("Micropub:Opened app with IndieAuth")
@@ -130,54 +129,57 @@ export default App = types.model('App', {
         Login.trigger_login_from_url(value)
       }
       else if(value?.includes('/post?text=') && Auth.is_logged_in()){
-        App.navigate_to_screen("post", value, true)
+        App.navigate_to_screen("Posting", value, true)
       }
     })
-    if(Platform.OS === "android"){
-      ShareMenu.addNewShareListener((share) => {
-        console.log("App:set_up_url_listener:share", share)
-        if (share?.data != null) {
-          Share.hydrate_android_share(share)
-          return shareScreen()
-        }        
-      })
-      ShareMenu.getInitialShare(async (share) => { 
-        console.log("App:set_up_url_listener:getInitialShare", share)
-        if (share?.data != null) {
-          Share.hydrate_android_share(share)
-          return shareScreen()
-        }
-      })
-    }
   }),
-
-  set_current_screen_name_and_id: flow(function* (screen_name, screen_id) {
-    console.log("App:set_current_screen_name_and_id", screen_name, screen_id)
-    self.post_modal_is_open = screen_id === POSTING_OPTIONS_SCREEN || screen_id === POSTING_SCREEN || screen_id === UPLOADS_MODAL_SCREEN
-
-    if(screen_name.includes("microblog.component") || Platform.OS === 'ios' && screen_name.includes("microblog.modal")){
-      if(Platform.OS === 'ios' && screen_name.includes("microblog.modal")){
-        self.previous_screen_id = self.current_screen_id
-        self.previous_screen_name = self.current_screen_name
+  
+  open_sheet: flow(function*(sheet_name = null, payload = null) {
+    console.log("App:open_sheet", sheet_name)
+    if (sheet_name != null) {
+      const sheet_is_open = SheetManager.get(sheet_name)?.current?.isOpen()
+      if (!sheet_is_open) {
+        SheetManager.show(sheet_name, { payload: payload })
       }
-      return
-    }
-
-    self.current_screen_name = screen_name
-    self.current_screen_id = screen_id
-
-    if (screen_id === "DISCOVER_SCREEN") {
-      Discover.shuffle_random_emoji()
     }
   }),
   
-  set_previous_screen_name_and_id: flow(function* () {
-    console.log("App:set_previous_screen_name_and_id", self.previous_screen_id, self.previous_screen_name)
-    if(self.previous_screen_id != null && self.previous_screen_name != null){
-      self.current_screen_id = self.previous_screen_id
-      self.current_screen_name = self.previous_screen_name
+  close_sheet: flow(function*(sheet_name = null) {
+    console.log("App:close_sheet", sheet_name)
+    if (sheet_name != null) {
+      SheetManager.hide(sheet_name)
     }
-    self.post_modal_is_open = false
+  }),
+  
+  close_all_sheets: flow(function*() {
+    console.log("App:close_all_sheets")
+    SheetManager.hideAll()
+  }),
+
+  set_current_tab_key: flow(function* (tab_key) {
+    console.log("App:set_current_tab_key", tab_key)
+    self.current_raw_tab_key = tab_key
+    if (tab_key.includes("Timeline")) {
+      self.current_tab_key = "Timeline"
+    }
+    else if (tab_key.includes("Mentions")) {
+      self.current_tab_key = "Mentions"
+    }
+    else if (tab_key.includes("Bookmarks")) {
+      self.current_tab_key = "Bookmarks"
+      if(Auth.is_logged_in() && Auth.selected_user != null){
+        Auth.selected_user.fetch_highlights()
+        Auth.selected_user.fetch_tags()
+        Auth.selected_user.fetch_recent_tags()
+      }
+    }
+    else if (tab_key.includes("Discover")) {
+      self.current_tab_key = "Discover"
+      Discover.shuffle_random_emoji()
+    }
+    else {
+      self.current_tab_key = tab_key
+    }
   }),
 
   handle_url: flow(function* (url) {
@@ -201,89 +203,102 @@ export default App = types.model('App', {
           }
           else if (action === "tag"){
             Auth.selected_user?.fetch_tags_for_bookmark(action_data)
-            addTagsBottomSheet()
+            App.open_sheet("add_tags_sheet")
           }
         }
       }
     }
   }),
-
-  navigate_to_screen: flow(function* (action, action_data, from_listener = false) {
-    if(!self.is_scrolling){
-      switch (action) {
-        case "user":
-          return profileScreen(action_data, self.current_screen_id)
-        case "open":
-          return conversationScreen(action_data, self.current_screen_id)
+  
+  navigate_to_screen: flow(function*(screen_name = null, action_data = null, from_listener = false) {
+    console.log("App:navigate_to_screen", screen_name)
+    if (screen_name != null && self.navigation_ref != null && !self.is_scrolling) {
+      switch (screen_name) {
         case "photo":
           return App.set_image_modal_data_and_activate(action_data)
-        case "discover/topic":
-          return discoverTopicScreen(action_data, self.current_screen_id)
         case "reply":
           Reply.hydrate(action_data)
-          return replyScreen(action_data, self.current_screen_id)
+          return self.navigation_ref.push("Reply", { conversation_id: action_data })
+        case "user":
+          return self.navigation_ref.push(`${self.current_tab_key}-Profile`, { username: action_data })
+        case "discover/topic":
+          return self.navigation_ref.push("DiscoverTopic", { topic: action_data })
+        case "open":
+          Reply.hydrate(action_data)
+          Push.check_and_remove_notifications_with_post_id(action_data)
+          return self.navigation_ref.push(`${self.current_tab_key}-Conversation`, { conversation_id: action_data })
+        case "post_service":
+          yield Services.hydrate_with_user(action_data)
+          return self.navigation_ref.push("PostService", { user: action_data })
+        case "add_bookmark":
+          return self.navigation_ref.push("AddBookmark")
+        case "highlights":
+          return self.navigation_ref.push("Highlights")
         case "bookmark":
-          return bookmarkScreen(action_data, self.current_screen_id)
-        case "post":
-          if(from_listener){
+          return self.navigation_ref.push("Bookmark", { bookmark_id: action_data })
+        case "following":
+          return self.navigation_ref.push(`${self.current_tab_key}-Following`, { username: action_data })
+        case "uploads":
+          return self.navigation_ref.push(`${self.current_tab_key}-Uploads`)
+        case "replies":
+          return self.navigation_ref.push(`${self.current_tab_key}-Replies`)
+        case "reply_edit":
+          return self.navigation_ref.push("ReplyEdit")
+        case "PageEdit":
+          Auth.selected_user?.posting.hydrate_page_edit(action_data)
+          return self.navigation_ref.push("PageEdit")
+        case "Posts":
+          return self.navigation_ref.push(`${ self.current_tab_key }-Posts`)
+        case "Pages":
+          return self.navigation_ref.push(`${ self.current_tab_key }-Pages`)
+        case "Posting":
+          if (action_data != null && !from_listener) {
+            // Action data is usually markdown text from a highlight,
+            // unless it's from the url listener.
+            Auth.selected_user?.posting.hydrate_post_with_markdown(action_data)
+          }
+          else if (action_data != null && from_listener) {
             Auth.selected_user.posting.set_post_text_from_action(action_data)
           }
-          if (!self.post_modal_is_open) {
-            return postingScreen(!from_listener ? action_data : null)
-          }
-          return
+          return self.navigation_ref.push("Posting")
+        case "PostEdit":
+          Auth.selected_user?.posting.hydrate_post_edit(action_data)
+          return self.navigation_ref.push("PostEdit")
+        case "ImageOptions":
+          return self.navigation_ref.push("ImageOptions", action_data)
+        case "PostUploads":
+          return self.navigation_ref.push(`PostUploads`, { did_open_from_editor: true })
+        default:
+          self.navigation_ref.push(screen_name)
       }
     }
   }),
+  
+  go_back: flow(function*() {
+    console.log("App:go_back")
+    if (self.navigation_ref != null && self.navigation_ref.canGoBack()) {
+      self.navigation_ref.goBack()
+    }
+  }),
 
-  navigate_to_screen_from_menu: flow(function* (screen, open_as_modal = false) {
+  navigate_to_screen_from_menu: flow(function* (screen) {
     console.log("App:navigate_to_screen_from_menu", screen)
-    menuBottomSheet(true)
-    let tab_index = null
-    let should_pop = false
+    App.close_sheet("main_sheet")
     switch (screen) {
-      case "Timeline":
-        tab_index = 0;
-        should_pop = self.current_screen_id !== "microblog.TimelineScreen"
-        if(should_pop){
-          Navigation.popToRoot("microblog.TimelineScreen")
-        }
-        break;
-      case "Mentions":
-        tab_index = 1;
-        should_pop = self.current_screen_id !== "microblog.MentionsScreen"
-        if(should_pop){
-          Navigation.popToRoot("microblog.MentionsScreen")
-        }
-        break;
-      case "Discover":
-        tab_index = 3;
-        should_pop = self.current_screen_id !== "microblog.DiscoverScreen"
-        if(should_pop){
-          Navigation.popToRoot("microblog.DiscoverScreen")
-        }
-        break;
-      case "Bookmarks":
-        tab_index = 2;
-        should_pop = self.current_screen_id !== "microblog.BookmarksScreen"
-        if(should_pop){
-          Navigation.popToRoot("microblog.BookmarksScreen")
-        }
-        break;
       case "Help":
-        return helpScreen()
+        return self.navigate_to_screen("Help")
       case "Settings":
-        return settingsScreen()
+        return self.navigate_to_screen("Settings")
       case "Replies":
-        return repliesScreen(self.current_screen_id)
+        return self.navigate_to_screen("replies")
       case "Posts":
-        return postsScreen(self.current_screen_id)
+        return self.navigate_to_screen("Posts")
       case "Pages":
-        return pagesScreen(self.current_screen_id)
+        return self.navigate_to_screen("Pages")
       case "Uploads":
-        return uploadsScreen(self.current_screen_id)
+        return self.navigate_to_screen("uploads")
       case "PostService":
-        return postOptionsSettingsScreen(Auth.selected_user, self.current_screen_id, open_as_modal)
+        return self.navigate_to_screen("post_service", Auth.selected_user)
     }
     console.log("App:navigate_to_screen_from_menu:index", screen, tab_index, self.current_screen_id, should_pop)
     if(tab_index != null){
@@ -442,7 +457,7 @@ export default App = types.model('App', {
     else if (message === "bookmark_removed") {
       Toast.showWithGravity("Bookmark removed!", Toast.SHORT, Toast.CENTER)
     }
-    if (message === "bookmark_removed" && App.current_screen_id === "BOOKMARKS_SCREEN") {
+    if (message === "bookmark_removed") {
       if (CURRENT_WEB_VIEW_REF) {
         try {
           CURRENT_WEB_VIEW_REF.injectJavaScript(`window.scrollTo({ top: 0 })`)
@@ -463,6 +478,18 @@ export default App = types.model('App', {
         } catch (error) {
           console.log("App:handle_web_view_message:bookmark_added:error", error)
         }
+      }
+    }
+  }),
+
+  scroll_web_view_to_top: flow(function* (target) {
+    // TODO: Make sure to scroll web view to top if on current tab
+    console.log("App:scroll_web_view_to_top", target, self.current_raw_tab_key)
+    if (target != null && self.current_raw_tab_key == target) {
+      try {
+        CURRENT_WEB_VIEW_REF.injectJavaScript(`window.scrollTo({ top: 0, behavior: 'smooth' })`)
+      } catch (error) {
+        console.log("App:scroll_web_view_to_top:error", error)
       }
     }
   }),
@@ -496,24 +523,7 @@ export default App = types.model('App', {
     console.log("App:change_current_theme", color)
     self.is_switching_theme = true
     self.theme = color
-    yield App.update_navigation_screens()
     self.is_switching_theme = false
-  }),
-
-  update_navigation_screens: flow(function* () {
-    console.log("App:update_navigation_screens")
-    if(self.is_share_extension) return
-    const options = theme_options({})
-    // We set default options here so that any new screen, that might not be in the stack, will pick them up.
-    Navigation.setDefaultOptions(options)
-    Object.entries(Screens).forEach(([ key ]) => {
-      if (key != null &&
-        !key.includes("microblog.component") &&
-        key !== "__initBottomSheet__") {
-        console.log("App:update_navigation_screens:screen", key)
-        Navigation.mergeOptions(key, options)
-      }
-    })
   }),
   
   set_current_initial_font_scale: flow(function* () {
@@ -579,12 +589,11 @@ export default App = types.model('App', {
   
   navigate_to_tab_index: flow(function* (tab_index) {
     console.log("App:navigate_to_tab_index", tab_index)
-    App.set_current_tab_index(tab_index)
-    Navigation.mergeOptions('ROOT', {
-      bottomTabs: {
-        currentTabIndex: tab_index
-      }
-    });
+    const tab_names = ['TimelineStack', 'MentionsStack', 'BookmarksStack', 'DiscoverStack']
+    const target_tab = tab_names[ tab_index ]
+    if (target_tab != null) { 
+      self.navigation_ref.navigate(target_tab)
+    }
   }),
 
   check_usernames: flow(function* (text) {
@@ -720,7 +729,7 @@ export default App = types.model('App', {
     console.log("App:trigger_logout_for_user")
     Alert.alert(`Please sign in again`, `Your token for, @${user.username}, is no longer valid.`)
     yield Auth.logout_user(user)
-    loginScreen()
+    App.navigate_to_screen("Login")
   }),
   
   set_is_loading_bookmarks: flow(function* (loading) {
@@ -730,8 +739,14 @@ export default App = types.model('App', {
 
 }))
 .views(self => ({
+  is_dark_mode() {
+    return self.theme === "dark"
+  },
   theme_accent_color(){
     return "#f80"
+  },
+  theme_warning_text_color(){
+    return "red"
   },
   theme_background_color() {
     return self.theme === "dark" ? "#1d2530" : "#fff"
@@ -858,6 +873,9 @@ export default App = types.model('App', {
   },
   web_font_scale(){
     return App.font_scale > 2 ? 2 : App.font_scale
+  },
+  navigation(){
+    return self.navigation_ref
   }
 }))
 .create();

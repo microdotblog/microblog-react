@@ -4,16 +4,14 @@ import { View, Text, ScrollView, RefreshControl } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
-import { Navigation } from 'react-native-navigation';
 import Replies from '../../stores/Replies';
 import ReplyCell from '../../components/cells/reply_cell';
 
 @observer
 export default class RepliesScreen extends React.Component{
-  
-  constructor (props) {
-    super(props)
-    Navigation.events().bindComponent(this)
+
+  componentDidMount() {
+    Replies.hydrate()
   }
   
   _return_header = () => {

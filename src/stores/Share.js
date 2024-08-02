@@ -6,7 +6,8 @@ import Tokens from "./Tokens";
 import User from './models/User';
 import string_checker from '../utils/string_checker'
 import { Platform, Keyboard } from 'react-native'
-import { Navigation } from 'react-native-navigation'
+import App from "./App"
+import Auth from './Auth';
 
 export default Share = types.model('Share', {
 	is_loading: types.optional(types.boolean, true),
@@ -29,7 +30,8 @@ export default Share = types.model('Share', {
 	selected_user: types.maybeNull(types.reference(User)),
 	toolbar_select_user_open: types.optional(types.boolean, false),
 	error_message: types.maybeNull(types.string),
-	image_options_open: types.optional(types.boolean, false)
+	image_options_open: types.optional(types.boolean, false),
+	temp_direct_shared_data: types.optional(types.string, ""),
 })
 	.actions(self => ({
 
@@ -47,15 +49,18 @@ export default Share = types.model('Share', {
 				self.share_image_data = null
 				self.error_message = null
 				self.image_options_open = false
+				self.temp_direct_shared_data = ""
 			}
-			const data = yield Tokens.hydrate(true)
-			if (data?.tokens) {
-				console.log('Share:hydrate:tokens', data.tokens)
-				for (const user_data of data.tokens) {
-					console.log("USER DATA", user_data)
-					const existing_user = self.users.find(u => u.username === user_data.username)
-					if (existing_user == null) {
-						yield self.login_account(user_data)
+			if (Platform.OS === "ios") {
+				const data = yield Tokens.hydrate(true)
+				if (data?.tokens) {
+					console.log('Share:hydrate:tokens', data.tokens)
+					for (const user_data of data.tokens) {
+						console.log("USER DATA", user_data)
+						const existing_user = self.users.find(u => u.username === user_data.username)
+						if (existing_user == null) {
+							yield self.login_account(user_data)
+						}
 					}
 				}
 			}
@@ -81,6 +86,14 @@ export default Share = types.model('Share', {
 		set_data: flow(function* (direct_data = null) {
 			let data = null
 			let mime_type = null
+			// if(Platform.OS === "ios"){
+			// 	// TEMP: SHARED DATA:::
+			// 	let shared_data = yield ShareMenuReactView.data()
+			// 	if(shared_data){
+			// 		self.temp_direct_shared_data = JSON.stringify(shared_data)
+			// 	}
+			// 	// TEMP: SHARED DATA^^^
+			// }
 			if (direct_data != null) {
 				console.log('Share:set_data:direct_data', direct_data)
 				if (direct_data.data.includes("#:~:text=")) {
@@ -113,10 +126,17 @@ export default Share = types.model('Share', {
 				self.share_type = "json"
 			}
 			if (self.share_type === "text") {
-				self.share_text = string_checker._validate_url(data) ? data : `> ${data}`
-				self.users.forEach(user => {
-					user.posting.set_post_text(self.share_text)
-				})
+				self.share_text = string_checker._validate_url(data) ? data : `> ${ data }`
+				if (Platform.OS === "ios") {
+					self.users.forEach(user => {
+						user.posting.set_post_text(self.share_text)
+					})
+				}
+				else {
+					Auth.users.forEach(user => {
+						user.posting.set_post_text(self.share_text)
+					})
+				}
 			}
 			else if (self.share_type === "image") {
 				const image_data = {
@@ -125,9 +145,16 @@ export default Share = types.model('Share', {
 					mime: mime_type
 				}
 				self.share_image_data = image_data
-				self.users.forEach(user => {
-					user.posting.create_and_attach_asset(image_data)
-				})
+				if (Platform.OS === "ios") {
+					self.users.forEach(user => {
+						user.posting.create_and_attach_asset(image_data)
+					})
+				}
+				else {
+					Auth.users.forEach(user => {
+						user.posting.create_and_attach_asset(image_data)
+					})
+				}
 			}
 			else if (self.share_type === "json"){
 				// Because we're dealing with JSON, we need to check a few things and add the correct share_text
@@ -147,12 +174,20 @@ export default Share = types.model('Share', {
 				}
 				
 				self.share_text = share_text
-				self.users.forEach(user => {
-					user.posting.set_post_text(self.share_text)
-				})
+				if (Platform.OS === "ios") {
+					self.users.forEach(user => {
+						user.posting.set_post_text(self.share_text)
+					})
+				}
+				else {
+					Auth.users.forEach(user => {
+						user.posting.set_post_text(self.share_text)
+					})
+				}
 			}
 			else {
-				// TODO?: Not supported
+				self.error_message = "We didn't recognise the data. Please try again."
+				self.is_loading = false
 			}
 		}),
 		
@@ -181,12 +216,20 @@ export default Share = types.model('Share', {
 
 		select_user: flow(function* (user) {
 			console.log("Share:select_user", user)
-			if (self.selected_user !== user) {
-				self.selected_user = user
+			if (Platform.OS === "ios") {
+				if (self.selected_user !== user) {
+					self.selected_user = user
+				}
+				else {
+					self.selected_user?.fetch_data()
+				}
 			}
-			else {
-				self.selected_user?.fetch_data()
+			else if (Auth.selected_user !== user) {
+				Auth.select_user(user).then(() => {
+					Auth.selected_user?.fetch_data()
+				})
 			}
+			
 			if (self.toolbar_select_user_open) {
 				self.toolbar_select_user_open = false
 			}
@@ -207,11 +250,17 @@ export default Share = types.model('Share', {
 				url = self.share_url
 			}
 			Share.clear_error_message()
-			const saved = yield self.selected_user.posting.add_bookmark(url)
+			let saved = false
+			if (Platform.OS === "ios") {
+				saved = yield self.selected_user.posting.add_bookmark(url)
+			}
+			else {
+				saved = yield Auth.selected_user.posting.add_bookmark(url)
+			}
 			if (saved) {
 				Platform.OS === "ios" ?
 					ShareMenuReactView.dismissExtension()
-				: Navigation.dismissAllModals() && App.dehydrate_share_extension() && Keyboard.dismiss()
+				: App.go_back() && App.dehydrate_share_extension() && Keyboard.dismiss()
 			}
 			else {
 				self.error_message = "Something went wrong, trying to save your bookmark. Please try again."
@@ -221,11 +270,17 @@ export default Share = types.model('Share', {
 		send_post: flow(function* () {
 			console.log("Share:send_post")
 			Share.clear_error_message()
-			const sent = yield self.selected_user.posting.send_post()
+			let sent = false
+			if (Platform.OS === "ios") {
+				sent = yield self.selected_user.posting.send_post()
+			}
+			else {
+				sent = yield Auth.selected_user.posting.send_post()
+			}
 			if (sent) {
 				Platform.OS === "ios" ?
 					ShareMenuReactView.dismissExtension()
-				: Navigation.dismissAllModals() && App.dehydrate_share_extension() && Keyboard.dismiss()
+				: App.go_back() && App.dehydrate_share_extension() && Keyboard.dismiss()
 			}
 			else {
 				self.error_message = "Something went wrong, trying to send your post. Please try again."
@@ -233,11 +288,17 @@ export default Share = types.model('Share', {
 		}),
 
 		set_post_text: flow(function* (text) {
-			console.log("Share:set_post_text", text)
 			self.share_text = text
-			self.users.forEach(user => {
-				user.posting.set_post_text(text)
-			})
+			if (Platform.OS === "ios") {
+				self.users.forEach(user => {
+					user.posting.set_post_text(text)
+				})
+			}
+			else {
+				Auth.users.forEach(user => {
+					user.posting.set_post_text(text)
+				})
+			}
 		}),
 
 		handle_text_action: flow(function* (action) {
@@ -265,7 +326,7 @@ export default Share = types.model('Share', {
 		close: flow(function* () {
 			Platform.OS === "ios" ?
 				ShareMenuReactView.dismissExtension()
-			: Navigation.dismissAllModals() && App.dehydrate_share_extension() && Keyboard.dismiss()
+			: App.go_back() && App.dehydrate_share_extension() && Keyboard.dismiss()
 		}),
 
 		clear_error_message: flow(function* () {
@@ -284,18 +345,32 @@ export default Share = types.model('Share', {
 
 	}))
 	.views(self => ({
-		is_logged_in(){
-			return self.users.length && self.selected_user != null && self.selected_user.token() != null
+		is_logged_in() {
+			if (Platform.OS === "ios") {
+				return self.users.length && self.selected_user != null && self.selected_user.token() != null
+			}
+			else {
+				return Auth.is_logged_in()
+			}
 		},
 		can_save_as_bookmark() {
 			return (self.share_type === "text" || self.share_type === "json") && self.share_text.length > 0 && (self.share_text.startsWith("http://") || self.share_text.startsWith("https://") || (self.share_text.startsWith("[") && self.share_text.endsWith(")"))) && (string_checker._validate_url(self.share_text) || string_checker._validate_url(self.share_url))
 		},
 		sorted_users() {
-			return self.users.slice().sort((a, b) => {
-				const a_is_selected = Share.selected_user?.username === a.username;
-				const b_is_selected = Share.selected_user?.username === b.username;
-				return b_is_selected - a_is_selected;
-			})
+			if (Platform.OS === "ios") {
+				return self.users.slice().sort((a, b) => {
+					const a_is_selected = Share.selected_user?.username === a.username
+					const b_is_selected = Share.selected_user?.username === b.username
+					return b_is_selected - a_is_selected
+				})
+			}
+			else {
+				return Auth.users.slice().sort((a, b) => {
+					const a_is_selected = Auth.selected_user?.username === a.username
+					const b_is_selected = Auth.selected_user?.username === b.username
+					return b_is_selected - a_is_selected
+				})
+			}
 		}
 	}))
 	.create()

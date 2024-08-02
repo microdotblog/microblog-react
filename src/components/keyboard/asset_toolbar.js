@@ -9,7 +9,7 @@ import Share from '../../stores/Share'
 export default class AssetToolbar extends React.Component{
   
   render() {
-    const { posting } = App.is_share_extension ? Share.selected_user : Auth.selected_user
+    const { posting } = this.props.posting != null ? this.props : Auth.selected_user
     if(posting.post_assets.length > 0){
       return(
         <ScrollView
@@ -31,7 +31,7 @@ export default class AssetToolbar extends React.Component{
           {
             posting.post_assets.map((asset, index) => (
               <TouchableOpacity
-                onPress={() => App.is_share_extension ? Share.trigger_image_options(asset) : posting.asset_option_screen(asset, index, this.props.componentId)}
+                onPress={() => App.is_share_extension ? Share.trigger_image_options(asset) : posting.asset_option_screen(asset, index)}
                 onLongPress={() => !asset.is_uploading && asset.remote_url != null && !asset.is_video ? posting.inline_asset(asset) : null}
                 key={`${asset.uri}-${index}`}
                 style={{

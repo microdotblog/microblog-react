@@ -49,7 +49,7 @@ export default Reply = types.model('Reply', {
       if (data !== POST_ERROR) {
         self.reply_text = ""
         self.is_sending_reply = false
-        //Replies.hydrate()
+        Replies.hydrate()
         App.show_toast("Reply was updated!")
         return true
       }

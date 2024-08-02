@@ -5,7 +5,6 @@ import FastImage from 'react-native-fast-image';
 import App from '../../stores/App'
 import Auth from '../../stores/Auth';
 import { SvgXml } from 'react-native-svg';
-import { postOptionsSettingsScreen } from '../../screens';
 
 @observer
 export default class UserPostingSettings extends React.Component{
@@ -40,7 +39,7 @@ export default class UserPostingSettings extends React.Component{
 							style={{ width: 24, height: 24, borderRadius: 50, marginRight: 8 }}
 						/>
 					</View>
-					<TouchableOpacity onPress={() => postOptionsSettingsScreen(user, this.props.componentId)} style={{flexDirection: "row", alignItems: "center"}}>
+					<TouchableOpacity onPress={() => App.navigate_to_screen("post_service", user)} style={{flexDirection: "row", alignItems: "center"}}>
 						<Text style={{ color: App.theme_text_color(), marginRight: 5 }}>{user.posting?.selected_service?.description()}</Text>
 						<SvgXml
 							xml={`

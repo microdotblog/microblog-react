@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, Keyboard, ActivityIndicator, InputAccessoryView, Platform, KeyboardAvoidingView } from 'react-native';
-import { Navigation } from 'react-native-navigation';
+import { View, TextInput, ActivityIndicator, InputAccessoryView, Platform, KeyboardAvoidingView } from 'react-native';
 import Reply from '../../stores/Reply'
 import ReplyToolbar from '../../components/keyboard/reply_toolbar'
 import UsernameToolbar from '../../components/keyboard/username_toolbar'
@@ -12,30 +11,7 @@ export default class ReplyScreen extends React.Component{
   
 	constructor (props) {
 		super(props)
-		Navigation.events().bindComponent(this)
 		this.input_accessory_view_id = "input_toolbar";
-	}
-
-  componentDidAppear(){
-    Navigation.mergeOptions(this.props.componentId, {modal: {swipeToDismiss: false}});
-  }
-  
-  navigationButtonPressed = async ({ buttonId }) => {
-		console.log("ReplyScreen:navigationButtonPressed::", buttonId)
-    if(buttonId === "post_button"){
-      const sent = await Reply.send_reply()
-      if(sent){
-        this._dismiss()
-      }
-    }
-    else{
-      this._dismiss()
-    }
-  }
-  
-  _dismiss = () => {
-    Keyboard.dismiss()
-		Navigation.dismissModal(this.props.componentId)
 	}
   
   render() {

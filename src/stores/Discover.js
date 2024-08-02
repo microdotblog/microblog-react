@@ -74,7 +74,7 @@ export default Discover = types.model('Discover', {
 			}
 			emoji_list_random_indexes.push(random_index)
 		}
-		return emoji_list.filter((emoji, index) => emoji_list_random_indexes.includes(index))
+		return emoji_list.filter((_emoji, index) => emoji_list_random_indexes.includes(index))
 	},
 	
 	can_show_search(){

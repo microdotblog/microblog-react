@@ -5,7 +5,7 @@ import Notification from './models/Notification'
 import Auth from './Auth'
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { Platform, PermissionsAndroid } from 'react-native'
-import { notificationsSheet } from "../screens"
+import App from './App'
 
 export default Push = types.model('Push', {
 	token: types.optional(types.string, ""),
@@ -137,13 +137,13 @@ export default Push = types.model('Push', {
 	open_notification_sheet: flow(function* () {
 		console.log("Push::open_notification_sheet")
 		if(!self.notificiations_open){
-			notificationsSheet()
+			App.open_sheet("notifications_sheet")
 		}
 	}),
 	
 	close_notification_sheet: flow(function* () {
 		console.log("Push::close_notification_sheet")
-		notificationsSheet(true)
+		App.close_sheet("notifications_sheet")
 	}),
 	
 	toggle_notifications_open: flow(function* (open = true) {

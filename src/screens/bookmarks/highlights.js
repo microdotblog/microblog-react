@@ -3,19 +3,13 @@ import { View, RefreshControl, FlatList } from 'react-native';
 import { observer } from 'mobx-react';
 import Auth from './../../stores/Auth';
 import App from './../../stores/App';
-import { Navigation } from 'react-native-navigation';
 import LoginMessage from '../../components/info/login_message'
 import HighlightCell from '../../components/cells/highlight_cell';
 
 @observer
 export default class HighlightsScreen extends React.Component{
   
-  constructor (props) {
-		super(props)
-		Navigation.events().bindComponent(this)
-  }
-  
-  componentDidAppear(){
+  componentDidMount(){
     if(Auth.is_logged_in() && Auth.selected_user != null){
       Auth.selected_user.fetch_highlights()
     }

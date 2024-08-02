@@ -8,9 +8,6 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import MediaAsset from './posting/MediaAsset'
 import App from '../App'
 import Clipboard from '@react-native-clipboard/clipboard';
-import { imageOptionsScreen, POSTING_SCREEN } from '../../screens';
-import { imageCropScreen } from '../../screens';
-import { Navigation } from 'react-native-navigation';
 import Tokens from '../Tokens';
 import md from 'markdown-it';
 const parser = md({ html: true });
@@ -258,8 +255,8 @@ export default Posting = types.model('Posting', {
         console.log("Posting:handle_asset_action:asset", asset, is_video)
         // disabling the crop screen for 3.0, will bring back in 3.X
         if (false) {
-          const media_asset = MediaAsset.create(asset)
-          imageCropScreen(media_asset, component_id)
+          // const media_asset = MediaAsset.create(asset)
+          // imageCropScreen(media_asset, component_id)
         }
         else {
           if(is_video){
@@ -321,9 +318,9 @@ export default Posting = types.model('Posting', {
     }
   }),
   
-  asset_option_screen: flow(function* (asset, index, component_id) {
+  asset_option_screen: flow(function* (asset, index) {
     console.log("Posting:asset_option_screen", asset)
-    return imageOptionsScreen(asset, index, component_id)
+    return App.navigate_to_screen("ImageOptions", { asset: asset, index: index })
   }),
   
   remove_asset: flow(function* (media_index) {
@@ -352,17 +349,6 @@ export default Posting = types.model('Posting', {
   handle_post_status_select: flow(function* (status) {
     console.log("Posting:handle_post_status_select: " + status)
     self.post_status = status
-    Navigation.mergeOptions(POSTING_SCREEN, {
-      topBar: {
-        rightButtons: [
-          {
-            id: 'post_button',
-            text: status === "draft" ? "Save" : "Post",
-            color: '#f80'
-          }
-        ]
-      }
-    });
   }),
 
   add_bookmark: flow(function* (url) {

@@ -6,7 +6,6 @@ import Auth from '../../stores/Auth';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { RectButton } from 'react-native-gesture-handler';
 import { SvgXml } from 'react-native-svg';
-import { postingScreen } from '../../screens';
 
 @observer
 export default class HighlightCell extends React.Component{
@@ -96,7 +95,7 @@ export default class HighlightCell extends React.Component{
             borderBottomWidth: .5,
             backgroundColor: App.theme_highlight_background_color()
           }}
-          onPress={() => postingScreen(highlight.markdown())}
+          onPress={() => App.navigate_to_screen("Posting", highlight.markdown())}
         >
           {
             highlight.content_text && 

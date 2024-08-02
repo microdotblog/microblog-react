@@ -25,6 +25,11 @@ export default class ShareScreen extends React.Component {
 					Share.is_loading ?
 						<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
 							<ActivityIndicator color={App.theme_accent_color()} size="large" />
+							{
+								Platform.OS === "ios" ?
+								<Text style={{ color: App.theme_text_color(), fontSize: 17, textAlign: "center", marginBottom: 10}}>{Share.temp_direct_shared_data}</Text>
+								: null
+							}
 						</View>
 						:
 						Share.is_logged_in() ?
@@ -32,7 +37,7 @@ export default class ShareScreen extends React.Component {
 								<ShareHeaderComponent />
 								{
 									Share.image_options_open ?
-									<ShareImageOptionsScreen asset={Share.selected_user?.posting?.post_assets[0]} />
+									<ShareImageOptionsScreen asset={Platform.OS === "ios" ? Share.selected_user?.posting?.post_assets[0] : null} />
 									:
 									<>
 									<SharePostScreen />
@@ -54,7 +59,7 @@ export default class ShareScreen extends React.Component {
 													justifyContent: 'center',
 													alignItems: 'center'              
 												}}>
-													<ActivityIndicator color="#f80" size={'large'} />
+													<ActivityIndicator color={App.theme_accent_color()} size={'large'} />
 													<Text style={{ marginTop: 12, color: App.theme_text_color() }}>{ Share.selected_user?.posting.is_sending_post ? "Sending post..." : "Saving bookmark..." }</Text>
 												</View>
 											</View>

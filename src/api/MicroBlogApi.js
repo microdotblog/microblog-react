@@ -45,7 +45,6 @@ class MicroBlogApi {
   }
 
   async login_with_email(email) {
-    console.log('MicroBlogApi:login_with_email', email);
     const login = axios
       .post('/account/signin', '', {
         params: {
@@ -62,7 +61,6 @@ class MicroBlogApi {
         }
       })
       .then(response => {
-        console.log("MicroBlogApi:login_with_email:response", response)
         if (response.data.error) {
           return LOGIN_INCORRECT
         } else {

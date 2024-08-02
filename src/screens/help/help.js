@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, ScrollView, Image, Platform } from 'react-native';
-import { Navigation } from 'react-native-navigation';
+import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 import App from '../../stores/App'
 import { getVersion, getBuildNumber } from 'react-native-device-info';
 
@@ -10,23 +9,12 @@ export default class HelpScreen extends React.Component{
 
 	constructor (props) {
 		super(props)
-		Navigation.events().bindComponent(this)
 		this.team = [
 			{ name: "Manton Reece", handle: "manton", "avatar": `https://cdn.micro.blog/manton/avatar.jpg?v=${App.now()}` },
 			{ name: "Jean MacDonald", handle: "jean", "avatar": `https://cdn.micro.blog/jean/avatar.jpg?v=${App.now()}` },
 			{ name: "Jonathan Hays", handle: "cheesemaker", "avatar": `https://cdn.micro.blog/cheesemaker/avatar.jpg?v=${App.now()}` },
 			{ name: "Vincent Ritter", handle: "vincent", "avatar": `https://cdn.micro.blog/vincent/avatar.jpg?v=${App.now()}` }
 		]
-	}
-	
-	navigationButtonPressed = async ({ buttonId }) => {
-    if(buttonId === "back_button"){
-      this._dismiss()
-    }
-	}
-	
-	_dismiss = () => {
-		Navigation.dismissModal(this.props.componentId)
 	}
 
 	_render_team = () => {
@@ -41,7 +29,7 @@ export default class HelpScreen extends React.Component{
 						padding: 5,
 						marginBottom: 15
 					}}
-					onPress={() => { App.handle_url_from_webview(`https://micro.blog/${ member.handle }`); Platform.OS === 'ios' && this._dismiss() }}
+					onPress={() => { App.handle_url_from_webview(`https://micro.blog/${ member.handle }`); App.go_back() }}
 				>
 					<Image source={{ uri: member.avatar }} style={{ width: 36, height: 36, borderRadius: 18, marginBottom: 5 }} />
 					<View style={{

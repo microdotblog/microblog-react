@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import { TouchableOpacity, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Auth from './../../stores/Auth';
-import { menuBottomSheet, profileScreen } from './../../screens'
 import App from '../../stores/App';
 
 @observer
@@ -13,8 +12,8 @@ export default class ProfileImage extends React.Component{
     if(Auth.selected_user != null){
       return(
         <TouchableOpacity style={{ width: 28, height: 28, marginRight: 12 }}
-          onPress={() => {menuBottomSheet(); Auth.selected_user.check_token_validity()}}
-          onLongPress={() => profileScreen(Auth.selected_user.username, App.current_screen_id)}
+          onPress={() => { App.open_sheet("main_sheet"); Auth.selected_user.check_token_validity()} }
+          onLongPress={() => App.navigate_to_screen("user", Auth.selected_user.username)}
         >
           {
             Auth.selected_user.avatar != null && Auth.selected_user.avatar !== "" ?

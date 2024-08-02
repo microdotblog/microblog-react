@@ -13,19 +13,20 @@ import App from '../../stores/App'
 export default class ProfileScreen extends React.Component{
   
   render() {
+    const { username } = this.props.route.params
     return(
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         {
           Auth.is_logged_in() && !Auth.is_selecting_user ? 
-          <ProfileHeader username={this.props.username} />
+          <ProfileHeader username={username} />
           : null
         }
 				{
           Auth.is_logged_in() && !Auth.is_selecting_user && !App.should_reload_web_view() ?
-            Auth.selected_user.muting?.is_muted(this.props.username) ?
-              <MutedMessage title={`@${this.props.username} is muted`} username={this.props.username} />
+            Auth.selected_user.muting?.is_muted(username) ?
+              <MutedMessage title={`@${username} is muted`} username={username} />
               :
-              <WebViewModule endpoint={`hybrid/posts/${this.props.username}`} component_id={this.props.componentId} />
+              <WebViewModule endpoint={`hybrid/posts/${username}`} component_id={this.props.componentId} />
           :
           <LoginMessage title="User posts" />
         }
