@@ -48,7 +48,8 @@ export default App = types.model('App', {
   uploads_search_query: types.optional(types.string, ""),
   is_searching_uploads: types.optional(types.boolean, false),
   is_loading_highlights: types.optional(types.boolean, false),
-  is_loading_bookmarks: types.optional(types.boolean, false)
+  is_loading_bookmarks: types.optional(types.boolean, false),
+  conversation_screen_focused: types.optional(types.boolean, false)
 })
 .volatile(self => ({
   navigation_ref: null,
@@ -182,6 +183,10 @@ export default App = types.model('App', {
     }
   }),
 
+  set_conversation_screen_focused: flow(function* (focused = true) {
+    self.conversation_screen_focused = focused
+  }),
+
   handle_url: flow(function* (url) {
     console.log("App:handle_url", url)
     const url_parts = url.split("://")
@@ -226,6 +231,9 @@ export default App = types.model('App', {
         case "open":
           Reply.hydrate(action_data)
           Push.check_and_remove_notifications_with_post_id(action_data)
+          if (self.conversation_screen_focused) {
+            return self.navigation_ref.navigate(`${self.current_tab_key}-Conversation`, { conversation_id: action_data })
+          }
           return self.navigation_ref.push(`${self.current_tab_key}-Conversation`, { conversation_id: action_data })
         case "post_service":
           yield Services.hydrate_with_user(action_data)
