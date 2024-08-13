@@ -12,7 +12,7 @@ import RepliesScreen from '../replies/replies';
 import PagesScreen from '../pages/pages';
 import PostsScreen from '../posts/posts';
 import NewPostButton from '../../components/header/new_post';
-
+import App from '../../stores/App'
 
 export const getSharedScreens = (Stack, tab_name) => {
 	return [
@@ -32,6 +32,14 @@ export const getSharedScreens = (Stack, tab_name) => {
 			options={({ route }) => ({
 				headerTitle: `Conversation`,
 				headerRight: () => <ReplyButton conversation_id={route.params?.conversation_id} />
+			})}
+			listeners={() => ({
+				focus: () => {
+					App.set_conversation_screen_focused(true)
+				},
+				blur: () => {
+					App.set_conversation_screen_focused(false)
+				}
 			})}
 		/>,
 		<Stack.Screen
