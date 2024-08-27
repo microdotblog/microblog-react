@@ -165,6 +165,17 @@ export default App = types.model('App', {
     }
     else if (tab_key.includes("Mentions")) {
       self.current_tab_key = "Mentions"
+      if (Auth.is_logged_in() && Auth.selected_user != null) {
+        Push.has_push_permissions((has_permissions) => {
+          if (has_permissions && !Auth.selected_user.push_registered_with_server) {
+            Auth.selected_user.register_for_push()
+          }
+          else if (!has_permissions) {
+            Push.request_permissions()
+          }
+        })
+        Push.clear_notifications()
+      }
     }
     else if (tab_key.includes("Bookmarks")) {
       self.current_tab_key = "Bookmarks"
@@ -396,10 +407,7 @@ export default App = types.model('App', {
           App.navigate_to_screen("open", number[0])
         }
       }
-      else if(parts?.length >= 2 && parts[0] === "account"){
-        App.open_url(url, true)
-      }
-      else if (parts?.length >= 4) {
+      else if(parts?.length >= 4){
         App.open_url(url)
       }
       else if (parts?.length === 1 && (parts[0] === "summer" || parts[0] === "about")){

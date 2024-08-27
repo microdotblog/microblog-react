@@ -37,20 +37,16 @@ export default Push = types.model('Push', {
 				sound: true
 			},
 			popInitialNotification: true,
-			requestPermissions: true
-		});
-
-		if (Platform.OS === 'ios') {
-			PushNotificationIOS.requestPermissions()
-		}
-		else if(Platform.OS === 'android'){
-			PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS)
-		}
+			requestPermissions: false
+		})
 	}),
 	
 	set_token: flow(function* (token) {
 		console.log("Push::set_token", token)
 		self.token = token
+		if(Auth.is_logged_in() && Auth.selected_user != null && !Auth.selected_user.push_registered_with_server){
+			Auth.selected_user.register_for_push()
+		}
 	}),
 
 	register_token: flow(function* (user_token) {
@@ -151,6 +147,16 @@ export default Push = types.model('Push', {
 		self.notificiations_open = open
 	}),
 
+	request_permissions: flow(function* () {
+		console.log("Push::request_permissions")
+		if (Platform.OS === 'ios') {
+			PushNotificationIOS.requestPermissions()
+		}
+		else if(Platform.OS === 'android'){
+			PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS)
+		}
+	}),
+
 }))
 .views(self => ({
 	valid_notifications() {
@@ -158,6 +164,15 @@ export default Push = types.model('Push', {
 	},
 	handle_first_notification() {
 		return self.notifications.find(n => n.did_load_before_user_was_loaded)?.handle_action()
+	},
+	has_push_permissions(callback) {
+		if (Platform.OS === 'ios') {
+			PushNotificationIOS.checkPermissions((permissions) => {
+				callback(permissions.alert)
+			})
+		} else {
+			callback(true)
+		}
 	}
 }))
 .create({})

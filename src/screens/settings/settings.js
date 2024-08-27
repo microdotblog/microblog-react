@@ -4,11 +4,25 @@ import { View, Text, ScrollView, Switch, Platform, ActivityIndicator } from 'rea
 import FastImage from 'react-native-fast-image';
 import App from '../../stores/App'
 import Auth from '../../stores/Auth';
+import Push from '../../stores/Push';
 import Settings from '../../stores/Settings';
 import UserPostingSettings from '../../components/settings/user_posting'
 
 @observer
 export default class SettingsScreen extends React.Component{
+
+	constructor(props) {
+		super(props)
+		this.state = {
+			push_permissions: false
+		}
+	}
+	
+	componentDidMount() {
+		Push.has_push_permissions((has_permissions) => {
+			this.setState({ push_permissions: has_permissions })
+		})
+	}
 	
 	_render_browser_settings = () => {
 		return(
@@ -35,6 +49,12 @@ export default class SettingsScreen extends React.Component{
 		return(
 			<View style={{marginTop: 15}}>
 				<Text style={{ fontWeight: "500", marginBottom: 10, marginTop: 15, marginLeft: 10, color: App.theme_text_color() }}>Push Notifications</Text>
+				{
+					!this.state.push_permissions &&
+					<Text style={{ color: App.theme_error_text_color(), paddingHorizontal: 10, marginBottom: 15, fontWeight: "500" }}>
+						Push notifications are not enabled. Please enable them in your device settings.
+					</Text>
+				}
 				<View style={{ paddingHorizontal: 12, backgroundColor: App.theme_settings_group_background_color(), borderRadius: 8}}>
 					{
 						Auth.users.map((user, index) => {
