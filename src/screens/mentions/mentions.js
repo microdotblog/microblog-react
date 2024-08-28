@@ -1,19 +1,10 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import Auth from './../../stores/Auth';
-import Push from '../../stores/Push'
 import GenericScreenComponent from '../../components/generic/generic_screen'
 
 @observer
 export default class MentionsScreen extends React.Component{
-
-  constructor (props) {
-		super(props)
-  }
-
-  componentDidAppear = async () => {
-    Push.clear_notifications()
-  }
 
   render() {
     return (

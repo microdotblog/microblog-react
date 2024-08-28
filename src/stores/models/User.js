@@ -17,6 +17,7 @@ export default User = types.model('User', {
     posting: types.maybeNull(Posting),
     muting: types.maybeNull(Muting),
     push_enabled: types.optional(types.boolean, false),
+    push_registered_with_server: types.optional(types.boolean, false),
     toggling_push: types.optional(types.boolean, false),
     did_complete_auto_register_push: types.optional(types.boolean, false),
     bookmark_highlights: types.optional(types.array(Highlight), []),
@@ -85,17 +86,29 @@ export default User = types.model('User', {
     
     toggle_push_notifications: flow(function* () {
       self.toggling_push = true
-      !self.push_enabled ? yield self.register_for_push() : yield self.unregister_for_push()
+      if (!self.push_enabled) {
+        yield self.register_for_push()
+      } else {
+        yield self.unregister_for_push()
+      }
       self.toggling_push = false
     }),
     
     register_for_push: flow(function* () {
-      self.push_enabled = yield Push.register_token(self.token())
+      const registered = yield Push.register_token(self.token())
+      if (registered) {
+        self.push_enabled = true
+        self.push_registered_with_server = true
+      }
+      return registered
     }),
     
     unregister_for_push: flow(function* () {
       let did_unregister = yield Push.unregister_user_from_push(self.token())
-      self.push_enabled = !did_unregister
+      if (did_unregister) {
+        self.push_enabled = false
+      }
+      return did_unregister
     }),
 
     fetch_data: flow(function* () {
