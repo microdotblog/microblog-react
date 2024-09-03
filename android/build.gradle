@@ -18,6 +18,9 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
         classpath 'com.google.gms:google-services:4.3.14'
     }
+    gradle.startParameter.excludedTaskNames.addAll(
+            gradle.startParameter.taskNames.findAll { it.contains("testClasses") }
+    )
 }
 
 apply plugin: "com.facebook.react.rootproject"
