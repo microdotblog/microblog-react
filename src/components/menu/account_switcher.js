@@ -177,7 +177,7 @@ export default class AccountSwitcher extends React.Component{
 				}}
 			>
 				<View style={{ flexDirection: 'row', alignItems: 'center', width: "100%", justifyContent: 'center' }}>
-					<Text style={{color: 'red'}}>{sign_out_wording}</Text>
+					<Text style={{ color: App.theme_accent_color() }}>{sign_out_wording}</Text>
 				</View>
 			</TouchableOpacity>
     )
