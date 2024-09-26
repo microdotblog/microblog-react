@@ -31,6 +31,7 @@ export default Login = types.model('Login', {
       self.did_trigger_login_from_url = true
       self.input_value = token
       self.trigger_login()
+      App.close_sheet("login-message-sheet")
     }
   }),
   
