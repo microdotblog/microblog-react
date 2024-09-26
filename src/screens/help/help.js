@@ -11,7 +11,6 @@ export default class HelpScreen extends React.Component{
 		super(props)
 		this.team = [
 			{ name: "Manton Reece", handle: "manton", "avatar": `https://cdn.micro.blog/manton/avatar.jpg?v=${App.now()}` },
-			{ name: "Jean MacDonald", handle: "jean", "avatar": `https://cdn.micro.blog/jean/avatar.jpg?v=${App.now()}` },
 			{ name: "Jonathan Hays", handle: "cheesemaker", "avatar": `https://cdn.micro.blog/cheesemaker/avatar.jpg?v=${App.now()}` },
 			{ name: "Vincent Ritter", handle: "vincent", "avatar": `https://cdn.micro.blog/vincent/avatar.jpg?v=${App.now()}` }
 		]
