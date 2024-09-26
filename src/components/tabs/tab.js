@@ -39,7 +39,7 @@ export default class Tab extends React.Component {
         <SFSymbol
           name={iconNameOrAsset}
           color={color}
-          size={20}
+          size={18}
           multicolor={false}
         />
       );
