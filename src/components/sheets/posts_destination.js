@@ -77,7 +77,7 @@ export default class PostsDestinationMenu extends React.Component{
               flexDirection: "column"
             }}
           >
-            <Text style={{ fontWeight: '800', marginBottom: 25, color: App.theme_text_color() }}>Select a blog</Text>
+            <Text style={{ fontWeight: '800', marginTop: 15, marginBottom: 15, color: App.theme_text_color() }}>Blogs</Text>
             <View style={{ paddingHorizontal: 15, flexDirection: "column", width: "100%" }}>
               {this._render_destinations()}
             </View>
