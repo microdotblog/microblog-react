@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 import Auth from '../../stores/Auth';
 import CheckmarkIcon from '../../assets/icons/checkmark.png';
 import App from '../../stores/App'
+import CheckmarkRowCell from '../../components/cells/checkmark_row_cell'
 
 @observer
 export default class PostingOptionsScreen extends React.Component{
@@ -31,7 +32,7 @@ export default class PostingOptionsScreen extends React.Component{
 								posting.handle_post_status_select("published")
 							}}
 						>
-							<Text style={ posting.post_status == "published" ? { fontWeight: '500', color: App.theme_button_text_color() } : { color: App.theme_button_text_color() }}>Publish to your blog { posting.post_status == "published" ? <Image source={CheckmarkIcon} style={{ width: 12, height: 12, tintColor: App.theme_button_text_color() }} /> : null }</Text>
+							<CheckmarkRowCell text="Publish to your blog" is_selected={posting.post_status == "published"} />						
 						</TouchableOpacity>
 						<TouchableOpacity
 							key={"draft"}
@@ -40,7 +41,7 @@ export default class PostingOptionsScreen extends React.Component{
 								posting.handle_post_status_select("draft")
 							}}
 						>
-							<Text style={ posting.post_status == "draft" ? { fontWeight: '500', color: App.theme_button_text_color() } : { color: App.theme_button_text_color() }}>Save as a draft { posting.post_status == "draft" ? <Image source={CheckmarkIcon} style={{ width: 12, height: 12, tintColor: App.theme_button_text_color() }} /> : null }</Text>
+							<CheckmarkRowCell text="Save as a draft" is_selected={posting.post_status == "draft"} />						
 						</TouchableOpacity>
 					</View>
 				</View>
@@ -65,7 +66,7 @@ export default class PostingOptionsScreen extends React.Component{
 											posting.handle_post_category_select(category)
 										}}
 									>
-										<Text style={ is_selected ? { fontWeight: '500', color: App.theme_button_text_color() } : { color: App.theme_button_text_color() }}>{category} { is_selected ? <Image source={CheckmarkIcon} style={{ width: 12, height: 12, tintColor: App.theme_button_text_color() }} /> : null }</Text>
+										<CheckmarkRowCell text={category} is_selected={is_selected} />
 									</TouchableOpacity>
 								)
 							})
@@ -94,7 +95,7 @@ export default class PostingOptionsScreen extends React.Component{
 											posting.handle_post_syndicates_select(syndicate.uid)
 										}}
 									>
-										<Text style={ is_selected ? { fontWeight: '500', color: App.theme_button_text_color() } : { color: App.theme_button_text_color() }}>{syndicate.name} { is_selected ? <Image source={CheckmarkIcon} style={{ width: 12, height: 12, tintColor: App.theme_button_text_color() }} /> : null }</Text>
+										<CheckmarkRowCell text={syndicate.name} is_selected={is_selected} />
 									</TouchableOpacity>
 								)
 							})
@@ -115,7 +116,7 @@ export default class PostingOptionsScreen extends React.Component{
 							}}
 							onPress={posting.toggle_title}
 						>
-							<Text style={ posting.show_title ? { fontWeight: '500', color: App.theme_button_text_color() } : { color: App.theme_button_text_color() }}>Show title field { posting.show_title ? <Image source={CheckmarkIcon} style={{ width: 12, height: 12, tintColor: App.theme_button_text_color() }} /> : null }</Text>
+							<CheckmarkRowCell text="Show title field" is_selected={posting.show_title} />
 						</TouchableOpacity>
 					</View>
 				</View>
