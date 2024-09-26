@@ -41,12 +41,12 @@ export default class UploadInfoSheet extends React.Component {
 						console.log("press");
 						App.open_url(this.upload.url);
 					}}>
-						<Text style={{ color: App.theme_text_color(), paddingBottom: 20 }}>{this.upload.url}</Text>
+						<Text style={{ fontSize: 16, color: App.theme_text_color(), paddingBottom: 20 }}>{this.upload.url}</Text>
 					</TouchableOpacity>
 									
 					{ this.upload.alt.length > 0 && 
 						<View>
-							<Text style={{ color: App.theme_text_color(), paddingBottom: 20 }}>🤖 {this.upload.alt}</Text>
+							<Text style={{ fontSize: 16, color: App.theme_text_color(), paddingBottom: 22 }}>🤖 {this.upload.alt}</Text>
 							<View style={{ alignSelf: "flex-start" }}>
 								<TouchableOpacity
 									style={{
