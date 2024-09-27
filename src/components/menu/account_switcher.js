@@ -14,7 +14,10 @@ export default class AccountSwitcher extends React.Component{
   _render_current_user = () => {
     return(
 			<TouchableOpacity
-				onPress={() => App.navigate_to_screen("user", Auth.selected_user.username)}
+				onPress={() => {
+          App.navigate_to_screen("user", Auth.selected_user.username);
+          App.close_sheet("main_sheet");
+        }}
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
