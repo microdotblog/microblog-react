@@ -9,6 +9,9 @@ import { SheetProvider } from "react-native-actions-sheet";
 import SearchIcon from '../../assets/icons/nav/discover.png';
 import { SFSymbol } from "react-native-sfsymbols";
 import { SvgXml } from 'react-native-svg';
+import { MenuView } from '@react-native-menu/menu';
+import Clipboard from '@react-native-clipboard/clipboard'
+import Toast from 'react-native-simple-toast';
 
 @observer
 export default class PostsScreen extends React.Component{
@@ -144,10 +147,87 @@ export default class PostsScreen extends React.Component{
   
   _key_extractor = (item) => item.uid;
   
+  make_context_menu = (item) => {
+    let menu_items = [];
+    
+    if (item.post_status == "draft") {
+      menu_items.push({
+        title: "Publish",
+        id: "publish",
+        image: Platform.select({
+          ios: 'icloud.and.arrow.up'
+        })
+      });
+    }
+    
+    menu_items.push({
+      title: "Edit",
+      id: "edit",
+      image: Platform.select({
+        ios: 'square.and.pencil'
+      })
+    });
+    
+    if (item.post_status != "draft") {
+      menu_items.push({
+        title: "Copy Link",
+        id: "copy_link",
+        image: Platform.select({
+          ios: 'link'
+        })
+      });
+    
+      menu_items.push({
+        title: "Open in Browser",
+        id: "open_in_browser",
+        image: Platform.select({
+          ios: 'safari'
+        })
+      });
+    }
+    
+    menu_items.push({
+      title: "Delete",
+      id: "delete",
+      image: Platform.select({
+        ios: 'trash'
+      }),
+      attributes: {
+        destructive: true
+      }
+    });
+
+    return menu_items;
+  }
+  
   render_post_item = ({ item }) => {
-    return(
-      <PostCell key={item.uid} post={item} />
-    )
+    let menu_items = this.make_context_menu(item);
+    
+    return (
+      <MenuView shouldOpenOnLongPress={true} 
+        onPressAction={({ nativeEvent }) => {
+          const event_id = nativeEvent.event
+          if (event_id == "publish") {
+            Auth.selected_user.posting.selected_service?.publish_draft(item);
+          }
+          else if (event_id == "edit") {
+            App.navigate_to_screen("PostEdit", item);
+          }
+          else if (event_id == "copy_link") {
+            Clipboard.setString(item.url);
+            Toast.showWithGravity("URL copied", Toast.SHORT, Toast.CENTER);
+          }
+          else if (event_id == "open_in_browser") {
+            App.open_url(item.url)
+          }
+          else if (event_id == "delete") {
+            Auth.selected_user.posting.selected_service?.trigger_post_delete(item);
+          }
+        }}
+        actions={menu_items}>
+        <PostCell key={item.uid} post={item} />
+      </MenuView>
+    );
   }
   
   _return_posts_list = () => {
