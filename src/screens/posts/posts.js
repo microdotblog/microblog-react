@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard, Image } from 'react-native';
+import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard, Image, Pressable } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
@@ -9,7 +9,7 @@ import { SheetProvider } from "react-native-actions-sheet";
 import SearchIcon from '../../assets/icons/nav/discover.png';
 import { SFSymbol } from "react-native-sfsymbols";
 import { SvgXml } from 'react-native-svg';
-import { MenuView } from '@react-native-menu/menu';
+import ContextMenu from 'react-native-context-menu-view';
 import Clipboard from '@react-native-clipboard/clipboard'
 import Toast from 'react-native-simple-toast';
 
@@ -154,47 +154,35 @@ export default class PostsScreen extends React.Component{
       menu_items.push({
         title: "Publish",
         id: "publish",
-        image: Platform.select({
-          ios: 'icloud.and.arrow.up'
-        })
+        systemIcon: "icloud.and.arrow.up"
       });
     }
     
     menu_items.push({
       title: "Edit",
       id: "edit",
-      image: Platform.select({
-        ios: 'square.and.pencil'
-      })
+      systemIcon: "square.and.pencil"
     });
     
     if (item.post_status != "draft") {
       menu_items.push({
         title: "Copy Link",
         id: "copy_link",
-        image: Platform.select({
-          ios: 'link'
-        })
+        systemIcon: "link"
       });
     
       menu_items.push({
         title: "Open in Browser",
         id: "open_in_browser",
-        image: Platform.select({
-          ios: 'safari'
-        })
+        systemIcon: "safari"
       });
     }
     
     menu_items.push({
       title: "Delete",
       id: "delete",
-      image: Platform.select({
-        ios: 'trash'
-      }),
-      attributes: {
-        destructive: true
-      }
+      systemIcon: "trash",
+      destructive: true
     });
 
     return menu_items;
@@ -204,29 +192,29 @@ export default class PostsScreen extends React.Component{
     let menu_items = this.make_context_menu(item);
     
     return (
-      <MenuView shouldOpenOnLongPress={true} 
-        onPressAction={({ nativeEvent }) => {
-          const event_id = nativeEvent.event
-          if (event_id == "publish") {
+      <ContextMenu shouldOpenOnLongPress={true}
+        previewBackgroundColor="rgba(0, 0, 0, 0.0)"
+        onPress={({nativeEvent}) => {
+          if (nativeEvent.name == "Publish") {
             Auth.selected_user.posting.selected_service?.publish_draft(item);
           }
-          else if (event_id == "edit") {
+          else if (nativeEvent.name == "Edit") {
             App.navigate_to_screen("PostEdit", item);
           }
-          else if (event_id == "copy_link") {
+          else if (nativeEvent.name == "Copy Link") {
             Clipboard.setString(item.url);
             Toast.showWithGravity("URL copied", Toast.SHORT, Toast.CENTER);
           }
-          else if (event_id == "open_in_browser") {
+          else if (nativeEvent.name == "Open in Browser") {
             App.open_url(item.url)
           }
-          else if (event_id == "delete") {
+          else if (nativeEvent.name == "Delete") {
             Auth.selected_user.posting.selected_service?.trigger_post_delete(item);
           }
         }}
         actions={menu_items}>
         <PostCell key={item.uid} post={item} />
-      </MenuView>
+      </ContextMenu>
     );
   }
   

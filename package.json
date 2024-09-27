@@ -36,6 +36,7 @@
     "react": "18.2.0",
     "react-native": "0.73.9",
     "react-native-actions-sheet": "^0.8.10",
+    "react-native-context-menu-view": "^1.16.0",
     "react-native-device-info": "^8.4.9",
     "react-native-document-picker": "^8.2.0",
     "react-native-fast-image": "^8.5.11",
