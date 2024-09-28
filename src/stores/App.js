@@ -70,9 +70,6 @@ export default App = types.model('App', {
     
     Auth.hydrate().then(async () => {
       console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
-      if(!Auth.is_logged_in()){
-        App.navigate_to_screen("Login")
-      }
       await App.set_current_initial_theme()
       await App.set_current_initial_font_scale()
       await App.hydrate_last_tab_index()
@@ -86,6 +83,9 @@ export default App = types.model('App', {
         // if (self.current_tab_index > 0 && self.navigation_ref != null) {
         //   App.navigate_to_tab_index(self.current_tab_index)
         // }
+      }
+      else if(!Auth.is_logged_in()){
+        App.navigate_to_screen("Login")
       }
     })
   }),
