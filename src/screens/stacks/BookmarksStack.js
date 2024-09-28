@@ -24,7 +24,8 @@ export default class Bookmarks extends React.Component{
           component={BookmarksScreen}
           options={{
             headerLeft: () => <ProfileImage />,
-            headerRight: () => <AddBookmarkButton />
+            headerRight: () => <AddBookmarkButton />,
+            headerTintColor: App.theme_text_color()
           }}
         />
         <BookmarksStack.Group

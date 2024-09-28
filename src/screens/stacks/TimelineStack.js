@@ -21,7 +21,8 @@ export default class Timeline extends React.Component{
           component={TimelineScreen}
           options={{
             headerLeft: () => <ProfileImage />,
-            headerRight: () => <NewPostButton />
+            headerRight: () => <NewPostButton />,
+            headerTintColor: App.theme_text_color()
           }}
         />
         <TimelineStack.Group

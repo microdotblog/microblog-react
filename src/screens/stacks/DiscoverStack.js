@@ -21,7 +21,8 @@ export default class Discover extends React.Component{
           component={DiscoverScreen}
           options={{
             headerLeft: () => <ProfileImage />,
-            headerRight: () => <NewPostButton />
+            headerRight: () => <NewPostButton />,
+            headerTintColor: App.theme_text_color()
           }}
         />
         <DiscoverStack.Group
