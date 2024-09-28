@@ -1,4 +1,4 @@
-import { types, flow } from 'mobx-state-tree'
+import { types, flow, destroy } from 'mobx-state-tree'
 import Tokens from './../../Tokens'
 import MicroPubApi, { DELETE_ERROR, FETCH_ERROR } from './../../../api/MicroPubApi'
 import XMLRPCApi, { XML_ERROR } from '../../../api/XMLRPCApi'
@@ -162,8 +162,17 @@ export default Service = types.model('Service', {
   
   delete_post: flow(function* (post) {
     console.log("Destination:delete_post", post)
+    const post_uid = post.uid
     const status = yield MicroPubApi.delete_post(self.service_object(), post.url)
     if(status !== DELETE_ERROR){
+      // Let's get the destination we just deleted from and delete the post.
+      const destination = self.config?.active_destination()
+      if(destination){
+        const post = destination.posts.find(p => p.uid == post_uid)
+        if(post){
+          destroy(post)
+        }
+      }
       App.show_toast("Post was deleted.")
       self.update_posts_for_active_destination()
     }

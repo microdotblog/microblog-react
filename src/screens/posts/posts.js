@@ -231,6 +231,11 @@ export default class PostsScreen extends React.Component{
           backgroundColor: App.theme_background_color_secondary(),
           width: "100%"
         }}
+        ListEmptyComponent={
+          <View style={{ flex: 1, padding: 12, justifyContent: 'center', alignItems: 'center' }} >
+            <Text style={{ color: App.theme_text_color() }}>No posts...</Text>
+          </View>
+        }
         refreshControl={
           <RefreshControl
             refreshing={false}
