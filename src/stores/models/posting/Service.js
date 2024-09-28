@@ -88,7 +88,7 @@ export default Service = types.model('Service', {
         console.log("Endpoint:check_for_categories", destination.uid)
         const data = await MicroPubApi.get_categories(self.service_object(), destination.uid)
         console.log("Endpoint:check_for_categories:categories", data)
-        if(data?.categories != null && data.categories.length > 0){
+        if(data?.categories != null){
           destination.set_categories(data.categories)
         }
       })
@@ -109,7 +109,7 @@ export default Service = types.model('Service', {
       console.log("Endpoint:check_for_posts_for_destination", destination.uid)
       const data = yield MicroPubApi.get_posts(self.service_object(), destination.uid)
       console.log("Endpoint:check_for_posts_for_destination:posts", data?.items?.length)
-      if(data?.items != null && data.items?.length > 0){
+      if(data?.items != null){
         destination.set_posts(data.items)
       }
       self.is_loading_posts = false
@@ -162,17 +162,8 @@ export default Service = types.model('Service', {
   
   delete_post: flow(function* (post) {
     console.log("Destination:delete_post", post)
-    const post_uid = post.uid
     const status = yield MicroPubApi.delete_post(self.service_object(), post.url)
     if(status !== DELETE_ERROR){
-      // Let's get the destination we just deleted from and delete the post.
-      const destination = self.config?.active_destination()
-      if(destination){
-        const post = destination.posts.find(p => p.uid == post_uid)
-        if(post){
-          destroy(post)
-        }
-      }
       App.show_toast("Post was deleted.")
       self.update_posts_for_active_destination()
     }
@@ -199,7 +190,7 @@ export default Service = types.model('Service', {
       console.log("Endpoint:check_for_pages_for_destination", destination.uid)
       const data = yield MicroPubApi.get_pages(self.service_object(), destination.uid)
       console.log("Endpoint:check_for_pages_for_destination:pages", data?.items?.length)
-      if(data?.items != null && data.items?.length > 0){
+      if(data?.items != null){
         destination.set_pages(data.items)
       }
       self.is_loading_pages = false
