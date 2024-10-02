@@ -197,7 +197,7 @@ export default Service = types.model('Service', {
     const status = yield MicroPubApi.delete_post(self.service_object(), page.url)
     if(status !== DELETE_ERROR){
       App.show_toast("Page was deleted.")
-      self.update_posts_for_active_destination()
+      self.update_pages_for_active_destination()
     }
     else{
       Alert.alert("Whoops", "Could not delete post. Please try again.")
