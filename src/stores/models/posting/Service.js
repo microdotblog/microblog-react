@@ -159,12 +159,44 @@ export default Service = types.model('Service', {
       {cancelable: false},
     )
   },
-  
+
+  trigger_page_delete(page) {
+    console.log("Destination:trigger_page_delete", page)
+    Alert.alert(
+      "Delete page?",
+      "Are you sure you want to delete this page?",
+      [
+        {
+          text: "Cancel",
+          style: 'cancel',
+        },
+        {
+          text: "Delete",
+          onPress: () => self.delete_page(page),
+          style: 'destructive'
+        },
+      ],
+      {cancelable: false},
+    )
+  },
+    
   delete_post: flow(function* (post) {
     console.log("Destination:delete_post", post)
     const status = yield MicroPubApi.delete_post(self.service_object(), post.url)
     if(status !== DELETE_ERROR){
       App.show_toast("Post was deleted.")
+      self.update_posts_for_active_destination()
+    }
+    else{
+      Alert.alert("Whoops", "Could not delete post. Please try again.")
+    }
+  }),
+
+  delete_page: flow(function* (page) {
+    console.log("Destination:delete_page", page)
+    const status = yield MicroPubApi.delete_post(self.service_object(), page.url)
+    if(status !== DELETE_ERROR){
+      App.show_toast("Page was deleted.")
       self.update_posts_for_active_destination()
     }
     else{
