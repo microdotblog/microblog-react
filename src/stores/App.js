@@ -878,6 +878,9 @@ export default App = types.model('App', {
   theme_tag_button_text_color() {
     return self.theme === "dark" ? "#374151" : "#F9FAFB"
   },
+  theme_tabbar_divider_color() {
+    return self.theme === "dark" ? "#383f4a" : "#AAA"
+  },
   should_reload_web_view() {
     // When it returns true, this will trigger a reload of the webviews
     return self.is_switching_theme || self.is_changing_font_scale
