@@ -300,6 +300,14 @@ export default App = types.model('App', {
     }
   }),
 
+  go_back_and_clear: flow(function*() {
+    console.log("App:go_back_and_clear")
+    Auth.selected_user?.posting.clear_post()
+    if (self.navigation_ref != null && self.navigation_ref.canGoBack()) {
+      self.navigation_ref.goBack()
+    }
+  }),
+
   navigate_to_screen_from_menu: flow(function* (screen) {
     console.log("App:navigate_to_screen_from_menu", screen)
     App.close_sheet("main_sheet")
