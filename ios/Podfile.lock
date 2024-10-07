@@ -1153,7 +1153,7 @@ PODS:
     - React-perflogger (= 0.73.9)
   - RNCAsyncStorage (1.24.0):
     - React-Core
-  - RNCClipboard (1.14.1):
+  - RNCClipboard (1.14.2):
     - React-Core
   - RNCPushNotificationIOS (1.11.0):
     - React-Core
@@ -1547,7 +1547,7 @@ SPEC CHECKSUMS:
   React-utils: dab84549e65d6d711937b9c34d9f6d8fb8bd711c
   ReactCommon: 3dc453f427d2f3d7f2c71499d191b456f83c59bd
   RNCAsyncStorage: ec53e44dc3e75b44aa2a9f37618a49c3bc080a7a
-  RNCClipboard: 0a720adef5ec193aa0e3de24c3977222c7e52a37
+  RNCClipboard: 5e503962f0719ace8f7fdfe9c60282b526305c85
   RNCPushNotificationIOS: 64218f3c776c03d7408284a819b2abfda1834bc8
   RNDeviceInfo: aad3c663b25752a52bf8fce93f2354001dd185aa
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
