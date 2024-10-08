@@ -179,10 +179,10 @@ export default Posting = types.model('Posting', {
   
   handle_text_action: flow(function* (action) {
     console.log("Posting:handle_text_action", action)
+    let has_web_url = null
     const is_link = action === "[]"
     if (is_link) {
       action = "[]()"
-      let has_web_url = null
       let url = null
       if (Platform.OS === "ios") {
         has_web_url = yield Clipboard.hasWebURL()
@@ -214,7 +214,12 @@ export default Posting = types.model('Posting', {
 
     let new_pos = self.text_selection.end;
     if (is_link) {
-      new_pos += (action.length - 1);
+      if (has_web_url) {
+        new_pos += action.length;
+      }
+      else {
+        new_pos += (action.length - 1);
+      }
     }
     else {
       new_pos += (action.length * 2);

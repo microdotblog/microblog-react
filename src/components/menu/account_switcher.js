@@ -14,7 +14,10 @@ export default class AccountSwitcher extends React.Component{
   _render_current_user = () => {
     return(
 			<TouchableOpacity
-				onPress={() => App.navigate_to_screen("user", Auth.selected_user.username)}
+				onPress={() => {
+          App.navigate_to_screen("user", Auth.selected_user.username);
+          App.close_sheet("main_sheet");
+        }}
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -177,7 +180,7 @@ export default class AccountSwitcher extends React.Component{
 				}}
 			>
 				<View style={{ flexDirection: 'row', alignItems: 'center', width: "100%", justifyContent: 'center' }}>
-					<Text style={{color: 'red'}}>{sign_out_wording}</Text>
+					<Text style={{ color: App.theme_accent_color() }}>{sign_out_wording}</Text>
 				</View>
 			</TouchableOpacity>
     )

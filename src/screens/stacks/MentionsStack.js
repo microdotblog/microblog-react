@@ -20,7 +20,8 @@ export default class Mentions extends React.Component{
           component={MentionsScreen}
           options={{
             headerLeft: () => <ProfileImage />,
-            headerRight: () => <NewPostButton />
+            headerRight: () => <NewPostButton />,
+            headerTintColor: App.theme_text_color()
           }}
         />
         <MentionsStack.Group

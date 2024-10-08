@@ -143,10 +143,6 @@ export default class MenuNavigation extends React.Component{
           style={{
             width: '100%',
             marginBottom: 15,
-            paddingBottom: 5,
-            paddingTop: 10,
-            borderColor: App.theme_alt_border_color(),
-            borderBottomWidth: 1,
             justifyContent: 'space-between',
             flexDirection: 'column'
           }}
@@ -175,8 +171,6 @@ export default class MenuNavigation extends React.Component{
             paddingTop: 15,
             marginTop: 10,
             paddingBottom: 5,
-            borderColor: App.theme_alt_border_color(),
-            borderTopWidth: 1,
             width: '100%',
             flexDirection: 'column',
             justifyContent: 'space-between',

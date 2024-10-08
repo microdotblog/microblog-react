@@ -1,4 +1,4 @@
-import { types, flow } from 'mobx-state-tree'
+import { types, flow, destroy } from 'mobx-state-tree'
 import Tokens from './../../Tokens'
 import MicroPubApi, { DELETE_ERROR, FETCH_ERROR } from './../../../api/MicroPubApi'
 import XMLRPCApi, { XML_ERROR } from '../../../api/XMLRPCApi'
@@ -88,7 +88,7 @@ export default Service = types.model('Service', {
         console.log("Endpoint:check_for_categories", destination.uid)
         const data = await MicroPubApi.get_categories(self.service_object(), destination.uid)
         console.log("Endpoint:check_for_categories:categories", data)
-        if(data?.categories != null && data.categories.length > 0){
+        if(data?.categories != null){
           destination.set_categories(data.categories)
         }
       })
@@ -109,7 +109,7 @@ export default Service = types.model('Service', {
       console.log("Endpoint:check_for_posts_for_destination", destination.uid)
       const data = yield MicroPubApi.get_posts(self.service_object(), destination.uid)
       console.log("Endpoint:check_for_posts_for_destination:posts", data?.items?.length)
-      if(data?.items != null && data.items?.length > 0){
+      if(data?.items != null){
         destination.set_posts(data.items)
       }
       self.is_loading_posts = false
@@ -159,13 +159,45 @@ export default Service = types.model('Service', {
       {cancelable: false},
     )
   },
-  
+
+  trigger_page_delete(page) {
+    console.log("Destination:trigger_page_delete", page)
+    Alert.alert(
+      "Delete page?",
+      "Are you sure you want to delete this page?",
+      [
+        {
+          text: "Cancel",
+          style: 'cancel',
+        },
+        {
+          text: "Delete",
+          onPress: () => self.delete_page(page),
+          style: 'destructive'
+        },
+      ],
+      {cancelable: false},
+    )
+  },
+    
   delete_post: flow(function* (post) {
     console.log("Destination:delete_post", post)
     const status = yield MicroPubApi.delete_post(self.service_object(), post.url)
     if(status !== DELETE_ERROR){
       App.show_toast("Post was deleted.")
       self.update_posts_for_active_destination()
+    }
+    else{
+      Alert.alert("Whoops", "Could not delete post. Please try again.")
+    }
+  }),
+
+  delete_page: flow(function* (page) {
+    console.log("Destination:delete_page", page)
+    const status = yield MicroPubApi.delete_post(self.service_object(), page.url)
+    if(status !== DELETE_ERROR){
+      App.show_toast("Page was deleted.")
+      self.update_pages_for_active_destination()
     }
     else{
       Alert.alert("Whoops", "Could not delete post. Please try again.")
@@ -190,7 +222,7 @@ export default Service = types.model('Service', {
       console.log("Endpoint:check_for_pages_for_destination", destination.uid)
       const data = yield MicroPubApi.get_pages(self.service_object(), destination.uid)
       console.log("Endpoint:check_for_pages_for_destination:pages", data?.items?.length)
-      if(data?.items != null && data.items?.length > 0){
+      if(data?.items != null){
         destination.set_pages(data.items)
       }
       self.is_loading_pages = false

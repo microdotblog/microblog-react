@@ -23,10 +23,16 @@ class MicroPubApi {
 				}
 			})
 			const html = await response.text()
-			const dom_parser = new DOMParser()
-			const doc = dom_parser.parseFromString(html, "text/html")
-			const head = doc.getElementsByTagName('head')[0]
-			const links = head.getElementsByTagName('link')
+			const headContent = html.match(/<head[^>]*>[\s\S]*?<\/head>/i)?.[0] || ""
+
+      if (!headContent) {
+        return MICROPUB_NOT_FOUND
+      }
+      
+      const wrappedHtml = `<html>${headContent}</html>`
+      const dom_parser = new DOMParser()
+      const doc = dom_parser.parseFromString(wrappedHtml, "text/html")
+      const links = doc.getElementsByTagName("link")
 			let micropub_link
 			let auth_link
 			let token_link

@@ -9,6 +9,9 @@ import { SheetProvider } from "react-native-actions-sheet";
 import SearchIcon from '../../assets/icons/nav/discover.png';
 import { SFSymbol } from "react-native-sfsymbols";
 import { SvgXml } from 'react-native-svg';
+import ContextMenu from 'react-native-context-menu-view';
+import Clipboard from '@react-native-clipboard/clipboard'
+import Toast from 'react-native-simple-toast';
 
 @observer
 export default class PagesScreen extends React.Component{
@@ -143,10 +146,58 @@ export default class PagesScreen extends React.Component{
   }
   
   _key_extractor = (item) => item.uid;
+
+  make_context_menu = (item) => {
+    let menu_items = [
+      {
+        title: "Edit",
+        id: "edit",
+        systemIcon: "square.and.pencil"
+      },
+      {
+        title: "Copy Link",
+        id: "copy_link",
+        systemIcon: "link"
+      },
+      {
+        title: "Open in Browser",
+        id: "open_in_browser",
+        systemIcon: "safari"
+      },
+      {
+        title: "Delete",
+        id: "delete",
+        systemIcon: "trash",
+        destructive: true
+      }
+    ];
+    
+    return menu_items;
+  }
   
   render_page_item = ({ item }) => {
-    return(
+    let menu_items = this.make_context_menu(item);
+    return (
+      <ContextMenu shouldOpenOnLongPress={true}
+        previewBackgroundColor="rgba(0, 0, 0, 0.0)"
+        onPress={({nativeEvent}) => {
+          if (nativeEvent.name == "Edit") {
+            App.navigate_to_screen("PageEdit", item);
+          }
+          else if (nativeEvent.name == "Copy Link") {
+            Clipboard.setString(item.url);
+            Toast.showWithGravity("URL copied", Toast.SHORT, Toast.CENTER);
+          }
+          else if (nativeEvent.name == "Open in Browser") {
+            App.open_url(item.url)
+          }
+          else if (nativeEvent.name == "Delete") {
+            Auth.selected_user.posting.selected_service?.trigger_page_delete(item);
+          }
+        }}
+        actions={menu_items}>
       <PageCell key={item.uid} page={item} />
+    </ContextMenu>
     )
   }
   
@@ -163,6 +214,11 @@ export default class PagesScreen extends React.Component{
           backgroundColor: App.theme_background_color_secondary(),
           width: "100%"
         }}
+        ListEmptyComponent={
+          <View style={{ flex: 1, padding: 12, justifyContent: 'center', alignItems: 'center' }} >
+            <Text style={{ color: App.theme_text_color() }}>No pages...</Text>
+          </View>
+        }
         refreshControl={
           <RefreshControl
             refreshing={false}

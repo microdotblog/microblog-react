@@ -70,9 +70,6 @@ export default App = types.model('App', {
     
     Auth.hydrate().then(async () => {
       console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
-      if(!Auth.is_logged_in()){
-        App.navigate_to_screen("Login")
-      }
       await App.set_current_initial_theme()
       await App.set_current_initial_font_scale()
       await App.hydrate_last_tab_index()
@@ -86,6 +83,9 @@ export default App = types.model('App', {
         // if (self.current_tab_index > 0 && self.navigation_ref != null) {
         //   App.navigate_to_tab_index(self.current_tab_index)
         // }
+      }
+      else if(!Auth.is_logged_in()){
+        App.navigate_to_screen("Login")
       }
     })
   }),
@@ -295,6 +295,14 @@ export default App = types.model('App', {
   
   go_back: flow(function*() {
     console.log("App:go_back")
+    if (self.navigation_ref != null && self.navigation_ref.canGoBack()) {
+      self.navigation_ref.goBack()
+    }
+  }),
+
+  go_back_and_clear: flow(function*() {
+    console.log("App:go_back_and_clear")
+    Auth.selected_user?.posting.clear_post()
     if (self.navigation_ref != null && self.navigation_ref.canGoBack()) {
       self.navigation_ref.goBack()
     }
@@ -877,6 +885,9 @@ export default App = types.model('App', {
   },
   theme_tag_button_text_color() {
     return self.theme === "dark" ? "#374151" : "#F9FAFB"
+  },
+  theme_tabbar_divider_color() {
+    return self.theme === "dark" ? "#383f4a" : "#AAA"
   },
   should_reload_web_view() {
     // When it returns true, this will trigger a reload of the webviews

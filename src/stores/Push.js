@@ -132,8 +132,10 @@ export default Push = types.model('Push', {
 	
 	open_notification_sheet: flow(function* () {
 		console.log("Push::open_notification_sheet")
-		if(!self.notificiations_open){
-			App.open_sheet("notifications_sheet")
+		if (!self.notificiations_open) {
+			if (self.valid_notifications().length > 0) {
+				App.open_sheet("notifications_sheet")
+			}
 		}
 	}),
 	

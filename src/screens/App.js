@@ -24,6 +24,7 @@ import PostEditScreen from './posts/edit';
 
 import "./../components/sheets/sheets";
 import UpdatePostButton from '../components/header/update_post'
+import ClosePostClearButton from '../components/header/close_post_clear'
 import Share from '../stores/Share'
 import ShareMenu from 'react-native-share-menu'
 import ShareScreen from './share'
@@ -146,6 +147,7 @@ export default class MainApp extends React.Component {
                   options={{
                     headerTitle: "Edit Page",
                     gestureEnabled: false,
+                    headerLeft: () => <ClosePostClearButton />,
                     headerRight: () => <UpdatePageButton />
                   }}
                 />
@@ -155,6 +157,7 @@ export default class MainApp extends React.Component {
                   options={{
                     headerTitle: "Edit Post",
                     gestureEnabled: false,
+                    headerLeft: () => <ClosePostClearButton />,
                     headerRight: () => <UpdatePostButton />
                   }}
                 />
