@@ -6,6 +6,9 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { RectButton } from 'react-native-gesture-handler';
 import { SvgXml } from 'react-native-svg';
 import FastImage from 'react-native-fast-image';
+import ContextMenu from 'react-native-context-menu-view';
+import Clipboard from '@react-native-clipboard/clipboard'
+import Toast from 'react-native-simple-toast';
 
 @observer
 export default class PostCell extends React.Component{
@@ -101,8 +104,37 @@ export default class PostCell extends React.Component{
     )
   }
   
+  make_context_menu = () => {
+    let menu_items = [
+      {
+        title: "Edit",
+        id: "edit",
+        systemIcon: "square.and.pencil"
+      },
+      {
+        title: "Copy Link",
+        id: "copy_link",
+        systemIcon: "link"
+      },
+      {
+        title: "Open in Browser",
+        id: "open_in_browser",
+        systemIcon: "safari"
+      },
+      {
+        title: "Delete",
+        id: "delete",
+        systemIcon: "trash",
+        destructive: true
+      }
+    ];
+    
+    return menu_items;
+  }
+  
   render() {
     const { page } = this.props
+    let menu_items = this.make_context_menu();
     return (
       <Swipeable
         ref={this._swipeable}
@@ -111,37 +143,57 @@ export default class PostCell extends React.Component{
         enableTrackpadTwoFingerGesture={true}
         renderRightActions={(progress) => this._right_actions(progress, page)}
       >
-        <TouchableOpacity
-          style={{
-            padding: 15,
-            borderColor: App.theme_alt_background_div_color(),
-            borderBottomWidth: .5,
-            backgroundColor: App.theme_background_color_secondary(),
-            opacity: page.template ? .5 : 1
+        <ContextMenu
+          previewBackgroundColor="rgba(0, 0, 0, 0.0)"
+          onPress={({nativeEvent}) => {
+            if (nativeEvent.name == "Edit") {
+              App.navigate_to_screen("PageEdit", page);
+            }
+            else if (nativeEvent.name == "Copy Link") {
+              Clipboard.setString(page.url);
+              Toast.showWithGravity("URL copied", Toast.SHORT, Toast.CENTER);
+            }
+            else if (nativeEvent.name == "Open in Browser") {
+              App.open_url(page.url)
+            }
+            else if (nativeEvent.name == "Delete") {
+              Auth.selected_user.posting.selected_service?.trigger_page_delete(page);
+            }
           }}
-          onPress={() => page.template ? null : App.navigate_to_screen("PageEdit", page)}
-          disabled={page.template}
+          actions={menu_items}
         >
-          {
-            page.name &&
-            <Text style={{color: App.theme_text_color(), fontSize: App.theme_default_font_size(), fontWeight: "700", marginBottom: 15}}>{page.name}</Text>
-          }
-          <Text style={{color: App.theme_text_color(), fontSize: App.theme_default_font_size()}}>{page.plain_text_content()}</Text>
-          { page.images_from_content()?.length > 0 && this._render_images() }
-          <View
+          <TouchableOpacity
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginTop: 20
+              padding: 15,
+              borderColor: App.theme_alt_background_div_color(),
+              borderBottomWidth: .5,
+              backgroundColor: App.theme_background_color_secondary(),
+              opacity: page.template ? .5 : 1
             }}
+            onPress={() => page.template ? null : App.navigate_to_screen("PageEdit", page)}
+            disabled={page.template}
           >
-            <TouchableOpacity onPress={() => App.handle_url_from_webview(page.url)}>
-              <Text style={{color: "gray", fontSize: 12}}>
-              {page.nice_local_published_date()}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
+            {
+              page.name &&
+              <Text style={{color: App.theme_text_color(), fontSize: App.theme_default_font_size(), fontWeight: "700", marginBottom: 15}}>{page.name}</Text>
+            }
+            <Text style={{color: App.theme_text_color(), fontSize: App.theme_default_font_size()}}>{page.plain_text_content()}</Text>
+            { page.images_from_content()?.length > 0 && this._render_images() }
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginTop: 20
+              }}
+            >
+              <TouchableOpacity onPress={() => App.handle_url_from_webview(page.url)}>
+                <Text style={{color: "gray", fontSize: 12}}>
+                {page.nice_local_published_date()}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </ContextMenu>
       </Swipeable>
     )
   }
