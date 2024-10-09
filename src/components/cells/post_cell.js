@@ -7,6 +7,9 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { RectButton } from 'react-native-gesture-handler';
 import { SvgXml } from 'react-native-svg';
 import FastImage from 'react-native-fast-image';
+import ContextMenu from 'react-native-context-menu-view';
+import Clipboard from '@react-native-clipboard/clipboard'
+import Toast from 'react-native-simple-toast';
 
 @observer
 export default class PostCell extends React.Component{
@@ -121,8 +124,50 @@ export default class PostCell extends React.Component{
     )
   }
   
+  make_context_menu = (item) => {
+    let menu_items = [];
+    
+    if (item.post_status == "draft") {
+      menu_items.push({
+        title: "Publish",
+        id: "publish",
+        systemIcon: "icloud.and.arrow.up"
+      });
+    }
+    
+    menu_items.push({
+      title: "Edit",
+      id: "edit",
+      systemIcon: "square.and.pencil"
+    });
+    
+    if (item.post_status != "draft") {
+      menu_items.push({
+        title: "Copy Link",
+        id: "copy_link",
+        systemIcon: "link"
+      });
+    
+      menu_items.push({
+        title: "Open in Browser",
+        id: "open_in_browser",
+        systemIcon: "safari"
+      });
+    }
+    
+    menu_items.push({
+      title: "Delete",
+      id: "delete",
+      systemIcon: "trash",
+      destructive: true
+    });
+
+    return menu_items;
+  }
+  
   render() {
     const { post } = this.props
+    let menu_items = this.make_context_menu(post);
     return(
       <Swipeable
         ref={this._swipeable}
@@ -131,41 +176,65 @@ export default class PostCell extends React.Component{
         enableTrackpadTwoFingerGesture={true}
         renderRightActions={(progress) => this._right_actions(progress, post)}
       >
-        <TouchableOpacity
-          style={{
-            padding: 15,
-            borderColor: App.theme_alt_background_div_color(),
-            borderBottomWidth: .5,
-            backgroundColor: App.theme_background_color_secondary()
-          }}
-          onPress={() => App.navigate_to_screen("PostEdit", post)}
-        >
-          {
-            post.name &&
-            <Text style={{color: App.theme_text_color(), fontSize: App.theme_default_font_size(), fontWeight: "700", marginBottom: 15}}>{post.name}</Text>
-          }
-          <Text style={{color: App.theme_text_color(), fontSize: App.theme_default_font_size()}}>{post.plain_text_content()}</Text>
-          { post.images_from_content()?.length > 0 && this._render_images() }
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginTop: 20
-            }}
-          >
-            <TouchableOpacity onPress={() => App.handle_url_from_webview(post.url)}>
-              <Text style={{color: "gray", fontSize: 12}}>{post.nice_local_published_date()}
-                { post.is_draft() ? <Text> — draft</Text> : null }
-              </Text>
-            </TouchableOpacity>
-            {
-              Platform.OS === "android" &&
-              <TouchableOpacity onPress={this._trigger_delete} style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={{color: "rgb(239,68,68)", fontSize: 15}}>Delete...</Text>
-              </TouchableOpacity>
+        <ContextMenu
+          previewBackgroundColor="rgba(0, 0, 0, 0.0)"
+          onPress={({nativeEvent}) => {
+            if (nativeEvent.name == "Publish") {
+              Auth.selected_user.posting.selected_service?.publish_draft(post);
             }
-          </View>
-        </TouchableOpacity>
+            else if (nativeEvent.name == "Edit") {
+              App.navigate_to_screen("PostEdit", post);
+            }
+            else if (nativeEvent.name == "Copy Link") {
+              Clipboard.setString(post.url);
+              Toast.showWithGravity("URL copied", Toast.SHORT, Toast.CENTER);
+            }
+            else if (nativeEvent.name == "Open in Browser") {
+              App.open_url(post.url)
+            }
+            else if (nativeEvent.name == "Delete") {
+              Auth.selected_user.posting.selected_service?.trigger_post_delete(post);
+            }
+          }}
+          actions={menu_items}
+        >
+          <TouchableOpacity
+            style={{
+              padding: 15,
+              borderColor: App.theme_alt_background_div_color(),
+              borderBottomWidth: .5,
+              backgroundColor: App.theme_background_color_secondary()
+            }}
+            onPress={() => App.navigate_to_screen("PostEdit", post)}
+            onLongPress={() => {}}
+          >
+            {
+              post.name &&
+              <Text style={{color: App.theme_text_color(), fontSize: App.theme_default_font_size(), fontWeight: "700", marginBottom: 15}}>{post.name}</Text>
+            }
+            <Text style={{color: App.theme_text_color(), fontSize: App.theme_default_font_size()}}>{post.plain_text_content()}</Text>
+            { post.images_from_content()?.length > 0 && this._render_images() }
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginTop: 20
+              }}
+            >
+              <TouchableOpacity onPress={() => App.handle_url_from_webview(post.url)}>
+                <Text style={{color: "gray", fontSize: 12}}>{post.nice_local_published_date()}
+                  { post.is_draft() ? <Text> — draft</Text> : null }
+                </Text>
+              </TouchableOpacity>
+              {
+                Platform.OS === "android" &&
+                <TouchableOpacity onPress={this._trigger_delete} style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text style={{color: "rgb(239,68,68)", fontSize: 15}}>Delete...</Text>
+                </TouchableOpacity>
+              }
+            </View>
+          </TouchableOpacity>
+        </ContextMenu>
       </Swipeable>
     )
   }

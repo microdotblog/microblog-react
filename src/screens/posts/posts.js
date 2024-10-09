@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard, Image, Pressable } from 'react-native';
+import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard, Image } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
@@ -9,9 +9,6 @@ import { SheetProvider } from "react-native-actions-sheet";
 import SearchIcon from '../../assets/icons/nav/discover.png';
 import { SFSymbol } from "react-native-sfsymbols";
 import { SvgXml } from 'react-native-svg';
-import ContextMenu from 'react-native-context-menu-view';
-import Clipboard from '@react-native-clipboard/clipboard'
-import Toast from 'react-native-simple-toast';
 
 @observer
 export default class PostsScreen extends React.Component{
@@ -147,74 +144,9 @@ export default class PostsScreen extends React.Component{
   
   _key_extractor = (item) => item.uid;
   
-  make_context_menu = (item) => {
-    let menu_items = [];
-    
-    if (item.post_status == "draft") {
-      menu_items.push({
-        title: "Publish",
-        id: "publish",
-        systemIcon: "icloud.and.arrow.up"
-      });
-    }
-    
-    menu_items.push({
-      title: "Edit",
-      id: "edit",
-      systemIcon: "square.and.pencil"
-    });
-    
-    if (item.post_status != "draft") {
-      menu_items.push({
-        title: "Copy Link",
-        id: "copy_link",
-        systemIcon: "link"
-      });
-    
-      menu_items.push({
-        title: "Open in Browser",
-        id: "open_in_browser",
-        systemIcon: "safari"
-      });
-    }
-    
-    menu_items.push({
-      title: "Delete",
-      id: "delete",
-      systemIcon: "trash",
-      destructive: true
-    });
-
-    return menu_items;
-  }
-  
   render_post_item = ({ item }) => {
-    let menu_items = this.make_context_menu(item);
-    
     return (
-      <ContextMenu shouldOpenOnLongPress={true}
-        previewBackgroundColor="rgba(0, 0, 0, 0.0)"
-        onPress={({nativeEvent}) => {
-          if (nativeEvent.name == "Publish") {
-            Auth.selected_user.posting.selected_service?.publish_draft(item);
-          }
-          else if (nativeEvent.name == "Edit") {
-            App.navigate_to_screen("PostEdit", item);
-          }
-          else if (nativeEvent.name == "Copy Link") {
-            Clipboard.setString(item.url);
-            Toast.showWithGravity("URL copied", Toast.SHORT, Toast.CENTER);
-          }
-          else if (nativeEvent.name == "Open in Browser") {
-            App.open_url(item.url)
-          }
-          else if (nativeEvent.name == "Delete") {
-            Auth.selected_user.posting.selected_service?.trigger_post_delete(item);
-          }
-        }}
-        actions={menu_items}>
-        <PostCell key={item.uid} post={item} />
-      </ContextMenu>
+      <PostCell key={item.uid} post={item} />
     );
   }
   
