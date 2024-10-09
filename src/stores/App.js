@@ -72,7 +72,7 @@ export default App = types.model('App', {
       console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
       await App.set_current_initial_theme()
       await App.set_current_initial_font_scale()
-      await App.hydrate_last_tab_index()
+      // await App.hydrate_last_tab_index()
       Push.hydrate()
       Settings.hydrate()
       App.set_is_loading(false)

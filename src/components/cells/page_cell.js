@@ -104,13 +104,13 @@ export default class PostCell extends React.Component{
     )
   }
   
-  make_context_menu = () => {
+  make_context_menu = (page) => {
     let menu_items = [
-      {
+      ...!page?.template ? [{
         title: "Edit",
         id: "edit",
         systemIcon: "square.and.pencil"
-      },
+      }]: [],
       {
         title: "Copy Link",
         id: "copy_link",
@@ -134,7 +134,7 @@ export default class PostCell extends React.Component{
   
   render() {
     const { page } = this.props
-    let menu_items = this.make_context_menu();
+    let menu_items = this.make_context_menu(page);
     return (
       <Swipeable
         ref={this._swipeable}
@@ -171,6 +171,7 @@ export default class PostCell extends React.Component{
               opacity: page.template ? .5 : 1
             }}
             onPress={() => page.template ? null : App.navigate_to_screen("PageEdit", page)}
+            onLongPress={() => {}}
             disabled={page.template}
           >
             {
