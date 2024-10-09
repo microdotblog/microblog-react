@@ -63,7 +63,10 @@ export default Service = types.model('Service', {
     self.hydrate()
   }),
 
-  check_for_categories: flow(function* () { 
+  check_for_categories: flow(function* () {
+    
+    if(self.credentials()?.token == null){ return }
+    
     if(self.config?.destination != null && self.config.destination.length > 0 && self.type !== "xmlrpc"){
       self.config.destination.forEach(async (destination) => {
         // TODO: Perhaps check if we already have categories downloaded before fetching,
@@ -76,12 +79,13 @@ export default Service = types.model('Service', {
         }
       })
     }
-    else if(self.type === "xmlrpc" && self.credentials()?.token != null){
+    else if(self.type === "xmlrpc"){
       self.get_xml_rpc_categories()
     }
   }),
   
   get_xml_rpc_categories: flow(function* () {
+    // This might sound confusing, but we're only actually getting categories and basically reset the config.
     console.log("Service:get_xml_rpc_categories")
     const categories = yield XMLRPCApi.get_config(self.service_object())
     console.log("Service:get_xml_rpc_categories:categories", categories)
