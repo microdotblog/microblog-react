@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import Auth from '../../stores/Auth';
-import CheckmarkIcon from '../../assets/icons/checkmark.png';
 import App from '../../stores/App'
 import CheckmarkRowCell from '../../components/cells/checkmark_row_cell'
 
