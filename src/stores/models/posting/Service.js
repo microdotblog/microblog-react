@@ -25,8 +25,8 @@ export default Service = types.model('Service', {
 
   hydrate: flow(function* () {
     console.log("Service:hydrate", self.id)
+    if(self.credentials()?.token == null){ return }
     if(self.is_microblog || self.type === "micropub"){
-      if(self.credentials()?.token == null){return}
       const config = yield MicroPubApi.get_config(self.service_object())
       console.log("Service:hydrate:micropub:config", config)
       if(config){
@@ -54,25 +54,8 @@ export default Service = types.model('Service', {
         }
       }
     }
-    else if(self.type === "xmlrpc" && self.credentials()?.token != null){
-      console.log("Service:hydrate:xmlrpc")
-      const categories = yield XMLRPCApi.get_config(self.service_object())
-      console.log("Service:hydrate:xmlrpc:categories", categories)
-      if (categories !== XML_ERROR) {
-        // We need to iterate over categories and grab just the "categoryName" attributes for now. Not sure if we need ID data?
-        const category_names = categories.map(category => category.categoryName)
-        console.log("Service:hydrate:xmlrpc:categories:category_names", category_names)
-        
-        self.config = {
-          "media-endpoint": self.url,
-          destination: [{
-            uid: self.name,
-            name: self.name,
-            categories: category_names
-          }]
-        }
-        console.log("Service:set_initial_config:config", self.config)
-      }
+    else if(self.type === "xmlrpc"){
+      self.get_xml_rpc_categories()
     }
   }),
   
@@ -80,7 +63,10 @@ export default Service = types.model('Service', {
     self.hydrate()
   }),
 
-  check_for_categories: flow(function* () { 
+  check_for_categories: flow(function* () {
+    
+    if(self.credentials()?.token == null){ return }
+    
     if(self.config?.destination != null && self.config.destination.length > 0 && self.type !== "xmlrpc"){
       self.config.destination.forEach(async (destination) => {
         // TODO: Perhaps check if we already have categories downloaded before fetching,
@@ -92,6 +78,31 @@ export default Service = types.model('Service', {
           destination.set_categories(data.categories)
         }
       })
+    }
+    else if(self.type === "xmlrpc"){
+      self.get_xml_rpc_categories()
+    }
+  }),
+  
+  get_xml_rpc_categories: flow(function* () {
+    // This might sound confusing, but we're only actually getting categories and basically reset the config.
+    console.log("Service:get_xml_rpc_categories")
+    const categories = yield XMLRPCApi.get_config(self.service_object())
+    console.log("Service:get_xml_rpc_categories:categories", categories)
+    if (categories !== XML_ERROR) {
+      // We need to iterate over categories and grab just the "categoryName" attributes for now. Not sure if we need ID data?
+      const category_names = categories.map(category => category.categoryName)
+      console.log("Service:get_xml_rpc_categories:categories:category_names", category_names)
+      
+      self.config = {
+        "media-endpoint": self.url,
+        destination: [{
+          uid: self.name,
+          name: self.name,
+          categories: category_names
+        }]
+      }
+      console.log("Service:get_xml_rpc_categories:config", self.config)
     }
   }),
   
@@ -369,9 +380,11 @@ export default Service = types.model('Service', {
   }),
   
   check_for_syndicate_to_targets: flow(function* () { 
-    if(self.config?.destination != null && self.config.destination.length > 0){
+    if(self.config?.destination != null && self.config.destination.length > 0 && (self.is_microblog || self.type === "micropub")){
       self.config.destination.forEach(async (dest) => {
+        console.log("Service:check_for_syndicate_to_targets")
         const config = await MicroPubApi.get_syndicate_to(self.service_object(), dest.uid)
+        console.log("Service:check_for_syndicate_to_targets:config", config)
         if(config !== FETCH_ERROR && config["syndicate-to"]?.length > 0){
           console.log("check_for_syndicate_to_targets", config["syndicate-to"])
           dest.set_syndicate_to_targets(config["syndicate-to"])

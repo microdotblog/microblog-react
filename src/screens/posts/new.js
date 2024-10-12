@@ -21,6 +21,7 @@ export default class PostingScreen extends React.Component{
     if (u != null) {
       if (u.posting.selected_service != null) {
         u.posting.selected_service.check_for_categories()
+        u.posting.selected_service.check_for_syndicate_to_targets()
         u.posting.reset_post_syndicates()
       }
 
