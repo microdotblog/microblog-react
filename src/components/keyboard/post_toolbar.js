@@ -200,9 +200,9 @@ export default class PostToolbar extends React.Component{
 						}}
 					>
 						{
-							!this.props.is_post_edit && !App.is_share_extension &&
+							!App.is_share_extension &&
 							<TouchableOpacity
-								onPress={() => App.navigate_to_screen("PostingOptions")}
+								onPress={() => App.navigate_to_screen(this.props.is_post_edit ? "PostEditOptions" : "PostingOptions")}
 							>
 							{
 								Platform.OS === 'ios' ?
