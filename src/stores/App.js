@@ -49,7 +49,8 @@ export default App = types.model('App', {
   is_searching_uploads: types.optional(types.boolean, false),
   is_loading_highlights: types.optional(types.boolean, false),
   is_loading_bookmarks: types.optional(types.boolean, false),
-  conversation_screen_focused: types.optional(types.boolean, false)
+  conversation_screen_focused: types.optional(types.boolean, false),
+  toolbar_categories_open: types.optional(types.boolean, false)
 })
 .volatile(self => ({
   navigation_ref: null,
@@ -760,6 +761,11 @@ export default App = types.model('App', {
     console.log("App:set_is_loading_bookmarks", loading)
     self.is_loading_bookmarks = loading
   }),
+  
+  toggle_category_select: flow(function* () {
+    console.log("App:set_toolbar_categories_open", !self.toolbar_categories_open)
+    self.toolbar_categories_open = !self.toolbar_categories_open
+  })
 
 }))
 .views(self => ({

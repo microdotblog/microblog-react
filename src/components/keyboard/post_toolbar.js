@@ -8,6 +8,7 @@ import App from '../../stores/App'
 import Auth from '../../stores/Auth'
 import Share from '../../stores/Share'
 import { SvgXml } from 'react-native-svg';
+import CheckmarkRowCell from '../cells/checkmark_row_cell'
 
 @observer
 export default class PostToolbar extends React.Component{
@@ -58,6 +59,40 @@ export default class PostToolbar extends React.Component{
 		}
 		return null
 	}
+	
+	_render_categories() {
+	  const { posting } = this.props.posting != null ? this.props : Auth.selected_user
+		if(App.is_share_extension && posting.selected_service.config?.active_destination()?.categories.length && App.toolbar_categories_open){
+		  return(
+				<View style={{ backgroundColor: App.theme_section_background_color(), padding: 5 }}>
+					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} style={{ overflow: 'hidden', maxWidth: "100%" }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}>
+					{
+  					posting.selected_service.config.active_destination().categories.map((category) => {
+  						const is_selected = posting.post_categories.indexOf(category) > -1
+  						return(
+  							<TouchableOpacity
+  								key={category}
+  								style={{
+  									padding: 4,
+  									marginHorizontal: 2.5,
+  									flexDirection: 'row',
+  									alignItems: 'center',
+  								}}
+  								onPress={() => {
+  									posting.handle_post_category_select(category)
+  								}}
+  							>
+  								<CheckmarkRowCell text={category} is_selected={is_selected} />
+  							</TouchableOpacity>
+  						)
+  					})
+					}				
+  				</ScrollView>
+  			</View>
+			)
+		}
+		return null
+	}
   
 	render() {
 		const { posting } = this.props.posting != null ? this.props : Auth.selected_user
@@ -77,6 +112,7 @@ export default class PostToolbar extends React.Component{
 			>
 				{this._render_destinations()}
 				{this._render_users_select()}
+				{this._render_categories()}
 				<View
 					style={{
 						width: '100%',
@@ -115,7 +151,6 @@ export default class PostToolbar extends React.Component{
 						{
 							!this.props.is_post_edit && !App.is_share_extension && (Auth.selected_user?.is_premium != null && Auth.selected_user?.is_premium) &&
 							<>
-								{/* TODO: Add uploads screen */}
 								<TouchableOpacity style={{minWidth: 30, marginLeft: 4, marginRight: 0}} onPress={() => App.navigate_to_screen("PostUploads")}>
 								{
 									Platform.OS === 'ios' ?
@@ -169,9 +204,37 @@ export default class PostToolbar extends React.Component{
 									xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
 										<path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
 									</svg>'
-								/>				
+								/>
 							}
 						</TouchableOpacity>
+						{
+						  App.is_share_extension && posting.selected_service.config?.active_destination()?.categories.length ?
+								<TouchableOpacity style={{minWidth: 30, marginLeft: 4, marginRight: 0}} onPress={() => App.toggle_category_select()}>
+								{
+									Platform.OS === 'ios' ?
+										<SFSymbol
+											name={'tag'}
+											color={App.theme_text_color()}
+											style={{ height: 22, width: 22 }}
+											multicolor={true}
+										/>
+									: 						
+									<SvgXml
+										style={{
+											height: 18,
+											width: 18
+										}}
+										stroke={App.theme_button_text_color()}
+										strokeWidth={2}
+										xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                    </svg>'
+									/>
+								}
+								</TouchableOpacity>
+							 : null
+						}
 						{
 							!this.props.is_post_edit && posting.selected_service?.config?.active_destination() != null && (posting.selected_service?.config?.destination?.length > 1 || (!posting.selected_service?.is_microblog && !App.is_share_extension)) ?
 							<TouchableOpacity style={{marginLeft: 8, marginRight: 8}} onPress={() => {!posting.selected_service?.is_microblog ? App.navigate_to_screen("post_service", App.is_share_extension ? Share.selected_user : Auth.selected_user) : App.toggle_select_destination()}}>
