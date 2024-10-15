@@ -19,31 +19,34 @@ export default class PostingOptionsScreen extends React.Component{
     return(
 			<ScrollView style={{ flex: 1, padding: 15 }}>
 				{/* Post status */}
-				<View style={{ marginBottom: 25 }}>
-					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>
-						{ posting.selected_service?.type === "microblog" ? "When sending this post to Micro.blog" : "When sending this post to your blog" }:
-					</Text>
-					<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
-						<TouchableOpacity
-							key={"published"}
-							style={{ padding: 8, marginVertical: 2.5, flexDirection: 'row', alignItems: 'center' }}
-							onPress={() => {	
-								posting.handle_post_status_select("published")
-							}}
-						>
-							<CheckmarkRowCell text="Publish to your blog" is_selected={posting.post_status == "published"} />						
-						</TouchableOpacity>
-						<TouchableOpacity
-							key={"draft"}
-							style={{ padding: 8, marginBottom: 5, flexDirection: 'row', alignItems: 'center' }}
-							onPress={() => {						
-								posting.handle_post_status_select("draft")
-							}}
-						>
-							<CheckmarkRowCell text="Save as a draft" is_selected={posting.post_status == "draft"} />						
-						</TouchableOpacity>
+				{
+				  !posting.is_editing_post &&
+					<View style={{ marginBottom: 25 }}>
+						<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>
+							{ posting.selected_service?.type === "microblog" ? "When sending this post to Micro.blog" : "When sending this post to your blog" }:
+						</Text>
+						<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
+							<TouchableOpacity
+								key={"published"}
+								style={{ padding: 8, marginVertical: 2.5, flexDirection: 'row', alignItems: 'center' }}
+								onPress={() => {	
+									posting.handle_post_status_select("published")
+								}}
+							>
+								<CheckmarkRowCell text="Publish to your blog" is_selected={posting.post_status == "published"} />						
+							</TouchableOpacity>
+							<TouchableOpacity
+								key={"draft"}
+								style={{ padding: 8, marginBottom: 5, flexDirection: 'row', alignItems: 'center' }}
+								onPress={() => {						
+									posting.handle_post_status_select("draft")
+								}}
+							>
+								<CheckmarkRowCell text="Save as a draft" is_selected={posting.post_status == "draft"} />						
+							</TouchableOpacity>
+						</View>
 					</View>
-				</View>
+				}
 				{/* Categories */}
 				<View style={{ marginBottom: 25 }}>
 					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>Select categories for this post:</Text>
@@ -74,34 +77,37 @@ export default class PostingOptionsScreen extends React.Component{
 					</View>
 				</View>
 				{/* Cross posting */}
-				<View style={{ marginBottom: 25 }}>
-					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>Cross-posting:</Text>
-					<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
-					{
-						posting.selected_service.active_destination()?.syndicates?.length ?
-							posting.selected_service.active_destination().syndicates.map((syndicate) => {
-								const is_selected = posting.post_syndicates.indexOf(syndicate.uid) > -1
-								return(
-									<TouchableOpacity
-										key={syndicate.uid}
-										style={{
-											padding: 8,
-											marginVertical: 2.5,
-											flexDirection: 'row',
-											alignItems: 'center',
-										}}
-										onPress={() => {
-											posting.handle_post_syndicates_select(syndicate.uid)
-										}}
-									>
-										<CheckmarkRowCell text={syndicate.name} is_selected={is_selected} />
-									</TouchableOpacity>
-								)
-							})
-						: <Text style={{ color: App.theme_button_text_color() }}>No cross-posting options to display</Text>
-					}
+				{
+				  !posting.is_editing_post &&
+					<View style={{ marginBottom: 25 }}>
+						<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>Cross-posting:</Text>
+						<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
+						{
+							posting.selected_service.active_destination()?.syndicates?.length ?
+								posting.selected_service.active_destination().syndicates.map((syndicate) => {
+									const is_selected = posting.post_syndicates.indexOf(syndicate.uid) > -1
+									return(
+										<TouchableOpacity
+											key={syndicate.uid}
+											style={{
+												padding: 8,
+												marginVertical: 2.5,
+												flexDirection: 'row',
+												alignItems: 'center',
+											}}
+											onPress={() => {
+												posting.handle_post_syndicates_select(syndicate.uid)
+											}}
+										>
+											<CheckmarkRowCell text={syndicate.name} is_selected={is_selected} />
+										</TouchableOpacity>
+									)
+								})
+							: <Text style={{ color: App.theme_button_text_color() }}>No cross-posting options to display</Text>
+						}
+						</View>
 					</View>
-				</View>
+				}
 				{/* Other options */}
 				<View style={{ marginBottom: 25 }}>
 					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>View:</Text>
