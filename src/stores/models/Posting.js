@@ -82,6 +82,17 @@ export default Posting = types.model('Posting', {
     self.post_title = post.name != "" ? post.name : null
     self.post_text = post.content
     self.post_url = post.url
+    
+    if(post.category.length > 0){
+      let categories = []
+      post.category.forEach((category) => {
+        categories.push(category)
+      })
+      self.post_categories = categories
+    }
+    
+    self.selected_service.check_for_categories()
+    
   }),
   
   hydrate_page_edit: flow(function* (page) {
