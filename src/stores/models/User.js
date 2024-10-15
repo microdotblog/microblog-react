@@ -35,7 +35,7 @@ export default User = types.model('User', {
   .actions(self => ({
 
     hydrate: flow(function* () {
-      console.log("HYDRATING USER", self.username)
+      console.log("User:hydrate", self.username)
       self.check_token_validity()
       if(self.avatar){
         FastImage.preload([{uri: self.avatar}])
