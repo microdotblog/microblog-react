@@ -322,10 +322,15 @@ export default Service = types.model('Service', {
 
   pick_image: flow(function* (destination) {
     console.log("Destination:pick_image", destination.uid)
-    launchImageLibrary({
-      title: 'Select an asset',
-      selectionLimit: 0,
-    }, (res) => {
+    const options = {
+      title: "Select media",
+      mediaType: "mixed",
+      videoQuality: Platform.OS === "android" ? "high" : "medium",
+      formatAsMp4: true,
+      quality: 0.95,
+      selectionLimit: 5
+    };
+    launchImageLibrary(options, (res) => {
       console.log("Destination:pick_image:res", res)
       if (res.error) {
         // TODO: SHOW ERROR MESSAGES IF APPLICABLE
