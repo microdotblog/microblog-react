@@ -44,7 +44,7 @@ export default Push = types.model('Push', {
 	set_token: flow(function* (token) {
 		console.log("Push::set_token", token)
 		self.token = token
-		if(Auth.is_logged_in() && Auth.selected_user != null && !Auth.selected_user.push_registered_with_server){
+		if(Auth.is_logged_in()){
 			Auth.selected_user.register_for_push()
 		}
 	}),
@@ -52,24 +52,30 @@ export default Push = types.model('Push', {
 	register_token: flow(function* (user_token) {
 		console.log("Push:register_token")
 		
-		if (self.token != null && user_token != null && Auth.is_logged_in()) {
+		if (self.token != null && self.token != "" && user_token != null && Auth.is_logged_in()) {
 			const data = yield MicroBlogApi.register_push(self.token, user_token)
 			if (data !== API_ERROR) {
 				console.log("Push:register_token:OK")
 				return true
 			}
 		}
+		else if(self.token == "" && Auth.is_logged_in() && self.has_push_permissions){
+		  Push.request_permissions()
+		}
 		return false
 	}),
 
 	unregister_user_from_push: flow(function* (user_token) {
 		console.log("Push:unregister_user_from_push")
-		if (self.token != null && user_token != null) {
+		if (self.token != null && self.token != "" && user_token != null) {
 			const data = yield MicroBlogApi.unregister_push(self.token, user_token)
 			if (data !== API_ERROR) {
 				console.log("Push:unregister_user_from_push:OK")
 				return true
 			}
+		}
+		else if(self.token == ""){
+		  return true
 		}
 		return false
 	}),

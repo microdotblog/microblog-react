@@ -86,7 +86,7 @@ export default User = types.model('User', {
     
     toggle_push_notifications: flow(function* () {
       self.toggling_push = true
-      if (!self.push_enabled) {
+      if (!self.push_enabled || Push.token == "") {
         yield self.register_for_push()
       } else {
         yield self.unregister_for_push()
