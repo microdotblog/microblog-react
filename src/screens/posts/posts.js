@@ -70,6 +70,10 @@ export default class PostsScreen extends React.Component{
         onSubmitEditing={() => {Keyboard.dismiss()}}
         onChangeText={(text) => App.set_posts_query(text, config.posts_destination())}
         value={App.post_search_query}
+        onCancel={() => {
+            App.toggle_post_search_is_open();
+            App.set_posts_query("", null);
+        }}
       />
     )
   }

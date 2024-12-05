@@ -10,7 +10,8 @@ export default class SearchBar extends React.Component {
 			placeholder,
 			onSubmitEditing,
 			onChangeText,
-			value			
+			value,
+			onCancel
 		} = this.props;
 		
 		return (
@@ -58,10 +59,7 @@ export default class SearchBar extends React.Component {
 						marginLeft: 8,
 						marginRight: 8,
 					}}
-					onPress={() => {
-						App.toggle_post_search_is_open();
-						App.set_posts_query("", null);
-					}}
+					onPress={onCancel}
 				>
 					<Text
 						style={{
