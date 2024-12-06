@@ -773,7 +773,8 @@ export default App = types.model('App', {
     return "red"
   },
   theme_background_color() {
-    return self.theme === "dark" ? "#1d2530" : "#fff"
+    // return self.theme === "dark" ? "#1d2530" : "#fff"
+    return self.theme === "dark" ? "#1F2937" : "#fff"
   },
   theme_navigation_icon_color() {
     return self.theme === "dark" ? "#9CA3AF" : "#000"

@@ -15,6 +15,7 @@
 {
   self = [super init];
   if (self) {
+    self.keyboardHeight = 0;
   }
 
   return self;
@@ -31,15 +32,18 @@
   UIView* root = [self findRootView];
   UIView* v = [self findAccessoryViewFromView:root withNativeID:@"input_toolbar"];
   if (v) {
-    //    NSLog(@"found accessory view");
     self.reactAccessoryView = v;
     
     if (self.inputAccessoryView == nil) {
-//      [self becomeFirstResponder];
       self.inputAccessoryView = [self.reactAccessoryView inputAccessoryView];
       [self reloadInputViews];
     }
   }
+}
+
+- (void) adjustHeight
+{
+  [self adjustHeightForKeyboardHeight:self.keyboardHeight animated:NO];
 }
 
 - (void) adjustHeightForKeyboardHeight:(CGFloat)keyboardHeight
@@ -69,27 +73,15 @@
       }
     }
 
-    NSLayoutConstraint* height_c = nil;
-    for (NSLayoutConstraint* c in [self constraints]) {
-      if (c.firstAttribute == NSLayoutAttributeHeight) {
-        height_c = c;
-      }
-    }
-        
     CGRect r = parent.bounds;
     r.origin.y = top_views_height;
     r.size.height = r.size.height - bottom_views_height - keyboardHeight;
-    self.frame = r;
 
-    if (height_c) {
-//      height_c.constant = r.size.height;
+    // only set frame and offset if height has changed
+    if (self.frame.size.height != r.size.height) {
+      self.frame = r;
+      [self setContentOffset:CGPointZero animated:animated];
     }
-    else {
-//      height_c = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:r.size.height];
-//      [self addConstraint:height_c];
-    }
-
-    [self setContentOffset:CGPointZero animated:animated];
   }
 }
 
@@ -98,11 +90,12 @@
   [self setupNotifications];
   [self setupAccessoryView];
   [self adjustHeightForKeyboardHeight:0 animated:NO];
+  
+  self.hidden = NO;
 }
 
 - (void) didSetProps:(NSArray<NSString *> *)changedProps
 {
-//  NSLog(@"didSetProps %@", changedProps);
 }
 
 - (UIView *) findRootView
@@ -139,11 +132,10 @@
 - (void) didMoveToSuperview
 {
   [super didMoveToSuperview];
-  
-//  NSLog(@"didMoveToSuperview");
 
   if (self.superview != nil) {
-    [self performSelector:@selector(finishSetup) withObject:nil afterDelay:0.5];
+    // give the other React Native layout time to do whatever it's doing
+    [self performSelector:@selector(finishSetup) withObject:nil afterDelay:1.0];
   }
 }
 
@@ -175,7 +167,10 @@
 {
   NSDictionary* info = [notification userInfo];
   CGRect kb_r = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    
+  
+  // remember height for later layout
+  self.keyboardHeight = kb_r.size.height;
+  
   [UIView animateWithDuration:0.3 animations:^{
     [self adjustHeightForKeyboardHeight:kb_r.size.height];
     [self layoutIfNeeded];

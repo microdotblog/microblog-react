@@ -113,25 +113,20 @@ RCT_CUSTOM_VIEW_PROPERTY(autoFocus, BOOL, MBHighlightingTextView)
 
   // make the view
   self.textView = [[MBHighlightingTextView alloc] initWithFrame:r textContainer:text_container];
+  self.textView.hidden = YES;
   self.textView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   self.textView.translatesAutoresizingMaskIntoConstraints = NO;
   self.textView.delegate = self;
   
   // background color
-  BOOL darkmode = NO;
-  if (@available(iOS 13.0, *)) {
-    darkmode = UITraitCollection.currentTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark;
-  }
+  BOOL darkmode = UITraitCollection.currentTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark;
   if (darkmode) {
     self.textView.backgroundColor = [UIColor colorWithRed:0.11 green:0.15 blue:0.19 alpha:1.0];
   }
   else {
     self.textView.backgroundColor = [UIColor whiteColor];
   }
-  
-  // test
-//  self.textView.backgroundColor = [UIColor orangeColor];
-  
+    
   // default text
   NSString* s = @"";
   NSDictionary* attr_info = @{
@@ -157,6 +152,9 @@ RCT_CUSTOM_VIEW_PROPERTY(autoFocus, BOOL, MBHighlightingTextView)
   // callback to JS
   MBHighlightingTextView* v = (MBHighlightingTextView *)textView;
   [v callTextChanged:textView.text];
+  
+  // fix height and scrolling
+  [v adjustHeight];
 }
 
 - (void) textViewDidChangeSelection:(UITextView *)textView
