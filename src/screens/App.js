@@ -82,7 +82,7 @@ export default class MainApp extends React.Component {
                 name="Login"
                 component={LoginScreen}
                 options={{
-                  title: "Sign in",
+                  title: "Sign In",
                   headerShown: true,
                   headerBackTitle: "Back"
                 }}
@@ -130,7 +130,7 @@ export default class MainApp extends React.Component {
                   name="AddBookmark"
                   component={AddBookmarkScreen}
                   options={{
-                    headerTitle: "Add bookmark"
+                    headerTitle: "Add Bookmark"
                   }}
                 />
                 <Stack.Screen
