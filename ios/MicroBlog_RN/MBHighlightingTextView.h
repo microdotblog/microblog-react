@@ -15,9 +15,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (copy, nonatomic) RCTBubblingEventBlock onChangeText;
 @property (copy, nonatomic) RCTBubblingEventBlock onSelectionChange;
 @property (strong, nonatomic) UIView* reactAccessoryView;
+@property (assign, nonatomic) CGFloat keyboardHeight;
 
 - (void) callTextChanged:(NSString *)text;
 - (void) callSelectionChanged:(UITextRange *)range;
+
+- (void) adjustHeight;
 
 @end
 
