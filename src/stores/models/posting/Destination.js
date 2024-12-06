@@ -45,13 +45,15 @@ export default Destination = types.model('Destination', {
 			const published = entry.properties.published ? entry.properties.published[0] : ""
 			const url = entry.properties.url ? entry.properties.url[0] : ""
 			const post_status = entry.properties["post-status"] ? entry.properties["post-status"][0] : ""
+			const categories = entry.properties.category ? entry.properties.category : []
 			const post = {
 				uid: uid,
 				name: name,
 				content: content,
 				published: published,
 				url: url,
-				post_status: post_status
+				post_status: post_status,
+				category: categories
 			}
 			if (uid === 0 || url === "") {
 				return acc

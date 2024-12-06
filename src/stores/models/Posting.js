@@ -82,6 +82,17 @@ export default Posting = types.model('Posting', {
     self.post_title = post.name != "" ? post.name : null
     self.post_text = post.content
     self.post_url = post.url
+    
+    if(post.category.length > 0){
+      let categories = []
+      post.category.forEach((category) => {
+        categories.push(category)
+      })
+      self.post_categories = categories
+    }
+    
+    self.selected_service.check_for_categories()
+    
   }),
   
   hydrate_page_edit: flow(function* (page) {
@@ -389,7 +400,7 @@ export default Posting = types.model('Posting', {
       return false
     }
     self.is_sending_post = true
-    const post_success = yield MicroPubApi.post_update(self.selected_service.service_object(), self.post_text, self.post_url, self.post_title)
+    const post_success = yield MicroPubApi.post_update(self.selected_service.service_object(), self.post_text, self.post_url, self.post_title, self.post_categories)
     self.is_sending_post = false
     if(post_success !== POST_ERROR){
       self.clear_post()

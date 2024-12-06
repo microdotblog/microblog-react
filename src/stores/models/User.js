@@ -35,7 +35,7 @@ export default User = types.model('User', {
   .actions(self => ({
 
     hydrate: flow(function* () {
-      console.log("HYDRATING USER", self.username)
+      console.log("User:hydrate", self.username)
       self.check_token_validity()
       if(self.avatar){
         FastImage.preload([{uri: self.avatar}])
@@ -86,7 +86,7 @@ export default User = types.model('User', {
     
     toggle_push_notifications: flow(function* () {
       self.toggling_push = true
-      if (!self.push_enabled) {
+      if (!self.push_enabled || Push.token == "") {
         yield self.register_for_push()
       } else {
         yield self.unregister_for_push()

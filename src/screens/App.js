@@ -21,6 +21,7 @@ import PageEditScreen from './pages/edit';
 import UpdatePageButton from '../components/header/update_page';
 import Posting from './stacks/PostingStack';
 import PostEditScreen from './posts/edit';
+import PostEditStack from './stacks/PostEditStack';
 
 import "./../components/sheets/sheets";
 import UpdatePostButton from '../components/header/update_post'
@@ -153,12 +154,11 @@ export default class MainApp extends React.Component {
                 />
                 <Stack.Screen
                   name="PostEdit"
-                  component={PostEditScreen}
+                  component={PostEditStack}
                   options={{
                     headerTitle: "Edit Post",
                     gestureEnabled: false,
-                    headerLeft: () => <ClosePostClearButton />,
-                    headerRight: () => <UpdatePostButton />
+                    headerShown: false
                   }}
                 />
                 <Stack.Screen
