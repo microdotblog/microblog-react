@@ -113,6 +113,7 @@ RCT_CUSTOM_VIEW_PROPERTY(autoFocus, BOOL, MBHighlightingTextView)
 
   // make the view
   self.textView = [[MBHighlightingTextView alloc] initWithFrame:r textContainer:text_container];
+  self.textView.hidden = YES;
   self.textView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   self.textView.translatesAutoresizingMaskIntoConstraints = NO;
   self.textView.delegate = self;

@@ -98,6 +98,8 @@
   [self setupNotifications];
   [self setupAccessoryView];
   [self adjustHeightForKeyboardHeight:0 animated:NO];
+  
+  self.hidden = NO;
 }
 
 - (void) didSetProps:(NSArray<NSString *> *)changedProps
@@ -139,11 +141,10 @@
 - (void) didMoveToSuperview
 {
   [super didMoveToSuperview];
-  
-//  NSLog(@"didMoveToSuperview");
 
   if (self.superview != nil) {
-    [self performSelector:@selector(finishSetup) withObject:nil afterDelay:0.5];
+    // give the other React Native layout time to do whatever it's doing
+    [self performSelector:@selector(finishSetup) withObject:nil afterDelay:1.0];
   }
 }
 
