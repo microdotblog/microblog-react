@@ -7,6 +7,7 @@ import App from '../../stores/App'
 import PostCell from '../../components/cells/post_cell';
 import { SheetProvider } from "react-native-actions-sheet";
 import SearchIcon from '../../assets/icons/nav/discover.png';
+import SearchBar from '../../components/search_bar';
 import { SFSymbol } from "react-native-sfsymbols";
 import { SvgXml } from 'react-native-svg';
 
@@ -64,81 +65,16 @@ export default class PostsScreen extends React.Component{
         </TouchableOpacity>
       </View>
       :
-      <View style={{
-        paddingHorizontal: 8,
-        paddingVertical: 11,
-        width: '100%',
-        height: 50,
-        backgroundColor: App.theme_input_background_color(),
-        flexDirection: "row",
-        alignItems: "center"
-      }}>
-      <TouchableOpacity
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: App.theme_header_button_background_color(),
-          borderColor: App.theme_border_color(),
-          borderWidth: 1,
-          padding: 4,
-          borderRadius: 50,
-          marginRight: 8,
-          width: 28,
-          height: 28
-        }}
-        onPress={() => {
-          App.toggle_post_search_is_open();
-          App.set_posts_query("", null);
-        }}
-      >
-      {
-        Platform.OS === "ios" ?
-        <SFSymbol
-          name={"xmark"}
-          color={App.theme_button_text_color()}
-          style={{ height: 12, width: 12 }}
-        />
-        :
-        <SvgXml
-          style={{
-            height: 12,
-            width: 12
-          }}
-          stroke={App.theme_button_text_color()}
-          strokeWidth={2}
-          xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>'
-        />
-      }
-      </TouchableOpacity>
-      <TextInput
-        placeholderTextColor="lightgrey"
-        placeholder={"Search posts"}
-        returnKeyType={'search'}
-        blurOnSubmit={true}
-        autoFocus={true}
-        autoCorrect={true}
-        autoCapitalize="none"
-        clearButtonMode={'while-editing'}
-        enablesReturnKeyAutomatically={true}
-        underlineColorAndroid={'transparent'}
-        style={{ 
-          backgroundColor: App.theme_button_background_color(), 
-          fontSize: 16,
-          borderColor: App.theme_border_color(), 
-          borderWidth: 1,
-          borderRadius: 15,
-          paddingHorizontal: 10,
-          paddingVertical: 4,
-          minWidth: "85%",
-          color: App.theme_text_color()
-        }}
+      <SearchBar
+        placeholder="Search posts"
         onSubmitEditing={() => {Keyboard.dismiss()}}
         onChangeText={(text) => App.set_posts_query(text, config.posts_destination())}
         value={App.post_search_query}
+        onCancel={() => {
+            App.toggle_post_search_is_open();
+            App.set_posts_query("", null);
+        }}
       />
-      </View>
     )
   }
   
