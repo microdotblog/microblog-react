@@ -79,7 +79,6 @@ export default class PagesScreen extends React.Component{
   }
   
   _key_extractor = (item) => item.uid;
-
   
   render_page_item = ({ item }) => {
     return <PageCell key={item.uid} page={item} />
