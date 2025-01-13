@@ -101,6 +101,12 @@ export default class UploadCell extends React.Component {
 		}
 	}
 
+	show_collections(upload) {
+		App.open_sheet("collections_sheet", {
+			upload: upload
+		});
+	}
+
 	get_info(upload) {
 		App.open_sheet("upload_info_sheet", {
 			upload: upload
@@ -142,6 +148,9 @@ export default class UploadCell extends React.Component {
 						}
 						else if (event_id === "copy_markdown") {
 							upload.copy_markdown_to_clipboard()
+						}
+						else if (event_id === "show_collections") {
+							this.show_collections(upload)
 						}
 						else if (event_id === "get_info") {
 							this.get_info(upload)
@@ -186,6 +195,13 @@ export default class UploadCell extends React.Component {
 								ios: 'textformat'
 							})
 						}] : []),
+						{
+							title: "Show Collections",
+							id: "show_collections",
+							image: Platform.select({
+								ios: 'photo.on.rectangle'
+							})
+						},
 						{
 							title: "Get Info",
 							id: "get_info",

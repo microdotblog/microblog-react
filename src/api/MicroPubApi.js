@@ -586,6 +586,23 @@ class MicroPubApi {
 		return upload;
 	}
 
+	async get_collections(service, destination = null) {
+		console.log('MicroPubApi:get_pages');
+		const config = axios
+			.get(service.endpoint, {
+				headers: { Authorization: `Bearer ${service.token}` },
+				params: { q: "source", "mp-destination": destination, "mp-channel": "collections" }
+			})
+			.then(response => {
+				return response.data;
+			})
+			.catch(error => {
+				console.log(error);
+				return FETCH_ERROR;
+			});
+		return config;
+	}
+
 }
 
 export default new MicroPubApi()
