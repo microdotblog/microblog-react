@@ -560,7 +560,7 @@ class MicroPubApi {
 		console.log("MicroBlogApi:MicroPub:delete_upload:PARAMS", params)
 		
 		const upload = axios
-			.post(service.media_endpoint, "" ,{
+			.post(service.media_endpoint, "", {
 				headers: { Authorization: `Bearer ${ service.token }` },
 				params: params
 			})
@@ -587,7 +587,7 @@ class MicroPubApi {
 	}
 
 	async get_collections(service, destination = null) {
-		console.log('MicroPubApi:get_pages');
+		console.log('MicroPubApi:get_collections');
 		const config = axios
 			.get(service.endpoint, {
 				headers: { Authorization: `Bearer ${service.token}` },
@@ -603,6 +603,82 @@ class MicroPubApi {
 		return config;
 	}
 
+	async get_uploads_from_collection(service, destination, collection_url) {		
+		console.log('MicroPubApi:get_uploads_from_collection');
+		const config = axios
+			.get(service.media_endpoint, {
+				headers: { Authorization: `Bearer ${service.token}` },
+				params: {
+					q: "source",
+					"mp-destination": destination,
+					"microblog-collection": collection_url
+				}
+			})
+			.then(response => {
+				return response.data;
+			})
+			.catch(error => {
+				console.log(error);
+				return FETCH_ERROR;
+			});
+		return config;
+	}
+
+	async add_upload_to_collection(service, destination, collection_url, upload_url) {
+		console.log('MicroPubApi:add_upload_to_collection');
+
+		const params = {
+			"action": "update",
+		    "mp-channel": "collections",
+			"url": collection_url,
+			"mp-destination": service.temporary_destination,
+			"add": {
+				"photo": [ upload_url ]
+			}
+		}
+
+		const config = axios
+			.post(service.media_endpoint, "", {
+				headers: { Authorization: `Bearer ${ service.token }` },
+				params: params
+			})
+			.then(response => {
+				return response.data;
+			})
+			.catch(error => {
+				console.log(error);
+				return FETCH_ERROR;
+			});
+		return config;
+	}
+
+	async remove_upload_from_collection(service, destination, collection_url, upload_url) {
+		console.log('MicroPubApi:remove_upload_from_collection');
+	
+		const params = {
+			"action": "update",
+			"mp-channel": "collections",
+			"url": collection_url,
+			"mp-destination": service.temporary_destination,
+			"delete": {
+				"photo": [ upload_url ]
+			}
+		}
+		
+		const config = axios
+			.post(service.endpoint, "", {
+				headers: { Authorization: `Bearer ${ service.token }` },
+				params: params
+			})
+			.then(response => {
+				return response.data;
+			})
+			.catch(error => {
+				console.log(error);
+				return FETCH_ERROR;
+			});
+		return config;
+	}
 }
 
 export default new MicroPubApi()

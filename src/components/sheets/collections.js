@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useRef } from 'react';
 import { observer } from 'mobx-react';
-import { TouchableOpacity, Text, View, FlatList } from 'react-native';
+import { TouchableOpacity, Text, View, FlatList, ActivityIndicator } from 'react-native';
 import ActionSheet, { SheetManager } from "react-native-actions-sheet";
 import App from '../../stores/App';
 import Collection from '../../stores/Collection';
@@ -14,25 +14,80 @@ export default class CollectionsSheet extends React.Component {
 		super(props);
 		this.upload = this.props.payload.upload;
 		this.state = {
-			collections: []
+			is_networking: true,
+			collections: [],
+			selected_ids: []
 		};
-		
+	}
+
+	componentDidMount() {
 		this.fetch_collections();
 	}
 
-	fetch_collections() {
+	current_service() {
 		const service = Auth.selected_user.posting.selected_service;
-		MicroPubApi.get_collections(service.service_object(), service.config.destination.uid).then(data => {
+		return service.service_object();
+	}
+
+	current_destination_uid() {
+		const service = Auth.selected_user.posting.selected_service;
+		return service.config.posts_destination().uid;
+	}
+
+	fetch_collections() {
+		MicroPubApi.get_collections(this.current_service(), this.current_destination_uid()).then(data => {
+			let new_selected = [];
 			let new_collections = [];
 			for (let c of data.items) {
+				const collection_id = c.properties.uid[0];
+				const collection_url = c.properties.url[0];
+
 				new_collections.push({
-					id: c.properties.uid[0],
+					id: collection_id,
+					url: collection_url,
 					name: c.properties.name[0]
 				});
+				
+				// check if this upload is in the collection
+				MicroPubApi.get_uploads_from_collection(this.current_service(), this.current_destination_uid(), collection_url).then(data => {
+					for (let item of data.items) {
+						if (item.url == this.upload.url) {
+							new_selected.push(collection_id);
+							this.setState({ selected_ids: new_selected });
+							this.refresh_collections();
+						}
+					}
+				});
 			}
-			
-			this.setState({ collections: new_collections });
+
+			this.setState({ collections: new_collections, is_networking: false });
 		});
+	}
+	
+	select_collection(collection) {
+		let new_selected = Array.from(this.state.selected_ids);
+		if (!this.state.selected_ids.includes(collection.id)) {
+			new_selected.push(collection.id);
+			
+			MicroPubApi.add_upload_to_collection(this.current_service(), this.current_destination_uid(), collection.url, this.upload.url).then(data => {
+				console.log("Collections: Add photo response:", data);
+			});
+		}
+		else {
+			new_selected = new_selected.filter(item => item != collection.id);
+			
+			MicroPubApi.remove_upload_from_collection(this.current_service(), this.current_destination_uid(), collection.url, this.upload.url).then(data => {
+				console.log("Collections: Remove photo response:", data);
+			});
+		}
+		
+		this.setState({ selected_ids: new_selected, is_networking: false });
+		this.refresh_collections();
+	}
+
+	refresh_collections() {
+		let new_collections = Array.from(this.state.collections);
+		this.setState({ collections: new_collections });
 	}
 
 	_render_collection = ({ item }) => {
@@ -45,15 +100,18 @@ export default class CollectionsSheet extends React.Component {
 					flexDirection: 'row',
 					alignItems: 'center',
 				}}
-				onPress={() => {				
+				onPress={() => {
+					this.select_collection(item);
 				}}
 			>
-				<CheckmarkRowCell text={item.name} is_selected={false} />
+				<CheckmarkRowCell text={item.name} is_selected={this.state.selected_ids.includes(item.id)} />
 			</TouchableOpacity>
 		)
 	};
 
-	_key_extractor = (item) => item.id.toString();
+	_key_extractor = (item) => {
+		return item.id.toString();
+	};
 
 	render() {
 		return (
@@ -78,7 +136,10 @@ export default class CollectionsSheet extends React.Component {
 						marginBottom: 30
 					}}
 				>
-					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>Select collections for this upload:</Text>
+					<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 5 }}>
+						<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>Select collections for this upload:</Text>
+						{ this.state.is_networking && <ActivityIndicator color={App.theme_accent_color()} /> }
+					</View>
 					<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
 						<FlatList
 							data={this.state.collections}
