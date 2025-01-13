@@ -630,17 +630,16 @@ class MicroPubApi {
 		const params = {
 			"action": "update",
 		    "mp-channel": "collections",
-			"url": collection_url,
 			"mp-destination": service.temporary_destination,
+			"url": collection_url,
 			"add": {
 				"photo": [ upload_url ]
 			}
-		}
-
+		};
+		
 		const config = axios
-			.post(service.media_endpoint, "", {
-				headers: { Authorization: `Bearer ${ service.token }` },
-				params: params
+			.post(service.endpoint, params, {
+				headers: { Authorization: `Bearer ${ service.token }` }
 			})
 			.then(response => {
 				return response.data;
@@ -658,17 +657,16 @@ class MicroPubApi {
 		const params = {
 			"action": "update",
 			"mp-channel": "collections",
-			"url": collection_url,
 			"mp-destination": service.temporary_destination,
+			"url": collection_url,
 			"delete": {
 				"photo": [ upload_url ]
 			}
 		}
 		
 		const config = axios
-			.post(service.endpoint, "", {
-				headers: { Authorization: `Bearer ${ service.token }` },
-				params: params
+			.post(service.endpoint, params, {
+				headers: { Authorization: `Bearer ${ service.token }` }
 			})
 			.then(response => {
 				return response.data;
