@@ -148,6 +148,33 @@ export default class CollectionsSheet extends React.Component {
 							renderItem={this._render_collection}
 						/>
 					</View>
+					
+					<View style={{
+						alignItems: 'center'
+					}}>
+						<TouchableOpacity
+							style={{
+								alignSelf: 'center',
+								marginTop: 14,
+								marginBottom: 5,
+								backgroundColor: App.theme_header_button_background_color(),
+								borderColor: App.theme_border_color(),
+								borderWidth: 1,
+								paddingLeft: 10,
+								paddingRight: 10,
+								paddingTop: 8,
+								paddingBottom: 8,
+								borderRadius: 50
+							}}
+							onPress={() => {
+								SheetManager.hide(this.props.sheetId).then(() => {
+									App.navigate_to_screen("ManageCollections");
+								});
+							}}
+						>
+							<Text>Manage Collections</Text>
+						</TouchableOpacity>
+					</View>
 				</View>
 			</ActionSheet>
 		)

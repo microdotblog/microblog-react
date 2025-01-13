@@ -11,7 +11,9 @@ import NewUploadButton from '../../components/header/new_upload'
 import RepliesScreen from '../replies/replies';
 import PagesScreen from '../pages/pages';
 import PostsScreen from '../posts/posts';
+import CollectionsScreen from '../uploads/collections'
 import NewPostButton from '../../components/header/new_post';
+import NewCollectionButton from '../../components/header/new_collection';
 import App from '../../stores/App'
 
 export const getSharedScreens = (Stack, tab_name) => {
@@ -92,6 +94,15 @@ export const getSharedScreens = (Stack, tab_name) => {
 			options={({ route }) => ({
 				headerTitle: "Posts",
 				headerRight: () => <RefreshActivity type="posts" />
+			})}
+		/>,
+		<Stack.Screen
+			key={`${tab_name}-Collections`}
+			name={`${tab_name}-Collections`}
+			component={CollectionsScreen}
+			options={({ route }) => ({
+				headerTitle: "Collections",
+				headerRight: () => <NewCollectionButton />
 			})}
 		/>
 	]
