@@ -65,24 +65,25 @@ export default class CollectionsSheet extends React.Component {
 	}
 	
 	select_collection(collection) {
+		this.setState({ is_networking: true });
+
 		let new_selected = Array.from(this.state.selected_ids);
 		if (!this.state.selected_ids.includes(collection.id)) {
 			new_selected.push(collection.id);
 			
 			MicroPubApi.add_upload_to_collection(this.current_service(), this.current_destination_uid(), collection.url, this.upload.url).then(data => {
-				console.log("Collections: Add photo response:", data);
+				this.setState({ selected_ids: new_selected, is_networking: false });
+				this.refresh_collections();
 			});
 		}
 		else {
 			new_selected = new_selected.filter(item => item != collection.id);
 			
 			MicroPubApi.remove_upload_from_collection(this.current_service(), this.current_destination_uid(), collection.url, this.upload.url).then(data => {
-				console.log("Collections: Remove photo response:", data);
+				this.setState({ selected_ids: new_selected, is_networking: false });
+				this.refresh_collections();
 			});
 		}
-		
-		this.setState({ selected_ids: new_selected, is_networking: false });
-		this.refresh_collections();
 	}
 
 	refresh_collections() {
