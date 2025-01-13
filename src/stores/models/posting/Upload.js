@@ -30,6 +30,12 @@ export default Upload = types.model('Upload', {
 			Toast.showWithGravity("HTML copied", Toast.SHORT, Toast.CENTER)
 		},
 
+		copy_html_for_narration_to_clipboard() {
+			let html = `<audio src="${ self.url }" preload="metadata" style="display: none"></audio>`;			
+			Clipboard.setString(html);
+			Toast.showWithGravity("HTML copied", Toast.SHORT, Toast.CENTER);
+		},
+
 		copy_link_to_clipboard() {
 			Clipboard.setString(self.url)
 			Toast.showWithGravity("URL copied", Toast.SHORT, Toast.CENTER)

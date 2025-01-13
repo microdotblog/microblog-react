@@ -137,6 +137,9 @@ export default class UploadCell extends React.Component {
 						else if (event_id === "copy_html") {
 							upload.copy_html_to_clipboard()
 						}
+						else if (event_id === "copy_for_narration") {
+							upload.copy_html_for_narration_to_clipboard()
+						}
 						else if (event_id === "copy_markdown") {
 							upload.copy_markdown_to_clipboard()
 						}
@@ -169,6 +172,13 @@ export default class UploadCell extends React.Component {
 								ios: 'curlybraces'
 							})
 						},
+						...(upload.is_audio() ? [{
+							title: "Copy HTML for Narration",
+							id: "copy_for_narration",
+							image: Platform.select({
+								ios: 'curlybraces'
+							})
+						}] : []),
 						...(!upload.is_audio() && !upload.is_video() ? [{
 							title: "Copy Markdown",
 							id: "copy_markdown",
