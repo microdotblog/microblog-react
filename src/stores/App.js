@@ -290,6 +290,8 @@ export default App = types.model('App', {
           return self.navigation_ref.push(`PostUploads`, { did_open_from_editor: true })
         case "ManageCollections":
           return self.navigation_ref.push(`${self.current_tab_key}-Collections`)
+        case "AddCollection":
+          return self.navigation_ref.push("AddCollection")
         default:
           self.navigation_ref.push(screen_name)
       }

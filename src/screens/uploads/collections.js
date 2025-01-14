@@ -60,7 +60,8 @@ export default class CollectionsScreen extends React.Component {
 					paddingVertical: 14,					
 					flexDirection: 'row',
 					alignItems: 'center',
-					justifyContent: 'space-between'
+					justifyContent: 'space-between',
+					marginRight: 5
 				}}
 				onPress={() => {
 					// ...

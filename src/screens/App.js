@@ -15,6 +15,7 @@ import HelpScreen from './help/help';
 import SettingsScreen from './settings/settings';
 import PostOptionsSettingsScreen from './settings/post_options';
 import AddBookmarkScreen from './bookmarks/add_bookmark';
+import AddCollectionScreen from './uploads/add_collection';
 import ReplyEditScreen from './replies/edit';
 import UpdateReplyButton from '../components/header/update_reply';
 import PageEditScreen from './pages/edit';
@@ -131,6 +132,13 @@ export default class MainApp extends React.Component {
                   component={AddBookmarkScreen}
                   options={{
                     headerTitle: "Add Bookmark"
+                  }}
+                />
+                <Stack.Screen
+                  name="AddCollection"
+                  component={AddCollectionScreen}
+                  options={{
+                    headerTitle: "Add Collection"
                   }}
                 />
                 <Stack.Screen

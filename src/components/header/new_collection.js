@@ -18,7 +18,7 @@ export default class NewCollectionButton extends React.Component{
 					alignItems: 'center'
 				}}
 				onPress={() => {
-					// ...
+					App.navigate_to_screen("AddCollection");
 				}}
 			>
 			{ Platform.OS === 'ios' ? 
