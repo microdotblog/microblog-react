@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MentionsScreen from '../mentions/mentions';
 import ProfileImage from './../../components/header/profile_image';
 import NewPostButton from '../../components/header/new_post';
+import BackButton from '../../components/header/back';
 import { getSharedScreens } from './SharedStack'
 
 const MentionsStack = createNativeStackNavigator();
@@ -26,6 +27,7 @@ export default class Mentions extends React.Component{
         />
         <MentionsStack.Group
           screenOptions={{
+            headerLeft: () => <BackButton navigation={this.props.navigation} />,
             headerBackTitleVisible: false,
             headerTintColor: App.theme_text_color()
           }}

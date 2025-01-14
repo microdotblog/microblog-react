@@ -8,17 +8,24 @@ import { SvgXml } from 'react-native-svg';
 @observer
 export default class BackButton extends React.Component {
 
-  render() {
+  render() {    
     return (
       <TouchableOpacity
-        onPress={() => App.go_back()}
-      >
+      style={{
+        marginLeft: 0,
+        width: 30,
+        height: 30,
+        justifyContent: 'center'
+      }}
+        onPress={() => {
+          this.props.navigation.goBack();
+        }}>
         {
           Platform.OS === 'ios' ?
             <SFSymbol
               name={'chevron.left'}
               color={App.theme_text_color()}
-              style={{ height: 20, width: 20 }}
+              style={{ height: 20, width: 14 }}
             />
             :
             <SvgXml

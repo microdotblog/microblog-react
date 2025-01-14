@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DiscoverScreen from '../discover/discover';
 import ProfileImage from './../../components/header/profile_image';
 import NewPostButton from '../../components/header/new_post';
+import BackButton from '../../components/header/back';
 import DiscoverTopicScreen from '../../screens/discover/topic';
 import { getSharedScreens } from './SharedStack'
 
@@ -27,6 +28,7 @@ export default class Discover extends React.Component{
         />
         <DiscoverStack.Group
           screenOptions={{
+            headerLeft: () => <BackButton navigation={this.props.navigation} />,
             headerBackTitleVisible: false,
             headerTintColor: App.theme_text_color()
           }}
