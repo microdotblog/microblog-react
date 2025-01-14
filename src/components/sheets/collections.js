@@ -3,6 +3,7 @@ import { useRef } from 'react';
 import { observer } from 'mobx-react';
 import { TouchableOpacity, Text, View, FlatList, ActivityIndicator } from 'react-native';
 import ActionSheet, { SheetManager } from "react-native-actions-sheet";
+import Auth from '../../stores/Auth';
 import App from '../../stores/App';
 import Collection from '../../stores/Collection';
 import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';

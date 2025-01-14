@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, TextInput, Button, ActivityIndicator, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
+import Auth from '../../stores/Auth';
 import App from '../../stores/App';
+import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
 
 @observer
 export default class AddCollectionScreen extends React.Component{
@@ -15,14 +17,33 @@ export default class AddCollectionScreen extends React.Component{
 		this._input_ref = React.createRef();
 	}
 	
+	current_service() {
+		const service = Auth.selected_user.posting.selected_service;
+		return service.service_object();
+	}
+	
+	current_destination_uid() {
+		const service = Auth.selected_user.posting.selected_service;
+		return service.config.posts_destination().uid;
+	}
+	
 	_dismiss = () => {
 		Keyboard.dismiss();
 		App.go_back();
 	}
 
 	_add_collection = async () => {
+		if (this.state.name.length == 0) {
+			return;
+		}
+		
 		this.setState({ is_networking: true });
-		// ...
+
+		MicroPubApi.create_collection(this.current_service(), this.current_destination_uid(), this.state.name).then(data => {
+			this.setState({ is_networking: false });
+			Keyboard.dismiss();
+			App.go_back();
+		});
 	}
   
 	render() {
@@ -38,8 +59,8 @@ export default class AddCollectionScreen extends React.Component{
 						placeholderTextColor="lightgrey"
 						textContentType={'URL'}
 						placeholder={"Name"}
-						returnKeyType={'go'}
-						keyboardType={'url'}
+						returnKeyType={'done'}
+						keyboardType={'default'}
 						blurOnSubmit={true}
 						autoFocus={true}
 						autoCorrect={false}

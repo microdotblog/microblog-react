@@ -677,6 +677,31 @@ class MicroPubApi {
 			});
 		return config;
 	}
+
+	async create_collection(service, destination, name) {
+		console.log('MicroPubApi:create_collection');
+	
+		const params = {
+			"mp-channel": "collections",
+			"mp-destination": service.temporary_destination,
+			"properties": {
+				"name": [ name ]
+			}
+		};
+		
+		const config = axios
+			.post(service.endpoint, params, {
+				headers: { Authorization: `Bearer ${ service.token }` }
+			})
+			.then(response => {
+				return response.data;
+			})
+			.catch(error => {
+				console.log(error);
+				return FETCH_ERROR;
+			});
+		return config;
+	}
 }
 
 export default new MicroPubApi()

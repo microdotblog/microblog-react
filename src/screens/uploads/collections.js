@@ -19,6 +19,10 @@ export default class CollectionsScreen extends React.Component {
 	
 	componentDidMount() {
 		this.fetch_collections();
+
+		this.focusListener = this.props.navigation.addListener('focus', () => {
+			this.fetch_collections();
+		});
 	}
 
 	current_service() {
