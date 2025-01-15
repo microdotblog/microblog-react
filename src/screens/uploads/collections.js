@@ -4,8 +4,9 @@ import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
 import Auth from './../../stores/Auth';
 import App from '../../stores/App';
 import Collection from '../../stores/Collection';
+import CollectionCell from '../../components/cells/collection_cell';
 import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
-import { MenuView } from '@react-native-menu/menu';
+import ContextMenu from 'react-native-context-menu-view';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Toast from 'react-native-simple-toast';
 
@@ -94,55 +95,36 @@ export default class CollectionsScreen extends React.Component {
 		{
 			title: "Copy Shortcode",
 			id: "copy_shortcode",
-			image: Platform.select({
-				ios: 'curlybraces'
-			})
+			systemIcon: 'curlybraces'
 		},
 		{
 			title: "Delete",
 			id: "delete",
-			image: Platform.select({
-				ios: 'trash'
-			}),
-			attributes: {
-				destructive: true
-			}
+			systemIcon: 'trash',
+			destructive: true
 		}
 	];
 
 	_render_collection = ({ item }) => {
 		return (
-			<MenuView
+			<ContextMenu
+				previewBackgroundColor="rgba(0, 0, 0, 0.0)"
 				style={{
 					padding: 5,
 					backgroundColor: App.theme_background_color_secondary()
 				}}
-				onPressAction={({ nativeEvent }) => {
-					const event_id = nativeEvent.event;
-					if (event_id == "copy_shortcode") {
+				onPress={({nativeEvent}) => {
+					if (nativeEvent.name == "Copy Shortcode") {
 						this.copy_shortcode(item);
 					}
-					else if (event_id == "delete") {
+					else if (nativeEvent.name == "Delete") {
 						this.prompt_delete(item);
 					}
 				}}
 				actions={this._collection_context_menu}
 			>
-				<View
-					key={item.id}
-					style={{
-						paddingHorizontal: 14,
-						paddingVertical: 14,					
-						flexDirection: 'row',
-						alignItems: 'center',
-						justifyContent: 'space-between',
-						marginRight: 5
-					}}
-				>
-					<Text style={{ color: App.theme_text_color() }}>{item.name}</Text>
-					<Text style={{ color: App.theme_text_color() }}>{item.uploads_count}</Text>
-				</View>
-			</MenuView>
+				<CollectionCell collection={item} manager={this} />
+			</ContextMenu>
 		)
 	};
 	
