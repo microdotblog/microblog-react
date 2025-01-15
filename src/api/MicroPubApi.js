@@ -702,6 +702,31 @@ class MicroPubApi {
 			});
 		return config;
 	}
+	
+	async delete_collection(service, destination, collection_url) {
+		console.log('MicroPubApi:delete_collection');
+		
+		const params = {
+			"mp-channel": "collections",
+			"mp-destination": service.temporary_destination,
+			"action": "delete",
+			"url": collection_url
+		};
+		
+		const config = axios
+			.post(service.endpoint, params, {
+				headers: { Authorization: `Bearer ${ service.token }` }
+			})
+			.then(response => {
+				return response.data;
+			})
+			.catch(error => {
+				console.log(error);
+				return FETCH_ERROR;
+			});
+		return config;
+
+	}
 }
 
 export default new MicroPubApi()

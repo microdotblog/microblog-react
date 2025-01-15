@@ -158,8 +158,8 @@ export default class CollectionsSheet extends React.Component {
 								alignSelf: 'center',
 								marginTop: 14,
 								marginBottom: 5,
-								backgroundColor: App.theme_header_button_background_color(),
-								borderColor: App.theme_border_color(),
+								backgroundColor: App.theme_button_background_color(),
+								borderColor: App.theme_section_background_color(),
 								borderWidth: 1,
 								paddingLeft: 10,
 								paddingRight: 10,
@@ -173,7 +173,7 @@ export default class CollectionsSheet extends React.Component {
 								});
 							}}
 						>
-							<Text>Manage Collections</Text>
+							<Text style={{ color: App.theme_button_text_color() }}>Manage Collections</Text>
 						</TouchableOpacity>
 					</View>
 				</View>

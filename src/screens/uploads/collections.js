@@ -1,10 +1,13 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
 import Auth from './../../stores/Auth';
 import App from '../../stores/App';
 import Collection from '../../stores/Collection';
 import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
+import { MenuView } from '@react-native-menu/menu';
+import Clipboard from '@react-native-clipboard/clipboard';
+import Toast from 'react-native-simple-toast';
 
 @observer
 export default class CollectionsScreen extends React.Component {
@@ -55,25 +58,91 @@ export default class CollectionsScreen extends React.Component {
 		});
 	}
 
+	delete_collection(collection) {
+		MicroPubApi.delete_collection(this.current_service(), this.current_destination_uid(), collection.url).then(data => {
+			this.fetch_collections();
+		});
+	}
+
+	prompt_delete(collection) {
+		Alert.alert("Delete collection", 
+			`Are you sure you want to delete the collection ${collection.name}?`,
+			[
+				{
+					text: "Cancel",
+					style: 'cancel',
+				},
+				{
+					text: "Delete",
+					onPress: () => {
+						this.delete_collection(collection);
+					},
+					style: 'destructive'
+				},
+			],
+			{ cancelable: false },
+		);
+	}
+
+	copy_shortcode(collection) {		
+		const s = `<{{ collection "${collection.name}" }}>`;
+		Clipboard.setString(s);
+		Toast.showWithGravity("Shortcode copied", Toast.SHORT, Toast.CENTER);
+	}
+
+	_collection_context_menu = [
+		{
+			title: "Copy Shortcode",
+			id: "copy_shortcode",
+			image: Platform.select({
+				ios: 'curlybraces'
+			})
+		},
+		{
+			title: "Delete",
+			id: "delete",
+			image: Platform.select({
+				ios: 'trash'
+			}),
+			attributes: {
+				destructive: true
+			}
+		}
+	];
+
 	_render_collection = ({ item }) => {
 		return (
-			<TouchableOpacity
-				key={item.id}
+			<MenuView
 				style={{
-					paddingHorizontal: 14,
-					paddingVertical: 14,					
-					flexDirection: 'row',
-					alignItems: 'center',
-					justifyContent: 'space-between',
-					marginRight: 5
+					padding: 5,
+					backgroundColor: App.theme_background_color_secondary()
 				}}
-				onPress={() => {
-					// ...
+				onPressAction={({ nativeEvent }) => {
+					const event_id = nativeEvent.event;
+					if (event_id == "copy_shortcode") {
+						this.copy_shortcode(item);
+					}
+					else if (event_id == "delete") {
+						this.prompt_delete(item);
+					}
 				}}
+				actions={this._collection_context_menu}
 			>
-				<Text>{item.name}</Text>
-				<Text>{item.uploads_count}</Text>
-			</TouchableOpacity>
+				<View
+					key={item.id}
+					style={{
+						paddingHorizontal: 14,
+						paddingVertical: 14,					
+						flexDirection: 'row',
+						alignItems: 'center',
+						justifyContent: 'space-between',
+						marginRight: 5
+					}}
+				>
+					<Text style={{ color: App.theme_text_color() }}>{item.name}</Text>
+					<Text style={{ color: App.theme_text_color() }}>{item.uploads_count}</Text>
+				</View>
+			</MenuView>
 		)
 	};
 	
