@@ -725,7 +725,27 @@ class MicroPubApi {
 				return FETCH_ERROR;
 			});
 		return config;
+	}
 
+	async set_alt_for_upload(service, destination, upload_url, alt_text) {
+		console.log('MicroPubApi:set_alt_for_upload');
+
+		const params = new FormData()
+		params.append('mp-destination', service.temporary_destination);
+		params.append('action', 'update');
+		params.append('url', upload_url);
+		params.append('alt', alt_text);
+		
+		const options = {
+			method: "POST",
+			headers: {
+				Authorization: `Bearer ${ service.token }`
+			},
+			body: params
+		};
+
+		const response = await fetch(service.media_endpoint, options);
+		return response;
 	}
 }
 

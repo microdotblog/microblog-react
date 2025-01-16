@@ -98,11 +98,13 @@ export default Destination = types.model('Destination', {
 			const published = entry.published || ""
 			const poster = entry.poster || ""
 			const alt = entry.alt || ""
+			let is_ai = entry["microblog-ai"]
 			const upload = {
 				url: url,
 				published: published,
 				poster: poster,
-				alt: alt
+				alt: alt,
+				is_ai: is_ai
 			}
 			if (url === "") {
 				return acc;
