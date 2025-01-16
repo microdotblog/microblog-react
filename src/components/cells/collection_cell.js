@@ -37,7 +37,7 @@ export default class CollectionCell extends React.Component {
 
 	_trigger_delete = () => {
 		const { collection, manager } = this.props
-		manager.delete_collection(collection);
+		manager.prompt_delete(collection);
 	};
 	
 	_return_action = (text, color, x, progress, icon, item, manager, stroke = "#fff") => {
