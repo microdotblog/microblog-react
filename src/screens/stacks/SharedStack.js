@@ -11,6 +11,7 @@ import NewUploadButton from '../../components/header/new_upload'
 import RepliesScreen from '../replies/replies';
 import PagesScreen from '../pages/pages';
 import PostsScreen from '../posts/posts';
+import MutingScreen from '../settings/muting';
 import CollectionsScreen from '../uploads/collections'
 import NewPostButton from '../../components/header/new_post';
 import NewCollectionButton from '../../components/header/new_collection';
@@ -104,6 +105,15 @@ export const getSharedScreens = (Stack, tab_name) => {
 				headerTitle: "Collections",
 				headerRight: () => <NewCollectionButton />
 			})}
-		/>
+		/>,
+		<Stack.Screen
+			key={`${tab_name}-Muting`}
+			name={`${tab_name}-Muting`}
+			component={MutingScreen}
+			options={({ route }) => ({
+				headerTitle: "Muting",
+				headerRight: () => <RefreshActivity type="muting" />
+			})}
+		/>,
 	]
 }
