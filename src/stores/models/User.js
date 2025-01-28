@@ -6,7 +6,6 @@ import Muting from './Muting'
 import Push from '../Push'
 import App from '../App'
 import MicroBlogApi, { API_ERROR, DELETE_ERROR, LOGIN_TOKEN_INVALID } from '../../api/MicroBlogApi';
-import Highlight from './Highlight';
 
 export default User = types.model('User', {
     username: types.identifier,
@@ -20,7 +19,6 @@ export default User = types.model('User', {
     push_registered_with_server: types.optional(types.boolean, false),
     toggling_push: types.optional(types.boolean, false),
     did_complete_auto_register_push: types.optional(types.boolean, false),
-    bookmark_highlights: types.optional(types.array(Highlight), []),
     bookmark_tags: types.optional(types.array(types.string), []),
     bookmark_recent_tags: types.optional(types.array(types.string), []),
     selected_tag: types.maybeNull(types.string),
@@ -60,7 +58,6 @@ export default User = types.model('User', {
           }
         }
         self.update_avatar()
-        self.fetch_highlights()
         self.fetch_tags()
         self.fetch_recent_tags()
         self.selected_tag = null
@@ -126,27 +123,6 @@ export default User = types.model('User', {
       if(user_data && user_data?.avatar){
         self.avatar = user_data.avatar
       }
-    }),
-    
-    fetch_highlights: flow(function* () {
-      console.log("User:fetch_highlights")
-      App.set_is_loading_highlights(true)
-      const highlights = yield MicroBlogApi.bookmark_highlights()
-      if(highlights !== API_ERROR && highlights.items){
-        self.bookmark_highlights = highlights.items
-      }
-      App.set_is_loading_highlights(false)
-      console.log("User:fetch_highlights:count", self.bookmark_highlights.length)
-    }),
-    
-    delete_highlight: flow(function* (highlight_id) {
-      console.log("User:delete_highlight", highlight_id)
-      App.set_is_loading_highlights(true)
-      const deleted = yield MicroBlogApi.delete_highlight(highlight_id)
-      if(deleted !== DELETE_ERROR){
-        self.fetch_highlights()
-      }
-      App.set_is_loading_highlights(false)
     }),
     
     fetch_tags: flow(function* () {

@@ -2,30 +2,18 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import Auth from './../../stores/Auth';
 import GenericScreenComponent from '../../components/generic/generic_screen'
-import HighlightsHeader from '../../components/bookmarks/highlights';
 import App from './../../stores/App';
+import TagFilterHeader from '../../components/bookmarks/tag_filter_header';
 
 @observer
 export default class BookmarksScreen extends React.Component{
-
-  constructor (props) {
-		super(props)
-  }
-
-  componentDidMount() {
-    if(Auth.is_logged_in() && Auth.selected_user != null){
-      Auth.selected_user.fetch_highlights()
-      Auth.selected_user.fetch_tags()
-      Auth.selected_user.fetch_recent_tags()
-    }
-  }
 
   render() {
     return (
       <>
       {
-        Auth.is_logged_in() && Auth.selected_user?.bookmark_highlights?.length > 0 ?
-        <HighlightsHeader />
+        Auth.is_logged_in() && Auth.selected_user?.selected_tag != null ?
+        <TagFilterHeader />
         : null
       }
       <GenericScreenComponent

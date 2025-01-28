@@ -181,7 +181,6 @@ export default App = types.model('App', {
     else if (tab_key.includes("Bookmarks")) {
       self.current_tab_key = "Bookmarks"
       if(Auth.is_logged_in() && Auth.selected_user != null){
-        Auth.selected_user.fetch_highlights()
         Auth.selected_user.fetch_tags()
         Auth.selected_user.fetch_recent_tags()
       }
