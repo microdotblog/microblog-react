@@ -145,7 +145,7 @@ RCT_CUSTOM_VIEW_PROPERTY(autoFocus, BOOL, MBHighlightingTextView)
 {
   // hacky, keep track of whether we're changing text from typing
   self.isTyping = YES;
-  [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:NO block:^(NSTimer* timer) {
+  [NSTimer scheduledTimerWithTimeInterval:2.0 repeats:NO block:^(NSTimer* timer) {
     self.isTyping = NO;
   }];
   
