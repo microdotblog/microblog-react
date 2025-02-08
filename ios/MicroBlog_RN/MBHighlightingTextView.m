@@ -59,7 +59,9 @@
     CGFloat top_views_height = 0;
     CGFloat bottom_views_height = 0;
     
-    bottom_views_height += self.inputAccessoryView.bounds.size.height;
+    if (![self isIpad]) {
+      bottom_views_height += self.inputAccessoryView.bounds.size.height;
+    }
 
     for (UIView* sibling_v in self.superview.subviews) {
       if ((sibling_v != self) && !sibling_v.hidden) {
@@ -96,6 +98,19 @@
 
 - (void) didSetProps:(NSArray<NSString *> *)changedProps
 {
+}
+
+- (BOOL) isIpad
+{
+  return (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
+}
+
+- (BOOL) isIpadPortrait
+{
+  BOOL is_ipad = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
+  BOOL is_portrait = (UIDevice.currentDevice.orientation == UIDeviceOrientationPortrait) || (UIDevice.currentDevice.orientation == UIDeviceOrientationPortraitUpsideDown);
+
+  return (is_ipad && is_portrait);
 }
 
 - (UIView *) findRootView
@@ -165,20 +180,39 @@
 
 - (void) keyboardWillShowNotification:(NSNotification*)notification
 {
-  NSDictionary* info = [notification userInfo];
-  CGRect kb_r = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+  CGFloat covered_height = 0.0;
+  
+  if (![self isIpadPortrait]) {
+    // in iPad portrait, keyboard does not cover anything
+    NSDictionary* info = [notification userInfo];
+    CGRect kb_r = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    // convert to the same coordinate space as this view (i.e. the modal's content)
+    CGRect kb_in_view_r = [self.superview convertRect:kb_r fromView:nil];
+    
+    // intersecction between modal in its own coordinates
+    CGRect modal_r = self.superview.bounds;
+    CGRect intersection = CGRectIntersection(modal_r, kb_in_view_r);
+    
+    // if intersection is non-empty, its height is how much the keyboard covers our content
+    covered_height = CGRectIsNull(intersection) ? 0.0 : intersection.size.height;
+  }
   
   // remember height for later layout
-  self.keyboardHeight = kb_r.size.height;
+  self.keyboardHeight = covered_height;
   
   [UIView animateWithDuration:0.3 animations:^{
-    [self adjustHeightForKeyboardHeight:kb_r.size.height];
+    [self adjustHeightForKeyboardHeight:self.keyboardHeight];
     [self layoutIfNeeded];
   }];
 }
  
 - (void) keyboardWillHideNotification:(NSNotification*)aNotification
 {
+  if ([self isIpadPortrait]) {
+    return;
+  }
+
   [UIView animateWithDuration:0.3 animations:^{
     [self adjustHeightForKeyboardHeight:0];
     [self layoutIfNeeded];
