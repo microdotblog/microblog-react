@@ -88,7 +88,12 @@ export default class SettingsScreen extends React.Component{
 										user.toggling_push &&
 										<ActivityIndicator animating={true} color={"#f80"} style={{marginRight: 10}} />
 									}
-									<Switch disabled={user.toggling_push} value={user.push_enabled && Push.token != ""} onValueChange={user.toggle_push_notifications} trackColor={{true: App.theme_accent_color()}} />
+									<Switch 
+										disabled={user.toggling_push} 
+										value={user.push_enabled && user.push_registered_with_server && Push.token != ""} 
+										onValueChange={user.toggle_push_notifications} 
+										trackColor={{true: App.theme_accent_color()}} 
+									/>
 									</View>
 								</View>
 							)

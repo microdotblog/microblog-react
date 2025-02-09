@@ -92,20 +92,39 @@ export default User = types.model('User', {
     }),
     
     register_for_push: flow(function* () {
-      const registered = yield Push.register_token(self.token())
-      if (registered) {
-        self.push_enabled = true
-        self.push_registered_with_server = true
+      try {
+        const registered = yield Push.register_token(self.token())
+        if (registered) {
+          self.push_enabled = true
+          self.push_registered_with_server = true
+          return true
+        } else {
+          self.push_enabled = false
+          self.push_registered_with_server = false
+          return false
+        }
+      } catch (error) {
+        console.log("User:register_for_push:error", error)
+        self.push_enabled = false
+        self.push_registered_with_server = false
+        return false
       }
-      return registered
     }),
     
     unregister_for_push: flow(function* () {
-      let did_unregister = yield Push.unregister_user_from_push(self.token())
-      if (did_unregister) {
-        self.push_enabled = false
+      try {
+        const did_unregister = yield Push.unregister_user_from_push(self.token())
+        if (did_unregister) {
+          self.push_enabled = false
+          self.push_registered_with_server = false
+          return true
+        } else {
+          return false
+        }
+      } catch (error) {
+        console.log("User:unregister_for_push:error", error)
+        return false
       }
-      return did_unregister
     }),
 
     fetch_data: flow(function* () {
