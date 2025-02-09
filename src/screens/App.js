@@ -22,11 +22,9 @@ import UpdateReplyButton from '../components/header/update_reply';
 import PageEditScreen from './pages/edit';
 import UpdatePageButton from '../components/header/update_page';
 import Posting from './stacks/PostingStack';
-import PostEditScreen from './posts/edit';
 import PostEditStack from './stacks/PostEditStack';
 
 import "./../components/sheets/sheets";
-import UpdatePostButton from '../components/header/update_post'
 import ClosePostClearButton from '../components/header/close_post_clear'
 import Share from '../stores/Share'
 import ShareMenu from 'react-native-share-menu'
