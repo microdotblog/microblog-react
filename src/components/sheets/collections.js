@@ -124,7 +124,7 @@ export default class CollectionsSheet extends React.Component {
 				initialSnapIndex={[1]}
 				overdrawEnabled={true}
 				useBottomSafeAreaPadding={true}
-				gestureEnabled={true}
+				gestureEnabled={false}
 				containerStyle={{
 				  	backgroundColor: App.theme_background_color_secondary()
 				}}
@@ -147,6 +147,9 @@ export default class CollectionsSheet extends React.Component {
 							data={this.state.collections}
 							keyExtractor={this._key_extractor}
 							renderItem={this._render_collection}
+							style={{
+								maxHeight: 300
+							}}
 						/>
 					</View>
 					

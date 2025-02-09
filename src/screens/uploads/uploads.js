@@ -11,13 +11,18 @@ import SearchIcon from '../../assets/icons/nav/discover.png';
 import SearchBar from '../../components/search_bar';
 import { SFSymbol } from "react-native-sfsymbols";
 import { SvgXml } from 'react-native-svg';
+import DeviceInfo from 'react-native-device-info';
 
 @observer
 export default class UploadsScreen extends React.Component{
   
   constructor (props) {
     super(props)
-    this.flatListRef = React.createRef()
+
+    this.flatListRef = React.createRef();
+    this.state = {
+      num_columns: DeviceInfo.isTablet() ? 4 : 3
+    }
   }
 
   componentDidMount() {
@@ -120,7 +125,7 @@ export default class UploadsScreen extends React.Component{
           backgroundColor: App.theme_background_color_secondary(),
           width: "100%"
         }}
-        numColumns={3}
+        numColumns={this.state.num_columns}
         refreshControl={
           <RefreshControl
             refreshing={false}

@@ -7,6 +7,7 @@ import { SvgXml } from 'react-native-svg';
 import { SFSymbol } from "react-native-sfsymbols";
 import { MenuView } from '@react-native-menu/menu';
 import Auth from '../../stores/Auth'
+import DeviceInfo from 'react-native-device-info';
 
 @observer
 export default class UploadCell extends React.Component {
@@ -14,12 +15,13 @@ export default class UploadCell extends React.Component {
 	constructor (props) {
 		super(props)
 		this.state = {
-			did_load: false
+			did_load: false,
+			num_columns: DeviceInfo.isTablet() ? 4 : 3
 		}
 	}
 
 	render_cell(upload) {
-		const dimension = (Dimensions.get("screen")?.width / 3) - 10
+		const dimension = (Dimensions.get("screen")?.width / this.state.num_columns) - 10
 		if (upload.is_audio() || upload.is_video()) {
 			return (
 				<View style={{
