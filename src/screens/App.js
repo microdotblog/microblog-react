@@ -14,6 +14,7 @@ import PostReplyButton from '../components/header/post_reply';
 import HelpScreen from './help/help';
 import SettingsScreen from './settings/settings';
 import PostOptionsSettingsScreen from './settings/post_options';
+import MutingScreen from './settings/muting';
 import AddBookmarkScreen from './bookmarks/add_bookmark';
 import AddCollectionScreen from './uploads/add_collection';
 import ReplyEditScreen from './replies/edit';
@@ -125,6 +126,13 @@ export default class MainApp extends React.Component {
                   component={PostOptionsSettingsScreen}
                   options={{
                     title: "Posting Options"
+                  }}
+                />
+                <Stack.Screen
+                  name="muting"
+                  component={MutingScreen}
+                  options={{
+                    title: "Muted Users and Keywords"
                   }}
                 />
                 <Stack.Screen

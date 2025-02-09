@@ -14,12 +14,15 @@ export default class ProfileScreen extends React.Component{
   
   render() {
     const { username } = this.props.route.params
+    const is_muted = Auth.selected_user?.muting?.is_muted(username)
+    const is_blocked = Auth.selected_user?.muting?.blocked_users.some(u => u.username === username)
+    
     return(
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 				{
           Auth.is_logged_in() && !Auth.is_selecting_user && !App.should_reload_web_view() ?
-            Auth.selected_user.muting?.is_muted(username) ?
-              <MutedMessage title={`@${username} is muted`} username={username} />
+            is_muted || is_blocked ?
+              <MutedMessage title={`@${username} is ${is_blocked ? "blocked" : "muted"}`} username={username} />
               :
               <WebViewModule endpoint={`hybrid/posts/${username}`} component_id={this.props.componentId} profile={Auth.is_logged_in() && !Auth.is_selecting_user ? <ProfileHeader username={username} /> : null} />
           :

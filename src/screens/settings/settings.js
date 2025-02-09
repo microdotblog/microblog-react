@@ -1,16 +1,16 @@
-import * as React from 'react';
-import { observer } from 'mobx-react';
-import { View, Text, ScrollView, Switch, Platform, ActivityIndicator } from 'react-native';
-import FastImage from 'react-native-fast-image';
-import App from '../../stores/App'
-import Auth from '../../stores/Auth';
-import Push from '../../stores/Push';
-import Settings from '../../stores/Settings';
-import UserPostingSettings from '../../components/settings/user_posting'
+import * as React from "react"
+import { observer } from "mobx-react"
+import { View, Text, ScrollView, Switch, Platform, ActivityIndicator } from "react-native"
+import FastImage from "react-native-fast-image"
+import App from "../../stores/App"
+import Auth from "../../stores/Auth"
+import Push from "../../stores/Push"
+import Settings from "../../stores/Settings"
+import UserPostingSettings from "../../components/settings/user_posting"
+import UserMutingSettings from "../../components/settings/user_muting"
 
 @observer
-export default class SettingsScreen extends React.Component{
-
+export default class SettingsScreen extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
@@ -122,14 +122,33 @@ export default class SettingsScreen extends React.Component{
 		)
 	}
 	
-  render() {
-    return(
+	_render_muting_settings = () => {
+		return(
+			<View style={{marginTop: 15}}>
+				<Text style={{ fontWeight: "500", marginBottom: 10, marginTop: 15, marginLeft: 10, color: App.theme_text_color() }}>Muted Users and Keywords</Text>
+				<View style={{ paddingHorizontal: 12, backgroundColor: App.theme_settings_group_background_color(), borderRadius: 8}}>
+					{
+						Auth.users.map((user, index) => (
+							<UserMutingSettings 
+								key={`user-${user.username}-${index}`}
+								user={user} 
+								index={index}
+							/>
+						))
+					}
+				</View>
+			</View>
+		)
+	}
+	
+	render() {
+		return(
 			<ScrollView style={{ flex: 1, padding: 15, backgroundColor: App.theme_background_color() }}>
 				{this._render_browser_settings()}
 				{this._render_posting_settings()}
+				{this._render_muting_settings()}
 				{this._render_push_settings()}
-      </ScrollView>
-    )
-  }
-  
+			</ScrollView>
+		)
+	}
 }
