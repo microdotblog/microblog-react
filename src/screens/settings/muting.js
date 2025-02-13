@@ -30,9 +30,9 @@ export default class MutingScreen extends React.Component {
   }
 
   componentDidMount() {
-    const { selected_user } = Auth
-    if (selected_user?.muting) {
-      selected_user.muting.hydrate()
+    const { user } = this.props.route.params
+    if (user?.muting) {
+      user.muting.hydrate()
     }
   }
 
@@ -56,26 +56,26 @@ export default class MutingScreen extends React.Component {
 
   _handle_add = () => {
     const { new_item, adding_type } = this.state
-    const { selected_user } = Auth
+    const { user } = this.props.route.params
 
     if (!new_item.trim()) {
       return
     }
 
     if (adding_type === "user") {
-      selected_user.muting.mute_user(new_item)
+      user.muting.mute_user(new_item)
     } else if (adding_type === "block") {
-      selected_user.muting.mute_user(new_item, true)
+      user.muting.mute_user(new_item, true)
     } else if (adding_type === "keyword") {
-      selected_user.muting.mute_keyword(new_item)
+      user.muting.mute_keyword(new_item)
     }
 
     this.setState({ new_item: "", adding_type: null })
   }
 
   _handle_unmute = (id, type, name) => {
-    const { selected_user } = Auth
-    const item = selected_user.muting?.muted_items.find(item => item.id === id)
+    const { user } = this.props.route.params
+    const item = user.muting?.muted_items.find(item => item.id === id)
     const is_blocked = item?.is_hiding_other_replies
 
     let title, message
@@ -95,7 +95,7 @@ export default class MutingScreen extends React.Component {
         { 
           text: type === "keyword" ? "Remove" : (is_blocked ? "Unblock" : "Unmute"), 
           style: "destructive",
-          onPress: () => selected_user.muting.unmute_item(id)
+          onPress: () => user.muting.unmute_item(id)
         }
       ]
     )
@@ -103,9 +103,9 @@ export default class MutingScreen extends React.Component {
 
   _render_add_section = (title, type) => {
     const { adding_type, new_item } = this.state
-    const { selected_user } = Auth
+    const { user } = this.props.route.params
     const is_active = adding_type === type
-    const is_loading = selected_user.muting.is_sending_mute || selected_user.muting.is_sending_unmute
+    const is_loading = user.muting.is_sending_mute || user.muting.is_sending_unmute
 
     return (
       <View style={{ marginBottom: 5 }}>
@@ -220,8 +220,8 @@ export default class MutingScreen extends React.Component {
       return null
     }
 
-    const { selected_user } = Auth
-    const is_loading = selected_user.muting.is_sending_unmute
+    const { user } = this.props.route.params
+    const is_loading = user.muting.is_sending_unmute
 
     return (
       <View style={{ 
@@ -284,8 +284,8 @@ export default class MutingScreen extends React.Component {
   }
 
   render() {
-    const { selected_user } = Auth
-    const { muting } = selected_user
+    const { user } = this.props.route.params
+    const { muting } = user
 
     return (
       <KeyboardAvoidingView 
