@@ -16,22 +16,25 @@ export default class Timeline extends React.Component{
   render() {
     const sharedScreens = getSharedScreens(TimelineStack, "Timeline")
     return(
-      <TimelineStack.Navigator>
+      <TimelineStack.Navigator
+        screenOptions={{
+          headerTintColor: App.theme_text_color(),
+          headerBackVisible: false
+        }}
+      >
         <TimelineStack.Screen
           name="Timeline"
           component={TimelineScreen}
           options={{
             headerLeft: () => <ProfileImage />,
             headerRight: () => <NewPostButton />,
-            headerTintColor: App.theme_text_color()
           }}
         />
         <TimelineStack.Group
-          screenOptions={{
-            headerLeft: () => <BackButton navigation={this.props.navigation} />,
+          screenOptions={({ }) => ({
+            headerLeft: () => <BackButton />,
             headerBackTitleVisible: false,
-            headerTintColor: App.theme_text_color()
-          }}
+          })}
         >
           {sharedScreens}
         </TimelineStack.Group>

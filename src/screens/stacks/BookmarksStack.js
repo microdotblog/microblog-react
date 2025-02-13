@@ -9,6 +9,7 @@ import NewPostButton from '../../components/header/new_post';
 import { getSharedScreens } from './SharedStack'
 import TagsButton from '../../components/header/tags_button';
 import { View } from 'react-native';
+import BackButton from '../../components/header/back';
 
 const BookmarksStack = createNativeStackNavigator();
 
@@ -18,7 +19,12 @@ export default class Bookmarks extends React.Component{
   render() {
     const sharedScreens = getSharedScreens(BookmarksStack, "Bookmarks")
     return(
-      <BookmarksStack.Navigator>
+      <BookmarksStack.Navigator
+        screenOptions={{
+          headerTintColor: App.theme_text_color(),
+          headerBackVisible: false
+        }}
+      >
         <BookmarksStack.Screen
           name="Bookmarks"
           component={BookmarksScreen}
@@ -29,16 +35,14 @@ export default class Bookmarks extends React.Component{
                 <TagsButton />
                 <AddBookmarkButton />
               </View>
-                
-            ),
-            headerTintColor: App.theme_text_color()
+            )
           }}
         />
         <BookmarksStack.Group
-          screenOptions={{
-            headerBackTitleVisible: false,
-            headerTintColor: App.theme_text_color()
-          }}
+          screenOptions={({ }) => ({
+            headerLeft: () => <BackButton />,
+            headerBackTitleVisible: false
+          })}
         >
           {sharedScreens}
           <BookmarksStack.Screen
