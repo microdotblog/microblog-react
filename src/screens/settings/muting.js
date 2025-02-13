@@ -258,19 +258,19 @@ export default class MutingScreen extends React.Component {
               </View>
               <TouchableOpacity 
                 onPress={() => this._handle_unmute(item.id, type, type === "keyword" ? item.keyword : item.username)}
-                style={{ padding: 5 }}
+                style={{ padding: 5, backgroundColor: App.theme_button_background_color(), borderRadius: 20 }}
               >
                 {
                   Platform.OS === "ios" ? (
                     <SFSymbol
                       name="xmark"
-                      color={App.theme_warning_text_color()}
-                      style={{ height: 20, width: 20 }}
+                      color={App.theme_text_color()}
+                      style={{ height: 10, width: 10 }}
                     />
                   ) : (
                     <SvgXml
-                      style={{ height: 20, width: 20 }}
-                      color={App.theme_warning_text_color()}
+                      style={{ height: 10, width: 10 }}
+                      color={App.theme_text_color()}
                       xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>'
                     />
                   )
