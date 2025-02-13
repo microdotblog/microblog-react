@@ -75,13 +75,25 @@ export default class MutingScreen extends React.Component {
 
   _handle_unmute = (id, type, name) => {
     const { selected_user } = Auth
+    const item = selected_user.muting?.muted_items.find(item => item.id === id)
+    const is_blocked = item?.is_hiding_other_replies
+
+    let title, message
+    if (type === "keyword") {
+      title = "Confirm Remove"
+      message = `Are you sure you want to remove "${name}" from your muted keywords?`
+    } else {
+      title = `Confirm ${is_blocked ? "Unblock" : "Unmute"}`
+      message = `Are you sure you want to ${is_blocked ? "unblock" : "unmute"} @${name}?`
+    }
+
     Alert.alert(
-      "Confirm Unmute",
-      `Are you sure you want to unmute ${type === "keyword" ? `"${name}"` : `@${name}`}?`,
+      title,
+      message,
       [
         { text: "Cancel", style: "cancel" },
         { 
-          text: "Unmute", 
+          text: type === "keyword" ? "Remove" : (is_blocked ? "Unblock" : "Unmute"), 
           style: "destructive",
           onPress: () => selected_user.muting.unmute_item(id)
         }

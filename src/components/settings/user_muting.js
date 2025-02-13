@@ -37,9 +37,6 @@ export default class UserMutingSettings extends React.Component {
           <Text style={{ fontSize: 16, color: App.theme_text_color() }}>@{user.username}</Text>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={{ color: App.theme_text_color(), marginRight: 5 }}>
-            {user.muting.muted_items.length} items
-          </Text>
           {
             Platform.OS === "ios" ?
               <SFSymbol
