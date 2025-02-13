@@ -227,7 +227,7 @@ export default App = types.model('App', {
   }),
   
   navigate_to_screen: flow(function*(screen_name = null, action_data = null, from_listener = false) {
-    console.log("App:navigate_to_screen", screen_name)
+    console.log("App:navigate_to_screen", screen_name, action_data, from_listener)
     if (screen_name != null && self.navigation_ref != null && !self.is_scrolling) {
       switch (screen_name) {
         case "photo":
@@ -291,6 +291,8 @@ export default App = types.model('App', {
           return self.navigation_ref.push(`${self.current_tab_key}-Collections`)
         case "AddCollection":
           return self.navigation_ref.push("AddCollection")
+        case "muting":
+          return self.navigation_ref.push(`muting`, { user: action_data })
         default:
           self.navigation_ref.push(screen_name)
       }

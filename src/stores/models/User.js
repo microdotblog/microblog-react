@@ -5,7 +5,7 @@ import FastImage from 'react-native-fast-image';
 import Muting from './Muting'
 import Push from '../Push'
 import App from '../App'
-import MicroBlogApi, { API_ERROR, DELETE_ERROR, LOGIN_TOKEN_INVALID } from '../../api/MicroBlogApi';
+import MicroBlogApi, { API_ERROR, LOGIN_TOKEN_INVALID } from '../../api/MicroBlogApi';
 
 export default User = types.model('User', {
     username: types.identifier,
