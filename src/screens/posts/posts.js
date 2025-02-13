@@ -91,6 +91,7 @@ export default class PostsScreen extends React.Component{
     const { config } = selected_service
     return(
       <FlatList
+        centerContent={config.posts_for_destination()?.length === 0}
         data={config.posts_for_destination()}
         extraData={config.posts_for_destination()?.length && !selected_service.is_loading_posts}
         keyExtractor={this._key_extractor}

@@ -217,21 +217,43 @@ class MicroBlogApi {
 		return muted_users;
   }
 
-  async mute_user(username, token) {
-		console.log('MicroBlogApi: mute_user', username);
-		const mute = axios
-			.post(`/users/mute`, '', {
-				headers: { Authorization: `Bearer ${token}` },
-				params: { username: username }
-			})
-			.then((response) => {
-				return response.data;
-			})
-			.catch(error => {
-				console.log(error);	
-				return MUTING_ERROR;
-			});
-		return mute;
+  async mute_user(username, token, should_block = false) {
+    console.log("MicroBlogApi: mute_user", username, should_block)
+    const mute = axios
+      .post(`/users/mute`, "", {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { 
+          username: username,
+          is_hiding_other_replies: should_block
+        }
+      })
+      .then((response) => {
+        return response.data
+      })
+      .catch(error => {
+        console.log(error)  
+        return MUTING_ERROR
+      })
+    return mute
+  }
+
+  async mute_keyword(keyword, token) {
+    console.log("MicroBlogApi: mute_keyword", keyword)
+    const mute = axios
+      .post(`/users/mute`, "", {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { 
+          keyword: keyword
+        }
+      })
+      .then((response) => {
+        return response.data
+      })
+      .catch(error => {
+        console.log(error)  
+        return MUTING_ERROR
+      })
+    return mute
   }
 
   async unmute_user(id, token) {

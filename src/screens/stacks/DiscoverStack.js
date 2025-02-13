@@ -16,22 +16,25 @@ export default class Discover extends React.Component{
   render() {
     const sharedScreens = getSharedScreens(DiscoverStack, "Discover")
     return(
-      <DiscoverStack.Navigator>
+      <DiscoverStack.Navigator
+        screenOptions={{
+          headerTintColor: App.theme_text_color(),
+          headerBackVisible: false
+        }}
+      >
         <DiscoverStack.Screen
           name="Discover"
           component={DiscoverScreen}
           options={{
             headerLeft: () => <ProfileImage />,
-            headerRight: () => <NewPostButton />,
-            headerTintColor: App.theme_text_color()
+            headerRight: () => <NewPostButton />
           }}
         />
         <DiscoverStack.Group
-          screenOptions={{
-            headerLeft: () => <BackButton navigation={this.props.navigation} />,
-            headerBackTitleVisible: false,
-            headerTintColor: App.theme_text_color()
-          }}
+          screenOptions={({ }) => ({
+            headerLeft: () => <BackButton />,
+            headerBackTitleVisible: false
+          })}
         >
           {sharedScreens}
           <DiscoverStack.Screen

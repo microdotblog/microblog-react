@@ -15,22 +15,25 @@ export default class Mentions extends React.Component{
   render() {
     const sharedScreens = getSharedScreens(MentionsStack, "Mentions")
     return(
-      <MentionsStack.Navigator>
+      <MentionsStack.Navigator
+        screenOptions={{
+          headerTintColor: App.theme_text_color(),
+          headerBackVisible: false
+        }}
+      >
         <MentionsStack.Screen
           name="Mentions"
           component={MentionsScreen}
           options={{
             headerLeft: () => <ProfileImage />,
-            headerRight: () => <NewPostButton />,
-            headerTintColor: App.theme_text_color()
+            headerRight: () => <NewPostButton />
           }}
         />
         <MentionsStack.Group
-          screenOptions={{
-            headerLeft: () => <BackButton navigation={this.props.navigation} />,
-            headerBackTitleVisible: false,
-            headerTintColor: App.theme_text_color()
-          }}
+          screenOptions={({ }) => ({
+            headerLeft: () => <BackButton />,
+            headerBackTitleVisible: false
+          })}
         >
           {sharedScreens}
         </MentionsStack.Group>

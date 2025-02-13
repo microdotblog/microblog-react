@@ -89,6 +89,7 @@ export default class PagesScreen extends React.Component{
     const { config } = selected_service
     return(
       <FlatList
+        centerContent={config.pages_for_destination()?.length === 0}
         data={config.pages_for_destination()}
         extraData={config.pages_for_destination()?.length && !selected_service.is_loading_pages}
         keyExtractor={this._key_extractor}

@@ -4,11 +4,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BookmarksScreen from '../bookmarks/bookmarks';
 import ProfileImage from './../../components/header/profile_image';
 import AddBookmarkButton from '../../components/header/add_bookmark';
-import HighlightsScreen from '../bookmarks/highlights';
 import BookmarkScreen from '../bookmarks/bookmark';
 import NewPostButton from '../../components/header/new_post';
-import RefreshActivity from '../../components/header/refresh_activity';
 import { getSharedScreens } from './SharedStack'
+import TagsButton from '../../components/header/tags_button';
+import { View } from 'react-native';
+import BackButton from '../../components/header/back';
 
 const BookmarksStack = createNativeStackNavigator();
 
@@ -18,35 +19,36 @@ export default class Bookmarks extends React.Component{
   render() {
     const sharedScreens = getSharedScreens(BookmarksStack, "Bookmarks")
     return(
-      <BookmarksStack.Navigator>
+      <BookmarksStack.Navigator
+        screenOptions={{
+          headerTintColor: App.theme_text_color(),
+          headerBackVisible: false
+        }}
+      >
         <BookmarksStack.Screen
           name="Bookmarks"
           component={BookmarksScreen}
           options={{
             headerLeft: () => <ProfileImage />,
-            headerRight: () => <AddBookmarkButton />,
-            headerTintColor: App.theme_text_color()
+            headerRight: () => (
+              <View style={{ justifyContent: 'center', alignItems: 'center', gap: 15, flexDirection: 'row' }}>
+                <TagsButton />
+                <AddBookmarkButton />
+              </View>
+            )
           }}
         />
         <BookmarksStack.Group
-          screenOptions={{
-            headerBackTitleVisible: false,
-            headerTintColor: App.theme_text_color()
-          }}
+          screenOptions={({ }) => ({
+            headerLeft: () => <BackButton />,
+            headerBackTitleVisible: false
+          })}
         >
           {sharedScreens}
           <BookmarksStack.Screen
-            name="Highlights"
-            component={HighlightsScreen}
-            options={{
-              headerTitle: "Highlights",
-              headerRight: () => <RefreshActivity type="highlights" />
-            }}
-          />
-          <BookmarksStack.Screen
             name="Bookmark"
             component={BookmarkScreen}
-            options={({ route }) => ({
+            options={({ }) => ({
               headerTitle: `Bookmark`,
               headerRight: () => <NewPostButton />
             })}
