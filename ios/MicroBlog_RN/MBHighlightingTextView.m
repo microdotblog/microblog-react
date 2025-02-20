@@ -77,7 +77,12 @@
 
     CGRect r = parent.bounds;
     r.origin.y = top_views_height;
-    r.size.height = r.size.height - bottom_views_height - keyboardHeight;
+    if ([self isIpad]) {
+      r.size.height = r.size.height - top_views_height - bottom_views_height - keyboardHeight;
+    }
+    else {
+      r.size.height = r.size.height - bottom_views_height - keyboardHeight;
+    }
 
     // only set frame and offset if height has changed
     if (self.frame.size.height != r.size.height) {
