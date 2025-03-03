@@ -59,9 +59,56 @@ export default class LoginScreen extends React.Component{
             />
           }
           
-          <Text style={{fontWeight: "300", color: App.theme_text_color(), lineHeight: 22, textAlign: "center", marginBottom: 5, marginTop: Login.is_loading ? 0 : 8}}>
-            By using the app you accept our <TouchableOpacity onPress={() => App.open_url(App.terms_url)}><Text style={{fontWeight: "600", color: App.theme_text_color(), textDecorationLine: "underline"}}>terms of service</Text></TouchableOpacity>, <TouchableOpacity onPress={() => App.open_url(App.privacy_url)}><Text style={{fontWeight: "600", color: App.theme_text_color(), textDecorationLine: "underline"}}>privacy policy</Text></TouchableOpacity>, and <TouchableOpacity onPress={() => App.open_url(App.guidelines_url)}><Text style={{fontWeight: "600", color: App.theme_text_color(), textDecorationLine: "underline"}}>community guidelines</Text></TouchableOpacity>.
-          </Text>
+          <View style={{
+            marginBottom: 5,
+            marginTop: Login.is_loading ? 0 : 8,
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <Text style={{
+              fontWeight: "300",
+              color: App.theme_text_color(),
+              textAlign: "center"
+            }}>By using the app you accept our </Text>
+            <TouchableOpacity onPress={() => App.open_url(App.terms_url)}>
+              <Text style={{
+                fontWeight: "600",
+                color: App.theme_text_color(),
+                textDecorationLine: "underline"
+              }}>terms of service</Text>
+            </TouchableOpacity>
+            <Text style={{
+              fontWeight: "300",
+              color: App.theme_text_color(),
+              textAlign: "center"
+            }}>, </Text>
+            <TouchableOpacity onPress={() => App.open_url(App.privacy_url)}>
+              <Text style={{
+                fontWeight: "600",
+                color: App.theme_text_color(),
+                textDecorationLine: "underline"
+              }}>privacy policy</Text>
+            </TouchableOpacity>
+            <Text style={{
+              fontWeight: "300",
+              color: App.theme_text_color(),
+              textAlign: "center"
+            }}>, and </Text>
+            <TouchableOpacity onPress={() => App.open_url(App.guidelines_url)}>
+              <Text style={{
+                fontWeight: "600",
+                color: App.theme_text_color(),
+                textDecorationLine: "underline"
+              }}>community guidelines</Text>
+            </TouchableOpacity>
+            <Text style={{
+              fontWeight: "300",
+              color: App.theme_text_color(),
+              textAlign: "center"
+            }}>.</Text>
+          </View>
         </View>
       </KeyboardAvoidingView>
     )
