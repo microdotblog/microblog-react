@@ -41,7 +41,7 @@
     "react-native-document-picker": "^8.2.2",
     "react-native-fast-image": "^8.6.3",
     "react-native-fs": "^2.20.0",
-    "react-native-gesture-handler": "^2.22.1",
+    "react-native-gesture-handler": "2.18.1",
     "react-native-hyperlink": "^0.0.22",
     "react-native-image-picker": "7.1.2",
     "react-native-image-viewing": "^0.2.2",
