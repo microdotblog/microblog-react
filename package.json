@@ -52,7 +52,7 @@
     "react-native-screens": "^3.35.0",
     "react-native-sensitive-info": "^5.5.8",
     "react-native-sfsymbols": "^1.2.2",
-    "react-native-share-menu": "^6.0.0",
+    "react-native-share-menu": "microdotblog/react-native-share-menu",
     "react-native-simple-toast": "^1.1.4",
     "react-native-svg": "^13.14.1",
     "react-native-url-polyfill": "^2.0.0",
