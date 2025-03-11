@@ -17,6 +17,14 @@ const BackButtonContent = observer(() => {
           navigation.goBack()
         }
       }}
+      style={{
+        marginLeft: -20,
+        paddingHorizontal: 20,
+        paddingBottom: 10,
+        marginBottom: -10,
+        paddingTop: 10,
+        marginTop: -10
+      }}
       labelVisible={false}
       backImage={() => (
         Platform.OS === 'ios' ?
