@@ -21,6 +21,7 @@ export default Posting = types.model('Posting', {
   is_sending_post: types.optional(types.boolean, false),
   post_assets: types.optional(types.array(MediaAsset), []),
   post_categories: types.optional(types.array(types.string), []),
+  new_category_text: types.optional(types.string, ""),
   post_syndicates: types.optional(types.array(types.string), []),
   post_status: types.optional(types.string, "published"),
   is_adding_bookmark: types.optional(types.boolean, false),
@@ -173,6 +174,7 @@ export default Posting = types.model('Posting', {
       self.post_title = null
       self.post_assets = []
       self.post_categories = []
+      self.new_category_text = ""
       self.post_status = "published"
       if(self.selected_service && self.selected_service.active_destination()?.syndicates?.length > 0){
         let syndicate_targets = []
@@ -414,6 +416,7 @@ export default Posting = types.model('Posting', {
     self.post_title = null
     self.post_assets = []
     self.post_categories = []
+    self.new_category_text = ""
     self.is_editing_post = false
     self.post_url = null
     self.show_title = false
@@ -518,6 +521,21 @@ export default Posting = types.model('Posting', {
   
   add_to_post_text: flow(function* (text) {
     self.post_text += text
+  }),
+  
+  handle_new_category_text: flow(function* (text) {
+    if (self.new_category_text) {
+      self.post_categories = self.post_categories.filter(c => !self.new_category_text.startsWith(c) && !c.startsWith(self.new_category_text))
+    }
+    
+    self.new_category_text = text
+    
+    if (text) {
+      self.post_categories = self.post_categories.filter(c => !text.startsWith(c) && !c.startsWith(text))
+      if (!self.post_categories.includes(text)) {
+        self.post_categories.push(text)
+      }
+    }
   }),
   
 }))
