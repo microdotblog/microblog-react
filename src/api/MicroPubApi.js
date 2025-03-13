@@ -321,7 +321,7 @@ class MicroPubApi {
 			type: file.type,
 			uri: file.uri,
 		})
-		data.append("mp-destination", destination)
+		data.append("mp-destination", App.current_screen_name === "microblog.UploadsScreen" || service.temporary_destination !== null && service.temporary_destination !== service.destination ? service.temporary_destination : service.destination)
 		console.log('MicroPubApi:upload_media', service, file, data)
 
 		const upload = axios
