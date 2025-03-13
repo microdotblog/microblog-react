@@ -21,6 +21,7 @@ export default Posting = types.model('Posting', {
   is_sending_post: types.optional(types.boolean, false),
   post_assets: types.optional(types.array(MediaAsset), []),
   post_categories: types.optional(types.array(types.string), []),
+  new_category_text: types.optional(types.string, ""),
   post_syndicates: types.optional(types.array(types.string), []),
   post_status: types.optional(types.string, "published"),
   is_adding_bookmark: types.optional(types.boolean, false),
@@ -33,7 +34,8 @@ export default Posting = types.model('Posting', {
   text_selection_flat: types.optional(types.string, ""),
   is_editing_post: types.optional(types.boolean, false),
   post_url: types.maybeNull(types.string),
-  show_title: types.optional(types.boolean, false)
+  show_title: types.optional(types.boolean, false),
+  summary: types.maybeNull(types.string)
 })
 .actions(self => ({
 
@@ -82,6 +84,7 @@ export default Posting = types.model('Posting', {
     self.post_title = post.name != "" ? post.name : null
     self.post_text = post.content
     self.post_url = post.url
+    self.summary = post.summary
     
     if(post.category.length > 0){
       let categories = []
@@ -129,6 +132,10 @@ export default Posting = types.model('Posting', {
 		self.post_title = value === "" ? null : value
   }),
   
+  set_summary: flow(function* (value) {
+		self.summary = value === "" ? null : value
+  }),
+  
   send_post: flow(function* () {
 		console.log("Posting:send_post", self.post_text, self.selected_service.service_object().destination)
     if(self.post_text === "" && self.post_assets.length === 0){
@@ -167,13 +174,15 @@ export default Posting = types.model('Posting', {
     self.is_sending_post = true
     const post_success = self.selected_service.type === "xmlrpc" ?
       yield XMLRPCApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
-      : yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status, self.post_syndicates.length === self.selected_service.active_destination()?.syndicates?.length ? null : self.post_syndicates)
+      : yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status, self.post_syndicates.length === self.selected_service.active_destination()?.syndicates?.length ? null : self.post_syndicates, self.summary)
     if(post_success !== POST_ERROR && post_success !== XML_ERROR){
       self.post_text = ""
       self.post_title = null
       self.post_assets = []
       self.post_categories = []
+      self.new_category_text = ""
       self.post_status = "published"
+      self.summary = null
       if(self.selected_service && self.selected_service.active_destination()?.syndicates?.length > 0){
         let syndicate_targets = []
         self.selected_service.active_destination()?.syndicates.forEach((syndicate) => {
@@ -414,6 +423,7 @@ export default Posting = types.model('Posting', {
     self.post_title = null
     self.post_assets = []
     self.post_categories = []
+    self.new_category_text = ""
     self.is_editing_post = false
     self.post_url = null
     self.show_title = false
@@ -518,6 +528,21 @@ export default Posting = types.model('Posting', {
   
   add_to_post_text: flow(function* (text) {
     self.post_text += text
+  }),
+  
+  handle_new_category_text: flow(function* (text) {
+    if (self.new_category_text) {
+      self.post_categories = self.post_categories.filter(c => !self.new_category_text.startsWith(c) && !c.startsWith(self.new_category_text))
+    }
+    
+    self.new_category_text = text
+    
+    if (text) {
+      self.post_categories = self.post_categories.filter(c => !text.startsWith(c) && !c.startsWith(text))
+      if (!self.post_categories.includes(text)) {
+        self.post_categories.push(text)
+      }
+    }
   }),
   
 }))

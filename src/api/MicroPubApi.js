@@ -154,7 +154,7 @@ class MicroPubApi {
 		return config;
 	}
 
-	async send_post(service, content, title = null, assets = [], categories = [], status = null, syndicate_to = null) {
+	async send_post(service, content, title = null, assets = [], categories = [], status = null, syndicate_to = null, summary = null) {
 		console.log('MicroBlogApi:send_post', service, content, title, assets, status, syndicate_to);		
 		const params = new FormData()
 		params.append('h', 'entry')
@@ -212,6 +212,9 @@ class MicroPubApi {
 		}
 		else if(syndicate_to != null && syndicate_to.length === 0){
 			params.append('mp-syndicate-to[]', "")
+		}
+		if (summary) {
+			params.append('summary', summary)
 		}
 		console.log("MicroBlogApi:send_post:FORM_DATA:PARAMS", params)
 		const post = axios
@@ -318,7 +321,7 @@ class MicroPubApi {
 			type: file.type,
 			uri: file.uri,
 		})
-		data.append("mp-destination", destination)
+		data.append("mp-destination", App.current_screen_name === "microblog.UploadsScreen" || service.temporary_destination !== null && service.temporary_destination !== service.destination ? service.temporary_destination : service.destination)
 		console.log('MicroPubApi:upload_media', service, file, data)
 
 		const upload = axios

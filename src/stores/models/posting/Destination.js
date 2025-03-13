@@ -46,6 +46,7 @@ export default Destination = types.model('Destination', {
 			const url = entry.properties.url ? entry.properties.url[0] : ""
 			const post_status = entry.properties["post-status"] ? entry.properties["post-status"][0] : ""
 			const categories = entry.properties.category ? entry.properties.category : []
+			const summary = entry.properties.summary ? entry.properties.summary[0] : null
 			const post = {
 				uid: uid,
 				name: name,
@@ -53,7 +54,8 @@ export default Destination = types.model('Destination', {
 				published: published,
 				url: url,
 				post_status: post_status,
-				category: categories
+				category: categories,
+				summary: summary
 			}
 			if (uid === 0 || url === "") {
 				return acc

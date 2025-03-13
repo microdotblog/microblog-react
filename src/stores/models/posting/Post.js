@@ -12,7 +12,8 @@ export default Post = types.model('Post', {
   published: types.maybe(types.string),
   url: types.maybe(types.string),
   post_status: types.maybe(types.string),
-  category: types.optional(types.array(types.string), [])
+  category: types.optional(types.array(types.string), []),
+  summary: types.maybeNull(types.string)
 })
 .views(self => ({
   

@@ -25,6 +25,7 @@ export default Muting = types.model('Muting', {
 
 	hydrate: flow(function* () {
 		console.log("Muting:hydrate")
+		self.muted_items = [];
 		const muted_items = yield MicroBlogApi.get_muted_users(self.token());
 		if (muted_items && muted_items !== API_ERROR) {
 			self.muted_items = muted_items;
