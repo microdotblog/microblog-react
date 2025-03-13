@@ -149,6 +149,7 @@ export default class PostingOptionsScreen extends React.Component{
 							value={posting.summary}
 							onChangeText={posting.set_summary}
 							clearButtonMode="always"
+							multiline
 						/>
 					</View>
 				)}
