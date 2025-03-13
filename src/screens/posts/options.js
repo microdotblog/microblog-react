@@ -21,7 +21,10 @@ export default class PostingOptionsScreen extends React.Component{
         style={{ flex: 1 }}
         keyboardVerticalOffset={Platform.OS === "ios" ? 125 : 0}
       >
-			  <ScrollView style={{ flex: 1, padding: 15 }}>
+			  <ScrollView 
+          style={{ flex: 1 }}
+          contentContainerStyle={{ padding: 15, paddingBottom: 50 }}
+          showsVerticalScrollIndicator={true}>
 				{/* Post status */}
 				{
 				  !posting.is_editing_post &&
@@ -108,6 +111,47 @@ export default class PostingOptionsScreen extends React.Component{
 						</View>
 					</View>
 				</View>
+				{/* Other options */}
+				<View style={{ marginBottom: 25 }}>
+					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>View:</Text>
+					<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
+						<TouchableOpacity
+							style={{
+								padding: 8,
+								marginVertical: 2.5,
+								flexDirection: 'row',
+								alignItems: 'center',
+							}}
+							onPress={posting.toggle_title}
+						>
+							<CheckmarkRowCell text="Show title field" is_selected={posting.show_title} />
+						</TouchableOpacity>
+					</View>
+				</View>
+				{/* Summary */}
+				{posting.selected_service.type !== "xmlrpc" && (
+					<View style={{ marginBottom: 25 }}>
+						<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color(), marginBottom: 8 }}>Summary:</Text>
+						<TextInput
+							style={{
+								color: App.theme_button_text_color(),
+								padding: 8,
+								paddingHorizontal: 12,
+								fontSize: 16,
+								backgroundColor: App.theme_input_background_color(),
+								borderRadius: 6,
+								marginRight: 4,
+								borderWidth: 1,
+								borderColor: App.theme_border_color()
+							}}
+							placeholder="Summary"
+							placeholderTextColor={App.theme_placeholder_text_color()}
+							value={posting.summary}
+							onChangeText={posting.set_summary}
+							clearButtonMode="always"
+						/>
+					</View>
+				)}
 				{/* Cross posting */}
 				{
 				  !posting.is_editing_post &&
@@ -140,23 +184,7 @@ export default class PostingOptionsScreen extends React.Component{
 						</View>
 					</View>
 				}
-				{/* Other options */}
-				<View style={{ marginBottom: 25 }}>
-					<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>View:</Text>
-					<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
-						<TouchableOpacity
-							style={{
-								padding: 8,
-								marginVertical: 2.5,
-								flexDirection: 'row',
-								alignItems: 'center',
-							}}
-							onPress={posting.toggle_title}
-						>
-							<CheckmarkRowCell text="Show title field" is_selected={posting.show_title} />
-						</TouchableOpacity>
-					</View>
-				</View>
+				{/* Markdown reference */}
 				<View style={{ alignItems: 'center' }}>
 					<TouchableOpacity
 						style={{
