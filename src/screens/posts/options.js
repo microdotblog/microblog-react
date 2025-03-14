@@ -1,17 +1,58 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
 import CheckmarkRowCell from '../../components/cells/checkmark_row_cell'
 
 @observer
 export default class PostingOptionsScreen extends React.Component{
+	constructor(props) {
+		super(props);
+		this.scrollViewRef = React.createRef();
+		this.state = {
+			contentHeight: 0,
+			focusedField: null
+		};
+	}
+
 	componentDidMount() {
     if (Auth.selected_user.posting.selected_service != null) {
       Auth.selected_user.posting.selected_service.check_for_categories()
     }
+	this.keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", this.handleKeyboardDidShow);
   }
+
+	componentWillUnmount() {
+		if (this.keyboardDidShowListener) {
+			this.keyboardDidShowListener.remove();
+		}
+	}
+
+	handleKeyboardDidShow = () => {
+		const { posting } = Auth.selected_user;
+		
+		if (this.scrollViewRef.current) {
+			if (this.state.focusedField == "summary") {
+				// scroll down minus room for cross-posting checkboxes
+				const approx_checkbox_height = 50;
+				const num_services = posting.selected_service.active_destination()?.syndicates?.length;
+				const crossposting_height = num_services * approx_checkbox_height;
+				this.scrollViewRef.current.scrollTo({
+					y: this.state.contentHeight - crossposting_height,
+					animated: true,
+				});
+			}
+		}
+	};
+
+	handleContentSizeChange = (contentWidth, contentHeight) => {
+		this.setState({ contentHeight });
+	};
+
+	handleFocus = (fieldName) => {
+		this.setState({ focusedField: fieldName });
+	};
   
   render() {
     const { posting } = Auth.selected_user
@@ -22,9 +63,11 @@ export default class PostingOptionsScreen extends React.Component{
         keyboardVerticalOffset={Platform.OS === "ios" ? 125 : 0}
       >
 			  <ScrollView 
+		  ref={this.scrollViewRef}
           style={{ flex: 1 }}
           contentContainerStyle={{ padding: 15, paddingBottom: 50 }}
-          showsVerticalScrollIndicator={true}>
+          showsVerticalScrollIndicator={true}
+		  onContentSizeChange={this.handleContentSizeChange}>
 				{/* Post status */}
 				{
 				  !posting.is_editing_post &&
@@ -84,7 +127,7 @@ export default class PostingOptionsScreen extends React.Component{
 						<View style={{ 
 							flexDirection: 'row', 
 							alignItems: 'center',
-              marginTop: 8
+							marginTop: 8
 						}}>
 							<TextInput
 								style={{
@@ -104,6 +147,7 @@ export default class PostingOptionsScreen extends React.Component{
 								value={posting.new_category_text}
 								onChangeText={(text) => posting.handle_new_category_text(text)}
 								clearButtonMode="always"
+								onFocus={() => this.handleFocus("category")}
 							/>
 							{posting.new_category_text && (
 								<CheckmarkRowCell text="" is_selected={posting.post_categories.includes(posting.new_category_text)} />
@@ -150,6 +194,7 @@ export default class PostingOptionsScreen extends React.Component{
 							onChangeText={posting.set_summary}
 							clearButtonMode="always"
 							multiline
+							onFocus={() => this.handleFocus("summary")}
 						/>
 					</View>
 				)}
