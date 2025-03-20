@@ -331,7 +331,7 @@
 - (void) processHeaders
 {
   UIFont* header_font = [UIFont boldSystemFontOfSize:[MBHighlightingTextManager preferredTimelineFontSize]];
-	UIColor* header_c = [UIColor blueColor];
+	UIColor* header_c = [UIColor colorNamed:@"color_editing_paragraph"];
 	NSRange current_r = NSMakeRange (0, 0);
 	BOOL is_header = NO;
 	
@@ -475,11 +475,9 @@
 	// clear fonts and colors
 	NSRange paragraph_r = NSMakeRange (0, self.string.length);
   UIFont* normal_font = [UIFont systemFontOfSize:[MBHighlightingTextManager preferredTimelineFontSize]];
-	UIColor* c = [UIColor blackColor];
-	if (@available(iOS 11, *)) {
-		c = [UIColor colorNamed:@"color_editing_paragraph"];
-	}
-	[self safe_removeAttribute:NSForegroundColorAttributeName range:paragraph_r];
+	UIColor* c = [UIColor colorNamed:@"color_editing_paragraph"];
+
+  [self safe_removeAttribute:NSForegroundColorAttributeName range:paragraph_r];
 	[self safe_removeAttribute:NSFontAttributeName range:paragraph_r];
 	[self safe_addAttribute:NSFontAttributeName value:normal_font range:paragraph_r];
 	[self safe_addAttribute:NSForegroundColorAttributeName value:c range:paragraph_r];
