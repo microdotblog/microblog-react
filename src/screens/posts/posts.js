@@ -38,6 +38,24 @@ export default class PostsScreen extends React.Component{
             {config.posts_destination()?.name}
           </Text>
         </TouchableOpacity>
+        <View style={{ flex: 1 }} />
+        <TouchableOpacity
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: App.theme_header_button_background_color(),
+            borderColor: App.theme_border_color(),
+            borderWidth: 1,
+            padding: 4,
+            paddingHorizontal: 8,
+            borderRadius: 5,
+            marginLeft: 5,
+          }}
+        >
+          <Text style={{color: App.theme_button_text_color()}}>
+            Drafts
+          </Text>
+        </TouchableOpacity>
         <TouchableOpacity
           style={{
             justifyContent: "center",
