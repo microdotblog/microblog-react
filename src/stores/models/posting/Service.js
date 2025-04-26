@@ -114,14 +114,19 @@ export default Service = types.model('Service', {
     }
   }),
   
-  check_for_posts_for_destination: flow(function* (destination) { 
+  check_for_posts_for_destination: flow(function* (destination, show_drafts = false) { 
     if(destination){
       self.is_loading_posts = true
-      console.log("Endpoint:check_for_posts_for_destination", destination.uid)
-      const data = yield MicroPubApi.get_posts(self.service_object(), destination.uid)
+      console.log("Endpoint:check_for_posts_for_destination", destination.uid, show_drafts)
+      const data = yield MicroPubApi.get_posts(self.service_object(), destination.uid, show_drafts)
       console.log("Endpoint:check_for_posts_for_destination:posts", data?.items?.length)
-      if(data?.items != null){
-        destination.set_posts(data.items)
+      if(data?.items != null) {
+        if (show_drafts) {
+          destination.set_drafts(data.items);
+        }
+        else {
+          destination.set_posts(data.items);
+        }
       }
       self.is_loading_posts = false
     }

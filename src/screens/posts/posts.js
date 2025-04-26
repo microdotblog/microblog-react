@@ -13,6 +13,13 @@ import { SvgXml } from 'react-native-svg';
 
 @observer
 export default class PostsScreen extends React.Component{
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      is_showing_drafts: false
+    };
+  }
   
   componentDidMount(){
     Auth.selected_user.posting?.selected_service?.update_posts_for_active_destination()
@@ -43,13 +50,20 @@ export default class PostsScreen extends React.Component{
           style={{
             justifyContent: "center",
             alignItems: "center",
-            backgroundColor: App.theme_header_button_background_color(),
+            backgroundColor: this.state.is_showing_drafts ? App.theme_header_button_selected_color() : App.theme_header_button_background_color(),
             borderColor: App.theme_border_color(),
             borderWidth: 1,
             padding: 4,
             paddingHorizontal: 8,
             borderRadius: 5,
             marginLeft: 5,
+          }}
+          onPress={() => {
+            const new_is_drafts = !this.state.is_showing_drafts;
+            this.setState({ is_showing_drafts: new_is_drafts });
+            const { selected_service } = Auth.selected_user.posting;
+            const { config } = selected_service;
+            selected_service.check_for_posts_for_destination(config.posts_destination(), new_is_drafts);
           }}
         >
           <Text style={{color: App.theme_button_text_color()}}>
@@ -86,11 +100,11 @@ export default class PostsScreen extends React.Component{
       <SearchBar
         placeholder="Search posts"
         onSubmitEditing={() => {Keyboard.dismiss()}}
-        onChangeText={(text) => App.set_posts_query(text, config.posts_destination())}
+        onChangeText={(text) => App.set_posts_query(text, config.posts_destination(), this.state.is_showing_drafts)}
         value={App.post_search_query}
         onCancel={() => {
             App.toggle_post_search_is_open();
-            App.set_posts_query("", null);
+            App.set_posts_query("", null, this.state.is_showing_drafts);
         }}
       />
     )
@@ -109,9 +123,9 @@ export default class PostsScreen extends React.Component{
     const { config } = selected_service
     return(
       <FlatList
-        centerContent={config.posts_for_destination()?.length === 0}
-        data={config.posts_for_destination()}
-        extraData={config.posts_for_destination()?.length && !selected_service.is_loading_posts}
+        centerContent={config.posts_for_destination(this.state.is_showing_drafts)?.length === 0}
+        data={config.posts_for_destination(this.state.is_showing_drafts)}
+        extraData={config.posts_for_destination(this.state.is_showing_drafts)?.length && !selected_service.is_loading_posts}
         keyExtractor={this._key_extractor}
         renderItem={this.render_post_item}
         style={{
@@ -120,13 +134,13 @@ export default class PostsScreen extends React.Component{
         }}
         ListEmptyComponent={
           <View style={{ flex: 1, padding: 12, justifyContent: 'center', alignItems: 'center' }} >
-            <Text style={{ color: App.theme_text_color() }}>No posts...</Text>
+            <Text style={{ color: App.theme_text_color() }}>No posts.</Text>
           </View>
         }
         refreshControl={
           <RefreshControl
             refreshing={false}
-            onRefresh={() => selected_service.check_for_posts_for_destination(config.posts_destination())}
+            onRefresh={() => selected_service.check_for_posts_for_destination(config.posts_destination(), this.state.is_showing_drafts)}
           />
         }
       />

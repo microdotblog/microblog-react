@@ -65,8 +65,13 @@ export default Config = types.model('Config', {
     return self.destination != null && self.destination.length ? self.destination.find(destination => destination.uid === self.selected_posts_destination) : null
   },
   
-  posts_for_destination(){
-    return this.posts_destination()?.posts
+  posts_for_destination(show_drafts = false){
+    if (show_drafts) {
+      return this.posts_destination()?.drafts;
+    }
+    else {
+      return this.posts_destination()?.posts;
+    }
   },
   
   pages_destination(){

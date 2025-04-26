@@ -378,10 +378,10 @@ class MicroBlogApi {
 		return push;
 	}
 	
-	async search_posts_and_pages(query, destination = null, is_pages = false) {
-		console.log('MicroBlogApi: search_posts_and_pages', query, destination, is_pages);
+	async search_posts_and_pages(query, destination = null, is_pages = false, is_drafts = false) {
+		console.log('MicroBlogApi: search_posts_and_pages', query, destination, is_pages, is_drafts);
 		const search = axios
-			.get(`/micropub?q=source&mp-destination=${destination}&filter=${query}${is_pages ? "&mp-channel=pages" : ""}`, {
+			.get(`/micropub?q=source&mp-destination=${destination}&filter=${query}${is_pages ? "&mp-channel=pages" : ""}${is_drafts ? "&post-status=draft" : ""}`, {
 				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
 			})
 			.then(response => {

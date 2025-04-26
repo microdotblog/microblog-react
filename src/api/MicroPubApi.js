@@ -427,12 +427,19 @@ class MicroPubApi {
 		return post;
 	}
 	
-	async get_posts(service, destination = null) {
-		console.log('MicroPubApi:get_posts');
+	async get_posts(service, destination = null, is_drafts = false) {
+		console.log('MicroPubApi:get_posts', is_drafts);
+		let params = {
+			q: "source", "mp-destination": destination
+		};
+		if (is_drafts) {
+			params["post-status"] = "draft";
+		}
+		console.log('MicroPubApi:get_posts params', params);
 		const config = axios
 			.get(service.endpoint, {
 				headers: { Authorization: `Bearer ${service.token}` },
-				params: { q: "source", "mp-destination": destination }
+				params: params
 			})
 			.then(response => {
 				return response.data;

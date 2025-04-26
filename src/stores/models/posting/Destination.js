@@ -18,6 +18,7 @@ export default Destination = types.model('Destination', {
 		name: types.maybeNull(types.string)
 	})), []),
 	posts: types.optional(types.array(Post), []),
+	drafts: types.optional(types.array(Post), []),
 	pages: types.optional(types.array(Page), []),
 	uploads: types.optional(types.array(Upload), []),
 	temp_uploads: types.optional(types.array(TempUpload), [])
@@ -66,6 +67,36 @@ export default Destination = types.model('Destination', {
 		self.posts = posts // We could append to the list: [...self.posts, ...posts]
 	},
 	
+	set_drafts(entries) {
+		console.log("Destination:set_drafts", entries.length)
+		const posts = entries.reduce((acc, entry) => {
+			const uid = entry.properties.uid && entry.properties.uid[0] ? parseInt(entry.properties.uid[0], 10) : 0
+			const name = entry.properties.name ? entry.properties.name[0] : ""
+			const content = entry.properties.content ? entry.properties.content[0] : ""
+			const published = entry.properties.published ? entry.properties.published[0] : ""
+			const url = entry.properties.url ? entry.properties.url[0] : ""
+			const post_status = entry.properties["post-status"] ? entry.properties["post-status"][0] : ""
+			const categories = entry.properties.category ? entry.properties.category : []
+			const summary = entry.properties.summary ? entry.properties.summary[0] : null
+			const post = {
+				uid: uid,
+				name: name,
+				content: content,
+				published: published,
+				url: url,
+				post_status: post_status,
+				category: categories,
+				summary: summary
+			}
+			if (uid === 0 || url === "") {
+				return acc
+			}
+			return [...acc, post]
+		}, [])
+		console.log("Destination:set_drafts:got_posts", posts.length)
+		self.drafts = posts // We could append to the list: [...self.posts, ...posts]
+	},	
+
 	set_pages(entries) {
 		console.log("Destination:set_pages", entries.length)
 		const pages = entries.reduce((acc, entry) => {

@@ -702,14 +702,19 @@ export default App = types.model('App', {
     self.uploads_search_is_open = !self.uploads_search_is_open
   }),
   
-  set_posts_query: flow(function* (text, destination) {
-    console.log("App:set_posts_query", text)
+  set_posts_query: flow(function* (text, destination, show_drafts = false) {
+    console.log("App:set_posts_query", text, show_drafts)
     self.post_search_query = text
     if(text?.length > 2){
       self.is_searching_posts = true
-      const results = yield MicroBlogApi.search_posts_and_pages(text, destination?.uid, false)
-      if(results !== API_ERROR && results.items != null){
-        destination.set_posts(results.items)
+      const results = yield MicroBlogApi.search_posts_and_pages(text, destination?.uid, false, show_drafts)
+      if (results !== API_ERROR && results.items != null) {
+        if (show_drafts) {
+          destination.set_drafts(results.items);
+        }
+        else {
+          destination.set_posts(results.items);
+        }
       }
       self.is_searching_posts = false
     }
@@ -822,6 +827,9 @@ export default App = types.model('App', {
   },
   theme_header_button_background_color() {
     return self.theme === "dark" ? "#27303d" : "#f8f8f8"
+  },
+  theme_header_button_selected_color() {
+    return self.theme === "dark" ? "#181d24" : "#ffffff"
   },
   theme_border_color() {
     return self.theme === "dark" ? "#374151" : "#E5E7EB"
