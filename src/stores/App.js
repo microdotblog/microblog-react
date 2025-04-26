@@ -829,7 +829,7 @@ export default App = types.model('App', {
     return self.theme === "dark" ? "#27303d" : "#f8f8f8"
   },
   theme_header_button_selected_color() {
-    return self.theme === "dark" ? "#181d24" : "#ffffff"
+    return self.theme === "dark" ? "#181d24" : "#e1e2e3"
   },
   theme_border_color() {
     return self.theme === "dark" ? "#374151" : "#E5E7EB"
