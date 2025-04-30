@@ -52,8 +52,8 @@ export default class PostsScreen extends React.Component{
             style={{
               justifyContent: "center",
               alignItems: "center",
-              backgroundColor: this.state.is_showing_drafts_posts ? App.theme_header_button_selected_color() : App.theme_header_button_background_color(),
-              borderColor: App.theme_border_color(),
+              backgroundColor: this.state.is_showing_drafts_posts ? App.theme_header_button_selected_background_color() : App.theme_header_button_background_color(),
+              borderColor: this.state.is_showing_drafts_posts ? App.theme_header_button_selected_border_color() : App.theme_border_color(),
               borderWidth: 1,
               padding: 4,
               paddingHorizontal: 8,
