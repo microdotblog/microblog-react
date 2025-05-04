@@ -321,6 +321,28 @@ class MicroBlogApi {
       });
     return push;
   }
+  
+  async get_push_info(user_token, device_token = null) {
+    console.log('MicroBlogApi:get_push_info', device_token);
+    const data = axios
+      .get(`/users/push/info`, {
+        headers: { Authorization: `Bearer ${user_token}` },
+        params: {
+          device_token: device_token,
+          push_env: Platform.OS === 'ios' ? (__DEV__ ? "dev" : "prod") : "production",
+          app_name: APP_NAME
+        }
+      })
+      .then(response => {
+        console.log('MicroBlogApi:get_push_info:data', response.data);
+        return response.data;
+      })
+      .catch(error => {
+        console.log('MicroBlogApi:get_push_info:error', error.response?.status, error.response?.data);
+        return API_ERROR;
+      });
+    return data;
+  }
 	
 	async get_replies() {
 		console.log('MicroBlogApi: get_replies');
