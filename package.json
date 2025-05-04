@@ -34,7 +34,7 @@
     "mobx-react": "^7.6.0",
     "mobx-state-tree": "^5.4.2",
     "react": "18.2.0",
-    "react-native": "0.73.9",
+    "react-native": "0.73.11",
     "react-native-actions-sheet": "^0.8.29",
     "react-native-context-menu-view": "^1.16.0",
     "react-native-device-info": "^8.7.1",
