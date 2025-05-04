@@ -272,57 +272,55 @@ class MicroBlogApi {
 		return unmute;
 	}
 	
-	async register_push(push_token, user_token) {
-		console.log('MicroBlogApi:register_push', push_token);
-		const push = axios
-			.post(`/users/push/register`, "" ,{
-				headers: { Authorization: `Bearer ${user_token}` },
-				params: {
-					device_token: push_token,
-					push_env: Platform.OS === 'ios' ? __DEV__ ? "dev" : "prod" : "production",
-					...Platform.select({
-						android: {
-							app_name: APP_NAME
-						}
-					})
-				}
-			})
-			.then(response => {
-				console.log('MicroBlogApi:register_push:data', response.data);
-				return true;
-			})
-			.catch(error => {
-				console.log(error);
-				return API_ERROR;
-			});
-		return push;
-	}
+  async register_push(push_token, user_token) {
+    console.log('MicroBlogApi:register_push', push_token);
+    const push = axios
+      .post(`/users/push/register`, "", {
+        headers: { Authorization: `Bearer ${user_token}` },
+        params: {
+          device_token: push_token,
+          push_env: Platform.OS === 'ios' ? (__DEV__ ? "dev" : "prod") : "production",
+          app_name: APP_NAME
+        }
+      })
+      .then(response => {
+        console.log('MicroBlogApi:register_push:data', response.data);
+        if (response.data.status === 'success') {
+          return true;
+        }
+        return API_ERROR;
+      })
+      .catch(error => {
+        console.log(error);
+        return API_ERROR;
+      });
+    return push;
+  }
 
-	async unregister_push(push_token, user_token) {
-		console.log('MicroBlogApi: unregister_push', push_token);
-		const push = axios
-			.post(`/users/push/unregister`, "" ,{
-				headers: { Authorization: `Bearer ${user_token}` },
-				params: {
-					device_token: push_token,
-					push_env: Platform.OS === 'ios' ? __DEV__ ? "dev" : "prod" : "production",
-					...Platform.select({
-						android: {
-							app_name: APP_NAME
-						}
-					})
-				}
-			})
-			.then(response => {
-				console.log('MicroBlogApi:unregister_push:data', response.data);
-				return true;
-			})
-			.catch(error => {
-				console.log(error);
-				return API_ERROR;
-			});
-		return push;
-	}
+  async unregister_push(push_token, user_token) {
+    console.log('MicroBlogApi: unregister_push', push_token);
+    const push = axios
+      .post(`/users/push/unregister`, "", {
+        headers: { Authorization: `Bearer ${user_token}` },
+        params: {
+          device_token: push_token,
+          push_env: Platform.OS === 'ios' ? (__DEV__ ? "dev" : "prod") : "production",
+          app_name: APP_NAME
+        }
+      })
+      .then(response => {
+        console.log('MicroBlogApi:unregister_push:data', response.data);
+        return true;
+      })
+      .catch(error => {
+        console.log('MicroBlogApi:unregister_push:error', error.response?.status, error.response?.data);
+        if (error.response?.status === 404) {
+          return true;
+        }
+        return API_ERROR;
+      });
+    return push;
+  }
 	
 	async get_replies() {
 		console.log('MicroBlogApi: get_replies');
