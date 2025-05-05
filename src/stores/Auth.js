@@ -79,6 +79,10 @@ export default Auth = types.model('Auth', {
       self.selected_user = new_user
       self.is_selecting_user = false
     }
+    
+    if(self.selected_user != null){
+      self.selected_user.register_for_push()
+    }
     console.log("Auth:create_and_select_new_user:users", self.users.length)
   }),
   

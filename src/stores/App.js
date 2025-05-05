@@ -73,17 +73,13 @@ export default App = types.model('App', {
       console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
       await App.set_current_initial_theme()
       await App.set_current_initial_font_scale()
-      // await App.hydrate_last_tab_index()
-      Push.hydrate()
+      await Push.hydrate()
+      
       Settings.hydrate()
       App.set_is_loading(false)
       App.set_up_url_listener()
       if (Auth.is_logged_in()) {
         Push.handle_first_notification()
-        // Disabled this for now as it's causing some navigation issues
-        // if (self.current_tab_index > 0 && self.navigation_ref != null) {
-        //   App.navigate_to_tab_index(self.current_tab_index)
-        // }
       }
       else if(!Auth.is_logged_in()){
         App.navigate_to_screen("Login")
@@ -167,14 +163,6 @@ export default App = types.model('App', {
     else if (tab_key.includes("Mentions")) {
       self.current_tab_key = "Mentions"
       if (Auth.is_logged_in() && Auth.selected_user != null) {
-        Push.has_push_permissions((has_permissions) => {
-          if (has_permissions && !Auth.selected_user.push_registered_with_server) {
-            Auth.selected_user.register_for_push()
-          }
-          else if (!has_permissions) {
-            Push.request_permissions()
-          }
-        })
         Push.clear_notifications()
       }
     }

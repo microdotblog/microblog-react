@@ -8,8 +8,6 @@ require Pod::Executable.execute_command('node', ['-p',
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
-flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled
-
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
@@ -21,7 +19,6 @@ target 'MicroBlog_RN' do
 
   use_react_native!(
     :path => config[:reactNativePath],
-    :flipper_configuration => flipper_config,
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
@@ -50,10 +47,3 @@ target 'MicroBlog_RN' do
     end
   end
 end
-
-# target 'MicroBlog_Share' do
-#   use_react_native!(:flipper_configuration => flipper_config)
-#   pod 'RNShareMenu', :path => '../node_modules/react-native-share-menu'
-#   pod 'react-native-sensitive-info', path: "../node_modules/react-native-sensitive-info"
-#   pod 'RNCAsyncStorage', path: "../node_modules/@react-native-async-storage/async-storage"
-# end

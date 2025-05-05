@@ -6,11 +6,13 @@ import Auth from './Auth'
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { Platform, PermissionsAndroid } from 'react-native'
 import App from './App'
+import Device from './models/Device'
 
 export default Push = types.model('Push', {
 	token: types.optional(types.string, ""),
 	notifications: types.optional(types.array(Notification), []),
-	notificiations_open: types.optional(types.boolean, false)
+	notificiations_open: types.optional(types.boolean, false),
+	devices: types.optional(types.map(types.array(Device)), {})
 })
 .actions(self => ({
 
@@ -37,16 +39,13 @@ export default Push = types.model('Push', {
 				sound: true
 			},
 			popInitialNotification: true,
-			requestPermissions: false
+			requestPermissions: true
 		})
 	}),
 	
 	set_token: flow(function* (token) {
 		console.log("Push::set_token", token)
 		self.token = token
-		if(Auth.is_logged_in()){
-			Auth.selected_user.register_for_push()
-		}
 	}),
 
 	register_token: flow(function* (user_token) {
@@ -155,24 +154,36 @@ export default Push = types.model('Push', {
 		self.notificiations_open = open
 	}),
 
-	request_permissions: flow(function* () {
+	request_permissions: flow(function* (user_token = null) {
 		console.log("Push::request_permissions")
 		if (Platform.OS === 'ios') {
-			PushNotificationIOS.requestPermissions()
+			yield PushNotificationIOS.requestPermissions()
 		}
 		else if(Platform.OS === 'android'){
-			PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS)
+			yield PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS)
 		}
+		
+		if(self.has_push_permissions() && user_token){
+		  return yield self.register_token(user_token)
+		}
+	}),
+	
+	set_devices_for_user: flow(function* (username, devices) {
+		console.log("Push::set_devices_for_user", username, devices)
+		self.devices.set(username, devices)
 	}),
 
 }))
 .views(self => ({
+  
 	valid_notifications() {
 		return self.notifications.filter(n => n.can_show_notification())
 	},
+	
 	handle_first_notification() {
 		return self.notifications.find(n => n.did_load_before_user_was_loaded)?.handle_action()
 	},
+	
 	has_push_permissions(callback) {
 		if (Platform.OS === 'ios') {
 			PushNotificationIOS.checkPermissions((permissions) => {
@@ -181,6 +192,11 @@ export default Push = types.model('Push', {
 		} else {
 			callback(true)
 		}
+	},
+	
+	is_registered_device_for_user(username) {
+		return self.devices.get(username)?.some(device => device.token === Push.token)
 	}
+	
 }))
 .create({})

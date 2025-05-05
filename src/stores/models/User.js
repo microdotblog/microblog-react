@@ -16,9 +16,7 @@ export default User = types.model('User', {
     posting: types.maybeNull(Posting),
     muting: types.maybeNull(Muting),
     push_enabled: types.optional(types.boolean, false),
-    push_registered_with_server: types.optional(types.boolean, false),
     toggling_push: types.optional(types.boolean, false),
-    did_complete_auto_register_push: types.optional(types.boolean, false),
     bookmark_tags: types.optional(types.array(types.string), []),
     bookmark_recent_tags: types.optional(types.array(types.string), []),
     selected_tag: types.maybeNull(types.string),
@@ -45,18 +43,16 @@ export default User = types.model('User', {
         self.posting.hydrate()
       }
       if (!App.is_share_extension) {
+        
         if (self.muting == null) {
           self.muting = Muting.create({username: self.username})
         }
         else {
           self.muting.hydrate()
         }
-        if(!self.did_complete_auto_register_push){
-          self.push_enabled = yield Push.register_token(self.token())
-          if(self.push_enabled){
-            self.did_complete_auto_register_push = true
-          }
-        }
+        
+        self.get_push_info()
+        
         self.update_avatar()
         self.fetch_tags()
         self.fetch_recent_tags()
@@ -83,49 +79,52 @@ export default User = types.model('User', {
     
     toggle_push_notifications: flow(function* () {
       self.toggling_push = true
-      if (!self.push_enabled || Push.token == "") {
+      if (!self.is_registered_for_push()) {
         yield self.register_for_push()
-      } else {
+      }
+      else {
         yield self.unregister_for_push()
       }
       self.toggling_push = false
     }),
     
     register_for_push: flow(function* () {
-      try {
-        const registered = yield Push.register_token(self.token())
-        if (registered) {
-          self.push_enabled = true
-          self.push_registered_with_server = true
-          return true
-        } else {
-          self.push_enabled = false
-          self.push_registered_with_server = false
-          return false
-        }
-      } catch (error) {
-        console.log("User:register_for_push:error", error)
+      const registered = yield Push.register_token(self.token())
+      if (registered) {
+        self.push_enabled = true
+        self.get_push_info()
+        return true
+      }
+      else {
         self.push_enabled = false
-        self.push_registered_with_server = false
+        self.get_push_info()
         return false
       }
     }),
     
     unregister_for_push: flow(function* () {
-      try {
-        const did_unregister = yield Push.unregister_user_from_push(self.token())
-        if (did_unregister) {
-          self.push_enabled = false
-          self.push_registered_with_server = false
-          return true
-        } else {
-          return false
-        }
-      } catch (error) {
-        console.log("User:unregister_for_push:error", error)
+      const did_unregister = yield Push.unregister_user_from_push(self.token())
+      if (did_unregister) {
+        self.push_enabled = false
+        self.get_push_info()
+        return true
+      }
+      else {
+        self.get_push_info()
         return false
       }
     }),
+    
+    get_push_info: flow(function* () {
+  		console.log("User::get_push_info")
+  		const data = yield MicroBlogApi.get_push_info(self.token())
+  		if (data !== API_ERROR) {
+  		  console.log("User::get_push_info:data", data)
+  			if(data.length > 0){
+  			  Push.set_devices_for_user(self.username, data)
+  			}
+  		}
+  	}),
 
     fetch_data: flow(function* () {
       console.log("User:fetch_data", self.username)
@@ -260,6 +259,10 @@ export default User = types.model('User', {
     
     tags_to_array(tags){
       return tags !== "" ? tags.split(", ") : []
+    },
+    
+    is_registered_for_push(){
+      return Push.is_registered_device_for_user(self.username) && self.push_enabled
     }
     
   }))

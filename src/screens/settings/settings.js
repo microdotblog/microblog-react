@@ -90,7 +90,7 @@ export default class SettingsScreen extends React.Component {
 									}
 									<Switch 
 										disabled={user.toggling_push} 
-										value={user.push_enabled && user.push_registered_with_server && Push.token != ""} 
+										value={user.is_registered_for_push()} 
 										onValueChange={user.toggle_push_notifications} 
 										trackColor={{true: App.theme_accent_color()}} 
 									/>
