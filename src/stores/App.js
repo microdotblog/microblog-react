@@ -222,7 +222,7 @@ export default App = types.model('App', {
           return App.set_image_modal_data_and_activate(action_data)
         case "reply":
           Reply.hydrate(action_data)
-          return self.navigation_ref.push("Reply", { conversation_id: action_data })
+          return App.open_sheet("reply_sheet", { conversation_id: action_data })
         case "user":
           return self.navigation_ref.push(`${self.current_tab_key}-Profile`, { username: action_data })
         case "discover/topic":
