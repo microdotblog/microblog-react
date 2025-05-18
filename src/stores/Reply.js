@@ -18,47 +18,53 @@ export default Reply = types.model('Reply', {
   ),
   reply_id: types.optional(types.number, new Date().getTime()),
   conversation_users: types.optional(types.array(types.model({ username: types.string, avatar: types.maybeNull(types.string) })), []),
-  conversation_usernames: types.optional(types.array(types.string), [])
+  conversation_usernames: types.optional(types.array(types.string), []),
+  is_loading_conversation: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
   hydrate: flow(function* (conversation_id = null) {
-		console.log("Reply:hydrate", conversation_id)
-    self.reply_id = new Date().getTime()
-		if (conversation_id !== self.conversation_id || self.reply_text === "") {
-			self.reply_text = ""
-			const data = yield MicroBlogApi.get_conversation(conversation_id)
-			if (data !== API_ERROR && data.items) {
-				self.conversation_id = conversation_id
+    self.is_loading_conversation = true
+    try {
+      console.log("Reply:hydrate", conversation_id)
+      self.reply_id = new Date().getTime()
+      if (conversation_id !== self.conversation_id || self.reply_text === "") {
+        self.reply_text = ""
+        const data = yield MicroBlogApi.get_conversation(conversation_id)
+        if (data !== API_ERROR && data.items) {
+          self.conversation_id = conversation_id
 
-				const users = []
-				const seen = new Set()
-				data.items.forEach(post => {
-					const username = post.author?._microblog?.username
-					const avatar = post.author?.avatar
-					if (username && !seen.has(username)) {
-						users.push({ username, avatar })
-						seen.add(username)
-					}
-				})
-				self.conversation_users = users
-				self.conversation_usernames = users.map(u => u.username)
-				const conversation = data.items.find(post => post.id === conversation_id)
-				console.log("Reply:hydrate:conversation", conversation)
-				if(conversation && conversation.author?._microblog?.username != null){
-					self.reply_text = `@${conversation.author._microblog.username} `
-				}
-				else {
-					// Load the first post in the conversation, which is at the end of the array
-					const first_post = data.items[ data.items.length - 1 ]
-					if (first_post && first_post.author?._microblog?.username != null) {
-						self.reply_text = `@${first_post.author._microblog.username} `
-					}
-				}
-			}
-		}
-		self.is_sending_reply = false
-    console.log("Reply:hydrate:reply_id", self.reply_id)
+          const users = []
+          const seen = new Set()
+          data.items.forEach(post => {
+            const username = post.author?._microblog?.username
+            const avatar = post.author?.avatar
+            if (username && !seen.has(username)) {
+              users.push({ username, avatar })
+              seen.add(username)
+            }
+          })
+          self.conversation_users = users
+          self.conversation_usernames = users.map(u => u.username)
+          const conversation = data.items.find(post => post.id === conversation_id)
+          console.log("Reply:hydrate:conversation", conversation)
+          if(conversation && conversation.author?._microblog?.username != null){
+            self.reply_text = `@${conversation.author._microblog.username} `
+          }
+          else {
+            // Load the first post in the conversation, which is at the end of the array
+            const first_post = data.items[ data.items.length - 1 ]
+            if (first_post && first_post.author?._microblog?.username != null) {
+              self.reply_text = `@${first_post.author._microblog.username} `
+            }
+          }
+        }
+      }
+      self.is_sending_reply = false
+      console.log("Reply:hydrate:reply_id", self.reply_id)
+    } finally {
+      self.is_loading_conversation = false
+    }
   }),
   
   set_reply_text: flow(function* (value) {

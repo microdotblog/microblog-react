@@ -114,6 +114,25 @@ export default class ReplySheet extends React.Component {
                 <ActivityIndicator color="#f80" size={'large'} />
               </View>
             ) : null}
+            {Reply.is_loading_conversation ? (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  height: 200,
+                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  zIndex: 20,
+                  backgroundColor: App.theme_background_color_secondary(),
+                  opacity: 0.95
+                }}
+              >
+                <ActivityIndicator color="#f80" size={'large'} />
+                <Text style={{ color: App.theme_text_color(), marginTop: 15, fontSize: 16 }}>Loading conversation...</Text>
+              </View>
+            ) : null}
           </KeyboardAvoidingView>
         </View>
       </ActionSheet>
