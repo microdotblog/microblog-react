@@ -92,12 +92,10 @@ export default class ReplySheet extends React.Component {
             />
             {Platform.OS === 'ios' ? (
               <InputAccessoryView nativeID={this.input_accessory_view_id}>
-                <UsernameToolbar componentId={this.props.componentId} object={Reply} />
                 <ReplyToolbar reply={Reply} />
               </InputAccessoryView>
             ) : (
               <>
-                <UsernameToolbar componentId={this.props.componentId} object={Reply} />
                 <ReplyToolbar reply={Reply} />
               </>
             )}

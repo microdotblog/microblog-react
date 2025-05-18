@@ -16,7 +16,9 @@ export default Reply = types.model('Reply', {
       end: types.optional(types.number, 0),
     }), {start: 0, end: 0}
   ),
-  reply_id: types.optional(types.number, new Date().getTime())
+  reply_id: types.optional(types.number, new Date().getTime()),
+  conversation_users: types.optional(types.array(types.model({ username: types.string, avatar: types.maybeNull(types.string) })), []),
+  conversation_usernames: types.optional(types.array(types.string), [])
 })
 .actions(self => ({
 
@@ -28,6 +30,19 @@ export default Reply = types.model('Reply', {
 			const data = yield MicroBlogApi.get_conversation(conversation_id)
 			if (data !== API_ERROR && data.items) {
 				self.conversation_id = conversation_id
+
+				const users = []
+				const seen = new Set()
+				data.items.forEach(post => {
+					const username = post.author?._microblog?.username
+					const avatar = post.author?.avatar
+					if (username && !seen.has(username)) {
+						users.push({ username, avatar })
+						seen.add(username)
+					}
+				})
+				self.conversation_users = users
+				self.conversation_usernames = users.map(u => u.username)
 				const conversation = data.items.find(post => post.id === conversation_id)
 				console.log("Reply:hydrate:conversation", conversation)
 				if(conversation && conversation.author?._microblog?.username != null){
@@ -118,6 +133,19 @@ export default Reply = types.model('Reply', {
 	
 	set_text_selection: flow(function* (selection) {
     self.text_selection = selection
+  }),
+
+  add_mention: flow(function* (username) {
+    const current = self.reply_text.trim()
+    const mention = `@${username}`
+    if (!current.includes(mention)) {
+      yield self.set_reply_text(`${current} ${mention} `)
+    }
+  }),
+
+  reply_all: flow(function* () {
+    const mentions = self.conversation_users.map(u => `@${u.username}`).join(' ')
+    yield self.set_reply_text(`${mentions} `)
   }),
 
 }))
