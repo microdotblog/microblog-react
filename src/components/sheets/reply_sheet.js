@@ -4,7 +4,6 @@ import { View, TextInput, ActivityIndicator, InputAccessoryView, Platform, Keybo
 import ActionSheet from 'react-native-actions-sheet'
 import Reply from '../../stores/Reply'
 import ReplyToolbar from '../keyboard/reply_toolbar'
-import UsernameToolbar from '../keyboard/username_toolbar'
 import App from '../../stores/App'
 import { SFSymbol } from 'react-native-sfsymbols'
 import { SvgXml } from 'react-native-svg'
