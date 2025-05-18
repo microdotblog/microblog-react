@@ -36,6 +36,8 @@ export default class ReplySheet extends React.Component {
         containerStyle={{ backgroundColor: App.theme_background_color_secondary(), padding: 0 }}
         snapPoints={[45, 95]}
         initialSnapIndex={[0]}
+        backgroundInteractionEnabled={true}
+        isModal={true}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 12, paddingVertical: 12, borderBottomWidth: 1, borderColor: App.theme_border_color(), backgroundColor: App.theme_background_color_secondary() }}>
           <TouchableOpacity onPress={this.handleClose}>
