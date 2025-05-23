@@ -149,9 +149,42 @@ export default Reply = types.model('Reply', {
     }
   }),
 
+  remove_mention: flow(function* (username) {
+    const mention = `@${username}`
+    const updatedText = self.reply_text
+      .replace(new RegExp(`\\s*${mention}\\s*`, 'g'), ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+    yield self.set_reply_text(updatedText ? `${updatedText} ` : '')
+  }),
+
+  toggle_mention: flow(function* (username) {
+    if (self.is_user_mentioned(username)) {
+      yield self.remove_mention(username)
+    } else {
+      yield self.add_mention(username)
+    }
+  }),
+
   reply_all: flow(function* () {
-    const mentions = self.conversation_users.map(u => `@${u.username}`).join(' ')
-    yield self.set_reply_text(`${mentions} `)
+    const current = self.reply_text.trim()
+    const existingMentions = new Set()
+    
+    const mentionRegex = /@(\w+)/g
+    let match
+    while ((match = mentionRegex.exec(current)) !== null) {
+      existingMentions.add(match[1])
+    }
+    
+    const newMentions = self.conversation_users
+      .filter(u => !existingMentions.has(u.username))
+      .map(u => `@${u.username}`)
+      .join(' ')
+    
+    if (newMentions) {
+      const separator = current ? ' ' : ''
+      yield self.set_reply_text(`${current}${separator}${newMentions} `)
+    }
   }),
 
 }))
@@ -167,6 +200,11 @@ export default Reply = types.model('Reply', {
     const regex = /(<([^>]+)>)/ig
     const text = html.replace(regex, '')
     return text ? text.length : 0
+  },
+
+  is_user_mentioned(username) {
+    const mentionRegex = new RegExp(`@${username}\\b`, 'i')
+    return mentionRegex.test(self.reply_text)
   }
   
 }))

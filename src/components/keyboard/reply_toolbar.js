@@ -26,19 +26,35 @@ export default class ReplyToolbar extends React.Component{
         {this.state.showUserBar && (
           <View style={{ width: '100%', backgroundColor: App.theme_section_background_color(), paddingVertical: 6, borderBottomWidth: 1, borderColor: App.theme_border_color(), zIndex: 2, position: 'relative' }}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="always" contentContainerStyle={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8 }}>
-              <TouchableOpacity onPress={() => this.props.reply?.reply_all()} style={{ marginRight: 10, backgroundColor: App.theme_accent_color(), borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 }}>
-                <Text style={{ color: '#fff', fontWeight: '700', fontSize: 15 }}>Reply all</Text>
+              <TouchableOpacity onPress={() => this.props.reply?.reply_all()} style={{ marginRight: 10, backgroundColor: App.theme_button_background_color(), borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 }}>
+                <Text style={{ color: App.theme_text_color(), fontWeight: '600', fontSize: 15 }}>Reply all</Text>
               </TouchableOpacity>
-              {this.props.reply?.conversation_users.map(user => (
-                <TouchableOpacity key={user.username} onPress={() => this.props.reply?.add_mention(user.username)} style={{ marginRight: 10, backgroundColor: App.theme_button_background_color(), borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, flexDirection: 'row', alignItems: 'center' }}>
-                  {user.avatar ? (
-                    <Image source={{ uri: user.avatar }} style={{ width: 24, height: 24, borderRadius: 12, marginRight: 6 }} />
-                  ) : (
-                    <View style={{ width: 24, height: 24, borderRadius: 12, marginRight: 6, backgroundColor: App.theme_border_color() }} />
-                  )}
-                  <Text style={{ color: App.theme_text_color(), fontWeight: '600', fontSize: 15 }}>@{user.username}</Text>
-                </TouchableOpacity>
-              ))}
+              {this.props.reply?.conversation_users.map(user => {
+                const isAlreadyMentioned = this.props.reply?.is_user_mentioned(user.username)
+                return (
+                  <TouchableOpacity 
+                    key={user.username} 
+                    onPress={() => this.props.reply?.toggle_mention(user.username)} 
+                    style={{ 
+                      marginRight: 10, 
+                      backgroundColor: isAlreadyMentioned ? App.theme_accent_color() : App.theme_button_background_color(), 
+                      borderRadius: 8, 
+                      paddingHorizontal: 10, 
+                      paddingVertical: 6, 
+                      flexDirection: 'row', 
+                      alignItems: 'center',
+                      opacity: isAlreadyMentioned ? 0.8 : 1
+                    }}
+                  >
+                    {user.avatar ? (
+                      <Image source={{ uri: user.avatar }} style={{ width: 24, height: 24, borderRadius: 12, marginRight: 6 }} />
+                    ) : (
+                      <View style={{ width: 24, height: 24, borderRadius: 12, marginRight: 6, backgroundColor: App.theme_border_color() }} />
+                    )}
+                    <Text style={{ color: isAlreadyMentioned ? '#fff' : App.theme_text_color(), fontWeight: '600', fontSize: 15 }}>@{user.username}</Text>
+                  </TouchableOpacity>
+                )
+              })}
             </ScrollView>
           </View>
         )}
