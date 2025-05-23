@@ -54,7 +54,7 @@
     "react-native-sfsymbols": "^1.2.2",
     "react-native-share-menu": "microdotblog/react-native-share-menu",
     "react-native-simple-toast": "^1.1.4",
-    "react-native-svg": "^13.14.1",
+    "react-native-svg": "^15.12.0",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-video": "^5.2.2",
     "react-native-webview": "^11.26.1"

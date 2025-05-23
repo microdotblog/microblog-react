@@ -1736,7 +1736,7 @@ PODS:
     - Yoga
   - RNShareMenu (6.0.0):
     - React
-  - RNSVG (13.14.1):
+  - RNSVG (15.12.0):
     - React-Core
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
@@ -2107,7 +2107,7 @@ SPEC CHECKSUMS:
   RNReanimated: fe4914404ea2dd2a05cb6d96cc7236db3536f18f
   RNScreens: 631b8768411a16e356f7934058d2139d0cc75157
   RNShareMenu: e1cdfa3b9af89416afc75a80377cfd0de4f30ded
-  RNSVG: ae50dd253f44447b32d0f5a3657a97859f289891
+  RNSVG: e3ad69848b6357587545e0a49628b1148acf082c
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
