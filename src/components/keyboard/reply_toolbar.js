@@ -144,9 +144,11 @@ export default class ReplyToolbar extends React.Component{
                   />
                 )}
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.props.reply?.reply_all()} style={{ marginRight: 10, backgroundColor: App.theme_input_contrast_background_color(), borderRadius: 8, paddingHorizontal: 12, paddingVertical: 4, minHeight: 32, justifyContent: 'center' }}>
-                <Text style={{ color: App.theme_text_color(), fontWeight: '600', fontSize: 15 }}>Reply all</Text>
-              </TouchableOpacity>
+              {this.props.reply?.conversation_users.length > 1 && (
+                <TouchableOpacity onPress={() => this.props.reply?.reply_all()} style={{ marginRight: 10, backgroundColor: App.theme_input_contrast_background_color(), borderRadius: 8, paddingHorizontal: 12, paddingVertical: 4, minHeight: 32, justifyContent: 'center' }}>
+                  <Text style={{ color: App.theme_text_color(), fontWeight: '600', fontSize: 15 }}>Reply all</Text>
+                </TouchableOpacity>
+              )}
               {this.props.reply?.conversation_users.map(user => {
                 const isAlreadyMentioned = this.props.reply?.is_user_mentioned(user.username)
                 return (
