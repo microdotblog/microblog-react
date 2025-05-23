@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, Platform, ScrollView, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, ScrollView, Image, TextInput, ActivityIndicator } from 'react-native';
 import App from '../../stores/App';
 import { SFSymbol } from 'react-native-sfsymbols'
 import { SvgXml } from 'react-native-svg'
@@ -9,7 +9,12 @@ import { SvgXml } from 'react-native-svg'
 export default class ReplyToolbar extends React.Component{
   constructor(props) {
     super(props)
-    this.state = { showUserBar: false }
+    this.state = { 
+      showUserBar: false,
+      showSearchBar: false,
+      searchQuery: '',
+      isSearching: false
+    }
   }
 
   handleShowUserBar = () => {
@@ -20,12 +25,124 @@ export default class ReplyToolbar extends React.Component{
     this.setState({ showUserBar: false })
   }
 
+  handleToggleSearch = () => {
+    this.setState({ 
+      showSearchBar: !this.state.showSearchBar,
+      searchQuery: '',
+      isSearching: false
+    })
+    if (!this.state.showSearchBar) {
+      App.clear_found_users()
+    }
+  }
+
+  handleSearchQueryChange = async (text) => {
+    this.setState({ searchQuery: text, isSearching: text.length >= 3 })
+    if (text.length >= 3) {
+      await App.check_usernames(`@${text}`)
+      this.setState({ isSearching: false })
+    } else {
+      App.clear_found_users()
+    }
+  }
+
+  handleSelectSearchUser = (username) => {
+    const selectedUser = App.found_users.find(user => user.username === username)
+    this.props.reply?.add_user_to_conversation(username, selectedUser?.avatar)
+    this.props.reply?.add_mention(username)
+    this.setState({ 
+      showSearchBar: false,
+      searchQuery: '',
+      isSearching: false
+    })
+    App.clear_found_users()
+  }
+
+  handleClearSearch = () => {
+    this.setState({ searchQuery: '', isSearching: false })
+    App.clear_found_users()
+  }
+
 	render() {
     return(
       <>
+        {this.state.showSearchBar && (
+          <View style={{ width: '100%', backgroundColor: App.theme_section_background_color(), paddingVertical: 8, borderBottomWidth: 1, borderColor: App.theme_border_color(), zIndex: 3 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8 }}>
+              <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: App.theme_button_background_color(), borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8 }}>
+                <TextInput
+                  placeholder="Search users..."
+                  placeholderTextColor={App.theme_placeholder_text_color()}
+                  style={{ flex: 1, fontSize: 16, color: App.theme_text_color() }}
+                  value={this.state.searchQuery}
+                  onChangeText={this.handleSearchQueryChange}
+                  autoFocus={true}
+                  autoCorrect={false}
+                  autoCapitalize="none"
+                />
+                {this.state.searchQuery.length > 0 && (
+                  <TouchableOpacity onPress={this.handleClearSearch} style={{ marginLeft: 8 }}>
+                    {Platform.OS === 'ios' ? (
+                      <SFSymbol name={'xmark.circle.fill'} color={App.theme_text_color()} style={{ height: 18, width: 18 }} />
+                    ) : (
+                      <SvgXml
+                        style={{ height: 18, width: 18 }}
+                        color={App.theme_text_color()}
+                        xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>'
+                      />
+                    )}
+                  </TouchableOpacity>
+                )}
+                {this.state.isSearching && (
+                  <ActivityIndicator color={App.theme_accent_color()} size="small" style={{ marginLeft: 8 }} />
+                )}
+              </View>
+              <TouchableOpacity onPress={this.handleToggleSearch} style={{ marginLeft: 8, padding: 4 }}>
+                <Text style={{ color: App.theme_text_color(), fontSize: 16, fontWeight: '600' }}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+            {App.found_users.length > 0 && (
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="always" style={{ marginTop: 8 }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8 }}>
+                {App.found_users.map(user => (
+                  <TouchableOpacity 
+                    key={user.username} 
+                    onPress={() => this.handleSelectSearchUser(user.username)} 
+                    style={{ 
+                      marginRight: 10, 
+                      backgroundColor: App.theme_button_background_color(), 
+                      borderRadius: 8, 
+                      paddingHorizontal: 10, 
+                      paddingVertical: 6, 
+                      flexDirection: 'row', 
+                      alignItems: 'center' 
+                    }}
+                  >
+                    {user.avatar ? (
+                      <Image source={{ uri: user.avatar }} style={{ width: 24, height: 24, borderRadius: 12, marginRight: 6 }} />
+                    ) : (
+                      <View style={{ width: 24, height: 24, borderRadius: 12, marginRight: 6, backgroundColor: App.theme_border_color() }} />
+                    )}
+                    <Text style={{ color: App.theme_text_color(), fontWeight: '600', fontSize: 15 }}>@{user.username}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            )}
+          </View>
+        )}
         {this.state.showUserBar && (
           <View style={{ width: '100%', backgroundColor: App.theme_section_background_color(), paddingVertical: 6, borderBottomWidth: 1, borderColor: App.theme_border_color(), zIndex: 2, position: 'relative' }}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="always" contentContainerStyle={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8 }}>
+              <TouchableOpacity onPress={this.handleToggleSearch} style={{ marginRight: 10, backgroundColor: App.theme_button_background_color(), borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, flexDirection: 'row', alignItems: 'center' }}>
+                {Platform.OS === 'ios' ? (
+                  <SFSymbol name={'magnifyingglass'} color={App.theme_text_color()} style={{ height: 18, width: 18 }} />
+                ) : (
+                  <SvgXml
+                    style={{ height: 18, width: 18 }}
+                    color={App.theme_text_color()}
+                    xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>'
+                  />
+                )}
+              </TouchableOpacity>
               <TouchableOpacity onPress={() => this.props.reply?.reply_all()} style={{ marginRight: 10, backgroundColor: App.theme_button_background_color(), borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 }}>
                 <Text style={{ color: App.theme_text_color(), fontWeight: '600', fontSize: 15 }}>Reply all</Text>
               </TouchableOpacity>

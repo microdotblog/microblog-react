@@ -166,6 +166,14 @@ export default Reply = types.model('Reply', {
     }
   }),
 
+  add_user_to_conversation: flow(function* (username, avatar = null) {
+    const userExists = self.conversation_users.find(u => u.username === username)
+    if (!userExists) {
+      self.conversation_users.push({ username, avatar })
+      self.conversation_usernames.push(username)
+    }
+  }),
+
   reply_all: flow(function* () {
     const current = self.reply_text.trim()
     const existingMentions = new Set()

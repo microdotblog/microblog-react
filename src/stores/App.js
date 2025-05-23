@@ -670,6 +670,11 @@ export default App = types.model('App', {
     App.current_autocomplete = ""
   }),
 
+  clear_found_users: flow(function* () {
+    self.found_users = []
+    self.current_autocomplete = ""
+  }),
+
   toggle_select_destination: flow(function* () {
     console.log("App:toggle_select_destination")
     self.toolbar_select_destination_open = !self.toolbar_select_destination_open
