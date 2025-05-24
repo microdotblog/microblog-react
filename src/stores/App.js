@@ -17,6 +17,7 @@ import Push from './Push'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
+let PUBLISHING_PROGRESS_TIMEOUT = null
 
 export default App = types.model('App', {
   is_loading: types.optional(types.boolean, false),
@@ -50,7 +51,12 @@ export default App = types.model('App', {
   is_loading_highlights: types.optional(types.boolean, false),
   is_loading_bookmarks: types.optional(types.boolean, false),
   conversation_screen_focused: types.optional(types.boolean, false),
-  toolbar_categories_open: types.optional(types.boolean, false)
+  toolbar_categories_open: types.optional(types.boolean, false),
+  publishing_progress_visible: types.optional(types.boolean, false),
+  publishing_progress: types.optional(types.number, 0),
+  publishing_status: types.optional(types.string, ""),
+  is_publishing: types.optional(types.boolean, false),
+  latest_published_url: types.maybeNull(types.string)
 })
 .volatile(self => ({
   navigation_ref: null,
@@ -768,6 +774,73 @@ export default App = types.model('App', {
   toggle_category_select: flow(function* () {
     console.log("App:set_toolbar_categories_open", !self.toolbar_categories_open)
     self.toolbar_categories_open = !self.toolbar_categories_open
+  }),
+
+  show_publishing_progress: flow(function* () {
+    console.log("App:show_publishing_progress")
+    self.publishing_progress_visible = true
+    self.is_publishing = true
+    self.publishing_progress = 0
+    self.publishing_status = "Publishing..."
+    self.latest_published_url = null
+    App.start_publishing_progress_polling()
+  }),
+
+  hide_publishing_progress: flow(function* () {
+    console.log("App:hide_publishing_progress")
+    self.publishing_progress_visible = false
+    self.is_publishing = false
+    self.publishing_progress = 0
+    self.publishing_status = ""
+    self.latest_published_url = null
+    App.stop_publishing_progress_polling()
+  }),
+
+  start_publishing_progress_polling: flow(function* () {
+    console.log("App:start_publishing_progress_polling")
+    App.poll_publishing_progress()
+  }),
+
+  stop_publishing_progress_polling: flow(function* () {
+    console.log("App:stop_publishing_progress_polling")
+    if (PUBLISHING_PROGRESS_TIMEOUT) {
+      clearTimeout(PUBLISHING_PROGRESS_TIMEOUT)
+      PUBLISHING_PROGRESS_TIMEOUT = null
+    }
+  }),
+
+  poll_publishing_progress: flow(function* () {
+    console.log("App:poll_publishing_progress")
+    if (!self.publishing_progress_visible) {
+      return
+    }
+
+    const response = yield MicroBlogApi.check_publishing_progress()
+    if (response !== API_ERROR && response != null) {
+      self.is_publishing = response.is_publishing
+      self.publishing_progress = response.publishing_progress * 100
+      self.publishing_status = response.publishing_status || "Publishing..."
+      self.latest_published_url = response.latest_url
+
+      if (response.is_publishing) {
+        PUBLISHING_PROGRESS_TIMEOUT = setTimeout(() => {
+          App.poll_publishing_progress()
+        }, 2000)
+      } else {
+        setTimeout(() => {
+          App.hide_publishing_progress()
+        }, 2000)
+      }
+    } else {
+      PUBLISHING_PROGRESS_TIMEOUT = setTimeout(() => {
+        App.poll_publishing_progress()
+      }, 2000)
+    }
+  }),
+
+  manually_hide_publishing_progress: flow(function* () {
+    console.log("App:manually_hide_publishing_progress")
+    App.hide_publishing_progress()
   })
 
 }))
