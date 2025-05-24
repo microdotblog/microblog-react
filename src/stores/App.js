@@ -826,10 +826,6 @@ export default App = types.model('App', {
         PUBLISHING_PROGRESS_TIMEOUT = setTimeout(() => {
           App.poll_publishing_progress()
         }, 2000)
-      } else {
-        setTimeout(() => {
-          App.hide_publishing_progress()
-        }, 2000)
       }
     } else {
       PUBLISHING_PROGRESS_TIMEOUT = setTimeout(() => {

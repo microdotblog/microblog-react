@@ -9,6 +9,7 @@ const PublishingProgress = observer(() => {
   const progressAnim = useRef(new Animated.Value(0)).current
   const [wasVisible, setWasVisible] = useState(false)
   const [lastProgress, setLastProgress] = useState(0)
+  const [showingUrl, setShowingUrl] = useState(false)
 
   const slideIn = () => {
     Animated.spring(slideAnim, {
@@ -40,14 +41,23 @@ const PublishingProgress = observer(() => {
     App.manually_hide_publishing_progress()
   }
 
+  const handleUrlPress = () => {
+    if (App.latest_published_url) {
+      App.handle_url_from_webview(App.latest_published_url)
+      App.manually_hide_publishing_progress()
+    }
+  }
+
   useEffect(() => {
     if (App.publishing_progress_visible && !wasVisible) {
       slideIn()
       setWasVisible(true)
+      setShowingUrl(false)
     }
     else if (!App.publishing_progress_visible && wasVisible) {
       slideOut()
       setWasVisible(false)
+      setShowingUrl(false)
     }
   }, [App.publishing_progress_visible, wasVisible])
 
@@ -57,6 +67,15 @@ const PublishingProgress = observer(() => {
       setLastProgress(App.publishing_progress)
     }
   }, [App.publishing_progress, lastProgress])
+
+  useEffect(() => {
+    if (App.latest_published_url && !App.is_publishing && !showingUrl) {
+      setShowingUrl(true)
+      setTimeout(() => {
+        App.manually_hide_publishing_progress()
+      }, 5000)
+    }
+  }, [App.latest_published_url, App.is_publishing, showingUrl])
 
   useEffect(() => {
     if (App.publishing_progress_visible) {
@@ -93,8 +112,8 @@ const PublishingProgress = observer(() => {
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-        <Text style={{ fontSize: 16, fontWeight: "600", color: App.theme_text_color() }}>
-          Publishing Post
+        <Text style={{ fontSize: 15, fontWeight: "500", color: App.theme_text_color() }}>
+          {App.latest_published_url && !App.is_publishing ? "Finished publishing post. 🎉" : "Publishing Post"}
         </Text>
         <TouchableOpacity
           onPress={handleClose}
@@ -116,29 +135,45 @@ const PublishingProgress = observer(() => {
         </TouchableOpacity>
       </View>
 
-      <Text style={{ fontSize: 14, color: App.theme_text_color(), marginBottom: 8 }}>
-        {App.publishing_status}
-      </Text>
+      {!App.latest_published_url || App.is_publishing ? (
+        <Text style={{ fontSize: 14, color: App.theme_text_color(), marginBottom: 8 }}>
+          {App.publishing_status}
+        </Text>
+      ) : null}
 
-      <View style={{
-        height: 6,
-        backgroundColor: App.theme_section_background_color(),
-        borderRadius: 3,
-        overflow: "hidden",
-      }}>
-        <Animated.View
+      {App.latest_published_url && !App.is_publishing ? (
+        <TouchableOpacity
+          onPress={handleUrlPress}
           style={{
-            height: "100%",
-            backgroundColor: App.theme_accent_color(),
-            borderRadius: 3,
-            width: progressAnim.interpolate({
-              inputRange: [0, 100],
-              outputRange: ["0%", "100%"],
-              extrapolate: "clamp",
-            }),
+            padding: 4,
+            alignItems: "flex-start",
           }}
-        />
-      </View>
+        >
+          <Text style={{ color: App.theme_accent_color(), fontSize: 14, fontWeight: "600" }}>
+            View
+          </Text>
+        </TouchableOpacity>
+      ) : (
+        <View style={{
+          height: 6,
+          backgroundColor: App.theme_section_background_color(),
+          borderRadius: 3,
+          overflow: "hidden",
+        }}>
+          <Animated.View
+            style={{
+              height: "100%",
+              backgroundColor: App.theme_accent_color(),
+              borderRadius: 3,
+              width: progressAnim.interpolate({
+                inputRange: [0, 100],
+                outputRange: ["0%", "100%"],
+                extrapolate: "clamp",
+              }),
+            }}
+          />
+        </View>
+      )}
     </Animated.View>
   )
 })
