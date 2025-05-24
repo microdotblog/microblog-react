@@ -16,34 +16,55 @@ export default Reply = types.model('Reply', {
       end: types.optional(types.number, 0),
     }), {start: 0, end: 0}
   ),
-  reply_id: types.optional(types.number, new Date().getTime())
+  reply_id: types.optional(types.number, new Date().getTime()),
+  conversation_users: types.optional(types.array(types.model({ username: types.string, avatar: types.maybeNull(types.string) })), []),
+  conversation_usernames: types.optional(types.array(types.string), []),
+  is_loading_conversation: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
   hydrate: flow(function* (conversation_id = null) {
-		console.log("Reply:hydrate", conversation_id)
-    self.reply_id = new Date().getTime()
-		if (conversation_id !== self.conversation_id || self.reply_text === "") {
-			self.reply_text = ""
-			const data = yield MicroBlogApi.get_conversation(conversation_id)
-			if (data !== API_ERROR && data.items) {
-				self.conversation_id = conversation_id
-				const conversation = data.items.find(post => post.id === conversation_id)
-				console.log("Reply:hydrate:conversation", conversation)
-				if(conversation && conversation.author?._microblog?.username != null){
-					self.reply_text = `@${conversation.author._microblog.username} `
-				}
-				else {
-					// Load the first post in the conversation, which is at the end of the array
-					const first_post = data.items[ data.items.length - 1 ]
-					if (first_post && first_post.author?._microblog?.username != null) {
-						self.reply_text = `@${first_post.author._microblog.username} `
-					}
-				}
-			}
-		}
-		self.is_sending_reply = false
-    console.log("Reply:hydrate:reply_id", self.reply_id)
+    self.is_loading_conversation = true
+    try {
+      console.log("Reply:hydrate", conversation_id)
+      self.reply_id = new Date().getTime()
+      if (conversation_id !== self.conversation_id || self.reply_text === "") {
+        self.reply_text = ""
+        const data = yield MicroBlogApi.get_conversation(conversation_id)
+        if (data !== API_ERROR && data.items) {
+          self.conversation_id = conversation_id
+
+          const users = []
+          const seen = new Set()
+          data.items.forEach(post => {
+            const username = post.author?._microblog?.username
+            const avatar = post.author?.avatar
+            if (username && !seen.has(username)) {
+              users.push({ username, avatar })
+              seen.add(username)
+            }
+          })
+          self.conversation_users = users
+          self.conversation_usernames = users.map(u => u.username)
+          const conversation = data.items.find(post => post.id === conversation_id)
+          console.log("Reply:hydrate:conversation", conversation)
+          if(conversation && conversation.author?._microblog?.username != null){
+            self.reply_text = `@${conversation.author._microblog.username} `
+          }
+          else {
+            // Load the first post in the conversation, which is at the end of the array
+            const first_post = data.items[ data.items.length - 1 ]
+            if (first_post && first_post.author?._microblog?.username != null) {
+              self.reply_text = `@${first_post.author._microblog.username} `
+            }
+          }
+        }
+      }
+      self.is_sending_reply = false
+      console.log("Reply:hydrate:reply_id", self.reply_id)
+    } finally {
+      self.is_loading_conversation = false
+    }
   }),
   
   set_reply_text: flow(function* (value) {
@@ -120,6 +141,60 @@ export default Reply = types.model('Reply', {
     self.text_selection = selection
   }),
 
+  add_mention: flow(function* (username) {
+    const current = self.reply_text.trim()
+    const mention = `@${username}`
+    if (!current.includes(mention)) {
+      yield self.set_reply_text(`${current} ${mention} `)
+    }
+  }),
+
+  remove_mention: flow(function* (username) {
+    const mention = `@${username}`
+    const updatedText = self.reply_text
+      .replace(new RegExp(`\\s*${mention}\\s*`, 'g'), ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+    yield self.set_reply_text(updatedText ? `${updatedText} ` : '')
+  }),
+
+  toggle_mention: flow(function* (username) {
+    if (self.is_user_mentioned(username)) {
+      yield self.remove_mention(username)
+    } else {
+      yield self.add_mention(username)
+    }
+  }),
+
+  add_user_to_conversation: flow(function* (username, avatar = null) {
+    const userExists = self.conversation_users.find(u => u.username === username)
+    if (!userExists) {
+      self.conversation_users.push({ username, avatar })
+      self.conversation_usernames.push(username)
+    }
+  }),
+
+  reply_all: flow(function* () {
+    const current = self.reply_text.trim()
+    const existingMentions = new Set()
+    
+    const mentionRegex = /@(\w+)/g
+    let match
+    while ((match = mentionRegex.exec(current)) !== null) {
+      existingMentions.add(match[1])
+    }
+    
+    const newMentions = self.conversation_users
+      .filter(u => !existingMentions.has(u.username))
+      .map(u => `@${u.username}`)
+      .join(' ')
+    
+    if (newMentions) {
+      const separator = current ? ' ' : ''
+      yield self.set_reply_text(`${current}${separator}${newMentions} `)
+    }
+  }),
+
 }))
 .views(self => ({
   
@@ -133,6 +208,11 @@ export default Reply = types.model('Reply', {
     const regex = /(<([^>]+)>)/ig
     const text = html.replace(regex, '')
     return text ? text.length : 0
+  },
+
+  is_user_mentioned(username) {
+    const mentionRegex = new RegExp(`@${username}\\b`, 'i')
+    return mentionRegex.test(self.reply_text)
   }
   
 }))

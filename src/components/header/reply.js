@@ -13,7 +13,7 @@ export default class ReplyButton extends React.Component {
       <TouchableOpacity
 				onPress={() => {
 					if(this.props.conversation_id != null){
-						App.navigate_to_screen("reply", this.props.conversation_id)
+						App.open_sheet("reply_sheet", { conversation_id: this.props.conversation_id })
 					}
 				}}
 			>

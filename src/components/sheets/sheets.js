@@ -9,6 +9,7 @@ import AddTagsMenu from "./add_tags";
 import NotificationsSheetsMenu from "./notifications";
 import UploadInfoSheet from "./upload_info";
 import CollectionsSheet from "./collections";
+import ReplySheet from './reply_sheet';
 
 registerSheet("login-message-sheet", LoginMessageSheet)
 registerSheet("main_sheet", SheetMenu);
@@ -20,5 +21,6 @@ registerSheet("add_tags_sheet", AddTagsMenu)
 registerSheet("notifications_sheet", NotificationsSheetsMenu)
 registerSheet("upload_info_sheet", UploadInfoSheet)
 registerSheet("collections_sheet", CollectionsSheet)
+registerSheet("reply_sheet", ReplySheet)
 
 export { }
