@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react"
-import { View, Text, TouchableOpacity, Animated, Platform } from "react-native"
+import { View, Text, TouchableOpacity, Animated, Platform, ActivityIndicator } from "react-native"
 import { SFSymbol } from "react-native-sfsymbols"
 import App from "../../stores/App"
 
@@ -136,9 +136,14 @@ const PublishingProgress = observer(() => {
       </View>
 
       {!App.latest_published_url || App.is_publishing ? (
-        <Text style={{ fontSize: 14, color: App.theme_text_color(), marginBottom: 8 }}>
-          {App.publishing_status}
-        </Text>
+        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
+          {App.is_publishing && (
+            <ActivityIndicator size="small" color={App.theme_accent_color()} style={{ marginRight: 8 }} />
+          )}
+          <Text style={{ fontSize: 14, color: App.theme_text_color() }}>
+            {App.publishing_status}
+          </Text>
+        </View>
       ) : null}
 
       {App.latest_published_url && !App.is_publishing ? (
