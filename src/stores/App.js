@@ -869,6 +869,9 @@ export default App = types.model('App', {
   theme_background_color_secondary() {
     return self.theme === "dark" ? "#1F2937" : "#fff"
   },
+  theme_modal_background_color() {
+    return self.theme === "dark" ? "#212936" : "#fff"
+  },
   theme_navbar_background_color() {
     return self.theme === "dark" ? "#212936" : "#fff"
   },
