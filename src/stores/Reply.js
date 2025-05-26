@@ -213,6 +213,37 @@ export default Reply = types.model('Reply', {
   is_user_mentioned(username) {
     const mentionRegex = new RegExp(`@${username}\\b`, 'i')
     return mentionRegex.test(self.reply_text)
+  },
+
+  sorted_conversation_users() {
+    const mentionedUsers = []
+    const unmentionedUsers = []
+    
+    const mentionRegex = /@(\w+)/g
+    const mentionOrder = []
+    let match
+    while ((match = mentionRegex.exec(self.reply_text || '')) !== null) {
+      if (!mentionOrder.includes(match[1])) {
+        mentionOrder.push(match[1])
+      }
+    }
+    
+    self.conversation_users.forEach(user => {
+      const isAlreadyMentioned = self.is_user_mentioned(user.username)
+      if (isAlreadyMentioned) {
+        mentionedUsers.push(user)
+      } else {
+        unmentionedUsers.push(user)
+      }
+    })
+    
+    mentionedUsers.sort((a, b) => {
+      const indexA = mentionOrder.indexOf(a.username)
+      const indexB = mentionOrder.indexOf(b.username)
+      return indexA - indexB
+    })
+    
+    return [...mentionedUsers, ...unmentionedUsers]
   }
   
 }))

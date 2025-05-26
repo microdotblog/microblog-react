@@ -13,7 +13,8 @@ export default class ReplyToolbar extends React.Component{
       showUserBar: false,
       showSearchBar: false,
       searchQuery: '',
-      isSearching: false
+      isSearching: false,
+      userBarWasShowing: false
     }
   }
 
@@ -26,12 +27,19 @@ export default class ReplyToolbar extends React.Component{
   }
 
   handleToggleSearch = () => {
-    this.setState({ 
-      showSearchBar: !this.state.showSearchBar,
-      searchQuery: '',
-      isSearching: false
-    })
     if (!this.state.showSearchBar) {
+      this.setState({ 
+        showSearchBar: true,
+        searchQuery: '',
+        isSearching: false,
+        showUserBar: true
+      })
+    } else {
+      this.setState({ 
+        showSearchBar: false,
+        searchQuery: '',
+        isSearching: false
+      })
       App.clear_found_users()
     }
   }
@@ -67,7 +75,7 @@ export default class ReplyToolbar extends React.Component{
     return(
       <>
         {this.state.showSearchBar && (
-          <View style={{ width: '100%', backgroundColor: App.theme_section_background_color(), paddingVertical: 8, borderBottomWidth: 1, borderColor: App.theme_border_color(), zIndex: 3 }}>
+          <View style={{ width: '100%', backgroundColor: App.theme_section_background_color(), paddingVertical: 6, borderBottomWidth: 1, borderColor: App.theme_border_color(), zIndex: 3 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8 }}>
               <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: App.theme_input_contrast_background_color(), borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8 }}>
                 <TextInput
@@ -101,9 +109,34 @@ export default class ReplyToolbar extends React.Component{
                 <Text style={{ color: App.theme_text_color(), fontSize: 16, fontWeight: '600' }}>Cancel</Text>
               </TouchableOpacity>
             </View>
-            {App.found_users.length > 0 && (
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="always" style={{ marginTop: 8 }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8 }}>
-                {App.found_users.map(user => (
+
+          </View>
+        )}
+        {this.state.showUserBar && (
+          <View style={{ width: '100%', backgroundColor: App.theme_section_background_color(), paddingVertical: 6, borderBottomWidth: 1, borderColor: App.theme_border_color(), zIndex: 2, position: 'relative' }}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="always" contentContainerStyle={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8 }}>
+              {!(App.found_users.length > 0 && this.state.showSearchBar) && (
+                <>
+                  <TouchableOpacity onPress={this.handleToggleSearch} style={{ marginRight: 10, backgroundColor: App.theme_input_contrast_background_color(), borderRadius: 8, paddingHorizontal: 8, paddingVertical: 6, minHeight: 32, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                    {Platform.OS === 'ios' ? (
+                      <SFSymbol name={'magnifyingglass'} color={App.theme_text_color()} style={{ height: 18, width: 18 }} />
+                    ) : (
+                      <SvgXml
+                        style={{ height: 18, width: 18 }}
+                        color={App.theme_text_color()}
+                        xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>'
+                      />
+                    )}
+                  </TouchableOpacity>
+                  {this.props.reply?.conversation_users.length > 1 && (
+                    <TouchableOpacity onPress={() => this.props.reply?.reply_all()} style={{ marginRight: 10, backgroundColor: App.theme_input_contrast_background_color(), borderRadius: 8, paddingHorizontal: 8, paddingVertical: 6, minHeight: 32, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                      <Text style={{ color: App.theme_text_color(), fontWeight: '600', fontSize: 15 }}>Reply all</Text>
+                    </TouchableOpacity>
+                  )}
+                </>
+              )}
+              {(App.found_users.length > 0 && this.state.showSearchBar) ? (
+                App.found_users.map(user => (
                   <TouchableOpacity 
                     key={user.username} 
                     onPress={() => this.handleSelectSearchUser(user.username)} 
@@ -112,7 +145,7 @@ export default class ReplyToolbar extends React.Component{
                       backgroundColor: App.theme_input_contrast_background_color(), 
                       borderRadius: 8, 
                       paddingHorizontal: 8, 
-                      paddingVertical: 4, 
+                      paddingVertical: 6, 
                       minHeight: 32,
                       flexDirection: 'row', 
                       alignItems: 'center' 
@@ -125,57 +158,36 @@ export default class ReplyToolbar extends React.Component{
                     )}
                     <Text style={{ color: App.theme_text_color(), fontWeight: '600', fontSize: 15 }}>@{user.username}</Text>
                   </TouchableOpacity>
-                ))}
-              </ScrollView>
-            )}
-          </View>
-        )}
-        {this.state.showUserBar && (
-          <View style={{ width: '100%', backgroundColor: App.theme_section_background_color(), paddingVertical: 6, borderBottomWidth: 1, borderColor: App.theme_border_color(), zIndex: 2, position: 'relative' }}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="always" contentContainerStyle={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8 }}>
-              <TouchableOpacity onPress={this.handleToggleSearch} style={{ marginRight: 10, backgroundColor: App.theme_input_contrast_background_color(), borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4, minHeight: 32, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                {Platform.OS === 'ios' ? (
-                  <SFSymbol name={'magnifyingglass'} color={App.theme_text_color()} style={{ height: 18, width: 18 }} />
-                ) : (
-                  <SvgXml
-                    style={{ height: 18, width: 18 }}
-                    color={App.theme_text_color()}
-                    xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>'
-                  />
-                )}
-              </TouchableOpacity>
-              {this.props.reply?.conversation_users.length > 1 && (
-                <TouchableOpacity onPress={() => this.props.reply?.reply_all()} style={{ marginRight: 10, backgroundColor: App.theme_input_contrast_background_color(), borderRadius: 8, paddingHorizontal: 12, paddingVertical: 4, minHeight: 32, justifyContent: 'center' }}>
-                  <Text style={{ color: App.theme_text_color(), fontWeight: '600', fontSize: 15 }}>Reply all</Text>
-                </TouchableOpacity>
+                ))
+              ) : (
+                this.props.reply?.sorted_conversation_users().map(user => {
+                  const isAlreadyMentioned = this.props.reply?.is_user_mentioned(user.username)
+                  return (
+                    <TouchableOpacity 
+                      key={user.username} 
+                      onPress={() => this.props.reply?.toggle_mention(user.username)} 
+                      style={{ 
+                        marginRight: 10, 
+                        backgroundColor: isAlreadyMentioned ? App.theme_accent_color() : App.theme_input_contrast_background_color(), 
+                        borderRadius: 8, 
+                        paddingHorizontal: 8, 
+                        paddingVertical: 6, 
+                        minHeight: 32,
+                        flexDirection: 'row', 
+                        alignItems: 'center',
+                        opacity: isAlreadyMentioned ? 0.8 : 1
+                      }}
+                    >
+                      {user.avatar ? (
+                        <Image source={{ uri: user.avatar }} style={{ width: 20, height: 20, borderRadius: 10, marginRight: 6 }} />
+                      ) : (
+                        <View style={{ width: 20, height: 20, borderRadius: 10, marginRight: 6, backgroundColor: App.theme_border_color() }} />
+                      )}
+                      <Text style={{ color: isAlreadyMentioned ? '#fff' : App.theme_text_color(), fontWeight: '600', fontSize: 15 }}>@{user.username}</Text>
+                    </TouchableOpacity>
+                  )
+                })
               )}
-              {this.props.reply?.conversation_users.map(user => {
-                const isAlreadyMentioned = this.props.reply?.is_user_mentioned(user.username)
-                return (
-                  <TouchableOpacity 
-                    key={user.username} 
-                    onPress={() => this.props.reply?.toggle_mention(user.username)} 
-                    style={{ 
-                      marginRight: 10, 
-                      backgroundColor: isAlreadyMentioned ? App.theme_accent_color() : App.theme_input_contrast_background_color(), 
-                      borderRadius: 8, 
-                      paddingHorizontal: 8, 
-                      paddingVertical: 4, 
-                      minHeight: 32,
-                      flexDirection: 'row', 
-                      alignItems: 'center',
-                      opacity: isAlreadyMentioned ? 0.8 : 1
-                    }}
-                  >
-                    {user.avatar ? (
-                      <Image source={{ uri: user.avatar }} style={{ width: 20, height: 20, borderRadius: 10, marginRight: 6 }} />
-                    ) : (
-                      <View style={{ width: 20, height: 20, borderRadius: 10, marginRight: 6, backgroundColor: App.theme_border_color() }} />
-                    )}
-                    <Text style={{ color: isAlreadyMentioned ? '#fff' : App.theme_text_color(), fontWeight: '600', fontSize: 15 }}>@{user.username}</Text>
-                  </TouchableOpacity>
-                )
-              })}
             </ScrollView>
           </View>
         )}
