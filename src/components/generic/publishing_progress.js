@@ -113,7 +113,7 @@ const PublishingProgress = observer(() => {
     >
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
         <Text style={{ fontSize: 15, fontWeight: "500", color: App.theme_text_color() }}>
-          {App.latest_published_url && !App.is_publishing ? "Finished publishing post. 🎉" : "Publishing Post"}
+          {App.latest_published_url && !App.is_publishing ? "Finished publishing post. 🎉" : "Publishing latest changes..."}
         </Text>
         <TouchableOpacity
           onPress={handleClose}
@@ -136,10 +136,7 @@ const PublishingProgress = observer(() => {
       </View>
 
       {!App.latest_published_url || App.is_publishing ? (
-        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
-          {App.is_publishing && (
-            <ActivityIndicator size="small" color={App.theme_accent_color()} style={{ marginRight: 8 }} />
-          )}
+        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
           <Text style={{ fontSize: 14, color: App.theme_text_color() }}>
             {App.publishing_status}
           </Text>
@@ -150,7 +147,8 @@ const PublishingProgress = observer(() => {
         <TouchableOpacity
           onPress={handleUrlPress}
           style={{
-            padding: 4,
+            paddingTop: 4,
+            paddingBottom: 4,
             alignItems: "flex-start",
           }}
         >
