@@ -32,13 +32,13 @@ export default class ReplySheet extends React.Component {
         id={this.props.sheetId}
         useBottomSafeAreaPadding={true}
         gestureEnabled={true}
-        containerStyle={{ backgroundColor: App.theme_background_color_secondary(), padding: 0 }}
+        containerStyle={{ backgroundColor: App.theme_modal_background_color(), padding: 0 }}
         snapPoints={[45, 95]}
         initialSnapIndex={[0]}
         backgroundInteractionEnabled={true}
         isModal={true}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 12, paddingVertical: 12, borderBottomWidth: 1, borderColor: App.theme_border_color(), backgroundColor: App.theme_background_color_secondary() }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 12, paddingVertical: 12, borderBottomWidth: 1, borderColor: App.theme_border_color(), backgroundColor: App.theme_modal_background_color() }}>
           <TouchableOpacity onPress={this.handleClose}>
             {Platform.OS === 'ios' ? (
               <SFSymbol name={'xmark'} color={App.theme_text_color()} style={{ height: 22, width: 22 }} />
@@ -57,7 +57,7 @@ export default class ReplySheet extends React.Component {
         <View>
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            style={{ backgroundColor: App.theme_background_color_secondary() }}
+            style={{ backgroundColor: App.theme_modal_background_color() }}
           >
             <TextInput
               placeholderTextColor="lightgrey"
@@ -126,7 +126,7 @@ export default class ReplySheet extends React.Component {
                   justifyContent: 'center',
                   alignItems: 'center',
                   zIndex: 20,
-                  backgroundColor: App.theme_background_color_secondary(),
+                  backgroundColor: App.theme_modal_background_color(),
                   opacity: 0.95
                 }}
               >

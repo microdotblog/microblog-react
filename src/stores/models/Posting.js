@@ -191,6 +191,7 @@ export default Posting = types.model('Posting', {
         self.post_syndicates = syndicate_targets
       }
       self.is_sending_post = false
+      App.show_publishing_progress()
       return true
     }
     self.is_sending_post = false
@@ -383,6 +384,7 @@ export default Posting = types.model('Posting', {
     self.is_adding_bookmark = false
     if (post_success !== POST_ERROR) {
       App.handle_web_view_message("bookmark_added_from_app")
+      App.show_publishing_progress()
       return true
     }
     return false
@@ -413,6 +415,7 @@ export default Posting = types.model('Posting', {
     self.is_sending_post = false
     if(post_success !== POST_ERROR){
       self.clear_post()
+      App.show_publishing_progress()
       return true
     }
     return false

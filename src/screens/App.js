@@ -29,6 +29,7 @@ import ClosePostClearButton from '../components/header/close_post_clear'
 import Share from '../stores/Share'
 import ShareMenu from 'react-native-share-menu'
 import ShareScreen from './share'
+import PublishingProgress from '../components/generic/publishing_progress'
 
 const Stack = createNativeStackNavigator();
 
@@ -199,6 +200,7 @@ export default class MainApp extends React.Component {
               </Stack.Group>
             </Stack.Navigator>
           </NavigationContainer>
+          <PublishingProgress />
         </SheetProvider>
       </GestureHandlerRootView>
     )

@@ -551,6 +551,25 @@ class MicroBlogApi {
 			});
 		return data;
 	}
+
+	async check_publishing_progress() {
+		console.log('MicroBlogApi: check_publishing_progress');
+		const data = axios
+			.get(`/posts/check`, {
+				headers: { Authorization: `Bearer ${Auth.selected_user?.token()}` },
+			})
+			.then(response => {
+				if(response.data != null){
+					return response.data
+				}
+				return API_ERROR;
+			})
+			.catch(error => {
+				console.log('MicroBlogApi: check_publishing_progress', error);
+				return API_ERROR;
+			});
+		return data;
+	}
   
 }
 

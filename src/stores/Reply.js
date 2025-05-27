@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { Alert, Platform } from 'react-native'
+import { Alert, Platform, Linking } from 'react-native'
 import MicroBlogApi, { API_ERROR, POST_ERROR, DUPLICATE_REPLY, CURRENT_REPLY_ID } from '../api/MicroBlogApi'
 import Auth from './Auth'
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -213,6 +213,37 @@ export default Reply = types.model('Reply', {
   is_user_mentioned(username) {
     const mentionRegex = new RegExp(`@${username}\\b`, 'i')
     return mentionRegex.test(self.reply_text)
+  },
+
+  sorted_conversation_users() {
+    const mentionedUsers = []
+    const unmentionedUsers = []
+    
+    const mentionRegex = /@(\w+)/g
+    const mentionOrder = []
+    let match
+    while ((match = mentionRegex.exec(self.reply_text || '')) !== null) {
+      if (!mentionOrder.includes(match[1])) {
+        mentionOrder.push(match[1])
+      }
+    }
+    
+    self.conversation_users.forEach(user => {
+      const isAlreadyMentioned = self.is_user_mentioned(user.username)
+      if (isAlreadyMentioned) {
+        mentionedUsers.push(user)
+      } else {
+        unmentionedUsers.push(user)
+      }
+    })
+    
+    mentionedUsers.sort((a, b) => {
+      const indexA = mentionOrder.indexOf(a.username)
+      const indexB = mentionOrder.indexOf(b.username)
+      return indexA - indexB
+    })
+    
+    return [...mentionedUsers, ...unmentionedUsers]
   }
   
 }))
