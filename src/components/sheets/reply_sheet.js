@@ -39,17 +39,26 @@ export default class ReplySheet extends React.Component {
         isModal={true}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 12, paddingVertical: 12, borderBottomWidth: 1, borderColor: App.theme_border_color(), backgroundColor: App.theme_modal_background_color() }}>
-          <TouchableOpacity onPress={this.handleClose}>
-            {Platform.OS === 'ios' ? (
-              <SFSymbol name={'xmark'} color={App.theme_text_color()} style={{ height: 22, width: 22 }} />
-            ) : (
-              <SvgXml
-                style={{ height: 24, width: 24, marginRight: 7, marginTop: 2 }}
-                color={App.theme_text_color()}
-                xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>'
-              />
-            )}
-          </TouchableOpacity>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity onPress={this.handleClose}>
+              {Platform.OS === 'ios' ? (
+                <SFSymbol name={'xmark'} color={App.theme_text_color()} style={{ height: 22, width: 22 }} />
+              ) : (
+                <SvgXml
+                  style={{ height: 24, width: 24, marginRight: 7, marginTop: 2 }}
+                  color={App.theme_text_color()}
+                  xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>'
+                />
+              )}
+            </TouchableOpacity>
+            
+            {/* {Reply.show_back_button && (
+              <TouchableOpacity onPress={() => {Reply.navigate_to_conversation()}} style={{ marginLeft: 16 }}>
+                <Text style={{ color: App.theme_text_color(), fontSize: 14, opacity: 0.7 }}>View Conversation</Text>
+              </TouchableOpacity>
+            )} */}
+          </View>
+          
           <TouchableOpacity onPress={this.handleSend} disabled={Reply.is_sending_reply || !Reply.replying_enabled()} style={{ opacity: Reply.is_sending_reply || !Reply.replying_enabled() ? 0.5 : 1 }}>
             <Text style={{ color: App.theme_accent_color(), fontWeight: '700', fontSize: 16 }}>Send</Text>
           </TouchableOpacity>

@@ -11,6 +11,7 @@ export default Reply = types.model('Reply', {
   reply_text: types.optional(types.string, ""),
 	is_sending_reply: types.optional(types.boolean, false),
 	conversation_id: types.maybeNull(types.string),
+	show_back_button: types.optional(types.boolean, false),
 	text_selection: types.optional(
     types.model('Selection', {
       start: types.optional(types.number, 0),
@@ -27,8 +28,13 @@ export default Reply = types.model('Reply', {
   hydrate: flow(function* (conversation_id = null) {
     const reply_sheet_is_open = SheetManager.get('reply_sheet')?.current?.isOpen()
     if (reply_sheet_is_open) {
+      if (conversation_id !== self.conversation_id) {
+        self.show_back_button = true
+      }
       return
     }
+    
+    self.show_back_button = false
     
     self.is_loading_conversation = true
     try {
@@ -177,6 +183,19 @@ export default Reply = types.model('Reply', {
     if (!userExists) {
       self.conversation_users.push({ username, avatar })
       self.conversation_usernames.push(username)
+    }
+  }),
+
+  navigate_to_conversation: flow(function* () {
+    if (self.conversation_id) {
+      const App = require('./App').default
+      if (App.conversation_screen_focused) {
+        App.navigation_ref.navigate(`${App.current_tab_key}-Conversation`, { conversation_id: self.conversation_id })
+      }
+      else {
+        App.navigation_ref.push(`${App.current_tab_key}-Conversation`, { conversation_id: self.conversation_id })
+      }      
+      self.show_back_button = false
     }
   }),
 
