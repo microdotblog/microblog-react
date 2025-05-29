@@ -73,15 +73,35 @@ export default class ReplyToolbar extends React.Component{
 
 	render() {
     return(
-      <>
+      <View
+        style={{
+          width: '100%',
+          backgroundColor: App.theme_section_background_color(),
+          ...Platform.select({
+            android: {
+              position: 'absolute',
+              bottom: 0,
+              right: 0,
+              left: 0,
+            }
+          })
+        }}
+      >
         {this.state.showSearchBar && (
-          <View style={{ width: '100%', backgroundColor: App.theme_section_background_color(), paddingVertical: 6, borderBottomWidth: 1, borderColor: App.theme_border_color(), zIndex: 3 }}>
+          <View style={{ width: '100%', backgroundColor: App.theme_section_background_color(), paddingVertical: Platform.OS === 'android' ? 4 : 6, borderBottomWidth: 1, borderColor: App.theme_border_color(), zIndex: 3 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8 }}>
-              <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: App.theme_input_contrast_background_color(), borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8 }}>
+              <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: App.theme_input_contrast_background_color(), borderRadius: 8, paddingHorizontal: 10, paddingVertical: Platform.OS === 'android' ? 4 : 8 }}>
                 <TextInput
                   placeholder="Search users..."
                   placeholderTextColor={App.theme_placeholder_alt_text_color()}
-                  style={{ flex: 1, fontSize: 16, color: App.theme_text_color() }}
+                  style={{ 
+                    flex: 1, 
+                    fontSize: 16, 
+                    color: App.theme_text_color(),
+                    ...Platform.select({
+                      android: { height: 40 }
+                    })
+                  }}
                   value={this.state.searchQuery}
                   onChangeText={this.handleSearchQueryChange}
                   autoFocus={true}
@@ -192,25 +212,15 @@ export default class ReplyToolbar extends React.Component{
           </View>
         )}
         <View
-          style={{
-            width: '100%',
-            backgroundColor: App.theme_section_background_color(),
-            ...Platform.select({
-              android: {
-                position: 'absolute',
-                bottom: 0,
-                right: 0,
-                left: 0,
-              }
-            }),
-            padding: 5,
-            minHeight: 40,
-            flexDirection: 'row',
-            alignItems: 'center',
-            zIndex: 1,
-            position: 'relative'
-          }}
-        >
+					style={{
+						width: '100%',
+						backgroundColor: App.theme_section_background_color(),
+						padding: 5,
+						minHeight: 40,
+						flexDirection: 'row',
+						alignItems: 'center'
+					}}
+				>
           <TouchableOpacity style={{minWidth: 35}} onPress={() => this.props.reply?.handle_text_action("**")}> 
             <Text style={{ fontSize: 18, fontWeight: '700', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>b</Text>
           </TouchableOpacity>
@@ -225,7 +235,16 @@ export default class ReplyToolbar extends React.Component{
             }
           </TouchableOpacity>
           <TouchableOpacity style={{minWidth: 30, marginLeft: 5}} onPress={() => this.setState({ showUserBar: !this.state.showUserBar })}>
-            <Text style={{ fontSize: 18, fontWeight: '700', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>@</Text>
+            <Text style={{ 
+              fontSize: 18, 
+              fontWeight: '700', 
+              textAlign: 'center', 
+              padding: 2, 
+              color: App.theme_text_color(),
+              ...Platform.select({
+                android: { marginTop: -5 }
+              })
+            }}>@</Text>
           </TouchableOpacity>
           <View
             style={{
@@ -246,7 +265,7 @@ export default class ReplyToolbar extends React.Component{
             ><Text style={{ color: this.props.reply?.reply_text_length() > App.max_characters_allowed ? '#a94442' : App.theme_text_color() }}>{this.props.reply?.reply_text_length()}</Text>/{App.max_characters_allowed}</Text>
           </View>
         </View>
-      </>
+      </View>
     )
   }
   

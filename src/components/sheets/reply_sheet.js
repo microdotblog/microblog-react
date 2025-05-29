@@ -34,7 +34,7 @@ export default class ReplySheet extends React.Component {
         gestureEnabled={true}
         containerStyle={{ backgroundColor: App.theme_modal_background_color(), padding: 0 }}
         snapPoints={[45, 95]}
-        initialSnapIndex={[0]}
+        initialSnapIndex={Platform.OS === 'android' ? [1] : [0]}
         backgroundInteractionEnabled={true}
         isModal={true}
       >
@@ -139,4 +139,4 @@ export default class ReplySheet extends React.Component {
       </ActionSheet>
     )
   }
-} 
+}
