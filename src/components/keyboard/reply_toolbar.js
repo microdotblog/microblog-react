@@ -168,7 +168,7 @@ export default class ReplyToolbar extends React.Component{
                       paddingVertical: 6, 
                       minHeight: 32,
                       flexDirection: 'row', 
-                      alignItems: 'center' 
+                      alignItems: 'center'
                     }}
                   >
                     {user.avatar ? (
@@ -176,7 +176,23 @@ export default class ReplyToolbar extends React.Component{
                     ) : (
                       <View style={{ width: 20, height: 20, borderRadius: 10, marginRight: 6, backgroundColor: App.theme_border_color() }} />
                     )}
-                    <Text style={{ color: App.theme_text_color(), fontWeight: '600', fontSize: 15 }}>@{user.username}</Text>
+                    { Platform.OS === 'ios' ?
+                      <SFSymbol name={'at'} color={App.theme_text_color()} style={{ height: 16, width: 16 }} />
+                      :
+                      <SvgXml style={{ height: 14, width: 14 }} color={App.theme_text_color()} xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 10-2.636 6.364M16.5 12V8.25" /></svg>' />
+                    }
+                    <Text style={{ 
+                      color: App.theme_text_color(), 
+                      fontWeight: '600', 
+                      fontSize: 15,
+                      ...Platform.select({
+                        android: { 
+                          textAlignVertical: 'center',
+                          includeFontPadding: false,
+                          lineHeight: 18
+                        }
+                      })
+                    }}>{user.username}</Text>
                   </TouchableOpacity>
                 ))
               ) : (
@@ -203,7 +219,23 @@ export default class ReplyToolbar extends React.Component{
                       ) : (
                         <View style={{ width: 20, height: 20, borderRadius: 10, marginRight: 6, backgroundColor: App.theme_border_color() }} />
                       )}
-                      <Text style={{ color: isAlreadyMentioned ? '#fff' : App.theme_text_color(), fontWeight: '600', fontSize: 15 }}>@{user.username}</Text>
+                      { Platform.OS === 'ios' ?
+                        <SFSymbol name={'at'} color={isAlreadyMentioned ? '#fff' : App.theme_text_color()} style={{ height: 16, width: 16 }} />
+                        :
+                        <SvgXml style={{ height: 14, width: 14 }} color={isAlreadyMentioned ? '#fff' : App.theme_text_color()} xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 10-2.636 6.364M16.5 12V8.25" /></svg>' />
+                      }
+                      <Text style={{ 
+                        color: isAlreadyMentioned ? '#fff' : App.theme_text_color(), 
+                        fontWeight: '600', 
+                        fontSize: 15,
+                        ...Platform.select({
+                          android: { 
+                            textAlignVertical: 'center',
+                            includeFontPadding: false,
+                            lineHeight: 18
+                          }
+                        })
+                      }}>{user.username}</Text>
                     </TouchableOpacity>
                   )
                 })
@@ -222,29 +254,32 @@ export default class ReplyToolbar extends React.Component{
 					}}
 				>
           <TouchableOpacity style={{minWidth: 35}} onPress={() => this.props.reply?.handle_text_action("**")}> 
-            <Text style={{ fontSize: 18, fontWeight: '700', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>b</Text>
+            { Platform.OS === 'ios' ?
+              <SFSymbol name={'bold'} color={App.theme_text_color()} style={{ height: 20, width: 20 }} />
+              :
+              <SvgXml style={{ height: 18, width: 18 }} color={App.theme_text_color()} xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"><path stroke-linejoin="round" d="M6.75 3.744h-.753v8.25h7.125a4.125 4.125 0 0 0 0-8.25H6.75Zm0 0v.38m0 16.122h6.747a4.5 4.5 0 0 0 0-9.001h-7.5v9h.753Zm0 0v-.37m0-15.751h6a3.75 3.75 0 1 1 0 7.5h-6m0-7.5v7.5m0 0v8.25m0-8.25h6.375a4.125 4.125 0 0 1 0 8.25H6.75m.747-15.38h4.875a3.375 3.375 0 0 1 0 6.75H7.497v-6.75Zm0 7.5h5.25a3.75 3.75 0 0 1 0 7.5h-5.25v-7.5Z" /></svg>' />
+            }
           </TouchableOpacity>
           <TouchableOpacity style={{minWidth: 35}} onPress={() => this.props.reply?.handle_text_action("_")}> 
-            <Text style={{ fontSize: 18, fontWeight: '600', fontStyle: "italic", textAlign: 'center', padding: 2, color: App.theme_text_color() }}>i</Text>
+            { Platform.OS === 'ios' ?
+              <SFSymbol name={'italic'} color={App.theme_text_color()} style={{ height: 20, width: 20 }} />
+              :
+              <SvgXml style={{ height: 18, width: 18 }} color={App.theme_text_color()} xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="M5.248 20.246H9.05m0 0h3.696m-3.696 0 5.893-16.502m0 0h-3.697m3.697 0h3.803" /></svg>' />
+            }
           </TouchableOpacity>
-          <TouchableOpacity style={{minWidth: 30, marginLeft: 5}} onPress={() => this.props.reply?.handle_text_action("[]")}> 
+          <TouchableOpacity style={{minWidth: 35}} onPress={() => this.props.reply?.handle_text_action("[]")}> 
             { Platform.OS === 'ios' ?
               <SFSymbol name={'link'} color={App.theme_text_color()} style={{ height: 20, width: 20 }} multicolor={true} />
               :
               <SvgXml style={{ height: 18, width: 18 }} stroke={App.theme_button_text_color()} strokeWidth={2} xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>' />
             }
           </TouchableOpacity>
-          <TouchableOpacity style={{minWidth: 30, marginLeft: 5}} onPress={() => this.setState({ showUserBar: !this.state.showUserBar })}>
-            <Text style={{ 
-              fontSize: 18, 
-              fontWeight: '700', 
-              textAlign: 'center', 
-              padding: 2, 
-              color: App.theme_text_color(),
-              ...Platform.select({
-                android: { marginTop: -5 }
-              })
-            }}>@</Text>
+          <TouchableOpacity style={{minWidth: 35}} onPress={() => this.setState({ showUserBar: !this.state.showUserBar })}>
+            { Platform.OS === 'ios' ?
+              <SFSymbol name={'at'} color={App.theme_text_color()} style={{ height: 20, width: 20 }} />
+              :
+              <SvgXml style={{ height: 18, width: 18 }} color={App.theme_text_color()} xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 10-2.636 6.364M16.5 12V8.25" /></svg>' />
+            }
           </TouchableOpacity>
           <View
             style={{

@@ -54,7 +54,7 @@ export default class ReplySheet extends React.Component {
             
             {/* {Reply.show_back_button && (
               <TouchableOpacity onPress={() => {Reply.navigate_to_conversation()}} style={{ marginLeft: 16 }}>
-                <Text style={{ color: App.theme_text_color(), fontSize: 14, opacity: 0.7 }}>View Conversation</Text>
+                <Text style={{ color: App.theme_text_color(), fontSize: 14, opacity: 0.7 }}>Back to conversation</Text>
               </TouchableOpacity>
             )} */}
           </View>
