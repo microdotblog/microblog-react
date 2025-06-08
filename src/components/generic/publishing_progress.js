@@ -120,8 +120,9 @@ const PublishingProgress = observer(() => {
           style={{
             padding: 4,
             borderRadius: 6,
-            backgroundColor: App.theme_button_background_color(),
+            backgroundColor: App.theme_button_background_color()
           }}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
           {Platform.OS === "ios" ? (
             <SFSymbol
