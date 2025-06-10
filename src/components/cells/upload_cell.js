@@ -40,6 +40,7 @@ export default class UploadCell extends React.Component {
 								priority: FastImage.priority.high,
 								cache: FastImage.cacheControl.web
 							}}
+							fallback={true}
 							resizeMode={FastImage.resizeMode.cover}
 							style={{
 								width: dimension,
