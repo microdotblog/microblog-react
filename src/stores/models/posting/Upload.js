@@ -69,7 +69,7 @@ export default Upload = types.model('Upload', {
 		},
 		best_post_markup(){
 			if(this.is_audio() || this.is_video()){
-				let html = `<img src="${ self.url }" />`
+				let html = `<img src="${ self.url }">`
 				if (self.is_video()) {
 					html = `<video controls src="${ self.url }"></video>`
 				}

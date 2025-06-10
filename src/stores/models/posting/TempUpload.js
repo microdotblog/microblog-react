@@ -70,7 +70,7 @@ export default TempUpload = types.model('TempUpload', {
 		}),
 
 		copy_html_to_clipboard() {
-			let html = `<img src="${ self.url }" />`
+			let html = `<img src="${ self.url }">`
 			if (self.is_video()) {
 				html = `<video controls src="${ self.url }"></video>`
 			}
