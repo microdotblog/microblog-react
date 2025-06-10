@@ -21,6 +21,7 @@ export default class UploadCell extends React.Component {
 	}
 
 	render_cell(upload) {
+		const has_poster = (upload.poster && upload.poster.length > 0);
 		const dimension = (Dimensions.get("screen")?.width / this.state.num_columns) - 10
 		if (upload.is_audio() || upload.is_video()) {
 			return (
@@ -32,7 +33,7 @@ export default class UploadCell extends React.Component {
 					borderRadius: 5
 				}}>
 					{
-						upload.is_video() &&
+						upload.is_video() && has_poster &&
 						<FastImage
 							key={upload.url}
 							source={{
