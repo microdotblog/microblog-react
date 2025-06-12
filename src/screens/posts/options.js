@@ -70,10 +70,10 @@ export default class PostingOptionsScreen extends React.Component{
 		  onContentSizeChange={this.handleContentSizeChange}>
 				{/* Post status */}
 				{
-				  !posting.is_editing_post &&
+				  true &&
 					<View style={{ marginBottom: 25 }}>
 						<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>
-							{ posting.selected_service?.type === "microblog" ? "When sending this post to Micro.blog" : "When sending this post to your blog" }:
+							When sending this post:
 						</Text>
 						<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
 							<TouchableOpacity

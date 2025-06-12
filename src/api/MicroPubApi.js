@@ -383,7 +383,7 @@ class MicroPubApi {
 		return post;
 	}
 	
-	async post_update(service, content, url, title, categories) {
+	async post_update(service, content, url, title, categories, post_status = "") {
 		console.log('MicroBlogApi:MicroPub:post_update', content, url, title, categories);
 		const params = {
 			"action": "update",
@@ -396,7 +396,10 @@ class MicroPubApi {
 				"name": [
 					title
 				],
-				"category": categories
+				"category": categories,
+				"post-status": [
+					post_status
+				]
 			}
 		}
 		console.log("MicroBlogApi:MicroPub:post_update:PARAMS", params)

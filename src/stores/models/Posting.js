@@ -85,6 +85,7 @@ export default Posting = types.model('Posting', {
     self.post_text = post.content
     self.post_url = post.url
     self.summary = post.summary
+    self.post_status = post.post_status
     
     if(post.category.length > 0){
       let categories = []
@@ -182,7 +183,7 @@ export default Posting = types.model('Posting', {
       self.post_assets = []
       self.post_categories = []
       self.new_category_text = ""
-      self.post_status = "published"
+      // self.post_status = "published"
       self.summary = null
       if(self.selected_service && self.selected_service.active_destination()?.syndicates?.length > 0){
         let syndicate_targets = []
