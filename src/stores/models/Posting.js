@@ -1,7 +1,7 @@
 import { types, flow, destroy } from 'mobx-state-tree';
 import Service from './posting/Service';
 import { blog_services } from './../enums/blog_services';
-import { Alert, Platform, Linking } from 'react-native';
+import { Alert, Platform, Linking, NativeModules } from 'react-native';
 import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
 import XMLRPCApi, { XML_ERROR } from '../../api/XMLRPCApi';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -11,6 +11,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import Tokens from '../Tokens';
 import md from 'markdown-it';
 const parser = md({ html: true });
+const { MBClipboardHelper } = NativeModules;
 
 export default Posting = types.model('Posting', {
   username: types.identifier,
@@ -208,9 +209,21 @@ export default Posting = types.model('Posting', {
     const is_link = action === "[]"
     if (is_link) {
       action = "[]()"
-      const url = yield Clipboard.getString()
-      const has_web_url = url.startsWith("http://") || url.startsWith("https://")
-      if (has_web_url) {
+      let has_web_url = false;
+      let url = null;
+      if (Platform.OS == "ios") {
+        // for iOS, we only get the clipboard if it's a URL
+        has_web_url = yield MBClipboardHelper.hasWebURL();
+        if (has_web_url) {
+          url = yield Clipboard.getString();
+        }
+      }
+      else {
+        // for Android, always get clipboard
+        url = yield Clipboard.getString();
+        has_web_url = url.startsWith("http://") || url.startsWith("https://");
+      }
+      if (url && has_web_url) {
         action = `[](${ url })`
         console.log("TEXT OPTION", action)
         self.post_text = self.post_text.InsertTextStyle(action, self.text_selection, true, url)
