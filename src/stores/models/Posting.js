@@ -208,23 +208,9 @@ export default Posting = types.model('Posting', {
     const is_link = action === "[]"
     if (is_link) {
       action = "[]()"
-      let url = null
-      if (Platform.OS === "ios") {
-        has_web_url = yield Clipboard.hasWebURL()
-      }
-      else {
-        url = yield Clipboard.getString()
-        has_web_url = yield Linking.canOpenURL(url)
-        // I'm using this as a fallback, as Android sometimes doesn't know that it can open a URL.
-        if (!has_web_url) {
-          has_web_url = url.startsWith("http://") || url.startsWith("https://")
-        }
-      }
-      console.log("HAS WEB URL", url, has_web_url)
+      const url = yield Clipboard.getString()
+      const has_web_url = url.startsWith("http://") || url.startsWith("https://")
       if (has_web_url) {
-        if (url === null) {
-          url = yield Clipboard.getString()
-        }
         action = `[](${ url })`
         console.log("TEXT OPTION", action)
         self.post_text = self.post_text.InsertTextStyle(action, self.text_selection, true, url)
