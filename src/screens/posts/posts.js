@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard, Image } from 'react-native';
+import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard, Image, StyleSheet } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
@@ -151,6 +151,12 @@ export default class PostsScreen extends React.Component{
               { this.state.is_showing_drafts_posts ? "No drafts." : "No posts." }
             </Text>
           </View>
+        }
+        ItemSeparatorComponent={
+          <View style={{
+            height: StyleSheet.hairlineWidth,
+            backgroundColor: App.theme_alt_background_div_color()
+          }} />
         }
         refreshControl={
           <RefreshControl

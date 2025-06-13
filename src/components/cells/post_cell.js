@@ -201,8 +201,6 @@ export default class PostCell extends React.Component{
           <TouchableOpacity
             style={{
               padding: 15,
-              borderColor: App.theme_alt_background_div_color(),
-              borderBottomWidth: .5,
               backgroundColor: App.theme_background_color_secondary()
             }}
             onPress={() => App.navigate_to_screen("PostEdit", post)}

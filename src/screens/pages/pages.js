@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard, Image, Platform } from 'react-native';
+import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard, Image, Platform, StyleSheet } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
@@ -102,6 +102,12 @@ export default class PagesScreen extends React.Component{
           <View style={{ flex: 1, padding: 12, justifyContent: 'center', alignItems: 'center' }} >
             <Text style={{ color: App.theme_text_color() }}>No pages...</Text>
           </View>
+        }
+        ItemSeparatorComponent={
+          <View style={{
+            height: StyleSheet.hairlineWidth,
+            backgroundColor: App.theme_alt_background_div_color()
+          }} />
         }
         refreshControl={
           <RefreshControl
