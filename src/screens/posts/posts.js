@@ -145,13 +145,13 @@ export default class PostsScreen extends React.Component{
           backgroundColor: App.theme_background_color_secondary(),
           width: "100%"
         }}
-        ListEmptyComponent={
-          <View style={{ flex: 1, padding: 12, justifyContent: 'center', alignItems: 'center' }} >
-            <Text style={{ color: App.theme_text_color() }}>
-              { this.state.is_showing_drafts_posts ? "No drafts." : "No posts." }
-            </Text>
-          </View>
-        }
+        // ListEmptyComponent={
+        //   <View style={{ flex: 1, padding: 12, justifyContent: 'center', alignItems: 'center' }} >
+        //     <Text style={{ color: App.theme_text_color() }}>
+        //       { this.state.is_showing_drafts_posts ? "No drafts." : "No posts." }
+        //     </Text>
+        //   </View>
+        // }
         ItemSeparatorComponent={
           <View style={{
             height: StyleSheet.hairlineWidth,
