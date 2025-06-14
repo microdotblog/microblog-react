@@ -18,6 +18,8 @@ export default class AccountSwitcher extends React.Component{
           App.navigate_to_screen("user", Auth.selected_user.username);
           App.close_sheet("main_sheet");
         }}
+        accessibilityRole="button"
+        accessibilityLabel={`Profile menu for ${Auth.selected_user.username}`}
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',

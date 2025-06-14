@@ -133,7 +133,12 @@ export default class PostToolbar extends React.Component{
 						{
 							!this.props.is_post_edit && !App.is_share_extension &&
 							<>
-								<TouchableOpacity style={{minWidth: 30, marginLeft: 4, marginRight: 0}} onPress={() => posting.handle_asset_action(this.props.componentId)}>
+								<TouchableOpacity
+									style={{minWidth: 30, marginLeft: 4, marginRight: 0}}
+									onPress={() => posting.handle_asset_action(this.props.componentId)}
+									accessibilityRole="button"
+									accessibilityLabel="Add photo"
+								>
 								{
 									Platform.OS === 'ios' ?
 										<SFSymbol
@@ -151,7 +156,12 @@ export default class PostToolbar extends React.Component{
 						{
 							!this.props.is_post_edit && !App.is_share_extension && (Auth.selected_user?.is_premium != null && Auth.selected_user?.is_premium) &&
 							<>
-								<TouchableOpacity style={{minWidth: 30, marginLeft: 4, marginRight: 0}} onPress={() => App.navigate_to_screen("PostUploads")}>
+								<TouchableOpacity
+									style={{minWidth: 30, marginLeft: 4, marginRight: 0}}
+									onPress={() => App.navigate_to_screen("PostUploads")}
+									accessibilityRole="button"
+									accessibilityLabel="Add file"
+								>
 								{
 									Platform.OS === 'ios' ?
 										<SFSymbol
@@ -178,13 +188,28 @@ export default class PostToolbar extends React.Component{
 								</TouchableOpacity>
 							</>
 						}
-						<TouchableOpacity style={{minWidth: 30}} onPress={() => App.is_share_extension ? Share.handle_text_action("**") : posting.handle_text_action("**")}>
+						<TouchableOpacity
+							style={{minWidth: 30}}
+							onPress={() => App.is_share_extension ? Share.handle_text_action("**") : posting.handle_text_action("**")}
+							accessibilityRole="button"
+							accessibilityLabel="Bold"
+						>
 							<Text style={{ fontSize: 18, fontWeight: '700', textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"b"}</Text>
 						</TouchableOpacity>
-						<TouchableOpacity style={{minWidth: 30}} onPress={() => App.is_share_extension ? Share.handle_text_action("_") : posting.handle_text_action("_")}>
+						<TouchableOpacity
+							style={{minWidth: 30}}
+							onPress={() => App.is_share_extension ? Share.handle_text_action("_") : posting.handle_text_action("_")}
+							accessibilityRole="button"
+							accessibilityLabel="Italic"
+						>
 							<Text style={{ fontSize: 18, fontWeight: '600', fontStyle: "italic", textAlign: 'center', padding: 2, color: App.theme_text_color() }}>{"i"}</Text>
 						</TouchableOpacity>
-						<TouchableOpacity style={{minWidth: 30, marginLeft: 5}} onPress={() => App.is_share_extension ? Share.handle_text_action("[]") : posting.handle_text_action("[]")}>
+						<TouchableOpacity
+							style={{minWidth: 30, marginLeft: 5}}
+							onPress={() => App.is_share_extension ? Share.handle_text_action("[]") : posting.handle_text_action("[]")}
+							accessibilityRole="button"
+							accessibilityLabel="Link"
+						>
 							{
 								Platform.OS === 'ios' ?
 									<SFSymbol
@@ -266,6 +291,8 @@ export default class PostToolbar extends React.Component{
 							!App.is_share_extension &&
 							<TouchableOpacity
 								onPress={() => App.navigate_to_screen(this.props.is_post_edit ? "PostEditOptions" : "PostingOptions")}
+								accessibilityRole="button"
+								accessibilityLabel="Post options"
 							>
 							{
 								Platform.OS === 'ios' ?

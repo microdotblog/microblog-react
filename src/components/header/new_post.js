@@ -20,6 +20,8 @@ export default class NewPostButton extends React.Component{
             marginRight: Platform.OS === "android" ? 12 : 0
            }}
           onPress={() => App.navigate_to_screen("Posting")}
+          accessibilityRole="button"
+          accessibilityLabel="New post"
         >
           {
             Platform.OS === 'ios' ? 
