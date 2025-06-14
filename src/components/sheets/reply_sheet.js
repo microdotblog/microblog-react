@@ -37,7 +37,10 @@ export default class ReplySheet extends React.Component {
         isModal={true}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 12, paddingVertical: 12, borderBottomWidth: 1, borderColor: App.theme_border_color(), backgroundColor: App.theme_modal_background_color() }}>
-          <TouchableOpacity onPress={this.handleClose}>
+          <TouchableOpacity
+            onPress={this.handleClose}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
             {Platform.OS === 'ios' ? (
               <SFSymbol name={'xmark'} color={App.theme_text_color()} style={{ height: 20, width: 20 }} />
             ) : (
