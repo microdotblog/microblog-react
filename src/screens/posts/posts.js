@@ -130,8 +130,11 @@ export default class PostsScreen extends React.Component{
     const { config } = selected_service;
     
     setTimeout(() => {
-      const any_drafts = this._has_any_drafts(config.posts_for_destination(this.state.is_showing_drafts_posts));    
-      this.setState({ is_showing_drafts_button: any_drafts });
+      // check if we need drafts button, but if set, never unset
+      if (!this.state.is_showing_drafts_button) {
+        const any_drafts = this._has_any_drafts(config.posts_for_destination(this.state.is_showing_drafts_posts));
+        this.setState({ is_showing_drafts_button: any_drafts });
+      }
     }, 500);
     
     return(
