@@ -39,7 +39,7 @@ export default class ReplySheet extends React.Component {
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 12, paddingVertical: 12, borderBottomWidth: 1, borderColor: App.theme_border_color(), backgroundColor: App.theme_modal_background_color() }}>
           <TouchableOpacity onPress={this.handleClose}>
             {Platform.OS === 'ios' ? (
-              <SFSymbol name={'xmark'} color={App.theme_text_color()} style={{ height: 22, width: 22 }} />
+              <SFSymbol name={'xmark'} color={App.theme_text_color()} style={{ height: 20, width: 20 }} />
             ) : (
               <SvgXml
                 style={{ height: 24, width: 24, marginRight: 7, marginTop: 2 }}
