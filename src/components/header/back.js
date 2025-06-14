@@ -2,13 +2,32 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { Platform } from 'react-native';
 import App from './../../stores/App';
+import { isLiquidGlass } from './../../utils/ui';
 import { SFSymbol } from 'react-native-sfsymbols';
 import { SvgXml } from 'react-native-svg';
 import { HeaderBackButton } from '@react-navigation/elements';
 import { useNavigation } from '@react-navigation/native';
 
 const BackButtonContent = observer(() => {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
+  let button_style = {};
+  
+  if (isLiquidGlass()) {
+    button_style = {
+      marginLeft: 9,
+      marginTop: 2
+    }
+  }
+  else {    
+    button_style = {      
+      marginLeft: -20,
+      paddingHorizontal: 20,
+      paddingBottom: 10,
+      marginBottom: -10,
+      paddingTop: 10,
+      marginTop: -10
+    };
+  }
   
   return (
     <HeaderBackButton
@@ -17,14 +36,7 @@ const BackButtonContent = observer(() => {
           navigation.goBack()
         }
       }}
-      style={{
-        marginLeft: -20,
-        paddingHorizontal: 20,
-        paddingBottom: 10,
-        marginBottom: -10,
-        paddingTop: 10,
-        marginTop: -10
-      }}
+      style={button_style}
       labelVisible={false}
       backImage={() => (
         Platform.OS === 'ios' ?
