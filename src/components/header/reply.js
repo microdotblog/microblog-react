@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { TouchableOpacity, Platform } from 'react-native';
 import App from './../../stores/App';
+import { isLiquidGlass } from './../../utils/ui';
 import { SFSymbol } from 'react-native-sfsymbols';
 import { SvgXml } from 'react-native-svg';
 
@@ -9,6 +10,15 @@ import { SvgXml } from 'react-native-svg';
 export default class ReplyButton extends React.Component {
 
   render() {
+    let button_style = {};
+    
+    if (isLiquidGlass()) {
+      button_style = {
+        marginLeft: 7,
+        marginTop: 2
+      }
+    }
+
     return (
       <TouchableOpacity
 				onPress={() => {
@@ -16,6 +26,7 @@ export default class ReplyButton extends React.Component {
 						App.open_sheet("reply_sheet", { conversation_id: this.props.conversation_id })
 					}
 				}}
+        style={button_style}
 			>
         {
           Platform.OS === 'ios' ?

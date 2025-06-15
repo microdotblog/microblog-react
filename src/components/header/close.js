@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { TouchableOpacity, Platform } from 'react-native';
 import App from './../../stores/App';
+import { isLiquidGlass } from './../../utils/ui';
 import { SFSymbol } from 'react-native-sfsymbols';
 import { SvgXml } from 'react-native-svg';
 
@@ -9,9 +10,17 @@ import { SvgXml } from 'react-native-svg';
 export default class CloseModalButton extends React.Component {
 
   render() {
+    let button_style = {};
+    
+    if (isLiquidGlass()) {
+      button_style.paddingLeft = 7;
+      button_style.paddingTop = 4;
+    }
+
     return (
       <TouchableOpacity
         onPress={() => App.go_back()}
+        style={button_style}
       >
         {
           Platform.OS === 'ios' ?
