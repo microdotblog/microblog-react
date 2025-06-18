@@ -28,6 +28,9 @@ export default class PostingScreen extends React.Component{
       if (u.is_premium == null || u.is_using_ai == null || (u.is_premium != null && !u.is_premium)) {
         u.check_user_is_premium()
       }
+      
+      // for new posts, always default back to published
+      u.posting.reset_post_status();
     }
   }
   

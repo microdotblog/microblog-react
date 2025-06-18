@@ -521,6 +521,10 @@ export default Posting = types.model('Posting', {
     }
   }),
   
+  reset_post_status: flow(function* () {
+    self.post_status = "published";
+  }),
+  
   toggle_title: flow(function* () {
     console.log("Posting:toggle_title")
     if(self.post_title){return}
