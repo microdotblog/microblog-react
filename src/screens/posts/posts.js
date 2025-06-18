@@ -22,8 +22,21 @@ export default class PostsScreen extends React.Component{
     };
   }
   
-  componentDidMount(){
-    Auth.selected_user.posting?.selected_service?.update_posts_for_active_destination()
+  componentDidMount() {
+    const { selected_service } = Auth.selected_user.posting;
+    const { config } = selected_service;
+
+    selected_service.update_posts_for_active_destination();
+
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      selected_service.check_for_posts_for_destination(config.posts_destination(), this.state.is_showing_drafts_posts);
+    });
+  }
+
+  componentWillUnmount() {
+    if (this.focusListener) {
+      this.focusListener();
+    }
   }
   
   _return_header = () => {
