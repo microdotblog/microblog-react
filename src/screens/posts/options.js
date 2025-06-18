@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, Platform, Keyboard, ActivityIndicator } from 'react-native';
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
 import CheckmarkRowCell from '../../components/cells/checkmark_row_cell'
@@ -12,7 +12,8 @@ export default class PostingOptionsScreen extends React.Component{
 		this.scrollViewRef = React.createRef();
 		this.state = {
 			contentHeight: 0,
-			focusedField: null
+			focusedField: null,
+			isPublishing: false
 		};
 	}
 
@@ -70,7 +71,48 @@ export default class PostingOptionsScreen extends React.Component{
 		  onContentSizeChange={this.handleContentSizeChange}>
 				{/* Post status */}
 				{
-				  true &&
+					posting.is_editing_post && (posting.post_status == "draft") &&
+						<View style={{
+							marginTop: 5,
+							marginBottom: 20,
+							flexDirection: 'row',
+							alignItems: 'center'
+						}}>
+							<TouchableOpacity
+								style={{
+									padding: 8,
+									paddingHorizontal: 15,
+									backgroundColor: App.theme_button_background_color(),
+									borderRadius: 20,
+									borderColor: App.theme_section_background_color(),
+									borderWidth: 1
+								}}
+								onPress={() => {	
+									if (!this.state.isPublishing) {
+										posting.draft
+										this.setState({ isPublishing: true });
+										const post = {
+											content: posting.post_text,
+											name: posting.post_title,
+											url: posting.post_url
+										};
+										posting.selected_service.publish_draft(post).then(result => {
+											Keyboard.dismiss();
+											App.go_back();
+										});
+									}
+								}}
+							>
+								<Text style={{ color: App.theme_button_text_color() }}>Publish</Text>
+							</TouchableOpacity>
+							{
+								this.state.isPublishing && 
+									<ActivityIndicator style={{ marginLeft: 10 }} color={App.theme_accent_color()} />
+							}
+						</View>
+				}
+				{
+				  !posting.is_editing_post &&
 					<View style={{ marginBottom: 25 }}>
 						<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>
 							When sending this post:
