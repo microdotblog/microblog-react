@@ -99,6 +99,8 @@ export default class MenuNavigation extends React.Component{
       <TouchableOpacity
         onPress={() => App.navigate_to_screen_from_menu(item)}
         key={item}
+        accessibilityRole="button"
+        accessibilityLabel={item}
         style={{ 
           width: '100%',
           padding: 8,

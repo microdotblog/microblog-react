@@ -29,6 +29,8 @@
 		4B8CE8AB2A1FCC69006D79CF /* GetURL.js in Resources */ = {isa = PBXBuildFile; fileRef = 4B8CE8AA2A1FCC69006D79CF /* GetURL.js */; };
 		4BAA745E2A24E56500953D91 /* MBHighlightingTextManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1233D329ECCC0100174307 /* MBHighlightingTextManager.m */; };
 		4BAA745F2A24E78700953D91 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		4BB0A4602DFCA4DC00900B0B /* MBClipboardHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BB0A45F2DFCA4DC00900B0B /* MBClipboardHelper.m */; };
+		4BB0A4612DFCA4DC00900B0B /* MBClipboardHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BB0A45F2DFCA4DC00900B0B /* MBClipboardHelper.m */; };
 		52509892FFF0C47000E8F5DE /* libPods-MicroBlog_RN-MicroBlog_RNTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 60EE2B6292F1F3ED4E3AD989 /* libPods-MicroBlog_RN-MicroBlog_RNTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8C619CFF939F9E33E65A6DAA /* libPods-MicroBlog_RN.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1AD34313DED25C45B534DA /* libPods-MicroBlog_RN.a */; };
@@ -100,6 +102,8 @@
 		4B7619CF29EC9E7A0030A495 /* MBHighlightingTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MBHighlightingTextView.h; path = MicroBlog_RN/MBHighlightingTextView.h; sourceTree = "<group>"; };
 		4B7619D029EC9E7A0030A495 /* MBHighlightingTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MBHighlightingTextView.m; path = MicroBlog_RN/MBHighlightingTextView.m; sourceTree = "<group>"; };
 		4B8CE8AA2A1FCC69006D79CF /* GetURL.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = GetURL.js; sourceTree = "<group>"; };
+		4BB0A45E2DFCA4DC00900B0B /* MBClipboardHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MBClipboardHelper.h; path = MicroBlog_RN/MBClipboardHelper.h; sourceTree = "<group>"; };
+		4BB0A45F2DFCA4DC00900B0B /* MBClipboardHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MBClipboardHelper.m; path = MicroBlog_RN/MBClipboardHelper.m; sourceTree = "<group>"; };
 		4C096FE28E3BF256DF2F0398 /* Pods-MicroBlog_RN-MicroBlog_RNTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MicroBlog_RN-MicroBlog_RNTests.release.xcconfig"; path = "Target Support Files/Pods-MicroBlog_RN-MicroBlog_RNTests/Pods-MicroBlog_RN-MicroBlog_RNTests.release.xcconfig"; sourceTree = "<group>"; };
 		60EE2B6292F1F3ED4E3AD989 /* libPods-MicroBlog_RN-MicroBlog_RNTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MicroBlog_RN-MicroBlog_RNTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		67F5CB031FE91036DC73F2D9 /* Pods-MicroBlog_RN-MicroBlog_Share.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MicroBlog_RN-MicroBlog_Share.debug.xcconfig"; path = "Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/Pods-MicroBlog_RN-MicroBlog_Share.debug.xcconfig"; sourceTree = "<group>"; };
@@ -182,6 +186,8 @@
 				4B1233D329ECCC0100174307 /* MBHighlightingTextManager.m */,
 				4B1233D629ECD7D200174307 /* MBHighlightingTextStorage.h */,
 				4B1233D529ECD7D200174307 /* MBHighlightingTextStorage.m */,
+				4BB0A45E2DFCA4DC00900B0B /* MBClipboardHelper.h */,
+				4BB0A45F2DFCA4DC00900B0B /* MBClipboardHelper.m */,
 				4B06FCA629FABD0800E97371 /* UIScrollViewDelegate+Zooming.h */,
 				4B06FCA729FABD0800E97371 /* UIScrollViewDelegate+Zooming.m */,
 				4B3498652AE86AA900233BA2 /* RCTInputAccessoryShadowView.h */,
@@ -458,9 +464,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_RNTests/Pods-MicroBlog_RN-MicroBlog_RNTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_RNTests/Pods-MicroBlog_RN-MicroBlog_RNTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -475,9 +485,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/Pods-MicroBlog_RN-MicroBlog_Share-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/Pods-MicroBlog_RN-MicroBlog_Share-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -492,9 +506,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -553,9 +571,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -589,9 +611,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_RNTests/Pods-MicroBlog_RN-MicroBlog_RNTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_RNTests/Pods-MicroBlog_RN-MicroBlog_RNTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -616,6 +642,7 @@
 				0221AB3829D4327B00838597 /* ReactShareViewController.swift in Sources */,
 				4B7619D229EC9E7A0030A495 /* MBHighlightingTextView.m in Sources */,
 				4B3498682AE86AA900233BA2 /* RCTInputAccessoryShadowView.m in Sources */,
+				4BB0A4612DFCA4DC00900B0B /* MBClipboardHelper.m in Sources */,
 				4B1233D829ECD7D200174307 /* MBHighlightingTextStorage.m in Sources */,
 				0221AB3529D42CE500838597 /* ShareViewController.swift in Sources */,
 				4BAA745E2A24E56500953D91 /* MBHighlightingTextManager.m in Sources */,
@@ -628,6 +655,7 @@
 			files = (
 				4B7619D129EC9E7A0030A495 /* MBHighlightingTextView.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				4BB0A4602DFCA4DC00900B0B /* MBClipboardHelper.m in Sources */,
 				4B1233D729ECD7D200174307 /* MBHighlightingTextStorage.m in Sources */,
 				4B1233D429ECCC0100174307 /* MBHighlightingTextManager.m in Sources */,
 				0251EE462716191A00B475D5 /* File.swift in Sources */,
@@ -740,7 +768,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = MicroBlog_Share/MicroBlog_Share.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 354;
+				CURRENT_PROJECT_VERSION = 360;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 3F9MDJ6K4E;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -754,7 +782,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 3.5;
+				MARKETING_VERSION = 3.5.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "blog.micro.ios.MicroBlog-Share";
@@ -787,7 +815,7 @@
 				CODE_SIGN_ENTITLEMENTS = MicroBlog_Share/MicroBlog_Share.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 354;
+				CURRENT_PROJECT_VERSION = 360;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 3F9MDJ6K4E;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -801,7 +829,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 3.5;
+				MARKETING_VERSION = 3.5.2;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "blog.micro.ios.MicroBlog-Share";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -827,7 +855,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MicroBlog_RN/MicroBlog_RN.entitlements;
-				CURRENT_PROJECT_VERSION = 354;
+				CURRENT_PROJECT_VERSION = 360;
 				DEVELOPMENT_TEAM = 3F9MDJ6K4E;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MicroBlog_RN/Info.plist;
@@ -835,7 +863,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.5;
+				MARKETING_VERSION = 3.5.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -863,14 +891,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MicroBlog_RN/MicroBlog_RN.entitlements;
-				CURRENT_PROJECT_VERSION = 354;
+				CURRENT_PROJECT_VERSION = 360;
 				DEVELOPMENT_TEAM = 3F9MDJ6K4E;
 				INFOPLIST_FILE = MicroBlog_RN/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.5;
+				MARKETING_VERSION = 3.5.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

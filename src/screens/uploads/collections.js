@@ -29,6 +29,12 @@ export default class CollectionsScreen extends React.Component {
 		});
 	}
 
+	componentWillUnmount() {
+		if (this.focusListener) {
+			this.focusListener();
+		}
+	}
+
 	current_service() {
 		const service = Auth.selected_user.posting.selected_service;
 		return service.service_object();
@@ -86,7 +92,7 @@ export default class CollectionsScreen extends React.Component {
 	}
 
 	copy_shortcode(collection) {		
-		const s = `<{{ collection "${collection.name}" }}>`;
+		const s = `{{< collection "${collection.name}" >}}`;
 		Clipboard.setString(s);
 		Toast.showWithGravity("Shortcode copied", Toast.SHORT, Toast.CENTER);
 	}

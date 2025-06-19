@@ -1,7 +1,7 @@
 import { types, flow, destroy } from 'mobx-state-tree';
 import Service from './posting/Service';
 import { blog_services } from './../enums/blog_services';
-import { Alert, Platform, Linking } from 'react-native';
+import { Alert, Platform, Linking, NativeModules } from 'react-native';
 import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
 import XMLRPCApi, { XML_ERROR } from '../../api/XMLRPCApi';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -11,6 +11,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import Tokens from '../Tokens';
 import md from 'markdown-it';
 const parser = md({ html: true });
+const { MBClipboardHelper } = NativeModules;
 
 export default Posting = types.model('Posting', {
   username: types.identifier,
@@ -85,6 +86,7 @@ export default Posting = types.model('Posting', {
     self.post_text = post.content
     self.post_url = post.url
     self.summary = post.summary
+    self.post_status = post.post_status
     
     if(post.category.length > 0){
       let categories = []
@@ -172,6 +174,7 @@ export default Posting = types.model('Posting', {
       }
     }
     self.is_sending_post = true
+    const was_draft = (self.post_status == "draft");
     const post_success = self.selected_service.type === "xmlrpc" ?
       yield XMLRPCApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
       : yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status, self.post_syndicates.length === self.selected_service.active_destination()?.syndicates?.length ? null : self.post_syndicates, self.summary)
@@ -181,7 +184,7 @@ export default Posting = types.model('Posting', {
       self.post_assets = []
       self.post_categories = []
       self.new_category_text = ""
-      self.post_status = "published"
+      // self.post_status = "published"
       self.summary = null
       if(self.selected_service && self.selected_service.active_destination()?.syndicates?.length > 0){
         let syndicate_targets = []
@@ -191,7 +194,9 @@ export default Posting = types.model('Posting', {
         self.post_syndicates = syndicate_targets
       }
       self.is_sending_post = false
-      App.show_publishing_progress()
+      if (!was_draft) {
+        App.show_publishing_progress();
+      }
       return true
     }
     self.is_sending_post = false
@@ -204,23 +209,21 @@ export default Posting = types.model('Posting', {
     const is_link = action === "[]"
     if (is_link) {
       action = "[]()"
-      let url = null
-      if (Platform.OS === "ios") {
-        has_web_url = yield Clipboard.hasWebURL()
+      let has_web_url = false;
+      let url = null;
+      if (Platform.OS == "ios") {
+        // for iOS, we only get the clipboard if it's a URL
+        has_web_url = yield MBClipboardHelper.hasWebURL();
+        if (has_web_url) {
+          url = yield Clipboard.getString();
+        }
       }
       else {
-        url = yield Clipboard.getString()
-        has_web_url = yield Linking.canOpenURL(url)
-        // I'm using this as a fallback, as Android sometimes doesn't know that it can open a URL.
-        if (!has_web_url) {
-          has_web_url = url.startsWith("http://") || url.startsWith("https://")
-        }
+        // for Android, always get clipboard
+        url = yield Clipboard.getString();
+        has_web_url = url.startsWith("http://") || url.startsWith("https://");
       }
-      console.log("HAS WEB URL", url, has_web_url)
-      if (has_web_url) {
-        if (url === null) {
-          url = yield Clipboard.getString()
-        }
+      if (url && has_web_url) {
         action = `[](${ url })`
         console.log("TEXT OPTION", action)
         self.post_text = self.post_text.InsertTextStyle(action, self.text_selection, true, url)
@@ -411,7 +414,7 @@ export default Posting = types.model('Posting', {
       return false
     }
     self.is_sending_post = true
-    const post_success = yield MicroPubApi.post_update(self.selected_service.service_object(), self.post_text, self.post_url, self.post_title, self.post_categories)
+    const post_success = yield MicroPubApi.post_update(self.selected_service.service_object(), self.post_text, self.post_url, self.post_title, self.post_categories, self.post_status)
     self.is_sending_post = false
     if(post_success !== POST_ERROR){
       self.clear_post()
@@ -516,6 +519,10 @@ export default Posting = types.model('Posting', {
       })
       self.post_syndicates = syndicate_targets
     }
+  }),
+  
+  reset_post_status: flow(function* () {
+    self.post_status = "published";
   }),
   
   toggle_title: flow(function* () {

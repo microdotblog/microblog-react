@@ -133,7 +133,12 @@ export default class PostToolbar extends React.Component{
 						{
 							!this.props.is_post_edit && !App.is_share_extension &&
 							<>
-								<TouchableOpacity style={{minWidth: 30, marginLeft: 4, marginRight: 0}} onPress={() => posting.handle_asset_action(this.props.componentId)}>
+								<TouchableOpacity
+									style={{minWidth: 30, marginLeft: 4, marginRight: 0}}
+									onPress={() => posting.handle_asset_action(this.props.componentId)}
+									accessibilityRole="button"
+									accessibilityLabel="Add photo"
+								>
 								{
 									Platform.OS === 'ios' ?
 										<SFSymbol
@@ -151,7 +156,12 @@ export default class PostToolbar extends React.Component{
 						{
 							!this.props.is_post_edit && !App.is_share_extension && (Auth.selected_user?.is_premium != null && Auth.selected_user?.is_premium) &&
 							<>
-								<TouchableOpacity style={{minWidth: 30, marginLeft: 4, marginRight: 0}} onPress={() => App.navigate_to_screen("PostUploads")}>
+								<TouchableOpacity
+									style={{minWidth: 30, marginLeft: 4, marginRight: 0}}
+									onPress={() => App.navigate_to_screen("PostUploads")}
+									accessibilityRole="button"
+									accessibilityLabel="Add file"
+								>
 								{
 									Platform.OS === 'ios' ?
 										<SFSymbol
@@ -192,7 +202,12 @@ export default class PostToolbar extends React.Component{
 								<SvgXml style={{ height: 18, width: 18 }} color={App.theme_text_color()} xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="M5.248 20.246H9.05m0 0h3.696m-3.696 0 5.893-16.502m0 0h-3.697m3.697 0h3.803" /></svg>' />
 							}
 						</TouchableOpacity>
-						<TouchableOpacity style={{minWidth: 30, marginLeft: 5}} onPress={() => App.is_share_extension ? Share.handle_text_action("[]") : posting.handle_text_action("[]")}>
+						<TouchableOpacity
+							style={{minWidth: 30, marginLeft: 5}}
+							onPress={() => App.is_share_extension ? Share.handle_text_action("[]") : posting.handle_text_action("[]")}
+							accessibilityRole="button"
+							accessibilityLabel="Link"
+						>
 							{
 								Platform.OS === 'ios' ?
 									<SFSymbol
@@ -274,6 +289,8 @@ export default class PostToolbar extends React.Component{
 							!App.is_share_extension &&
 							<TouchableOpacity
 								onPress={() => App.navigate_to_screen(this.props.is_post_edit ? "PostEditOptions" : "PostingOptions")}
+								accessibilityRole="button"
+								accessibilityLabel="Post options"
 							>
 							{
 								Platform.OS === 'ios' ?

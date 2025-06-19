@@ -18,6 +18,8 @@ export default class AccountSwitcher extends React.Component{
           App.navigate_to_screen("user", Auth.selected_user.username);
           App.close_sheet("main_sheet");
         }}
+        accessibilityRole="button"
+        accessibilityLabel={`Profile for ${Auth.selected_user.username}`}
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -74,6 +76,8 @@ export default class AccountSwitcher extends React.Component{
 							<TouchableOpacity
 								onPress={() => Auth.select_user(user)}
                 key={user.username}
+                accessibilityRole="button"
+                accessibilityLabel={`Show profile for ${user.username}`}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -122,6 +126,8 @@ export default class AccountSwitcher extends React.Component{
           App.close_sheet("main_sheet");
           App.navigation().navigate("Login");
         }}
+        accessibilityRole="button"
+        accessibilityLabel="Add new account"
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -167,6 +173,8 @@ export default class AccountSwitcher extends React.Component{
 		return (
 			<TouchableOpacity
 				onPress={() => Auth.logout_user()}
+        accessibilityRole="button"
+        accessibilityLabel={sign_out_wording}
 				style={{
 					flexDirection: 'row',
 					alignItems: 'center',

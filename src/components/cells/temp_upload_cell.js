@@ -83,6 +83,7 @@ export default class TempUploadCell extends React.Component {
 									uri: upload.uri,
 									priority: FastImage.priority.high
 								}}
+								fallback={true}
 								resizeMode={FastImage.resizeMode.cover}
 								style={{
 									width: dimension,

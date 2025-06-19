@@ -3,9 +3,11 @@ import { types, flow } from 'mobx-state-tree'
 import Toast from 'react-native-simple-toast'
 import axios from 'axios'
 import MicroPubApi, { POST_ERROR } from '../../../api/MicroPubApi'
+import RNFS from 'react-native-fs'
 
 export default TempUpload = types.model('TempUpload', {
 	uri: types.identifier,
+	cached_uri: types.maybe(types.string),
 	name: types.maybe(types.string),
 	type: types.maybe(types.string),
 	url: types.maybe(types.string),
@@ -49,8 +51,26 @@ export default TempUpload = types.model('TempUpload', {
 			}
 		}),
 
+		copy_file_to_cached: flow(function* () {
+			if (!self.uri?.startsWith('file://')) {
+				return;
+			}
+		
+			const source_path = self.uri.replace('file://', '');
+			const filename = decodeURIComponent(source_path.split('/').pop());
+			const target_path = `${RNFS.CachesDirectoryPath}/${filename}`;
+				
+			try {
+				yield RNFS.copyFile(source_path, target_path);
+				self.cached_uri = `file://${target_path}`;
+			}
+			catch (e) {
+				console.warn('Failed to copy file and update URI:', e);
+			}
+		}),
+
 		copy_html_to_clipboard() {
-			let html = `<img src="${ self.url }" />`
+			let html = `<img src="${ self.url }">`
 			if (self.is_video()) {
 				html = `<video controls src="${ self.url }"></video>`
 			}

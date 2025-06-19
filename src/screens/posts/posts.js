@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard, Image } from 'react-native';
+import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard, Image, StyleSheet } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
@@ -22,8 +22,21 @@ export default class PostsScreen extends React.Component{
     };
   }
   
-  componentDidMount(){
-    Auth.selected_user.posting?.selected_service?.update_posts_for_active_destination()
+  componentDidMount() {
+    const { selected_service } = Auth.selected_user.posting;
+    const { config } = selected_service;
+
+    selected_service.update_posts_for_active_destination();
+
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      selected_service.check_for_posts_for_destination(config.posts_destination(), this.state.is_showing_drafts_posts);
+    });
+  }
+
+  componentWillUnmount() {
+    if (this.focusListener) {
+      this.focusListener();
+    }
   }
   
   _return_header = () => {
@@ -130,8 +143,11 @@ export default class PostsScreen extends React.Component{
     const { config } = selected_service;
     
     setTimeout(() => {
-      const any_drafts = this._has_any_drafts(config.posts_for_destination(this.state.is_showing_drafts_posts));    
-      this.setState({ is_showing_drafts_button: any_drafts });
+      // check if we need drafts button, but if set, never unset
+      if (!this.state.is_showing_drafts_button) {
+        const any_drafts = this._has_any_drafts(config.posts_for_destination(this.state.is_showing_drafts_posts));
+        this.setState({ is_showing_drafts_button: any_drafts });
+      }
     }, 500);
     
     return(
@@ -145,12 +161,18 @@ export default class PostsScreen extends React.Component{
           backgroundColor: App.theme_background_color_secondary(),
           width: "100%"
         }}
-        ListEmptyComponent={
-          <View style={{ flex: 1, padding: 12, justifyContent: 'center', alignItems: 'center' }} >
-            <Text style={{ color: App.theme_text_color() }}>
-              { this.state.is_showing_drafts_posts ? "No drafts." : "No posts." }
-            </Text>
-          </View>
+        // ListEmptyComponent={
+        //   <View style={{ flex: 1, padding: 12, justifyContent: 'center', alignItems: 'center' }} >
+        //     <Text style={{ color: App.theme_text_color() }}>
+        //       { this.state.is_showing_drafts_posts ? "No drafts." : "No posts." }
+        //     </Text>
+        //   </View>
+        // }
+        ItemSeparatorComponent={
+          <View style={{
+            height: StyleSheet.hairlineWidth,
+            backgroundColor: App.theme_alt_background_div_color()
+          }} />
         }
         refreshControl={
           <RefreshControl

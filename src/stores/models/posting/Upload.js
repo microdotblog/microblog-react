@@ -21,7 +21,12 @@ export default Upload = types.model('Upload', {
 			}
 
 			if (self.is_video()) {
-				html = `<video controls src="${ self.url }"></video>`
+				if (self.poster && (self.poster.length > 0)) {
+					html = `<video controls src="${ self.url }" poster="${ self.poster }"></video>`
+				}
+				else {						
+					html = `<video controls src="${ self.url }"></video>`
+				}
 			}
 			else if (self.is_audio()) {
 				html = `<audio controls src="${ self.url }"></audio>`
@@ -69,7 +74,7 @@ export default Upload = types.model('Upload', {
 		},
 		best_post_markup(){
 			if(this.is_audio() || this.is_video()){
-				let html = `<img src="${ self.url }" />`
+				let html = `<img src="${ self.url }">`
 				if (self.is_video()) {
 					html = `<video controls src="${ self.url }"></video>`
 				}

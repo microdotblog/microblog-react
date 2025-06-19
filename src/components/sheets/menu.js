@@ -14,8 +14,8 @@ export default class SheetMenu extends React.Component{
     return(
       <ActionSheet
         id={this.props.sheetId}
-        snapPoints={[40,75,100]}
-        initialSnapIndex={[ Platform.isPad ? 2 : 1 ]}
+        snapPoints={[ 50, 100 ]}
+        initialSnapIndex={1}
         overdrawEnabled={true}
         useBottomSafeAreaPadding={true}
         gestureEnabled={true}

@@ -8,8 +8,10 @@ import Auth from '../../stores/Auth';
 export default class UpdatePostButton extends React.Component {
 
   render() {
+    const { post_status } = Auth.selected_user?.posting;
     return (
       <Button
+        /* title={post_status == "draft" ? "Update" : "Publish"} */
         title="Update"
         color={App.theme_accent_color()}
 				onPress={async() => {
