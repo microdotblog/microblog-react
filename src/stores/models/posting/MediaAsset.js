@@ -85,6 +85,9 @@ export default MediaAsset = types.model('MediaAsset', {
 		if (self.cancel_source) {
 			console.log("MediaAsset:cancel_upload")
 			self.cancel_source.cancel("Upload canceled by the user.")
+			self.is_uploading = false
+			self.progress = 0
+			self.did_upload = false
 		}
 	}),
 	

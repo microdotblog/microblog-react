@@ -52,9 +52,11 @@ export default TempUpload = types.model('TempUpload', {
 
 		cancel_upload: flow(function* () {
 			if (self.cancel_source) {
-				console.log("MediaAsset:cancel_upload")
+				console.log("TempUpload:cancel_upload")
 				self.cancel_source.cancel("Upload canceled by the user.")
 				self.cancelled = true
+				self.is_uploading = false
+				self.progress = 0
 			}
 		}),
 

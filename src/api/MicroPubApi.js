@@ -290,6 +290,7 @@ class MicroPubApi {
 		const upload = axios
 			.post(service.media_endpoint, data, {
 				headers: { Authorization: `Bearer ${ service.token }` },
+				timeout: 60000,
 				onUploadProgress: progressEvent => {
 					const progress = Math.round(
 						(progressEvent.loaded * 100) / progressEvent.total
@@ -304,12 +305,16 @@ class MicroPubApi {
 			})
 			.catch(error => {
 				console.error('MicroPubApi:upload_image:error', error);
+				file.update_progress(0); // Reset progress on failure
+				
 				if (axios.isCancel(error)) {
 					return { success: false, error: "Upload cancelled", cancelled: true };
 				}
 				
 				let errorMessage = "Upload failed";
-				if (error.response) {
+				if (error.code === 'ECONNABORTED') {
+					errorMessage = "Upload timed out - check your connection and try again";
+				} else if (error.response) {
 					errorMessage = error.response.data?.error_description || 
 						error.response.data?.error || 
 						`Server error (${error.response.status})`;
@@ -341,6 +346,7 @@ class MicroPubApi {
 		const upload = axios
 			.post(service.media_endpoint, data, {
 				headers: { Authorization: `Bearer ${ service.token }` },
+				timeout: 60000, // 60 second timeout
 				onUploadProgress: progressEvent => {
 					const progress = Math.round(
 						(progressEvent.loaded * 100) / progressEvent.total
@@ -355,12 +361,16 @@ class MicroPubApi {
 			})
 			.catch(error => {
 				console.error('MicroPubApi:upload_media:error', error)
+				file.update_progress(0); // Reset progress on failure
+				
 				if (axios.isCancel(error)) {
 					return { success: false, error: "Upload cancelled", cancelled: true }
 				}
 				
 				let errorMessage = "Media upload failed"
-				if (error.response) {
+				if (error.code === 'ECONNABORTED') {
+					errorMessage = "Upload timed out - check your connection and try again"
+				} else if (error.response) {
 					errorMessage = error.response.data?.error_description || 
 						error.response.data?.error || 
 						`Server error (${error.response.status})`

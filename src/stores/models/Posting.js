@@ -354,6 +354,10 @@ export default Posting = types.model('Posting', {
   
   asset_option_screen: flow(function* (asset, index) {
     console.log("Posting:asset_option_screen", asset)
+    if (asset.is_uploading) {
+      console.log("Posting:asset_option_screen:blocked - upload in progress")
+      return false
+    }
     return App.navigate_to_screen("ImageOptions", { asset: asset, index: index })
   }),
   
