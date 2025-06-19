@@ -300,11 +300,25 @@ class MicroPubApi {
 			})
 			.then(response => {
 				console.log('MicroPubApi:upload_image:response', response);
-				return response;
+				return { ...response, success: true };
 			})
 			.catch(error => {
-				console.log(error.response);
-				return POST_ERROR;
+				console.error('MicroPubApi:upload_image:error', error);
+				if (axios.isCancel(error)) {
+					return { success: false, error: "Upload cancelled", cancelled: true };
+				}
+				
+				let errorMessage = "Upload failed";
+				if (error.response) {
+					errorMessage = error.response.data?.error_description || 
+						error.response.data?.error || 
+						`Server error (${error.response.status})`;
+				} else if (error.request) {
+					errorMessage = "Network error - check your connection";
+				}
+				
+				Alert.alert("Upload Failed", errorMessage);
+				return { success: false, error: errorMessage };
 			});
 		return upload;
 	}
@@ -337,11 +351,25 @@ class MicroPubApi {
 			})
 			.then(response => {
 				console.log('MicroPubApi:upload_media:response', response)
-				return response
+				return { ...response, success: true }
 			})
 			.catch(error => {
-				console.log(error.response)
-				return POST_ERROR
+				console.error('MicroPubApi:upload_media:error', error)
+				if (axios.isCancel(error)) {
+					return { success: false, error: "Upload cancelled", cancelled: true }
+				}
+				
+				let errorMessage = "Media upload failed"
+				if (error.response) {
+					errorMessage = error.response.data?.error_description || 
+						error.response.data?.error || 
+						`Server error (${error.response.status})`
+				} else if (error.request) {
+					errorMessage = "Network error - check your connection"
+				}
+				
+				Alert.alert("Upload Failed", errorMessage)
+				return { success: false, error: errorMessage }
 			})
 		return upload
 	}
