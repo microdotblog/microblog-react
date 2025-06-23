@@ -273,19 +273,28 @@ class XMLRPCApi {
 
 		const upload = xmlRpcCall(service.endpoint, verb, params)
 			.then(data => {
-				console.log('Data received:', data)
-				return data
+				console.log('XMLRPCApi:upload_image:response', data)
+				if (data && (data.link || data.url)) {
+					return { ...data, success: true }
+				} else {
+					console.error('XMLRPCApi:upload_image:no_url', 'Upload succeeded but no URL returned')
+					Alert.alert("Upload Failed", "Upload completed but no URL was returned from server")
+					return { success: false, error: "No URL returned" }
+				}
 			})
 			.catch(err => {
-				console.log('XMLRPCApi:error', err)
-				// Check if error is incorrect password/username
+				console.error('XMLRPCApi:upload_image:error', err)
+				let errorMessage = "Image upload failed"
 				if (err?.toString()?.includes("username or password")) {
-					Alert.alert("Whoops. Your username or password is wrong. Please try again.")
+					errorMessage = "Authentication failed - check your credentials"
+				} else if (err?.toString()?.includes("Network")) {
+					errorMessage = "Network error - check your connection"
+				} else if (err?.message) {
+					errorMessage = err.message
 				}
-				else {
-					Alert.alert("Whoops, an error occured. Please try again.")
-				}
-				return XML_ERROR
+				
+				Alert.alert("Upload Failed", errorMessage)
+				return { success: false, error: errorMessage }
 			})
 		return upload
 	}

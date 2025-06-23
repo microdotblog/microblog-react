@@ -26,16 +26,23 @@ export default TempUpload = types.model('TempUpload', {
 			self.cancel_source = axios.CancelToken.source()
 			const response = yield MicroPubApi.upload_media(service_object, self, destination.uri)
 			console.log("TempUpload:upload", response)
-			if (response !== POST_ERROR) {
-				self.did_upload = true
-				if(response.headers.location || response.data.url) {
-					self.url = response.headers.location || response.data.url
-					//self.copy_link_to_clipboard()
+			if (response !== POST_ERROR && response.success) {
+				const upload_url = response.headers?.location || response.data?.url
+				if (upload_url && upload_url.trim() !== "") {
+					self.url = upload_url
+					self.did_upload = true
+					console.log("TempUpload:upload:success", self.url)
+				} else {
+					console.error("TempUpload:upload:no_url", "Upload succeeded but no URL returned")
+					self.did_upload = false
 				}
+			} else {
+				console.error("TempUpload:upload:failed", response.error || "Upload failed")
+				self.did_upload = false
 			}
 			self.cancel_source = null
 			self.is_uploading = false
-			return self.url ? true : false
+			return self.did_upload && self.url ? true : false
 		}),
 
 		update_progress: flow(function* (progress) {
@@ -45,9 +52,11 @@ export default TempUpload = types.model('TempUpload', {
 
 		cancel_upload: flow(function* () {
 			if (self.cancel_source) {
-				console.log("MediaAsset:cancel_upload")
+				console.log("TempUpload:cancel_upload")
 				self.cancel_source.cancel("Upload canceled by the user.")
 				self.cancelled = true
+				self.is_uploading = false
+				self.progress = 0
 			}
 		}),
 

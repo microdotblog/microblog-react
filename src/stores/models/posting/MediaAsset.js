@@ -29,12 +29,22 @@ export default MediaAsset = types.model('MediaAsset', {
 			self.cancel_source = axios.CancelToken.source()
 			const response = yield MicroPubApi.upload_image(service_object, self)
 			console.log("MediaAsset:upload", response)
-			if (response !== POST_ERROR) {
-				self.remote_url = response.headers.location || response.data.url
-				if(response.poster){
-					self.remote_poster_url = response.poster
+			if (response !== POST_ERROR && response.success) {
+				const upload_url = response.headers?.location || response.data?.url
+				if (upload_url && upload_url.trim() !== "") {
+					self.remote_url = upload_url
+					if(response.poster){
+						self.remote_poster_url = response.poster
+					}
+					self.did_upload = true
+					console.log("MediaAsset:upload:success", self.remote_url)
+				} else {
+					console.error("MediaAsset:upload:no_url", "Upload succeeded but no URL returned")
+					self.did_upload = false
 				}
-				self.did_upload = true
+			} else {
+				console.error("MediaAsset:upload:failed", response.error || "Upload failed")
+				self.did_upload = false
 			}
 			self.cancel_source = null
 		}
@@ -42,10 +52,19 @@ export default MediaAsset = types.model('MediaAsset', {
 			console.log("MediaAsset:upload:base64", self.base64 != null)
 			const response = yield XMLRPCApi.upload_image(service_object, self)
 			console.log("MediaAsset:upload", response)
-			if (response !== XML_ERROR) {
-				self.remote_url = response.link
-				self.upload_id = response.id
-				self.did_upload = true
+			if (response !== XML_ERROR && response.success) {
+				if (response.link && response.link.trim() !== "") {
+					self.remote_url = response.link
+					self.upload_id = response.id
+					self.did_upload = true
+					console.log("MediaAsset:upload:xmlrpc:success", self.remote_url)
+				} else {
+					console.error("MediaAsset:upload:xmlrpc:no_url", "Upload succeeded but no URL returned")
+					self.did_upload = false
+				}
+			} else {
+				console.error("MediaAsset:upload:xmlrpc:failed", response.error || "Upload failed")
+				self.did_upload = false
 			}
 		}
 		
@@ -66,6 +85,9 @@ export default MediaAsset = types.model('MediaAsset', {
 		if (self.cancel_source) {
 			console.log("MediaAsset:cancel_upload")
 			self.cancel_source.cancel("Upload canceled by the user.")
+			self.is_uploading = false
+			self.progress = 0
+			self.did_upload = false
 		}
 	}),
 	

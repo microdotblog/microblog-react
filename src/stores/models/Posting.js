@@ -154,24 +154,30 @@ export default Posting = types.model('Posting', {
       )
       return false
     }
-    if(!App.is_share_extension && self.post_assets.filter(image => image.is_uploading)?.length > 0){
-      Alert.alert(
-        "Whoops...",
-        "We're still uploading your media. Please wait and try again."
-      )
-      return false
-    }
-    else if (App.is_share_extension && self.post_assets.length > 0) {
+    // Check if any uploads are still pending (for both regular posts and share extension)
+    const pending_uploads = self.post_assets.filter(asset => !asset.did_upload && !asset.is_uploading)
+    const uploading_assets = self.post_assets.filter(asset => asset.is_uploading)
+    
+    if (pending_uploads.length > 0) {
+      console.log("Posting:send_post:uploading_pending_assets", pending_uploads.length)
       self.is_sending_post = true
       const upload_success = yield self.upload_assets()
       if (!upload_success) {
         self.is_sending_post = false
         Alert.alert(
-          "Whoops...",
-          "We couldn't upload your media. Please try again."
+          "Upload Failed",
+          "We couldn't upload your media. Please check your connection and try again."
         )
         return false
       }
+    }
+    
+    if (uploading_assets.length > 0) {
+      Alert.alert(
+        "Please wait",
+        "We're still uploading your media. Please wait and try again."
+      )
+      return false
     }
     self.is_sending_post = true
     const was_draft = (self.post_status == "draft");
@@ -318,9 +324,8 @@ export default Posting = types.model('Posting', {
   
   attach_asset: flow(function* (asset) {
     self.post_assets.push(asset)
-    if (!App.is_share_extension) {
-      asset.upload(self.selected_service.service_object())
-    }
+    // Always upload immediately for better user feedback
+    asset.upload(self.selected_service.service_object())
   }),
 
   asset_action: flow(function* (asset, index) {
@@ -349,6 +354,10 @@ export default Posting = types.model('Posting', {
   
   asset_option_screen: flow(function* (asset, index) {
     console.log("Posting:asset_option_screen", asset)
+    if (asset.is_uploading) {
+      console.log("Posting:asset_option_screen:blocked - upload in progress")
+      return false
+    }
     return App.navigate_to_screen("ImageOptions", { asset: asset, index: index })
   }),
   
@@ -438,9 +447,22 @@ export default Posting = types.model('Posting', {
 
   upload_assets: flow(function* () {
     console.log("Posting:upload_assets")
+    const failed_uploads = []
+    
     for (const asset of self.post_assets.filter(asset => !asset.did_upload)) {
-      yield asset.upload(self.selected_service.service_object())
+      console.log("Posting:upload_assets:uploading", asset.uri)
+      const upload_result = yield asset.upload(self.selected_service.service_object())
+      if (!asset.did_upload) {
+        failed_uploads.push(asset)
+        console.error("Posting:upload_assets:failed", asset.uri)
+      }
     }
+    
+    if (failed_uploads.length > 0) {
+      console.error("Posting:upload_assets:some_failed", failed_uploads.length)
+      return false
+    }
+    
     return self.post_assets.every(asset => asset.did_upload)
   }),
   

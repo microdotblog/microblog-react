@@ -31,8 +31,22 @@ export default class AssetToolbar extends React.Component{
           {
             posting.post_assets.map((asset, index) => (
               <TouchableOpacity
-                onPress={() => App.is_share_extension ? Share.trigger_image_options(asset) : posting.asset_option_screen(asset, index)}
-                onLongPress={() => !asset.is_uploading && asset.remote_url != null && !asset.is_video ? posting.inline_asset(asset) : null}
+                onPress={() => {
+                  if (asset.is_uploading) {
+                    return; // Prevent navigation during upload
+                  }
+                  App.is_share_extension ? Share.trigger_image_options(asset) : posting.asset_option_screen(asset, index)
+                }}
+                onLongPress={() => {
+                  if (asset.is_uploading) {
+                    // Cancel and remove uploading asset
+                    asset.cancel_upload();
+                    posting.remove_asset(index);
+                  } else if (asset.remote_url != null && !asset.is_video) {
+                    // Inline completed asset
+                    posting.inline_asset(asset);
+                  }
+                }}
                 key={`${asset.uri}-${index}`}
                 style={{
                   marginRight: 4,
