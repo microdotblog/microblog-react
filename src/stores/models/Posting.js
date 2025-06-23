@@ -438,6 +438,7 @@ export default Posting = types.model('Posting', {
     self.post_title = null
     self.post_assets = []
     self.post_categories = []
+    self.summary = null
     self.new_category_text = ""
     self.is_editing_post = false
     self.post_url = null
