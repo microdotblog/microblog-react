@@ -131,13 +131,15 @@ export default Destination = types.model('Destination', {
 			const published = entry.published || ""
 			const poster = entry.poster || ""
 			const alt = entry.alt || ""
-			let is_ai = entry["microblog-ai"]
+			const is_ai = entry["microblog-ai"]
+			const cdn = entry.cdn || {}
 			const upload = {
 				url: url,
 				published: published,
 				poster: poster,
 				alt: alt,
-				is_ai: is_ai
+				is_ai: is_ai,
+				cdn: cdn
 			}
 			if (url === "") {
 				return acc;
