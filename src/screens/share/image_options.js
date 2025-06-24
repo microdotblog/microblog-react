@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, ScrollView, Image, ActivityIndicator, TextInput, KeyboardAvoidingView, Dimensions } from 'react-native';
-import App from '../../stores/App'
-import Share from '../../stores/Share'
+import { View, Text, TouchableOpacity, ScrollView, Image, ActivityIndicator, TextInput, KeyboardAvoidingView, Dimensions } from 'react-native';
+import App from '../../stores/App';
+import Share from '../../stores/Share';
+import Clipboard from '@react-native-clipboard/clipboard';
+import MicroPubApi from '../../api/MicroPubApi';
 
 @observer
 export default class ShareImageOptionsScreen extends React.Component{
@@ -19,6 +21,9 @@ export default class ShareImageOptionsScreen extends React.Component{
     this.state = {
       media_width: media_width,
       media_height: media_height,
+      isLoadingAlt: Share.selected_user.is_using_ai,
+      generatedAltText: "",
+      copyButtonTitle: "Copy Text"
     };
     
     Image.getSize(asset.uri, (width, height) => {
@@ -32,6 +37,62 @@ export default class ShareImageOptionsScreen extends React.Component{
       
       this.setState({ media_width: media_width, media_height: media_height });
     });
+
+    if (Share.selected_user.is_using_ai) {
+      this._download_image_info();
+    }
+  }
+
+  _download_image_info = (remaining_count = 10) => {
+    const posting = Share.selected_user.posting;
+    const service = posting.selected_service.service_object();
+    const destination = service.destination;
+  
+    MicroPubApi.get_uploads(service, destination).then(results => {
+      let found = this._check_uploads_for_text(results);
+      if (!found && (remaining_count > 0)) {
+        // if alt text not found, wait and try again
+        setTimeout(() => {
+          this._download_image_info(remaining_count - 1);
+        }, 4000);
+      }
+    });
+  }
+  
+  _check_uploads_for_text(results) {
+    const { asset } = this.props;
+    let found = false;
+  
+    if (results.items != null) {
+      for (let item of results.items) {
+        if (item.url === asset.remote_url && item.alt.length > 0) {
+          found = true;
+  
+          // if user hasn't typed any alt_text yet, fill it in and hide the robot bar
+          if (!asset.alt_text || asset.alt_text.trim().length === 0) {
+            // wait a half second just to give visual clue that this was auto-generated
+            setTimeout(() => {
+              asset.set_alt_text(item.alt);
+              this.setState({
+                isLoadingAlt: false,
+                generatedAltText: ""
+              });
+            }, 500);
+          }
+          else {
+            // user has already typed something, so show the bar
+            this.setState({
+              isLoadingAlt: false,
+              generatedAltText: item.alt
+            });
+          }
+  
+          break;
+        }
+      }
+    }
+  
+    return found;
   }
   
   render() {
@@ -74,6 +135,49 @@ export default class ShareImageOptionsScreen extends React.Component{
               : null
             }
           </View>
+
+          { (this.state.isLoadingAlt || (this.state.generatedAltText.length > 0)) && 
+            <View style={{
+              flexDirection: "row",
+              minHeight: 40,
+              alignItems: "center",
+              width: "100%",
+              padding: 8,
+              paddingVertical: 10,
+              borderBottomWidth: 1,
+              borderBottomColor: App.theme_section_background_color()
+            }}>
+              { this.state.isLoadingAlt ? 
+                <>
+                  <Text numberOfLines={1} style={{ color: App.theme_text_color() }}>🤖</Text>
+                  <ActivityIndicator color="#f80" size={"small"} style={{ paddingLeft: 5 }} />
+                </>
+              :
+                <>
+                  <Text numberOfLines={1} style={{ flex: 1, color: App.theme_text_color() }}>🤖 {this.state.generatedAltText}</Text>
+                  <TouchableOpacity
+                    style={{
+                      marginLeft: 5,
+                      padding: 4,
+                      paddingLeft: 6,
+                      paddingRight: 6,
+                      backgroundColor: App.theme_button_background_color(),
+                      borderRadius: 20,
+                      borderColor: App.theme_section_background_color(),
+                      borderWidth: 1
+                    }}
+                    onPress={() => {
+                      Clipboard.setString(this.state.generatedAltText);
+                      this.setState({ copyButtonTitle: "✓ Copied" });
+                    }}
+                  >
+                    <Text style={{ fontSize: 12, color: App.theme_button_text_color() }}>{this.state.copyButtonTitle}</Text>
+                  </TouchableOpacity>
+                </>
+              }
+            </View>
+          }
+          
           {
             !asset.is_video &&
             <TextInput
@@ -93,7 +197,7 @@ export default class ShareImageOptionsScreen extends React.Component{
               scrollEnabled={true}
               returnKeyType={'default'}
               keyboardType={'default'}
-              autoFocus={false}
+              autoFocus={true}
               autoCorrect={true}
               clearButtonMode={'while-editing'}
               enablesReturnKeyAutomatically={true}

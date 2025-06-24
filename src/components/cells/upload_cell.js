@@ -81,6 +81,11 @@ export default class UploadCell extends React.Component {
 			)
 		}
 		else {
+			let best_url = upload.url;
+			if (upload.cdn && upload.cdn.small) {
+				best_url = upload.cdn.small;
+			}
+			
 			return (
 				<FastImage
 					key={upload.url}
