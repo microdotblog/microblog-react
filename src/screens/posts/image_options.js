@@ -42,21 +42,39 @@ export default class ImageOptionsScreen extends React.Component{
   _check_uploads_for_text(results) {
     const { asset } = this.props.route.params;
     let found = false;
-    
+  
     if (results.items != null) {
       for (let item of results.items) {
-        if (item.url == asset.remote_url) {
-          if (item.alt.length > 0) {
-            found = true;
-            this.setState({ isLoadingAlt: false, generatedAltText: item.alt });
+        if (item.url === asset.remote_url && item.alt.length > 0) {
+          found = true;
+  
+          // if user hasn't typed any alt_text yet, fill it in and hide the robot bar
+          if (!asset.alt_text || asset.alt_text.trim().length === 0) {
+            // wait a half second just to give visual clue that this was auto-generated
+            setTimeout(() => {
+              asset.set_alt_text(item.alt);
+              this.setState({
+                isLoadingAlt: false,
+                generatedAltText: ""
+              });
+            }, 500);
           }
+          else {
+            // user has already typed something, so show the bar
+            this.setState({
+              isLoadingAlt: false,
+              generatedAltText: item.alt
+            });
+          }
+  
+          break;
         }
       }
     }
-    
+  
     return found;
   }
-
+  
   render() {
     const { posting } = Auth.selected_user
     const { asset } = this.props.route.params
@@ -120,7 +138,16 @@ export default class ImageOptionsScreen extends React.Component{
             />
           </View>
           { (this.state.isLoadingAlt || (this.state.generatedAltText.length > 0)) && 
-            <View style={{ flexDirection: "row", minHeight: 40, alignItems: "center", width: "100%", padding: 8 }}>
+            <View style={{
+              flexDirection: "row",
+              minHeight: 40,
+              alignItems: "center",
+              width: "100%",
+              padding: 8,
+              paddingVertical: 10,
+              borderBottomWidth: 1,
+              borderBottomColor: App.theme_section_background_color()
+            }}>
               { this.state.isLoadingAlt ? 
                 <>
                   <Text numberOfLines={1} style={{ color: App.theme_text_color() }}>🤖</Text>
@@ -170,7 +197,7 @@ export default class ImageOptionsScreen extends React.Component{
               scrollEnabled={false}
               returnKeyType={'default'}
               keyboardType={'default'}
-              autoFocus={false}
+              autoFocus={true}
               autoCorrect={true}
               clearButtonMode={'while-editing'}
               enablesReturnKeyAutomatically={true}
