@@ -33,8 +33,8 @@ export default class ReplySheet extends React.Component {
         useBottomSafeAreaPadding={true}
         gestureEnabled={true}
         containerStyle={{ backgroundColor: App.theme_modal_background_color(), padding: 0 }}
-        snapPoints={[45, 95]}
-        initialSnapIndex={Platform.OS === 'android' ? [1] : [0]}
+        snapPoints={[70]}
+        initialSnapIndex={1}
         backgroundInteractionEnabled={true}
         isModal={true}
       >
