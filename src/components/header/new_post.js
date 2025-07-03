@@ -13,8 +13,7 @@ export default class NewPostButton extends React.Component{
   render() {
     let button_style = {
       justifyContent: 'center',
-      alignItems: 'center',
-      marginRight: Platform.OS === "android" ? 12 : 0      
+      alignItems: 'center'
     };
 
     if (isLiquidGlass()) {
