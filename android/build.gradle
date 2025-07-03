@@ -4,7 +4,7 @@ buildscript {
         buildToolsVersion = "34.0.0"
         minSdkVersion = 24
         compileSdkVersion = 34
-        targetSdkVersion = 34
+        targetSdkVersion = 35
         ndkVersion = "26.1.10909125"
         kotlinVersion = "1.9.25"
         androidXBrowser = "1.8.0"
