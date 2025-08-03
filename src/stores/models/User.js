@@ -70,10 +70,14 @@ export default User = types.model('User', {
     }),
     
     check_token_validity: flow(function* () {
-      const token_validity = yield MicroBlogApi.login_with_token(self.token())
-      if(token_validity === LOGIN_TOKEN_INVALID){
+      const data = yield MicroBlogApi.login_with_token(self.token())
+      if(data === LOGIN_TOKEN_INVALID){
         console.log("User:TOKEN_IS_INVALID")
         App.trigger_logout_for_user(self)
+      }
+      else {
+        self.is_premium = data.is_premium
+        self.is_using_ai = data.is_using_ai
       }
     }),
     

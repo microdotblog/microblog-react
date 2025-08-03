@@ -25,7 +25,7 @@ export default class PostingScreen extends React.Component{
         u.posting.reset_post_syndicates()
       }
 
-      if (u.is_premium == null || u.is_using_ai == null || (u.is_premium != null && !u.is_premium)) {
+      if (u.is_premium == null || u.is_using_ai == null || (u.is_premium != null && !u.is_premium) || (u.is_using_ai != null && !u.is_using_ai)) {
         u.check_user_is_premium()
       }
       
