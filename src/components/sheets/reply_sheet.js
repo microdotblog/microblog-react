@@ -115,7 +115,7 @@ export default class ReplySheet extends React.Component {
                   zIndex: 10
                 }}
               >
-                <ActivityIndicator color="#f80" size={'large'} />
+                <ActivityIndicator color="#f80" size={'small'} />
               </View>
             ) : null}
             {Reply.is_loading_conversation ? (
@@ -133,8 +133,8 @@ export default class ReplySheet extends React.Component {
                   opacity: 0.95
                 }}
               >
-                <ActivityIndicator color="#f80" size={'large'} />
-                <Text style={{ color: App.theme_text_color(), marginTop: 15, fontSize: 16 }}>Loading conversation...</Text>
+                <ActivityIndicator color="#f80" size={'small'} />
+                <Text style={{ color: App.theme_text_color(), marginTop: 15, fontSize: 15 }}>Loading conversation...</Text>
               </View>
             ) : null}
           </KeyboardAvoidingView>
