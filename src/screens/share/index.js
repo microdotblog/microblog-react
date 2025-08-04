@@ -55,7 +55,7 @@ export default class ShareScreen extends React.Component {
 												}} 
 											>
 												<View style={{
-													height: 200,
+													height: 400,
 													justifyContent: 'center',
 													alignItems: 'center'              
 												}}>
