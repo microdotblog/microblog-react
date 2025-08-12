@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { Linking, Appearance, AppState, Platform, Dimensions, Alert } from 'react-native'
+import { Linking, Appearance, AppState, Platform, Dimensions, Alert, Keyboard } from 'react-native'
 import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
 import Toast from 'react-native-simple-toast';
 import { InAppBrowser } from 'react-native-inappbrowser-reborn'
@@ -56,12 +56,16 @@ export default App = types.model('App', {
   publishing_progress: types.optional(types.number, 0),
   publishing_status: types.optional(types.string, ""),
   is_publishing: types.optional(types.boolean, false),
-  latest_published_url: types.maybeNull(types.string)
+  latest_published_url: types.maybeNull(types.string),
+  keyboard_height: types.optional(types.number, 0),
+  is_keyboard_visible: types.optional(types.boolean, false)
 })
 .volatile(self => ({
   navigation_ref: null,
   current_tab_key: null,
   current_raw_tab_key: null,
+  keyboard_show_listener: null,
+  keyboard_hide_listener: null,
 }))
 .actions(self => ({
   
@@ -84,6 +88,7 @@ export default App = types.model('App', {
       Settings.hydrate()
       App.set_is_loading(false)
       App.set_up_url_listener()
+      App.setup_keyboard_listeners()
       if (Auth.is_logged_in()) {
         Push.handle_first_notification()
       }
@@ -107,6 +112,38 @@ export default App = types.model('App', {
   set_is_loading: flow(function* (loading) {
     console.log("App:set_is_loading", loading)
     self.is_loading = loading
+  }),
+
+  set_keyboard_height: flow(function* (height) {
+    self.keyboard_height = height
+    self.is_keyboard_visible = height > 0
+  }),
+
+  setup_keyboard_listeners: flow(function* () {
+    console.log("App:setup_keyboard_listeners")
+    if (Platform.OS === 'android') {
+      self.keyboard_show_listener = Keyboard.addListener('keyboardDidShow', (event) => {
+        console.log("Keyboard shown with height:", event.endCoordinates.height)
+        App.set_keyboard_height(event.endCoordinates.height)
+      })
+      
+      self.keyboard_hide_listener = Keyboard.addListener('keyboardDidHide', () => {
+        console.log("Keyboard hidden")
+        App.set_keyboard_height(0)
+      })
+    }
+  }),
+
+  cleanup_keyboard_listeners: flow(function* () {
+    console.log("App:cleanup_keyboard_listeners")
+    if (self.keyboard_show_listener) {
+      self.keyboard_show_listener.remove()
+      self.keyboard_show_listener = null
+    }
+    if (self.keyboard_hide_listener) {
+      self.keyboard_hide_listener.remove()
+      self.keyboard_hide_listener = null
+    }
   }),
 
   set_up_url_listener: flow(function* () {
