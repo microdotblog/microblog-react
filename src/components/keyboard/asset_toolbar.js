@@ -18,7 +18,7 @@ export default class AssetToolbar extends React.Component{
             ...Platform.select({
               android: {
                 position: 'absolute',
-                bottom: App.keyboard_height + 40,
+                bottom: 40,
               }
             }),
             flexDirection: 'row',

@@ -103,7 +103,7 @@ export default class PostToolbar extends React.Component{
 					...Platform.select({
 						android: {
 							position: 'absolute',
-							bottom: App.keyboard_height + 25,
+							bottom: 0,
 							right: 0,
 							left: 0,
 						}

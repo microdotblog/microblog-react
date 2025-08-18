@@ -19,7 +19,7 @@ export default class UsernameToolbar extends React.Component{
 						...Platform.select({
 							android: {
 								position: 'absolute',
-								bottom: App.keyboard_height + 40,
+								bottom: 40,
 								right: 0,
 								left: 0,
 							}
