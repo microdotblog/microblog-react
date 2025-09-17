@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { View, TextInput, ActivityIndicator, InputAccessoryView, Platform, KeyboardAvoidingView, TouchableOpacity, Text } from 'react-native'
+import { View, TextInput, ActivityIndicator, InputAccessoryView, Platform, TouchableOpacity, Text } from 'react-native'
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import ActionSheet from 'react-native-actions-sheet'
 import Reply from '../../stores/Reply'
 import ReplyToolbar from '../keyboard/reply_toolbar'

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, ScrollView, Image, ActivityIndicator, TextInput, KeyboardAvoidingView, Dimensions } from 'react-native';
+import { View, ScrollView, Image, ActivityIndicator, TextInput, Dimensions } from 'react-native';
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import App from '../../stores/App'
 import Share from '../../stores/Share'
 
