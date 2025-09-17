@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, ActivityIndicator } from 'react-native';
+import { View, TextInput } from 'react-native';
 import Auth from '../../stores/Auth';
 import App from '../../stores/App';
 import PostToolbar from '../../components/keyboard/post_toolbar';
 import AssetToolbar from '../../components/keyboard/asset_toolbar';
 import UsernameToolbar from '../../components/keyboard/username_toolbar';
+import LoadingComponent from '../../components/generic/loading';
 
 @observer
 export default class PostingScreen extends React.Component{
@@ -83,29 +84,7 @@ export default class PostingScreen extends React.Component{
           <AssetToolbar componentId={this.props.componentId} />
           <PostToolbar componentId={this.props.componentId} />
         </>
-        {          
-          posting.is_sending_post && (posting.post_text != "") ?
-          <View 
-            style={{ 
-              position: 'absolute',
-              top: 0,
-              height: '100%',
-              width: '100%',
-              zIndex: 10,
-              backgroundColor: App.theme_background_color(),
-              opacity: 0.8
-            }} 
-          >
-            <View style={{
-              height: 200,
-              justifyContent: 'center',
-              alignItems: 'center'              
-            }}>
-              <ActivityIndicator color={App.theme_accent_color()} size={'large'} />
-            </View>
-          </View>
-          : null
-        }
+        <LoadingComponent should_show={posting.is_sending_post && posting.post_text != ""} />
       </View>
     )
   }
