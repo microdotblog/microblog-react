@@ -16,14 +16,6 @@ export default class UsernameToolbar extends React.Component{
 					style={{
 						width: '100%',
 						backgroundColor: App.theme_autocomplete_background_color(),
-						...Platform.select({
-							android: {
-								position: 'absolute',
-								bottom: 40,
-								right: 0,
-								left: 0,
-							}
-						}),
 						padding: 5,
 						minHeight: 40,
 						flexDirection: 'row',

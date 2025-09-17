@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput } from 'react-native';
+import { TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, KeyboardStickyView } from "react-native-keyboard-controller";
 import Auth from '../../stores/Auth';
 import App from '../../stores/App';
 import PostToolbar from '../../components/keyboard/post_toolbar';
@@ -18,73 +19,73 @@ export default class PostingScreen extends React.Component{
   render() {
     const { posting } = Auth.selected_user
     return(
-      <View style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
-        {
-          posting.should_show_title() ?
+      <View style={{flex: 1, justifyContent: 'space-between'}}>
+        <KeyboardAvoidingView behavior='height' keyboardVerticalOffset={125}>
+          {
+            posting.should_show_title() ?
+            <TextInput
+              placeholder="Title"
+              placeholderTextColor={App.theme_placeholder_text_color()}
+              style={{
+                fontSize: 18,
+                justifyContent: 'flex-start',
+  						  alignItems: 'flex-start',
+                padding: 8,
+                marginBottom: 4,
+                fontWeight: '700',
+                borderColor: App.theme_border_color(),
+                borderBottomWidth: .5,
+                color: App.theme_text_color()
+              }}
+              editable={!posting.is_sending_post}
+              multiline={false}
+              scrollEnabled={false}
+              returnKeyType={'default'}
+   					  keyboardType={'default'}
+   					  autoFocus={false}
+   					  autoCorrect={true}
+   					  clearButtonMode={'while-editing'}
+   					  enablesReturnKeyAutomatically={true}
+   					  underlineColorAndroid={'transparent'}
+              value={posting.post_title}
+              onChangeText={(text) => !posting.is_sending_post ? posting.set_post_title(text) : null}
+            />
+            : null
+          }
           <TextInput
-            placeholder="Title"
-            placeholderTextColor={App.theme_placeholder_text_color()}
+            placeholderTextColor="lightgrey"
             style={{
               fontSize: 18,
               justifyContent: 'flex-start',
-						  alignItems: 'flex-start',
+              alignItems: 'flex-start',
+              marginTop: 3,
               padding: 8,
-              marginBottom: 4,
-              fontWeight: '700',
-              borderColor: App.theme_border_color(),
-              borderBottomWidth: .5,
-              color: App.theme_text_color()
+              color: App.theme_text_color(),
+              paddingBottom: 50
             }}
             editable={!posting.is_sending_post}
-            multiline={false}
-            scrollEnabled={false}
+            multiline={true}
+            scrollEnabled={true}
             returnKeyType={'default'}
-					  keyboardType={'default'}
-					  autoFocus={false}
-					  autoCorrect={true}
-					  clearButtonMode={'while-editing'}
-					  enablesReturnKeyAutomatically={true}
-					  underlineColorAndroid={'transparent'}
-            value={posting.post_title}
-            onChangeText={(text) => !posting.is_sending_post ? posting.set_post_title(text) : null}
-            inputAccessoryViewID={this.input_accessory_view_id}
+            keyboardType={'default'}
+            autoFocus={true}
+            autoCorrect={true}
+            clearButtonMode={'while-editing'}
+            enablesReturnKeyAutomatically={true}
+            underlineColorAndroid={'transparent'}
+            value={posting.post_text}
+            onChangeText={(text) => !posting.is_sending_post ? posting.set_post_text_from_typing(text) : null}
+            onSelectionChange={({ nativeEvent: { selection } }) => {
+              posting.set_text_selection(selection)
+            }}
           />
-          : null
-        }
-        <TextInput
-          placeholderTextColor="lightgrey"
-          style={{
-            fontSize: 18,
-            justifyContent: 'flex-start',
-            alignItems: 'flex-start',
-            marginTop: 3,
-            marginBottom: posting.post_text_length() > posting.max_post_length() || posting.post_title ? posting.post_assets.length > 0 ? 135 : 80 : posting.post_assets.length > 0 ? 93 : 38,
-            padding: 8,
-            color: App.theme_text_color()
-          }}
-          editable={!posting.is_sending_post}
-          multiline={true}
-          scrollEnabled={true}
-          returnKeyType={'default'}
-          keyboardType={'default'}
-          autoFocus={true}
-          autoCorrect={true}
-          clearButtonMode={'while-editing'}
-          enablesReturnKeyAutomatically={true}
-          underlineColorAndroid={'transparent'}
-          value={posting.post_text}
-          onChangeText={(text) => !posting.is_sending_post ? posting.set_post_text_from_typing(text) : null}
-          onSelectionChange={({ nativeEvent: { selection } }) => {
-            posting.set_text_selection(selection)
-          }}
-          inputAccessoryViewID={this.input_accessory_view_id}
-        />
-        <>
+          <LoadingComponent should_show={posting.is_sending_post && posting.post_text != ""} />
+        </KeyboardAvoidingView>
+        <KeyboardStickyView>
           <UsernameToolbar componentId={this.props.componentId} object={posting} />
           <AssetToolbar componentId={this.props.componentId} />
           <PostToolbar componentId={this.props.componentId} />
-        </>
-        <LoadingComponent should_show={posting.is_sending_post && posting.post_text != ""} />
+        </KeyboardStickyView>
       </View>
     )
   }

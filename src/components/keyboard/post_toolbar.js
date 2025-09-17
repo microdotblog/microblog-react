@@ -99,15 +99,7 @@ export default class PostToolbar extends React.Component{
 		return (
 			<View
 				style={{
-					width: '100%',
-					...Platform.select({
-						android: {
-							position: 'absolute',
-							bottom: 0,
-							right: 0,
-							left: 0,
-						}
-					})
+					width: '100%'
 				}}
 			>
 				{this._render_destinations()}
