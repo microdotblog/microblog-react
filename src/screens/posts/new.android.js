@@ -1,41 +1,17 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, ActivityIndicator, InputAccessoryView, Platform } from 'react-native';
+import { View, TextInput, ActivityIndicator } from 'react-native';
 import Auth from '../../stores/Auth';
 import App from '../../stores/App';
 import PostToolbar from '../../components/keyboard/post_toolbar';
 import AssetToolbar from '../../components/keyboard/asset_toolbar';
 import UsernameToolbar from '../../components/keyboard/username_toolbar';
-import HighlightingText from '../../components/text/highlighting_text';
 
 @observer
 export default class PostingScreen extends React.Component{
   
-  constructor(props) {
-		super(props)
-    this.input_accessory_view_id = "input_toolbar";
-  }
-  
   componentDidMount() {
-    const u = Auth.selected_user;
-    if (u != null) {
-      if (u.posting.selected_service != null) {
-        u.posting.selected_service.check_for_categories()
-        u.posting.selected_service.check_for_syndicate_to_targets()
-        u.posting.reset_post_syndicates()
-      }
-
-      if (u.is_premium == null || u.is_using_ai == null || (u.is_premium != null && !u.is_premium)) {
-        u.check_user_is_premium()
-      }
-      
-      // for new posts, always default back to published
-      u.posting.reset_post_status();
-    }
-  }
-  
-  _input_outer_view = (component) => {
-    return component
+    Auth.selected_user?.prep_posting()
   }
   
   render() {
