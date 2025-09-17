@@ -61,7 +61,7 @@ export default class PostingScreen extends React.Component{
               marginTop: 3,
               padding: 8,
               color: App.theme_text_color(),
-              paddingBottom: 50
+              paddingBottom: posting.post_assets?.length > 0 ? 80 : 50,
             }}
             editable={!posting.is_sending_post}
             multiline={true}
