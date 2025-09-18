@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, Platform, InputAccessoryView } from 'react-native';
+import { View, TextInput, InputAccessoryView } from 'react-native';
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
 import PostToolbar from '../../components/keyboard/post_toolbar'
@@ -59,15 +59,8 @@ export default class PostEditScreen extends React.Component{
             justifyContent: 'flex-start',
             alignItems: 'flex-start',
             marginTop: 0,
-            ...Platform.select({
-              android: {
-              marginBottom: posting.post_text_length() > posting.max_post_length() || posting.post_title ? posting.post_assets.length > 0 ? 135 : 80 : posting.post_assets.length > 0 ? 93 : 38,
-              },
-              ios: {
-                paddingBottom: posting.post_text_length() > posting.max_post_length() ? 150 : 0,
-                flex: 1
-              }
-            }),
+            paddingBottom: posting.post_text_length() > posting.max_post_length() ? 150 : 0,
+            flex: 1,
             padding: 8,
             color: App.theme_text_color()
           }}
