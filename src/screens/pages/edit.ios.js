@@ -136,7 +136,7 @@ export default class PageEditScreen extends React.Component{
             </InputAccessoryView>
           :  
           <>
-            <PostToolbar componentId={this.props.componentId} is_post_edit hide_count />
+            <PostToolbar componentId={this.props.componentId} is_post_edit hide_count hide_settings />
           </>
         }
         {
