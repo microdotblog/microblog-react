@@ -8,7 +8,7 @@ import PostToolbar from '../../components/keyboard/post_toolbar';
 import LoadingComponent from '../../components/generic/loading';
 
 @observer
-export default class PostEditScreen extends React.Component{
+export default class PageEditScreen extends React.Component{
   
   render() {
     const { posting } = Auth.selected_user
