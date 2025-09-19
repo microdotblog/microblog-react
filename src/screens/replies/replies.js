@@ -36,7 +36,8 @@ export default class RepliesScreen extends React.Component{
     return(
       <ScrollView 
         style={{
-          backgroundColor: App.theme_background_color_secondary()
+          backgroundColor: App.theme_background_color_secondary(),
+          width: '100%'
         }}
         refreshControl={
           <RefreshControl

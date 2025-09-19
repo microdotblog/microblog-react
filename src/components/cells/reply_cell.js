@@ -82,7 +82,8 @@ export default class ReplyCell extends React.Component{
             padding: 15,
             borderColor: App.theme_alt_background_div_color(),
             borderBottomWidth: .5,
-            backgroundColor: App.theme_background_color_secondary()
+            backgroundColor: App.theme_background_color_secondary(),
+            width: '100%'
           }}
           onPress={reply.can_edit() ? reply.trigger_edit : () => App.handle_url_from_webview(reply.url)}
         >
