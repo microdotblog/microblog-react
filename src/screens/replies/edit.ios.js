@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput, ActivityIndicator, InputAccessoryView, Platform } from 'react-native';
+import { TextInput, InputAccessoryView } from 'react-native';
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import ReplyToolbar from '../../components/keyboard/reply_toolbar'
 import App from '../../stores/App'
 import Replies from '../../stores/Replies'
+import LoadingComponent from '../../components/generic/loading';
 
 @observer
 export default class ReplyEditScreen extends React.Component{
@@ -16,7 +17,7 @@ export default class ReplyEditScreen extends React.Component{
   
   render() {
     return(
-      <KeyboardAvoidingView behavior={ Platform.OS === 'ios' ? 'padding' : undefined } style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
+      <KeyboardAvoidingView behavior='padding' style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
         <TextInput
           placeholderTextColor="lightgrey"
           style={{
@@ -46,30 +47,10 @@ export default class ReplyEditScreen extends React.Component{
           }}
           inputAccessoryViewID={this.input_accessory_view_id}
         />
-        {
-          Platform.OS === 'ios' ?
-            <InputAccessoryView nativeID={this.input_accessory_view_id}>
-              <ReplyToolbar reply={Replies.selected_reply} />
-            </InputAccessoryView>
-          :  <ReplyToolbar reply={Replies.selected_reply} />
-        }
-        {
-          Replies.selected_reply?.is_sending_reply ?
-          <View 
-            style={{ 
-              position: 'absolute',
-              top: 0,
-              height: 200,
-              width: '100%',
-              justifyContent: 'center',
-              alignItems: 'center',
-              zIndex: 10
-            }} 
-          >
-            <ActivityIndicator color="#f80" size={'large'} />
-          </View>
-          : null
-        }
+        <InputAccessoryView nativeID={this.input_accessory_view_id}>
+          <ReplyToolbar reply={Replies.selected_reply} />
+        </InputAccessoryView>
+        <LoadingComponent should_show={Replies.selected_reply?.is_sending_reply} />
       </KeyboardAvoidingView>
     )
   }
