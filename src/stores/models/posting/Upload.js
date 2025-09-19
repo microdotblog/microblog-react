@@ -7,7 +7,8 @@ export default Upload = types.model('Upload', {
 	published: types.maybe(types.string),
 	poster: types.maybe(types.string),
 	alt: types.maybe(types.string),
-	is_ai: types.optional(types.boolean, true)
+	is_ai: types.optional(types.boolean, true),
+	cdn: types.optional(types.map(types.string), {})
 })
 	.actions(self => ({
 

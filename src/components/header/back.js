@@ -2,7 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { Platform } from 'react-native';
 import App from './../../stores/App';
-import { isLiquidGlass } from './../../utils/ui';
+import { isLiquidGlass, STANDARD_SLOP } from './../../utils/ui';
 import { SFSymbol } from 'react-native-sfsymbols';
 import { SvgXml } from 'react-native-svg';
 import { HeaderBackButton } from '@react-navigation/elements';
@@ -14,18 +14,23 @@ const BackButtonContent = observer(() => {
   
   if (isLiquidGlass()) {
     button_style = {
-      marginLeft: 9,
-      marginTop: 2
+      marginRight: 0 - STANDARD_SLOP,
+      marginLeft: 9 - STANDARD_SLOP,
+      marginTop: 2 - STANDARD_SLOP,
+      marginBottom: 0 - STANDARD_SLOP,
+      padding: STANDARD_SLOP
     }
   }
   else {    
     button_style = {      
       marginLeft: -20,
-      paddingHorizontal: 20,
-      paddingBottom: 10,
+      marginRight: 0,
+      marginTop: -10,
       marginBottom: -10,
+      paddingLeft: 20,
+      paddingRight: 0,
       paddingTop: 10,
-      marginTop: -10
+      paddingBottom: 10
     };
   }
   
@@ -38,6 +43,7 @@ const BackButtonContent = observer(() => {
       }}
       style={button_style}
       labelVisible={false}
+      hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
       backImage={() => (
         Platform.OS === 'ios' ?
           <SFSymbol

@@ -335,6 +335,10 @@ export default Share = types.model('Share', {
 		
 		trigger_image_options: flow(function* (asset) {
 			console.log('Share:trigger_image_options', asset)
+			if (asset.is_uploading) {
+				console.log('Share:trigger_image_options:blocked - upload in progress')
+				return false
+			}
 			self.image_options_open = true
 		}),
 		
