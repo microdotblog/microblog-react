@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, TextInput } from 'react-native';
+import { TextInput } from 'react-native';
 import { KeyboardAvoidingView, KeyboardStickyView } from "react-native-keyboard-controller";
 import ReplyToolbar from '../../components/keyboard/reply_toolbar'
 import App from '../../stores/App'
@@ -12,14 +12,12 @@ export default class ReplyEditScreen extends React.Component{
   
   render() {
     return(
-      <View style={{flex: 1, justifyContent: 'space-between'}}>
-        <KeyboardAvoidingView behavior='height' keyboardVerticalOffset={125}>
+      <>
+        <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={125} style={{ flex: 1 }}>
           <TextInput
             placeholderTextColor="lightgrey"
             style={{
               fontSize: 18,
-              justifyContent: 'flex-start',
-              alignItems: 'flex-start',
               marginTop: 3,
               padding: 8,
               color: App.theme_text_color(),
@@ -46,7 +44,7 @@ export default class ReplyEditScreen extends React.Component{
         <KeyboardStickyView>
           <ReplyToolbar reply={Replies.selected_reply} />
         </KeyboardStickyView>
-      </View>
+      </>
     )
   }
   

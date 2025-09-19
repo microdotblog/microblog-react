@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { TextInput, View } from 'react-native';
+import { TextInput } from 'react-native';
 import { KeyboardAvoidingView, KeyboardStickyView } from "react-native-keyboard-controller";
 import Auth from '../../stores/Auth';
 import App from '../../stores/App';
@@ -19,8 +19,8 @@ export default class PostingScreen extends React.Component{
   render() {
     const { posting } = Auth.selected_user
     return(
-      <View style={{flex: 1, justifyContent: 'space-between'}}>
-        <KeyboardAvoidingView behavior='height' keyboardVerticalOffset={125}>
+      <>
+        <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={125} style={{ flex: 1 }}>
           {
             posting.should_show_title() ?
             <TextInput
@@ -56,12 +56,10 @@ export default class PostingScreen extends React.Component{
             placeholderTextColor="lightgrey"
             style={{
               fontSize: 18,
-              justifyContent: 'flex-start',
-              alignItems: 'flex-start',
               marginTop: 3,
               padding: 8,
               color: App.theme_text_color(),
-              paddingBottom: posting.post_assets?.length > 0 ? 90 : 50,
+              paddingBottom: posting.post_assets?.length > 0 ? 90 : 50
             }}
             editable={!posting.is_sending_post}
             multiline={true}
@@ -86,7 +84,7 @@ export default class PostingScreen extends React.Component{
           <AssetToolbar componentId={this.props.componentId} />
           <PostToolbar componentId={this.props.componentId} />
         </KeyboardStickyView>
-      </View>
+      </>
     )
   }
   
