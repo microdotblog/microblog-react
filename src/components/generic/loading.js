@@ -5,7 +5,7 @@ import App from '../../stores/App';
 export default class LoadingComponent extends React.Component{
 
   render() {
-    const { should_show, message } = this.props
+    const { should_show, message, size = 'large' } = this.props
     if (!should_show) return null
     return(
       <View 
@@ -24,7 +24,7 @@ export default class LoadingComponent extends React.Component{
           justifyContent: 'center',
           alignItems: 'center'              
         }}>
-          <ActivityIndicator color={App.theme_accent_color()} size={'large'} />
+          <ActivityIndicator color={App.theme_accent_color()} size={size} />
           {
             message && <Text style={{ color: App.theme_text_color(), fontSize: 16, marginTop: 10 }}>{message}</Text>
           }

@@ -1,13 +1,12 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { View, TextInput, InputAccessoryView, Platform, TouchableOpacity, Text } from 'react-native'
-import { KeyboardAvoidingView } from "react-native-keyboard-controller";
+import { View, TextInput, InputAccessoryView, KeyboardAvoidingView, TouchableOpacity, Text } from 'react-native'
 import ActionSheet from 'react-native-actions-sheet'
 import Reply from '../../stores/Reply'
 import ReplyToolbar from '../keyboard/reply_toolbar'
 import App from '../../stores/App'
 import { SFSymbol } from 'react-native-sfsymbols'
-import LoadingComponent from '../generic/loading';
+import LoadingComponent from '../generic/loading'
 
 @observer
 export default class ReplySheet extends React.Component {
@@ -34,8 +33,8 @@ export default class ReplySheet extends React.Component {
         useBottomSafeAreaPadding={true}
         gestureEnabled={true}
         containerStyle={{ backgroundColor: App.theme_modal_background_color(), padding: 0 }}
-        snapPoints={[45, 95]}
-        initialSnapIndex={[1]}
+        snapPoints={[70]}
+        initialSnapIndex={1}
         backgroundInteractionEnabled={true}
         isModal={true}
       >
@@ -52,7 +51,7 @@ export default class ReplySheet extends React.Component {
         </View>
         <View>
           <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            behavior={'padding'}
             style={{ backgroundColor: App.theme_modal_background_color() }}
           >
             <TextInput
@@ -90,8 +89,8 @@ export default class ReplySheet extends React.Component {
             <InputAccessoryView nativeID={this.input_accessory_view_id}>
               <ReplyToolbar reply={Reply} />
             </InputAccessoryView>
-            <LoadingComponent should_show={Reply.is_sending_reply} />
-            <LoadingComponent should_show={Reply.is_loading_conversation} message="Loading conversation..." />
+            <LoadingComponent should_show={Reply.is_sending_reply} size={'small'} />
+            <LoadingComponent should_show={Reply.is_loading_conversation} size={'small'} message={'Loading conversation...'} />
           </KeyboardAvoidingView>
         </View>
       </ActionSheet>
