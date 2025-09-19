@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, ScrollView, Image, ActivityIndicator, TextInput, Dimensions } from 'react-native';
+import { View, ScrollView, Image, ActivityIndicator, TextInput, Dimensions, Platform } from 'react-native';
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import App from '../../stores/App'
 import Share from '../../stores/Share'
@@ -36,7 +36,7 @@ export default class ShareImageOptionsScreen extends React.Component{
   }
   
   render() {
-    const { posting } = Share.selected_user
+    const { posting } = Platform.OS === 'ios' ? Share.selected_user : Auth.selected_user
     const { asset } = this.props
     
     return(

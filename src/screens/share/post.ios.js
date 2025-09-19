@@ -1,9 +1,8 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { InputAccessoryView, View, Text, Platform } from 'react-native'
+import { InputAccessoryView, View, Text } from 'react-native'
 import Share from '../../stores/Share'
 import App from '../../stores/App'
-import Auth from '../../stores/Auth';
 import AssetToolbar from '../../components/keyboard/asset_toolbar'
 import PostToolbar from '../../components/keyboard/post_toolbar'
 import HighlightingText from '../../components/text/highlighting_text';
@@ -17,7 +16,7 @@ export default class SharePostScreen extends React.Component {
 	}
 
 	render() {
-		const { selected_user } = Platform.OS === "ios" ? Share : Auth
+		const { selected_user } = Share
 		return (
 			Share.is_logged_in() && selected_user?.posting != null ?
 				<View style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
@@ -38,7 +37,7 @@ export default class SharePostScreen extends React.Component {
 					<HighlightingText
 						placeholderTextColor="lightgrey"
 						style={{
-							height: Platform.OS === "ios" ? 300 : "auto",
+							height: 300,
 							fontSize: 18,
 							justifyContent: 'flex-start',
 							alignItems: 'flex-start',
@@ -57,29 +56,17 @@ export default class SharePostScreen extends React.Component {
 						enablesReturnKeyAutomatically={true}
 						underlineColorAndroid={'transparent'}
 						value={Share.share_text}
-						selection={Platform.OS === "ios" ? selected_user?.posting.text_selection_flat : Share.text_selection}
-						onChangeText={
-							Platform.OS === 'ios'
-								? ({ nativeEvent: { text } }) => !selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null
-								: (text) => !selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null
-						 }
+						selection={selected_user?.posting.text_selection_flat }
+						onChangeText={({ nativeEvent: { text } }) => !selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null}
 						onSelectionChange={({ nativeEvent: { selection } }) => {
 							Share.set_text_selection(selection)
 						}}
 						inputAccessoryViewID={this.input_accessory_view_id}
 					/>
-					{
-						Platform.OS === "ios" ?
-						<InputAccessoryView nativeID={this.input_accessory_view_id}>
-							<AssetToolbar posting={selected_user?.posting} />
-							<PostToolbar posting={selected_user?.posting} />
-						</InputAccessoryView>
-						:
-						<>
-							<AssetToolbar posting={selected_user?.posting} />
-							<PostToolbar posting={selected_user?.posting} />
-						</>
-					}
+					<InputAccessoryView nativeID={this.input_accessory_view_id}>
+						<AssetToolbar posting={selected_user?.posting} />
+						<PostToolbar posting={selected_user?.posting} />
+					</InputAccessoryView>
 				</View>
 				: null
 		)
