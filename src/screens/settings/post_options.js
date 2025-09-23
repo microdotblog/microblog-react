@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TextInput, TouchableOpacity, Button, Keyboard, KeyboardAvoidingView, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Button, Keyboard, ActivityIndicator, Platform } from 'react-native';
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import App from '../../stores/App'
 import Services from '../../stores/Services'
 

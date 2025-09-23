@@ -15,12 +15,6 @@ export default class AssetToolbar extends React.Component{
         <ScrollView
           horizontal
           style={{
-            ...Platform.select({
-              android: {
-                position: 'absolute',
-                bottom: 40,
-              }
-            }),
             flexDirection: 'row',
             padding: 8
           }}

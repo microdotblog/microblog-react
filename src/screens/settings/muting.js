@@ -8,9 +8,9 @@ import {
   TextInput, 
   Alert, 
   Platform, 
-  ActivityIndicator,
-  KeyboardAvoidingView
+  ActivityIndicator
 } from "react-native"
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { SFSymbol } from "react-native-sfsymbols"
 import { SvgXml } from "react-native-svg"
 import App from "../../stores/App"

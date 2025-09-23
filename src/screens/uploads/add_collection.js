@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TextInput, Button, ActivityIndicator, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TextInput, Button, ActivityIndicator, Keyboard, Platform } from 'react-native';
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import Auth from '../../stores/Auth';
 import App from '../../stores/App';
 import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';

@@ -250,6 +250,22 @@ export default User = types.model('User', {
       }
     }),
     
+    prep_posting: flow(function* () {
+      console.log("User:prep_posting")
+      if (self.posting.selected_service != null) {
+        self.posting.selected_service.check_for_categories()
+        self.posting.selected_service.check_for_syndicate_to_targets()
+        self.posting.reset_post_syndicates()
+      }
+
+      if (self.is_premium == null || self.is_using_ai == null || (self.is_premium != null && !self.is_premium)  || (self.is_using_ai != null && !self.is_using_ai)) {
+        self.check_user_is_premium()
+      }
+      
+      // for new posts, always default back to published
+      self.posting.reset_post_status();
+    }),
+    
   }))
   .views(self => ({
     

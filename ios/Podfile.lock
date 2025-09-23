@@ -1276,6 +1276,27 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-keyboard-controller (1.18.6):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-menu (1.2.3):
     - React
   - react-native-netinfo (9.5.0):
@@ -1790,6 +1811,7 @@ DEPENDENCIES:
   - "react-native-cookies (from `../node_modules/@react-native-cookies/cookies`)"
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
+  - react-native-keyboard-controller (from `../node_modules/react-native-keyboard-controller`)
   - "react-native-menu (from `../node_modules/@react-native-menu/menu`)"
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -1926,6 +1948,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-document-picker"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
+  react-native-keyboard-controller:
+    :path: "../node_modules/react-native-keyboard-controller"
   react-native-menu:
     :path: "../node_modules/@react-native-menu/menu"
   react-native-netinfo:
@@ -2022,14 +2046,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  boost: 4cb898d0bf20404aab1850c656dcea009429d6c1
-  DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
+  boost: 1dca942403ed9342f98334bf4c3621f011aa7946
+  DoubleConversion: f16ae600a246532c4020132d54af21d0ddb2a385
   FBLazyVector: ee328dc37246cbe6d45ae4472951c0ca0dd6ffbf
   fmt: 4c2741a687cc09f0634a2e2c72a838b99f1ff120
-  glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
+  glog: 08b301085f15bcbb6ff8632a8ebaf239aae04e6a
   hermes-engine: c9fe5870af65876125fdbbf833071b6f329db30d
   libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
-  RCT-Folly: 02617c592a293bd6d418e0a88ff4ee1f88329b47
+  RCT-Folly: 34124ae2e667a0e5f0ea378db071d27548124321
   RCTDeprecation: 3abf1129f54dbf292986302277f62ad01f7af1b2
   RCTRequired: 67f606e1be40dbb827898c23d9eaee3562b087d1
   RCTTypeSafety: 30826859480f0ee4a3dd4fe64854e40d6f29c558
@@ -2062,6 +2086,7 @@ SPEC CHECKSUMS:
   react-native-cookies: d648ab7025833b977c0b19e142503034f5f29411
   react-native-document-picker: a338165804b1a14c8e408448115dc0edfd7b73ca
   react-native-image-picker: 130fad649d07e4eec8faaed361d3bba570e1e5ff
+  react-native-keyboard-controller: 0eb559489c7dcde3555b4b51563c8bfa5d98bfc2
   react-native-menu: 70a2aeaeb0a6da0db4e08d8531cdf1d20b702cbf
   react-native-netinfo: 26560022f28c06d8ef00a9ff1e03beefbbb60c2d
   react-native-safe-area-context: 758e894ca5a9bd1868d2a9cfbca7326a2b6bf9dc
