@@ -667,7 +667,7 @@ export default App = types.model('App', {
       const regex = /@([a-zA-Z0-9_]+(?:@[a-zA-Z0-9.-]+)?)/g
       const pieces = s.match(regex)
       if (pieces != null) {
-        const username = pieces[pieces.length - 1].substr(1) // get rid of @
+        const username = pieces[pieces.length - 1].substr(1)
         if (username.length >= 3) {
           // make sure this is at the end of the text for now
           const len = s.length
@@ -686,8 +686,6 @@ export default App = types.model('App', {
                 self.found_users.push(u)
               }
             }
-          } else {
-            self.found_users = []
           }
         }
       } else {
