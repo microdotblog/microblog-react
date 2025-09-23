@@ -657,14 +657,14 @@ export default App = types.model('App', {
       }
     }),
 
-    check_usernames: flow(function*(text) {
+    check_usernames: flow(function* (text) {
       const s = text
-    
+
       // for a quick test, we're just going to grab usernames regardless of insertion point
       // later, will be smarter about only checking the username that is being typed
       // TODO: use Posting.text_selection
-    
-      const regex = /\@([a-z][A-Z]*)/ig
+
+      const regex = /@([a-zA-Z0-9_]+(?:@[a-zA-Z0-9.-]+)?)/g
       const pieces = s.match(regex)
       if (pieces != null) {
         const username = pieces[pieces.length - 1].substr(1) // get rid of @
@@ -672,7 +672,7 @@ export default App = types.model('App', {
           // make sure this is at the end of the text for now
           const len = s.length
           const offset = s.indexOf(username)
-          if ((len - username.length) == offset) {
+          if (len - username.length == offset) {
             // query the server
             const results = yield MicroBlogApi.find_users(username)
             if (results !== API_ERROR && results.contacts != null) {
@@ -681,32 +681,32 @@ export default App = types.model('App', {
               for (var c of results.contacts) {
                 const u = Contact.create({
                   username: c.nickname,
-                  avatar: c.photo
+                  avatar: c.photo,
                 })
                 self.found_users.push(u)
               }
             }
-          }
-          else {
+          } else {
             self.found_users = []
           }
         }
-      }
-      else {
+      } else {
         self.found_users = []
       }
     }),
-  
-    update_autocomplete: flow(function*(selected_username, obj) {
+
+    update_autocomplete: flow(function* (selected_username, obj) {
       var s = obj.post_text
       if (s == undefined) {
         s = obj.reply_text
       }
-      s = s.replace("@" + App.current_autocomplete, "@" + selected_username + " ")
+      s = s.replace(
+        "@" + App.current_autocomplete,
+        "@" + selected_username + " "
+      )
       if (obj.reply_text != undefined) {
         obj.set_reply_text(s)
-      }
-      else {
+      } else {
         obj.set_post_text(s)
       }
       App.found_users = []
