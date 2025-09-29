@@ -1,5 +1,6 @@
 import { types, flow, applySnapshot, destroy } from 'mobx-state-tree';
 import Token from './models/Token'
+import SFInfo from 'react-native-sensitive-info'
 import * as SecureStore from 'expo-secure-store';
 
 export default Tokens = types.model('Tokens', {
@@ -9,7 +10,7 @@ export default Tokens = types.model('Tokens', {
 
   hydrate: flow(function* (return_data = false) {
     console.log("Tokens:hydrate")
-    const data = yield SecureStore.getItemAsync('Tokens')
+    const data = yield SFInfo.getItem('Tokens', {}) // TODO: Replace with when the time comes: yield SecureStore.getItemAsync('Tokens')
     if (data) {
       applySnapshot(self, JSON.parse(data))
       console.log("Tokens:hydrate:with_data")
@@ -21,6 +22,7 @@ export default Tokens = types.model('Tokens', {
   
   destroy_all_token_data: flow(function* () {
     console.log("Tokens:destroy_all_token_data")
+    yield SFInfo.deleteItem("Tokens", {})
     yield SecureStore.deleteItemAsync("Tokens")
   }),
   
