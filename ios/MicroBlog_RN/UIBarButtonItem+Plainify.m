@@ -33,7 +33,7 @@
   if (@available(iOS 26, *)) {
     UIActivityIndicatorView* spinner = [self findFirstIndicatorInView:customView];
     if (spinner) {
-      item.hidesSharedBackground = YES;
+      [item performSelector:@selector(setHidesSharedBackground:) withObject:@(YES)];
     }
   }
   

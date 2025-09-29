@@ -87,3 +87,7 @@ ios/.xcode.env.local
 .yarn/install-state.gz
 CLAUDE.md
 .cursor
+# Expo
+.expo
+dist/
+web-build/

@@ -78,12 +78,22 @@ export default App = types.model('App', {
     hydrate: flow(function*() {
       console.log("App:hydrate")
       self.is_loading = true
+      
+      yield App.set_current_initial_theme()
+      yield App.set_current_initial_font_scale()
+      yield Push.hydrate()
     
-      Auth.hydrate().then(async () => {
+      Settings.hydrate()
+      App.set_is_loading(false)
+      App.set_up_url_listener()
+      App.setup_keyboard_listeners()
+      
+      try{
+        yield Auth.hydrate()
         console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
-        await App.set_current_initial_theme()
-        await App.set_current_initial_font_scale()
-        await Push.hydrate()
+        yield App.set_current_initial_theme()
+        yield App.set_current_initial_font_scale()
+        yield Push.hydrate()
       
         Settings.hydrate()
         App.set_is_loading(false)
@@ -95,7 +105,10 @@ export default App = types.model('App', {
         else if (!Auth.is_logged_in()) {
           App.navigate_to_screen("Login")
         }
-      })
+      }
+      catch(error){
+        console.error(error)
+      }
     }),
 
     prep_and_hydrate_share_extension: flow(function*() {
