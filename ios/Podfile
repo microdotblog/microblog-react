@@ -41,11 +41,6 @@ target 'MicroBlog_RN' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  target 'MicroBlog_RNTests' do
-    inherit! :complete
-    # Pods for testing
-  end
-
   target 'MicroBlog_Share' do
     inherit! :complete
   end
