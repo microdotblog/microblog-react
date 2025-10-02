@@ -4,7 +4,7 @@ import MicroPubApi, { DELETE_ERROR, FETCH_ERROR } from './../../../api/MicroPubA
 import XMLRPCApi, { XML_ERROR } from '../../../api/XMLRPCApi'
 import Config from './Config'
 import { Alert } from 'react-native'
-import DocumentPicker from 'react-native-document-picker'
+import { pick, types as pickerTypes } from '@react-native-documents/picker'
 import { launchImageLibrary } from 'react-native-image-picker'
 import App from '../../App'
 
@@ -306,10 +306,7 @@ export default Service = types.model('Service', {
 
   pick_file: flow(function* (destination) {
     console.log("Destination:pick_file", destination.uid)
-    DocumentPicker.pick({
-      type: [ DocumentPicker.types.audio, DocumentPicker.types.images, DocumentPicker.types.video ],
-      allowMultiSelection: true
-    })
+    pick({ allowMultiSelection: true, type: [ pickerTypes.audio, pickerTypes.images, pickerTypes.video ]})
       .then((res) => {
         console.log("Destination:pick_file:res", res)
         res.forEach((asset) => {
@@ -319,9 +316,6 @@ export default Service = types.model('Service', {
       })
       .catch((err) => {
         // TODO: SHOW ERROR MESSAGES IF APPLICABLE
-        if (!DocumentPicker.isCancel(err)) {
-          console.log("Destination:pick_file:err", err)
-        }
       })
   }),
 

@@ -1292,7 +1292,7 @@ PODS:
     - React
   - react-native-cookies (6.2.1):
     - React-Core
-  - react-native-document-picker (9.3.1):
+  - react-native-document-picker (10.1.7):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2209,7 +2209,7 @@ DEPENDENCIES:
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - react-native-context-menu-view (from `../node_modules/react-native-context-menu-view`)
   - "react-native-cookies (from `../node_modules/@react-native-cookies/cookies`)"
-  - react-native-document-picker (from `../node_modules/react-native-document-picker`)
+  - "react-native-document-picker (from `../node_modules/@react-native-documents/picker`)"
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-keyboard-controller (from `../node_modules/react-native-keyboard-controller`)
   - "react-native-menu (from `../node_modules/@react-native-menu/menu`)"
@@ -2367,7 +2367,7 @@ EXTERNAL SOURCES:
   react-native-cookies:
     :path: "../node_modules/@react-native-cookies/cookies"
   react-native-document-picker:
-    :path: "../node_modules/react-native-document-picker"
+    :path: "../node_modules/@react-native-documents/picker"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
   react-native-keyboard-controller:
@@ -2520,7 +2520,7 @@ SPEC CHECKSUMS:
   React-microtasksnativemodule: b902bf1dc40aa577bb8e00e2ec897853fbc82ca4
   react-native-context-menu-view: 418877dcac6add4abba8fc2ee92c39f05b763f3a
   react-native-cookies: d648ab7025833b977c0b19e142503034f5f29411
-  react-native-document-picker: bfe9c7d72908d2faba56a4765373c6367090ae2e
+  react-native-document-picker: 4eea571bafacde686393413d5e3faaf96493ac6f
   react-native-image-picker: ede3b0b991aae11b3c1d61c187a833720e255277
   react-native-keyboard-controller: 00dad4b39f7d55ecf11ce64c8dfd874c40cdda61
   react-native-menu: 63c116cbad4f0b074a69067a2f9e2bfeb071d1bd
