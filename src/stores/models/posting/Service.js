@@ -1,5 +1,6 @@
 import { types, flow, destroy } from 'mobx-state-tree'
 import Tokens from './../../Tokens'
+import { Platform } from 'react-native';
 import MicroPubApi, { DELETE_ERROR, FETCH_ERROR } from './../../../api/MicroPubApi'
 import XMLRPCApi, { XML_ERROR } from '../../../api/XMLRPCApi'
 import Config from './Config'
