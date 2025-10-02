@@ -10,7 +10,7 @@ import UIKit
 import React
 import React_RCTAppDelegate
 import ReactAppDependencyProvider
-import RNCPushNotificationIOS
+//import RNCPushNotificationIOS
 import RNShareMenu
 
 @main
@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window = UIWindow(frame: UIScreen.main.bounds)
 
     factory.startReactNative(
-      withModuleName: "MicroBlog_RN",
+      withModuleName: "Micro.blog",
       in: window,
       launchOptions: launchOptions
     )
@@ -46,30 +46,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     return ShareMenuManager.application(application, open: url, options: options)
   }
 
-  // Required to register for notifications
-  func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
-    RNCPushNotificationIOS.didRegister(notificationSettings)
-  }
-
-  // Required for the register event.
-  func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-    RNCPushNotificationIOS.didRegisterForRemoteNotifications(withDeviceToken: deviceToken)
-  }
-
-  // Required for the notification event. You must call the completion handler after handling the remote notification.
-  func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-    RNCPushNotificationIOS.didReceiveRemoteNotification(userInfo, fetchCompletionHandler: completionHandler)
-  }
-
-  // Required for the registrationError event.
-  func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-    RNCPushNotificationIOS.didFailToRegisterForRemoteNotificationsWithError(error)
-  }
-
-  // Required for the localNotification event.
-  func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
-    RNCPushNotificationIOS.didReceive(notification)
-  }
+//  // Required to register for notifications
+//  func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
+//    RNCPushNotificationIOS.didRegister(notificationSettings)
+//  }
+//
+//  // Required for the register event.
+//  func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+//    RNCPushNotificationIOS.didRegisterForRemoteNotifications(withDeviceToken: deviceToken)
+//  }
+//
+//  // Required for the notification event. You must call the completion handler after handling the remote notification.
+//  func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+//    RNCPushNotificationIOS.didReceiveRemoteNotification(userInfo, fetchCompletionHandler: completionHandler)
+//  }
+//
+//  // Required for the registrationError event.
+//  func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+//    RNCPushNotificationIOS.didFailToRegisterForRemoteNotificationsWithError(error)
+//  }
+//
+//  // Required for the localNotification event.
+//  func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
+//    RNCPushNotificationIOS.didReceive(notification)
+//  }
 }
 
 class ReactNativeDelegate: RCTDefaultReactNativeFactoryDelegate {
