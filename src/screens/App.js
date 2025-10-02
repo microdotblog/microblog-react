@@ -75,7 +75,10 @@ export default class MainApp extends React.Component {
         <GestureHandlerRootView style={{ flex: 1 }}>
           <KeyboardProvider>
             <SheetProvider>
-              <StatusBar barStyle={App.is_dark_mode() ? 'light-content' : 'dark-content'} backgroundColor={App.theme_background_color()} />
+              {
+                Platform.OS === 'android' &&
+                <StatusBar barStyle={App.is_dark_mode() ? 'light-content' : 'dark-content'} backgroundColor={App.theme_background_color()} />
+              }
               <NavigationContainer
                 theme={{
                 dark: App.is_dark_mode(),
