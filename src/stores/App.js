@@ -70,6 +70,7 @@ export default App = types.model('App', {
   .actions(self => ({
   
     set_navigation: flow(function*(navigation = null) {
+      console.log("App:set_navigation", navigation != null)
       if (navigation) {
         self.navigation_ref = navigation
       }

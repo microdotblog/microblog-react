@@ -123,7 +123,6 @@ export default User = types.model('User', {
   		console.log("User::get_push_info")
   		const data = yield MicroBlogApi.get_push_info(self.token())
   		if (data !== API_ERROR) {
-  		  console.log("User::get_push_info:data", data)
   			if(data.length > 0){
   			  Push.set_devices_for_user(self.username, data)
   			}

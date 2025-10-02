@@ -85,7 +85,13 @@ export default class MainApp extends React.Component {
                 },
                 fonts: DefaultTheme.fonts
               }}>
-                <Stack.Navigator initialRouteName="Tabs" screenOptions={{ headerShown: false, headerTintColor: App.theme_text_color() }}>
+                <Stack.Navigator
+                  initialRouteName="Tabs"
+                  screenOptions={{ headerShown: false, headerTintColor: App.theme_text_color()}}
+                  ref={navigationRef => {
+                    App.set_navigation(navigationRef)
+                  }}
+                >
                   <Stack.Screen name="Tabs" component={TabNavigator} />
                   <Stack.Screen
                     name="Login"
