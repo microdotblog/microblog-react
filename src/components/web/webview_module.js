@@ -51,7 +51,7 @@ const WebViewModule = observer((props) => {
         containerStyle={{ flex: 1 }}
         startInLoadingState={props.should_show_loading}
         pullToRefreshEnabled={false}
-        decelerationRate="normal"
+        decelerationRate={0.998}
         onLoadEnd={(event) => {
           Auth.set_did_load_one_or_more_webviews();
           if (App.theme == "light") {
