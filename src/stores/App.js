@@ -281,40 +281,40 @@ export default App = types.model('App', {
             Reply.hydrate(action_data)
             return App.open_sheet("reply_sheet", { conversation_id: action_data })
           case "user":
-            return self.navigation_ref.push(`${self.current_tab_key}-Profile`, { username: action_data })
+            return self.navigation_ref.navigate(`${self.current_tab_key}-Profile`, { username: action_data })
           case "discover/topic":
-            return self.navigation_ref.push("DiscoverTopic", { topic: action_data })
+            return self.navigation_ref.navigate("DiscoverTopic", { topic: action_data })
           case "open":
             Reply.hydrate(action_data)
             Push.check_and_remove_notifications_with_post_id(action_data)
             if (self.conversation_screen_focused) {
               return self.navigation_ref.navigate(`${self.current_tab_key}-Conversation`, { conversation_id: action_data })
             }
-            return self.navigation_ref.push(`${self.current_tab_key}-Conversation`, { conversation_id: action_data })
+            return self.navigation_ref.navigate(`${self.current_tab_key}-Conversation`, { conversation_id: action_data })
           case "post_service":
             yield Services.hydrate_with_user(action_data)
-            return self.navigation_ref.push("PostService", { user: action_data })
+            return self.navigation_ref.navigate("PostService", { user: action_data })
           case "add_bookmark":
-            return self.navigation_ref.push("AddBookmark")
+            return self.navigation_ref.navigate("AddBookmark")
           case "highlights":
-            return self.navigation_ref.push("Highlights")
+            return self.navigation_ref.navigate("Highlights")
           case "bookmark":
-            return self.navigation_ref.push("Bookmark", { bookmark_id: action_data })
+            return self.navigation_ref.navigate("Bookmark", { bookmark_id: action_data })
           case "following":
-            return self.navigation_ref.push(`${self.current_tab_key}-Following`, { username: action_data })
+            return self.navigation_ref.navigate(`${self.current_tab_key}-Following`, { username: action_data })
           case "uploads":
-            return self.navigation_ref.push(`${self.current_tab_key}-Uploads`)
+            return self.navigation_ref.navigate(`${self.current_tab_key}-Uploads`)
           case "replies":
-            return self.navigation_ref.push(`${self.current_tab_key}-Replies`)
+            return self.navigation_ref.navigate(`${self.current_tab_key}-Replies`)
           case "reply_edit":
-            return self.navigation_ref.push("ReplyEdit")
+            return self.navigation_ref.navigate("ReplyEdit")
           case "PageEdit":
             Auth.selected_user?.posting.hydrate_page_edit(action_data)
-            return self.navigation_ref.push("PageEdit")
+            return self.navigation_ref.navigate("PageEdit")
           case "Posts":
-            return self.navigation_ref.push(`${self.current_tab_key}-Posts`)
+            return self.navigation_ref.navigate(`${self.current_tab_key}-Posts`)
           case "Pages":
-            return self.navigation_ref.push(`${self.current_tab_key}-Pages`)
+            return self.navigation_ref.navigate(`${self.current_tab_key}-Pages`)
           case "Posting":
             if (action_data != null && !from_listener) {
               // Action data is usually markdown text from a highlight,
@@ -324,22 +324,22 @@ export default App = types.model('App', {
             else if (action_data != null && from_listener) {
               Auth.selected_user.posting.set_post_text_from_action(action_data)
             }
-            return self.navigation_ref.push("Posting")
+            return self.navigation_ref.navigate("Posting")
           case "PostEdit":
             Auth.selected_user?.posting.hydrate_post_edit(action_data)
-            return self.navigation_ref.push("PostEdit")
+            return self.navigation_ref.navigate("PostEdit")
           case "ImageOptions":
-            return self.navigation_ref.push("ImageOptions", action_data)
+            return self.navigation_ref.navigate("ImageOptions", action_data)
           case "PostUploads":
-            return self.navigation_ref.push(`PostUploads`, { did_open_from_editor: true })
+            return self.navigation_ref.navigate(`PostUploads`, { did_open_from_editor: true })
           case "ManageCollections":
-            return self.navigation_ref.push(`${self.current_tab_key}-Collections`)
+            return self.navigation_ref.navigate(`${self.current_tab_key}-Collections`)
           case "AddCollection":
-            return self.navigation_ref.push("AddCollection")
+            return self.navigation_ref.navigate("AddCollection")
           case "muting":
-            return self.navigation_ref.push(`muting`, { user: action_data })
+            return self.navigation_ref.navigate(`muting`, { user: action_data })
           default:
-            self.navigation_ref.push(screen_name)
+            self.navigation_ref.navigate(screen_name)
         }
       }
     }),
