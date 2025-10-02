@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, ActivityIndicator, Platform } from 'react-native';
+import { View, ActivityIndicator, Platform, StatusBar } from 'react-native';
 import { observer } from 'mobx-react';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -75,6 +75,7 @@ export default class MainApp extends React.Component {
         <GestureHandlerRootView style={{ flex: 1 }}>
           <KeyboardProvider>
             <SheetProvider>
+              <StatusBar barStyle={App.is_dark_mode() ? 'light-content' : 'dark-content'} backgroundColor={App.theme_background_color()} />
               <NavigationContainer
                 theme={{
                 dark: App.is_dark_mode(),
