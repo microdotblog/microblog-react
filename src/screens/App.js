@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View, ActivityIndicator, Platform } from 'react-native';
 import { observer } from 'mobx-react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SheetProvider } from "react-native-actions-sheet";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -82,7 +82,8 @@ export default class MainApp extends React.Component {
                   background: App.theme_background_color(),
                   text: App.theme_text_color(),
                   card: App.theme_navbar_background_color()
-                }
+                },
+                fonts: DefaultTheme.fonts
               }}>
                 <Stack.Navigator initialRouteName="Tabs" screenOptions={{ headerShown: false, headerTintColor: App.theme_text_color() }}>
                   <Stack.Screen name="Tabs" component={TabNavigator} />
