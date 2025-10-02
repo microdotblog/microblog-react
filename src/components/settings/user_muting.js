@@ -1,6 +1,6 @@
 import * as React from "react"
 import { observer } from "mobx-react"
-import { View, Text, TouchableOpacity } from "react-native"
+import { View, Text, TouchableOpacity, Platform } from "react-native"
 import FastImage from "react-native-fast-image"
 import { SFSymbol } from "react-native-sfsymbols"
 import { SvgXml } from "react-native-svg"
@@ -55,4 +55,4 @@ export default class UserMutingSettings extends React.Component {
       </TouchableOpacity>
     )
   }
-} 
+}
