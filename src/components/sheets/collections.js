@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useRef } from 'react';
 import { observer } from 'mobx-react';
 import { TouchableOpacity, Text, View, FlatList, ActivityIndicator } from 'react-native';
 import ActionSheet, { SheetManager } from "react-native-actions-sheet";
@@ -118,7 +117,6 @@ export default class CollectionsSheet extends React.Component {
 	render() {
 		return (
 			<ActionSheet
-				ref={this.actionSheetRef}
 				id={this.props.sheetId}
 				snapPoints={[50]}
 				initialSnapIndex={[1]}

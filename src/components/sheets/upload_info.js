@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useRef } from 'react';
 import { observer } from 'mobx-react';
 import { TouchableOpacity, View, Text, TextInput, ActivityIndicator } from 'react-native';
 import ActionSheet, { SheetManager } from "react-native-actions-sheet";
@@ -42,7 +41,6 @@ export default class UploadInfoSheet extends React.Component {
 	render() {
 		return (
 			<ActionSheet
-				ref={this.actionSheetRef}
 				id={this.props.sheetId}
 				snapPoints={[50]}
 				initialSnapIndex={[1]}

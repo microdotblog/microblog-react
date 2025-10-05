@@ -1,23 +1,13 @@
 import * as React from 'react';
-import { useRef } from 'react';
 import { observer } from 'mobx-react';
 import { ScrollView, TouchableOpacity, Text, Platform, TextInput, View, ActivityIndicator } from 'react-native';
-import ActionSheet, { useScrollHandlers, ActionSheetRef } from "react-native-actions-sheet";
+import ActionSheet from "react-native-actions-sheet";
 import App from '../../stores/App'
 import { SvgXml } from 'react-native-svg';
 import { SFSymbol } from "react-native-sfsymbols";
 
 @observer
 export default class AddTagsMenu extends React.Component{
-  
-  constructor(props){
-    super(props);
-    this.actionSheetRef = useRef<ActionSheetRef>(null)
-    this.scrollHandlers = useScrollHandlers<ScrollView>(
-      "tag-scroll",
-      this.actionSheetRef
-    )
-  }
   
   _render_tags = () => {
     return Auth.selected_user?.filtered_tags().map((tag) => {
@@ -115,7 +105,6 @@ export default class AddTagsMenu extends React.Component{
   render() {
     return(
       <ActionSheet
-        ref={this.actionSheetRef}
         id={this.props.sheetId}
         overdrawEnabled={false}
         useBottomSafeAreaPadding={true}
