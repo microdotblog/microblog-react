@@ -26,7 +26,7 @@ export default class PostingScreen extends React.Component{
     const { posting } = Auth.selected_user
     return(
       <>
-        <KeyboardAvoidingView style={{ flex: 1 }}>
+        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
           {
             posting.should_show_title() ?
             <TextInput
@@ -67,7 +67,7 @@ export default class PostingScreen extends React.Component{
               justifyContent: 'flex-start',
               alignItems: 'flex-start',
               marginTop: 0,
-              paddingBottom: posting.post_text_length() > posting.max_post_length() ? 150 : 0,
+              paddingBottom: posting.post_assets?.length > 0 ? 260 : 50,
               flex: 1,
               padding: 8,
               color: App.theme_text_color()
