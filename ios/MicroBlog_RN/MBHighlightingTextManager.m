@@ -121,7 +121,7 @@ RCT_CUSTOM_VIEW_PROPERTY(autoFocus, BOOL, MBHighlightingTextView)
   // background color
   BOOL darkmode = UITraitCollection.currentTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark;
   if (darkmode) {
-    self.textView.backgroundColor = [UIColor colorWithRed:0.11 green:0.15 blue:0.19 alpha:1.0];
+    self.textView.backgroundColor = [UIColor colorWithRed:0.122 green:0.161 blue:0.216 alpha:1.0];
   }
   else {
     self.textView.backgroundColor = [UIColor whiteColor];
