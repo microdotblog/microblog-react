@@ -1547,7 +1547,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-safe-area-context (5.4.0):
+  - react-native-safe-area-context (5.6.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1562,8 +1562,8 @@ PODS:
     - React-hermes
     - React-ImageManager
     - React-jsi
-    - react-native-safe-area-context/common (= 5.4.0)
-    - react-native-safe-area-context/fabric (= 5.4.0)
+    - react-native-safe-area-context/common (= 5.6.1)
+    - react-native-safe-area-context/fabric (= 5.6.1)
     - React-NativeModulesApple
     - React-RCTFabric
     - React-renderercss
@@ -1573,7 +1573,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-safe-area-context/common (5.4.0):
+  - react-native-safe-area-context/common (5.6.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1597,7 +1597,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-safe-area-context/fabric (5.4.0):
+  - react-native-safe-area-context/fabric (5.6.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2773,7 +2773,7 @@ SPEC CHECKSUMS:
   react-native-image-picker: 8a3f16000e794f5381a7fe47bb48fd8d06741e47
   react-native-keyboard-controller: bef5d3b10a11eca3bc2c9c5572c1a003b13ab08d
   react-native-menu: 9efed55ad478c20b85bbd5c376f15b2cc5e41181
-  react-native-safe-area-context: 562163222d999b79a51577eda2ea8ad2c32b4d06
+  react-native-safe-area-context: 895c49ee2613865f90318789be89a8e286fe7b69
   react-native-sensitive-info: 31674faa5e17977b394fb67986c35ef94f8ffe81
   react-native-sfsymbols: 3309f24c98d32705568c84b714268f3ec62017c7
   react-native-simple-toast: c441c833fe4c18473c09fd3b5789f0b279dd074d
