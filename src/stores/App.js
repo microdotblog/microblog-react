@@ -2,7 +2,7 @@ import { types, flow } from 'mobx-state-tree';
 import { Linking, Appearance, AppState, Platform, Dimensions, Alert, Keyboard } from 'react-native'
 import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
 import Toast from 'react-native-simple-toast';
-import { InAppBrowser } from 'react-native-inappbrowser-reborn'
+import * as WebBrowser from 'expo-web-browser';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SheetManager } from "react-native-actions-sheet";
 
@@ -492,14 +492,11 @@ export default App = types.model('App', {
       else {
         Linking.canOpenURL(url).then(async (supported) => {
           if (supported) {
-            const is_inapp_browser_avail = await InAppBrowser.isAvailable()
-            if (is_inapp_browser_avail && !open_external && !Settings.open_links_in_external_browser) {
-              return InAppBrowser.open(url, {
+            if (!open_external && !Settings.open_links_in_external_browser) {
+              WebBrowser.openBrowserAsync(url, { 
+                controlsColor: '#f80',
                 dismissButtonStyle: 'close',
-                preferredControlTintColor: "#f80",
-                readerMode: Settings.open_links_with_reader_mode,
-                animated: true,
-                modalEnabled: false
+                readerMode: Settings.open_links_with_reader_mode
               })
             }
             else {
