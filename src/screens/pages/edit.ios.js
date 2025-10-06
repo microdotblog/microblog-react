@@ -15,7 +15,7 @@ export default class PageEditScreen extends React.Component{
     const { posting } = Auth.selected_user
     return(
       <>
-        <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={125} style={{ flex: 1 }}>
+        <KeyboardAvoidingView behavior='padding' style={{ flex: 1 }}>
           <TextInput
             placeholder="Title"
             placeholderTextColor={App.theme_placeholder_text_color()}
