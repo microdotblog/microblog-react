@@ -8,6 +8,7 @@ import { SvgXml } from "react-native-svg";
 import ContextMenu from "react-native-context-menu-view";
 import Clipboard from "@react-native-clipboard/clipboard";
 import Toast from "react-native-simple-toast";
+import { Image } from "expo-image";
 
 @observer
 export default class PostCell extends React.Component {
@@ -92,14 +93,10 @@ export default class PostCell extends React.Component {
     const { page } = this.props;
     const images = page.images_from_content().map((url) => {
       return (
-        <FastImage
+        <Image
           key={url}
-          source={{
-            uri: url,
-            priority: FastImage.priority.normal,
-            cache: FastImage.cacheControl.web,
-          }}
-          resizeMode={FastImage.resizeMode.cover}
+          source={url}
+          contentFit="cover"
           style={{ width: 80, height: 80, borderRadius: 5 }}
         />
       );

@@ -5,6 +5,7 @@ import App from "../../stores/App";
 import { MenuView } from "@react-native-menu/menu";
 import { SvgXml } from "react-native-svg";
 import { SFSymbol } from "react-native-sfsymbols";
+import { Image } from "expo-image";
 
 @observer
 export default class TempUploadCell extends React.Component {
@@ -77,14 +78,10 @@ export default class TempUploadCell extends React.Component {
               )}
             </View>
           ) : (
-            <FastImage
+            <Image
               key={upload.uri}
-              source={{
-                uri: upload.uri,
-                priority: FastImage.priority.high,
-              }}
-              fallback={true}
-              resizeMode={FastImage.resizeMode.cover}
+              source={upload.uri}
+              contentFit="cover"
               style={{
                 width: dimension,
                 height: dimension,

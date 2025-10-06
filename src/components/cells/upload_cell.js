@@ -5,6 +5,7 @@ import App from "../../stores/App";
 import { SvgXml } from "react-native-svg";
 import { SFSymbol } from "react-native-sfsymbols";
 import { MenuView } from "@react-native-menu/menu";
+import { Image } from "expo-image";
 import Auth from "../../stores/Auth";
 import DeviceInfo from "react-native-device-info";
 
@@ -34,15 +35,10 @@ export default class UploadCell extends React.Component {
           }}
         >
           {upload.is_video() && has_poster && (
-            <FastImage
+            <Image
               key={upload.url}
-              source={{
-                uri: upload.poster,
-                priority: FastImage.priority.high,
-                cache: FastImage.cacheControl.web,
-              }}
-              fallback={true}
-              resizeMode={FastImage.resizeMode.cover}
+              source={upload.poster}
+              contentFit="cover"
               style={{
                 width: dimension,
                 height: dimension,
@@ -89,14 +85,10 @@ export default class UploadCell extends React.Component {
       }
 
       return (
-        <FastImage
+        <Image
           key={upload.url}
-          source={{
-            uri: upload.url,
-            priority: FastImage.priority.high,
-            cache: FastImage.cacheControl.web,
-          }}
-          resizeMode={FastImage.resizeMode.cover}
+          source={upload.url}
+          contentFit="cover"
           style={{
             width: dimension,
             height: dimension,
@@ -104,7 +96,7 @@ export default class UploadCell extends React.Component {
             borderColor: App.theme_placeholder_text_color(),
             borderRadius: 5,
           }}
-          onLoadEnd={() => {
+          onLoad={() => {
             this.setState({ did_load: true });
           }}
         />

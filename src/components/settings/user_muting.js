@@ -5,6 +5,7 @@ import { SFSymbol } from "react-native-sfsymbols";
 import { SvgXml } from "react-native-svg";
 import App from "../../stores/App";
 import Auth from "../../stores/Auth";
+import { Image } from "expo-image";
 
 @observer
 export default class UserMutingSettings extends React.Component {
@@ -24,13 +25,9 @@ export default class UserMutingSettings extends React.Component {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <FastImage
-            source={{
-              uri: `${user.avatar}?v=${App.now()}`,
-              priority: FastImage.priority.normal,
-              cache: FastImage.cacheControl.web,
-            }}
-            resizeMode={FastImage.resizeMode.contain}
+          <Image
+            source={`${user.avatar}?v=${App.now()}`}
+            contentFit="contain"
             style={{ width: 24, height: 24, borderRadius: 50, marginRight: 8 }}
           />
           <Text style={{ fontSize: 16, color: App.theme_text_color() }}>
