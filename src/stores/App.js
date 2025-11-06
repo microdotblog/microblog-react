@@ -193,10 +193,7 @@ export default App = types.model('App', {
     open_sheet: flow(function*(sheet_name = null, payload = null) {
       console.log("App:open_sheet", sheet_name)
       if (sheet_name != null) {
-        const sheet_is_open = SheetManager.get(sheet_name)?.current?.isOpen()
-        if (!sheet_is_open) {
-          SheetManager.show(sheet_name, { payload: payload })
-        }
+        SheetManager.show(sheet_name, { payload: payload })
       }
     }),
   
