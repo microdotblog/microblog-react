@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
+import { Platform, View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BookmarksScreen from '../bookmarks/bookmarks';
 import ProfileImage from './../../components/header/profile_image';
@@ -8,8 +9,8 @@ import BookmarkScreen from '../bookmarks/bookmark';
 import NewPostButton from '../../components/header/new_post';
 import { getSharedScreens } from './SharedStack'
 import TagsButton from '../../components/header/tags_button';
-import { View } from 'react-native';
 import BackButton from '../../components/header/back';
+import App from '../../stores/App'
 
 const BookmarksStack = createNativeStackNavigator();
 
@@ -22,7 +23,8 @@ export default class Bookmarks extends React.Component{
       <BookmarksStack.Navigator
         screenOptions={{
           headerTintColor: App.theme_text_color(),
-          headerBackVisible: false
+          headerBackVisible: false,
+          headerStatusBarHeight: Platform.OS === 'android' ? 0 : undefined
         }}
       >
         <BookmarksStack.Screen

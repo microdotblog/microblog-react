@@ -77,7 +77,11 @@ export default class MainApp extends React.Component {
             <SheetProvider>
               {
                 Platform.OS === 'android' &&
-                <StatusBar barStyle={App.is_dark_mode() ? 'light-content' : 'dark-content'} backgroundColor={App.theme_background_color()} />
+                <StatusBar 
+                  barStyle={App.is_dark_mode() ? 'light-content' : 'dark-content'} 
+                  backgroundColor="transparent"
+                  translucent={true}
+                />
               }
               <NavigationContainer
                 theme={{
@@ -94,7 +98,11 @@ export default class MainApp extends React.Component {
               >
                 <Stack.Navigator
                   initialRouteName="Tabs"
-                  screenOptions={{ headerShown: false, headerTintColor: App.theme_text_color()}}
+                  screenOptions={{ 
+                    headerShown: false, 
+                    headerTintColor: App.theme_text_color(),
+                    headerStatusBarHeight: Platform.OS === 'android' ? 0 : undefined
+                  }}
                   
                 >
                   <Stack.Screen name="Tabs" component={TabNavigator} />
@@ -104,7 +112,8 @@ export default class MainApp extends React.Component {
                     options={{
                       title: "Sign In",
                       headerShown: true,
-                      headerBackTitle: "Back"
+                      headerBackTitle: "Back",
+                      headerStatusBarHeight: Platform.OS === 'android' ? 0 : undefined
                     }}
                   />
                   <Stack.Group
@@ -112,7 +121,8 @@ export default class MainApp extends React.Component {
                       presentation: "modal",
                       headerShown: true,
                       gestureEnabled: true,
-                      headerLeft: () => <CloseModalButton />
+                      headerLeft: () => <CloseModalButton />,
+                      headerStatusBarHeight: Platform.OS === 'android' ? 0 : undefined
                     }}
                   >
                     <Stack.Screen

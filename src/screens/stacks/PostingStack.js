@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View } from 'react-native'
+import { View, Platform } from 'react-native'
 import { observer } from 'mobx-react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import PostingScreen from '../../screens/posts/new';
@@ -11,6 +11,7 @@ import ImageOptionsScreen from '../../screens/posts/image_options';
 import UploadsScreen from '../uploads/uploads'
 import NewUploadButton from '../../components/header/new_upload';
 import RefreshActivity from '../../components/header/refresh_activity';
+import App from '../../stores/App'
 
 const PostingStack = createNativeStackNavigator();
 
@@ -26,7 +27,8 @@ export default class Posting extends React.Component{
           headerShown: true,
           headerBackTitle: "Back",
           headerTintColor: App.theme_text_color(),
-          headerBackTitleVisible: false
+          headerBackTitleVisible: false,
+          headerStatusBarHeight: Platform.OS === 'android' ? 0 : undefined
 				}}
 			>
         <PostingStack.Screen
