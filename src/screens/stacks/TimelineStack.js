@@ -28,10 +28,10 @@ export default class Timeline extends React.Component{
         <TimelineStack.Screen
           name="Timeline"
           component={TimelineScreen}
-          options={{
-            headerLeft: () => <ProfileImage />,
+          options={({ route }) => ({
+            headerLeft: () => <ProfileImage routeKey={route.name} />,
             headerRight: () => <NewPostButton />,
-          }}
+          })}
         />
         <TimelineStack.Group
           screenOptions={({ }) => ({

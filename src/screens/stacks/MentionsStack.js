@@ -27,10 +27,10 @@ export default class Mentions extends React.Component{
         <MentionsStack.Screen
           name="Mentions"
           component={MentionsScreen}
-          options={{
-            headerLeft: () => <ProfileImage />,
+          options={({ route }) => ({
+            headerLeft: () => <ProfileImage routeKey={route.name} />,
             headerRight: () => <NewPostButton />
-          }}
+          })}
         />
         <MentionsStack.Group
           screenOptions={({ }) => ({

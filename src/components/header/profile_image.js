@@ -10,6 +10,7 @@ import { isLiquidGlass } from './../../utils/ui';
 export default class ProfileImage extends React.Component{
   
   render() {
+    const routeKey = this.props.routeKey || 'default'
     let button_style = {
       width: 28,
       height: 28,
@@ -25,7 +26,8 @@ export default class ProfileImage extends React.Component{
     
     if(Auth.selected_user != null){
       return(
-        <TouchableOpacity style={button_style}
+        <TouchableOpacity 
+          style={button_style}
           onPress={() => { App.open_sheet("main_sheet"); Auth.selected_user.check_token_validity()} }
           onLongPress={() => App.navigate_to_screen("user", Auth.selected_user.username)}
           accessibilityRole="button"
@@ -34,6 +36,7 @@ export default class ProfileImage extends React.Component{
           {
             Auth.selected_user.avatar != null && Auth.selected_user.avatar !== "" ?
             <Image
+              key={`avatar-${routeKey}`}
               source={{
                 uri: `${Auth.selected_user.avatar}?v=${App.now()}`
               }}
@@ -47,7 +50,7 @@ export default class ProfileImage extends React.Component{
         </TouchableOpacity>
       )
     }
-    return null
+    return <View style={button_style} />
   }
   
 }

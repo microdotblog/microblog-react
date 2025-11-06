@@ -28,10 +28,10 @@ export default class Discover extends React.Component{
         <DiscoverStack.Screen
           name="Discover"
           component={DiscoverScreen}
-          options={{
-            headerLeft: () => <ProfileImage />,
+          options={({ route }) => ({
+            headerLeft: () => <ProfileImage routeKey={route.name} />,
             headerRight: () => <NewPostButton />
-          }}
+          })}
         />
         <DiscoverStack.Group
           screenOptions={({ }) => ({

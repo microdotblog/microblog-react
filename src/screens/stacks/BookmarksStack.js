@@ -30,15 +30,15 @@ export default class Bookmarks extends React.Component{
         <BookmarksStack.Screen
           name="Bookmarks"
           component={BookmarksScreen}
-          options={{
-            headerLeft: () => <ProfileImage />,
+          options={({ route }) => ({
+            headerLeft: () => <ProfileImage routeKey={route.name} />,
             headerRight: () => (
               <View style={{ justifyContent: 'center', alignItems: 'center', gap: 15, flexDirection: 'row' }}>
                 <TagsButton />
                 <AddBookmarkButton />
               </View>
             )
-          }}
+          })}
         />
         <BookmarksStack.Group
           screenOptions={({ }) => ({
