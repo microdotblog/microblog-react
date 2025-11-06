@@ -88,7 +88,7 @@ android {
         applicationId "blog.micro.android"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 74
+        versionCode 75
         versionName "2.6"
     }
 
