@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react'
 import * as React from 'react'
 import { Image, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { Image as ExpoImage } from 'expo-image'
 import { SFSymbol } from 'react-native-sfsymbols'
 import PhotoLibrary from '../../assets/icons/toolbar/photo_library.png'
 import SettingsIcon from '../../assets/icons/toolbar/settings.png'
@@ -24,7 +25,7 @@ export default class PostToolbar extends React.Component{
 								const is_selected_user = Share.selected_user?.username == user.username
 								return (
 									<TouchableOpacity key={index} onPress={() => Share.select_user(user)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 5, borderRadius: 5, backgroundColor: is_selected_user ? App.theme_selected_button_color() : App.theme_section_background_color(), marginRight: 5 }}>
-										<Image source={{ uri: user.avatar }} style={{ width: 20, height: 20, borderRadius: 10, marginRight: 5 }} />
+										<ExpoImage source={{ uri: user.avatar }} contentFit="cover" style={{ width: 20, height: 20, borderRadius: 10, marginRight: 5 }} />
 										<Text style={{ color: App.theme_text_color(), fontWeight: is_selected_user ? 600 : 300 }}>{user.username}</Text>
 									</TouchableOpacity>
 								)
@@ -119,7 +120,7 @@ export default class PostToolbar extends React.Component{
 						{
 							App.is_share_extension && Share.selected_user != null &&
 							<TouchableOpacity onPress={Share.toggle_select_user} style={{marginRight: 4}}>
-								<Image source={{ uri: Share.selected_user?.avatar }} style={{ width: 24, height: 24, borderRadius: 50 }} />
+								<ExpoImage source={{ uri: Share.selected_user?.avatar }} contentFit="cover" style={{ width: 24, height: 24, borderRadius: 50 }} />
 							</TouchableOpacity>
 						}
 						{

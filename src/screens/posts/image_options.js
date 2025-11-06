@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, ScrollView, Image, ActivityIndicator, TextInput, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, TextInput, Dimensions } from 'react-native';
+import { Image } from 'expo-image';
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
@@ -119,7 +120,7 @@ export default class ImageOptionsScreen extends React.Component{
                 repeat
               />
               :
-              <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} style={{ width: media_width, height: media_height }} />
+              <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} contentFit="contain" style={{ width: media_width, height: media_height }} />
             }
             {
               asset.is_uploading ?
