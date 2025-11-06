@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import ActionSheet from "react-native-actions-sheet";
 import Discover from '../../stores/Discover'
 import App from '../../stores/App'
@@ -57,8 +58,13 @@ export default class TagmojiMenu extends React.Component{
 				}}
 			>
 			<SheetHeader title="Topics" />
-			<ScrollView style={{maxHeight: 700, marginBottom: 15}} {...this.scrollHandlers}>
-			{this._return_tagmoji_menu()}
+			<ScrollView 
+				nestedScrollEnabled={true}
+				showsVerticalScrollIndicator={true}
+				style={{ maxHeight: 700, marginBottom: 15 }}
+				contentContainerStyle={{ paddingBottom: 20 }}
+			>
+				{this._return_tagmoji_menu()}
 			</ScrollView>
 			</ActionSheet>
 		)
