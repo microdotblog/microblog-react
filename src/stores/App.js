@@ -5,6 +5,7 @@ import Toast from 'react-native-simple-toast';
 import * as WebBrowser from 'expo-web-browser';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SheetManager } from "react-native-actions-sheet";
+import { StackActions, CommonActions } from '@react-navigation/native';
 
 import Auth from './Auth';
 import Login from './Login';
@@ -281,7 +282,42 @@ export default App = types.model('App', {
             Reply.hydrate(action_data)
             return App.open_sheet("reply_sheet", { conversation_id: action_data })
           case "user":
-            return self.navigation_ref.navigate(`${self.current_tab_key}-Profile`, { username: action_data })
+            const profile_screen_name = `${self.current_tab_key}-Profile`
+            try {
+              const state = self.navigation_ref.getState()
+              const tabs_route = state?.routes?.find(r => r.name === "Tabs")
+              if (tabs_route?.state) {
+                const tab_route = tabs_route.state.routes[tabs_route.state.index]
+                const stack_state = tab_route?.state
+                const stack_routes = stack_state?.routes
+                const stack_index = stack_state?.index ?? 0
+                const current_route = stack_routes?.[stack_index]
+                const is_on_profile_screen = current_route?.name === profile_screen_name
+                
+                console.log("App:navigate_to_screen:user:check", {
+                  profile_screen_name,
+                  current_route_name: current_route?.name,
+                  current_username: current_route?.params?.username,
+                  new_username: action_data,
+                  is_on_profile_screen
+                })
+                
+                if (is_on_profile_screen && current_route?.params?.username === action_data) {
+                  return
+                }
+                
+                if (is_on_profile_screen) {
+                  console.log("App:navigate_to_screen:user:pushing", profile_screen_name, action_data)
+                  return self.navigation_ref.dispatch(
+                    StackActions.push(profile_screen_name, { username: action_data })
+                  )
+                }
+              }
+            } catch (e) {
+              console.log("App:navigate_to_screen:error checking navigation state", e)
+            }
+            console.log("App:navigate_to_screen:user:navigating", profile_screen_name, action_data)
+            return self.navigation_ref.navigate(profile_screen_name, { username: action_data })
           case "discover/topic":
             return self.navigation_ref.navigate("DiscoverTopic", { topic: action_data })
           case "open":
