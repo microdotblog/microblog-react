@@ -1,6 +1,6 @@
 import * as React from "react";
 import { observer } from "mobx-react";
-import { Dimensions, View, Platform, Pressable } from "react-native";
+import { Dimensions, View, Platform, Pressable, Animated } from "react-native";
 import App from "../../stores/App";
 import { SvgXml } from "react-native-svg";
 import { SFSymbol } from "react-native-sfsymbols";
@@ -17,6 +17,56 @@ export default class UploadCell extends React.Component {
       did_load: false,
       num_columns: DeviceInfo.isTablet() ? 4 : 3,
     };
+    this.pulseAnim = new Animated.Value(0.5);
+  }
+
+  componentDidMount() {
+    if (!this.state.did_load) {
+      this.startPulse();
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.upload?.url !== this.props.upload?.url) {
+      this.setState({ did_load: false });
+      if (!this.state.did_load) {
+        this.startPulse();
+      }
+    }
+    if (!prevState.did_load && this.state.did_load) {
+      this.stopPulse();
+    }
+  }
+
+  componentWillUnmount() {
+    this.stopPulse();
+  }
+
+  startPulse = () => {
+    this.pulseAnim.setValue(0.5);
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(this.pulseAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(this.pulseAnim, {
+          toValue: 0.5,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }
+
+  stopPulse = () => {
+    this.pulseAnim.stopAnimation();
+    Animated.timing(this.pulseAnim, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
   }
 
   render_cell(upload) {
@@ -85,21 +135,29 @@ export default class UploadCell extends React.Component {
       }
 
       return (
-        <Image
-          key={upload.url}
-          source={upload.url}
-          contentFit="cover"
+        <Animated.View
           style={{
             width: dimension,
             height: dimension,
-            borderWidth: !this.state.did_load ? 1 : 0,
-            borderColor: App.theme_placeholder_text_color(),
-            borderRadius: 5,
+            opacity: !this.state.did_load ? this.pulseAnim : 1,
           }}
-          onLoad={() => {
-            this.setState({ did_load: true });
-          }}
-        />
+        >
+          <Image
+            key={upload.url}
+            source={upload.url}
+            contentFit="cover"
+            style={{
+              width: dimension,
+              height: dimension,
+              borderWidth: !this.state.did_load ? 1 : 0,
+              borderColor: App.theme_placeholder_text_color(),
+              borderRadius: 5,
+            }}
+            onLoad={() => {
+              this.setState({ did_load: true });
+            }}
+          />
+        </Animated.View>
       );
     }
   }

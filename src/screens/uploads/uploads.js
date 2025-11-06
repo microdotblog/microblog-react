@@ -126,6 +126,10 @@ export default class UploadsScreen extends React.Component{
           width: "100%"
         }}
         numColumns={this.state.num_columns}
+        removeClippedSubviews={true}
+        initialNumToRender={12}
+        maxToRenderPerBatch={6}
+        windowSize={5}
         refreshControl={
           <RefreshControl
             refreshing={false}
