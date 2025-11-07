@@ -21,7 +21,8 @@ export default MediaAsset = types.model('MediaAsset', {
 	is_video: types.optional(types.boolean, false),
 	is_inline: types.optional(types.boolean, false),
 	cached_uri: types.maybe(types.string),
-	cancelled: types.optional(types.boolean, false)
+	cancelled: types.optional(types.boolean, false),
+	cancel_source: types.maybeNull(types.frozen())
 })
 .actions(self => ({
 
@@ -83,7 +84,7 @@ export default MediaAsset = types.model('MediaAsset', {
 		console.log("MediaAsset:update_progress", progress)
 		self.progress = progress
 	}),
-
+	
 	cancel_upload: flow(function* () {
 		if (self.cancel_source) {
 			console.log("MediaAsset:cancel_upload")
@@ -93,6 +94,10 @@ export default MediaAsset = types.model('MediaAsset', {
 			self.progress = 0
 			self.did_upload = false
 		}
+	}),
+	
+	set_cached_uri: flow(function* (uri) {
+		self.cached_uri = uri
 	}),
 	
 	set_is_inline: flow(function* (option) {

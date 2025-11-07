@@ -336,9 +336,7 @@ export default Posting = types.model('Posting', {
         cancel_source: media_asset.cancel_source,
         is_cancelled: () => media_asset.cancelled,
         on_progress: progress => media_asset.update_progress(progress),
-        on_local_uri: uri => {
-          media_asset.cached_uri = uri
-        }
+        on_local_uri: uri => media_asset.set_cached_uri(uri)
       })
       media_asset.remote_url = result.url
       if (result.poster) {
