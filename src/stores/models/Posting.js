@@ -6,6 +6,7 @@ import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
 import XMLRPCApi, { XML_ERROR } from '../../api/XMLRPCApi';
 import { launchImageLibrary } from 'react-native-image-picker';
 import MediaAsset from './posting/MediaAsset'
+import { upload_large_media_task, create_cancel_source } from './posting/uploadLargeMediaTask'
 import App from '../App'
 import Clipboard from '@react-native-clipboard/clipboard';
 import Tokens from '../Tokens';
@@ -264,9 +265,9 @@ export default Posting = types.model('Posting', {
     const options = {
       title: "Select media",
       mediaType: "mixed",
-      videoQuality: Platform.OS === "android" ? "high" : "medium",
-      formatAsMp4: true,
-      quality: 0.95,
+      // videoQuality: Platform.OS === "android" ? "high" : "medium",
+      // quality: 0.95,
+      formatAsMp4: false,
       ...self.selected_service.type === "xmlrpc" &&
         {
           includeBase64: true,
@@ -279,8 +280,8 @@ export default Posting = types.model('Posting', {
     }
     if(result.errorCode){
       Alert.alert(
-        "Whoops...",
-        "There was an error with selecting your image or video, please try again."
+        "Error",
+        "There was an error with selecting your image or video. Please try again."
       )
       return
     }
@@ -295,11 +296,10 @@ export default Posting = types.model('Posting', {
         }
         else {
           if(is_video){
-            if(asset.fileSize > 74999999){
-              // TODO: Not sure if we need this size as binary?: 78643200
+            if(asset.fileSize > 1000000000){
               Alert.alert(
-                "Whoops...",
-                "Your video is over 75MB, please try another..."
+                "Error",
+                "Your video is over 1 GB. Please choose another video."
               )
               return
             }
@@ -307,12 +307,60 @@ export default Posting = types.model('Posting', {
           }
           const media_asset = MediaAsset.create(asset)
           self.post_assets.push(media_asset)
-          media_asset.upload(self.selected_service.service_object())
+          if (is_video && self.selected_service?.type !== "xmlrpc") {
+            self.upload_video_asset(media_asset)
+          }
+          else {
+            media_asset.upload(self.selected_service.service_object())
+          }
         }
       })
     }
   }),
 
+  upload_video_asset: flow(function* (media_asset) {
+    try {
+      console.log("Posting:upload_video_asset:start", media_asset?.uri)
+      const service_object = self.selected_service?.service_object()
+      if (!service_object) {
+        throw new Error("Missing service configuration.")
+      }
+      media_asset.is_uploading = true
+      media_asset.did_upload = false
+      media_asset.progress = 0
+      media_asset.cancelled = false
+      media_asset.cancel_source = create_cancel_source()
+      const result = yield upload_large_media_task({
+        media: media_asset,
+        service_object,
+        cancel_source: media_asset.cancel_source,
+        is_cancelled: () => media_asset.cancelled,
+        on_progress: progress => media_asset.update_progress(progress),
+        on_local_uri: uri => media_asset.set_cached_uri(uri)
+      })
+      media_asset.remote_url = result.url
+      if (result.poster) {
+        media_asset.remote_poster_url = result.poster
+      }
+      media_asset.did_upload = true
+    }
+    catch (error) {
+      const was_cancelled = media_asset.cancelled
+      console.log("Posting:upload_video_asset:error", error)
+      if (!was_cancelled) {
+        Alert.alert("Upload Failed", error?.message || "Could not upload video.")
+      }
+      media_asset.did_upload = false
+      if (!was_cancelled) {
+        media_asset.progress = 0
+      }
+    }
+    finally {
+      media_asset.is_uploading = false
+      media_asset.cancel_source = null
+    }
+  }),
+  
   create_and_attach_asset: flow(function* (asset) {
     console.log("Posting:create_and_attach_asset", asset)
     const existing_asset = self.post_assets.find(file => file.uri === asset.uri)

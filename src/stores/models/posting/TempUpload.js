@@ -16,8 +16,11 @@ export default TempUpload = types.model('TempUpload', {
 	is_uploading: types.optional(types.boolean, false),
 	progress: types.optional(types.number, 0),
 	did_upload: types.optional(types.boolean, false),
-	cancelled: types.optional(types.boolean, false),
+	cancelled: types.optional(types.boolean, false)
 })
+	.volatile(() => ({
+		cancel_source: null
+	}))
 	.actions(self => ({
 
 		upload: flow(function* (service_object, destination) {
@@ -99,7 +102,11 @@ export default TempUpload = types.model('TempUpload', {
 			let markdown = `![${ self.url }](${ self.url })`
 			Clipboard.setString(markdown)
 			Toast.showWithGravity("Markdown copied", Toast.SHORT, Toast.CENTER)
-		}
+		},
+
+		set_cached_uri: flow(function* (uri) {
+			self.cached_uri = uri
+		})
 
 	}))
 	.views(self => ({
