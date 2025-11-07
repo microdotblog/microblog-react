@@ -384,6 +384,116 @@ class MicroPubApi {
 		return upload
 	}
 
+	async upload_chunk(service, payload) {
+		console.log('MicroPubApi:upload_chunk', payload?.file_id, payload?.file_name)
+		if (!service?.media_endpoint) {
+			return POST_ERROR
+		}
+		const base_endpoint = service.media_endpoint.endsWith('/') ? service.media_endpoint.slice(0, -1) : service.media_endpoint
+		const endpoint = `${base_endpoint}/append`
+		const destination = App.current_screen_name === "microblog.UploadsScreen" || service.temporary_destination !== null && service.temporary_destination !== service.destination ? service.temporary_destination : service.destination
+		const data = new FormData()
+		data.append('file_id', `${payload.file_id}`)
+		data.append('file_name', payload.file_name)
+		if (payload.file_type) {
+			data.append('file_type', payload.file_type)
+		}
+		data.append('file_data', payload.file_data)
+		if (destination) {
+			data.append('mp-destination', destination)
+		}
+
+		return axios
+			.post(endpoint, data, {
+				headers: { Authorization: `Bearer ${ service.token }` },
+				timeout: 60000
+			})
+			.then(() => {
+				return true
+			})
+			.catch(error => {
+				console.log('MicroPubApi:upload_chunk:error', error?.response?.status, error?.message)
+				if (error?.response?.data?.error_description) {
+					Alert.alert(
+						"Something went wrong.",
+						`${error.response.data.error_description}`,
+					)
+				}
+				else {
+					Alert.alert(
+						"Upload Failed",
+						"Could not upload chunk",
+					)
+				}
+				return POST_ERROR
+			})
+	}
+
+	async finish_upload(service, payload) {
+		console.log('MicroPubApi:finish_upload', payload?.file_id, payload?.file_name)
+		if (!service?.media_endpoint) {
+			return POST_ERROR
+		}
+		const base_endpoint = service.media_endpoint.endsWith('/') ? service.media_endpoint.slice(0, -1) : service.media_endpoint
+		const endpoint = `${base_endpoint}/finished`
+		const destination = App.current_screen_name === "microblog.UploadsScreen" || service.temporary_destination !== null && service.temporary_destination !== service.destination ? service.temporary_destination : service.destination
+		const data = new FormData()
+		data.append('file_id', `${payload.file_id}`)
+		data.append('file_name', payload.file_name)
+		if (payload.file_type) {
+			data.append('file_type', payload.file_type)
+		}
+		if (destination) {
+			data.append('mp-destination', destination)
+		}
+
+		return axios
+			.post(endpoint, data, {
+				headers: { Authorization: `Bearer ${ service.token }` },
+				timeout: 60000
+			})
+			.then(response => {
+				return response.data || {}
+			})
+			.catch(error => {
+				console.log('MicroPubApi:finish_upload:error', error?.response?.status, error?.message)
+				if (error?.response?.data?.error_description) {
+					Alert.alert(
+						"Something went wrong.",
+						`${error.response.data.error_description}`,
+					)
+				}
+				else {
+					Alert.alert(
+						"Upload Failed",
+						"Could not start processing for the upload",
+					)
+				}
+				return POST_ERROR
+			})
+	}
+
+	async get_upload_status(service, file_id) {
+		console.log('MicroPubApi:get_upload_status', file_id)
+		if (!service?.media_endpoint) {
+			return FETCH_ERROR
+		}
+		const base_endpoint = service.media_endpoint.endsWith('/') ? service.media_endpoint.slice(0, -1) : service.media_endpoint
+		const endpoint = `${base_endpoint}/waiting`
+		return axios
+			.get(endpoint, {
+				headers: { Authorization: `Bearer ${ service.token }` },
+				params: { file_id }
+			})
+			.then(response => {
+				return response.data
+			})
+			.catch(error => {
+				console.log('MicroPubApi:get_upload_status:error', error?.response?.status, error?.message)
+				return FETCH_ERROR
+			})
+	}
+
 	async send_entry(service, entry, entry_type) {
 		console.log('MicroBlogApi:send_post', service, entry, entry_type);
 		const params = new FormData()

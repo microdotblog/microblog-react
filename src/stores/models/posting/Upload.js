@@ -68,7 +68,7 @@ export default Upload = types.model('Upload', {
 			return date.toLocaleString()
 		},
 		is_video() {
-			return self.url.endsWith(".mp4") || self.url.endsWith(".mov") || self.url.endsWith(".m4v") || self.url.endsWith(".webm") || self.url.endsWith(".ogv") || self.url.endsWith(".ogg") || self.url.endsWith(".avi") || self.url.endsWith(".wmv") || self.url.endsWith(".flv") || self.url.endsWith(".swf")
+			return self.url.endsWith(".mp4") || self.url.endsWith(".mov") || self.url.endsWith(".m4v") || self.url.endsWith(".webm") || self.url.endsWith(".ogv") || self.url.endsWith(".ogg") || self.url.endsWith(".avi") || self.url.endsWith(".wmv") || self.url.endsWith(".flv") || self.url.endsWith(".swf") || self.url.endsWith(".m3u8")
 		},
 		is_audio() {
 			return self.url.endsWith(".mp3") || self.url.endsWith(".wav") || self.url.endsWith(".ogg") || self.url.endsWith(".flac") || self.url.endsWith(".m4a") || self.url.endsWith(".aac") || self.url.endsWith(".wma")

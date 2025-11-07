@@ -15,7 +15,7 @@ const BackButtonContent = observer(() => {
   if (isLiquidGlass()) {
     button_style = {
       marginRight: 0 - STANDARD_SLOP,
-      marginLeft: 9 - STANDARD_SLOP,
+      marginLeft: 16 - STANDARD_SLOP,
       marginTop: 2 - STANDARD_SLOP,
       marginBottom: 0 - STANDARD_SLOP,
       padding: STANDARD_SLOP
