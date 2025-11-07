@@ -384,7 +384,7 @@ class MicroPubApi {
 		return upload
 	}
 
-	async upload_chunk(service, payload) {
+	async upload_chunk(service, payload, cancel_source = null) {
 		console.log('MicroPubApi:upload_chunk', payload?.file_id, payload?.file_name)
 		if (!service?.media_endpoint) {
 			return POST_ERROR
@@ -406,12 +406,17 @@ class MicroPubApi {
 		return axios
 			.post(endpoint, data, {
 				headers: { Authorization: `Bearer ${ service.token }` },
-				timeout: 60000
+				timeout: 60000,
+				cancelToken: cancel_source?.token
 			})
 			.then(() => {
 				return true
 			})
 			.catch(error => {
+				if (axios.isCancel(error)) {
+					console.log('MicroPubApi:upload_chunk:cancelled', payload?.file_id)
+					return POST_ERROR
+				}
 				console.log('MicroPubApi:upload_chunk:error', error?.response?.status, error?.message)
 				if (error?.response?.data?.error_description) {
 					Alert.alert(
@@ -429,7 +434,7 @@ class MicroPubApi {
 			})
 	}
 
-	async finish_upload(service, payload) {
+	async finish_upload(service, payload, cancel_source = null) {
 		console.log('MicroPubApi:finish_upload', payload?.file_id, payload?.file_name)
 		if (!service?.media_endpoint) {
 			return POST_ERROR
@@ -450,12 +455,17 @@ class MicroPubApi {
 		return axios
 			.post(endpoint, data, {
 				headers: { Authorization: `Bearer ${ service.token }` },
-				timeout: 60000
+				timeout: 60000,
+				cancelToken: cancel_source?.token
 			})
 			.then(response => {
 				return response.data || {}
 			})
 			.catch(error => {
+				if (axios.isCancel(error)) {
+					console.log('MicroPubApi:finish_upload:cancelled', payload?.file_id)
+					return POST_ERROR
+				}
 				console.log('MicroPubApi:finish_upload:error', error?.response?.status, error?.message)
 				if (error?.response?.data?.error_description) {
 					Alert.alert(
@@ -473,7 +483,7 @@ class MicroPubApi {
 			})
 	}
 
-	async get_upload_status(service, file_id) {
+	async get_upload_status(service, file_id, cancel_source = null) {
 		console.log('MicroPubApi:get_upload_status', file_id)
 		if (!service?.media_endpoint) {
 			return FETCH_ERROR
@@ -483,12 +493,17 @@ class MicroPubApi {
 		return axios
 			.get(endpoint, {
 				headers: { Authorization: `Bearer ${ service.token }` },
-				params: { file_id }
+				params: { file_id },
+				cancelToken: cancel_source?.token
 			})
 			.then(response => {
 				return response.data
 			})
 			.catch(error => {
+				if (axios.isCancel(error)) {
+					console.log('MicroPubApi:get_upload_status:cancelled', file_id)
+					return FETCH_ERROR
+				}
 				console.log('MicroPubApi:get_upload_status:error', error?.response?.status, error?.message)
 				return FETCH_ERROR
 			})

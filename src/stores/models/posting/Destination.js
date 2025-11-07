@@ -1,6 +1,7 @@
 import { types, flow } from "mobx-state-tree"
 import { Alert, Platform } from "react-native"
 import RNFS from "react-native-fs"
+import axios from "axios"
 import Post from "./Post"
 import Page from "./Page"
 import Upload from "./Upload"
@@ -242,6 +243,7 @@ export default Destination = types.model('Destination', {
 		const temp_upload = TempUpload.create(media)
 		self.temp_uploads.push(temp_upload)
 		temp_upload.is_uploading = true
+		temp_upload.cancel_source = axios.CancelToken.source()
 		
 		console.log("Created temp");
 
@@ -250,6 +252,12 @@ export default Destination = types.model('Destination', {
 		const file_type = media?.type || "video/mp4"
 
 		console.log("File name:", file_name);
+
+		const ensure_not_cancelled = () => {
+			if (temp_upload.cancelled) {
+				throw new Error("Upload canceled")
+			}
+		}
 
 		try {
 			const local_uri = yield ensure_local_uri_for_upload(media, file_name)
@@ -275,6 +283,7 @@ export default Destination = types.model('Destination', {
 
 			let offset = 0
 			while (offset < file_size) {
+				ensure_not_cancelled()
 				const chunk_length = Math.min(LARGE_UPLOAD_CHUNK_SIZE, file_size - offset)
 				console.log("RNFS reading...", normalized_path, chunk_length, offset);
 				const chunk_data = yield RNFS.read(normalized_path, chunk_length, offset, "base64")
@@ -285,7 +294,8 @@ export default Destination = types.model('Destination', {
 					file_type: file_type,
 					file_data: `data:${file_type};base64,${chunk_data}`
 				}
-				const chunk_result = yield MicroPubApi.upload_chunk(service_object, payload)
+				const chunk_result = yield MicroPubApi.upload_chunk(service_object, payload, temp_upload.cancel_source)
+				ensure_not_cancelled()
 				if (chunk_result === POST_ERROR) {
 					throw new Error("Could not upload one of the video chunks.")
 				}
@@ -294,18 +304,20 @@ export default Destination = types.model('Destination', {
 				yield temp_upload.update_progress(upload_progress)
 			}
 
+			ensure_not_cancelled()
 			const finish_result = yield MicroPubApi.finish_upload(service_object, {
 				file_id: file_id,
 				file_name: file_name,
 				file_type: file_type
-			})
+			}, temp_upload.cancel_source)
 			if (finish_result === POST_ERROR) {
 				throw new Error("Could not finalize the upload.")
 			}
 
 			let upload_url = null
 			for (let attempt = 0; attempt < LARGE_UPLOAD_MAX_ATTEMPTS; attempt++) {
-				const status = yield MicroPubApi.get_upload_status(service_object, file_id)
+				ensure_not_cancelled()
+				const status = yield MicroPubApi.get_upload_status(service_object, file_id, temp_upload.cancel_source)
 				if (status !== FETCH_ERROR && status?.is_processing === false && status?.url) {
 					upload_url = status.url
 					break
@@ -340,8 +352,11 @@ export default Destination = types.model('Destination', {
 			}
 		}
 		catch (error) {
+			const was_cancelled = temp_upload.cancelled
 			console.log("Destination:upload_large_media:error", error)
-			Alert.alert("Upload Failed", error?.message || "Could not upload video.")
+			if (!was_cancelled) {
+				Alert.alert("Upload Failed", error?.message || "Could not upload video.")
+			}
 			temp_upload.did_upload = false
 			yield temp_upload.update_progress(0)
 			const temp_index = self.temp_uploads.indexOf(temp_upload)
@@ -351,6 +366,7 @@ export default Destination = types.model('Destination', {
 		}
 		finally {
 			temp_upload.is_uploading = false
+			temp_upload.cancel_source = null
 		}
 	}),
 
