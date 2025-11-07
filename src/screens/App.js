@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { View, ActivityIndicator, Platform } from 'react-native';
+import { View, ActivityIndicator, Platform, StatusBar } from 'react-native';
 import { observer } from 'mobx-react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SheetProvider } from "react-native-actions-sheet";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -75,6 +75,14 @@ export default class MainApp extends React.Component {
         <GestureHandlerRootView style={{ flex: 1 }}>
           <KeyboardProvider>
             <SheetProvider>
+              {
+                Platform.OS === 'android' &&
+                <StatusBar 
+                  barStyle={App.is_dark_mode() ? 'light-content' : 'dark-content'} 
+                  backgroundColor="transparent"
+                  translucent={true}
+                />
+              }
               <NavigationContainer
                 theme={{
                 dark: App.is_dark_mode(),
@@ -82,9 +90,21 @@ export default class MainApp extends React.Component {
                   background: App.theme_background_color(),
                   text: App.theme_text_color(),
                   card: App.theme_navbar_background_color()
-                }
-              }}>
-                <Stack.Navigator initialRouteName="Tabs" screenOptions={{ headerShown: false, headerTintColor: App.theme_text_color() }}>
+                },
+                fonts: DefaultTheme.fonts}}
+                ref={navigationRef => {
+                  App.set_navigation(navigationRef)
+                }}
+              >
+                <Stack.Navigator
+                  initialRouteName="Tabs"
+                  screenOptions={{ 
+                    headerShown: false, 
+                    headerTintColor: App.theme_text_color(),
+                    headerStatusBarHeight: Platform.OS === 'android' ? 0 : undefined
+                  }}
+                  
+                >
                   <Stack.Screen name="Tabs" component={TabNavigator} />
                   <Stack.Screen
                     name="Login"
@@ -92,7 +112,8 @@ export default class MainApp extends React.Component {
                     options={{
                       title: "Sign In",
                       headerShown: true,
-                      headerBackTitle: "Back"
+                      headerBackTitle: "Back",
+                      headerStatusBarHeight: Platform.OS === 'android' ? 0 : undefined
                     }}
                   />
                   <Stack.Group
@@ -100,7 +121,8 @@ export default class MainApp extends React.Component {
                       presentation: "modal",
                       headerShown: true,
                       gestureEnabled: true,
-                      headerLeft: () => <CloseModalButton />
+                      headerLeft: () => <CloseModalButton />,
+                      headerStatusBarHeight: Platform.OS === 'android' ? 0 : undefined
                     }}
                   >
                     <Stack.Screen

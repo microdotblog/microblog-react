@@ -12,14 +12,6 @@ const Tab = createBottomTabNavigator();
 
 @observer
 export default class TabNavigator extends React.Component{
-  
-  async componentDidMount() {
-    App.set_navigation(this.props.navigation)
-  }
-
-  componentDidUpdate() {
-    App.set_navigation(this.props.navigation)
-  }
 
   render() {
     return(

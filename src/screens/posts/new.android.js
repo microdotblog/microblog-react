@@ -80,8 +80,8 @@ export default class PostingScreen extends React.Component{
           <LoadingComponent should_show={posting.is_sending_post && posting.post_text != ""} />
         </KeyboardAvoidingView>
         <KeyboardStickyView>
-          <UsernameToolbar componentId={this.props.componentId} object={posting} />
           <AssetToolbar componentId={this.props.componentId} />
+          <UsernameToolbar componentId={this.props.componentId} object={posting} />
           <PostToolbar componentId={this.props.componentId} />
         </KeyboardStickyView>
       </>

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { TouchableOpacity, View } from 'react-native';
-import FastImage from 'react-native-fast-image';
+import { Image } from 'expo-image';
 import Auth from './../../stores/Auth';
 import App from '../../stores/App';
 import { isLiquidGlass } from './../../utils/ui';
@@ -10,6 +10,7 @@ import { isLiquidGlass } from './../../utils/ui';
 export default class ProfileImage extends React.Component{
   
   render() {
+    const routeKey = this.props.routeKey || 'default'
     let button_style = {
       width: 28,
       height: 28,
@@ -25,7 +26,8 @@ export default class ProfileImage extends React.Component{
     
     if(Auth.selected_user != null){
       return(
-        <TouchableOpacity style={button_style}
+        <TouchableOpacity 
+          style={button_style}
           onPress={() => { App.open_sheet("main_sheet"); Auth.selected_user.check_token_validity()} }
           onLongPress={() => App.navigate_to_screen("user", Auth.selected_user.username)}
           accessibilityRole="button"
@@ -33,13 +35,12 @@ export default class ProfileImage extends React.Component{
         >
           {
             Auth.selected_user.avatar != null && Auth.selected_user.avatar !== "" ?
-            <FastImage
+            <Image
+              key={`avatar-${routeKey}`}
               source={{
-                uri: `${Auth.selected_user.avatar}?v=${App.now()}`,
-                priority: FastImage.priority.normal,
-                cache: FastImage.cacheControl.web
+                uri: `${Auth.selected_user.avatar}?v=${App.now()}`
               }}
-              resizeMode={FastImage.resizeMode.contain}
+              contentFit="contain"
               style={{ width: 28, height: 28, borderRadius: 50 }}
             />
             :
@@ -49,7 +50,7 @@ export default class ProfileImage extends React.Component{
         </TouchableOpacity>
       )
     }
-    return null
+    return <View style={button_style} />
   }
   
 }

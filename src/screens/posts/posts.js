@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard, Image, StyleSheet } from 'react-native';
+import { View, Text, FlatList, RefreshControl, TouchableOpacity, Keyboard, Image, StyleSheet, Platform } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
@@ -9,8 +9,6 @@ import { SheetProvider } from "react-native-actions-sheet";
 import SearchIcon from '../../assets/icons/nav/discover.png';
 import SearchBar from '../../components/search_bar';
 import { SFSymbol } from "react-native-sfsymbols";
-import { SvgXml } from 'react-native-svg';
-
 @observer
 export default class PostsScreen extends React.Component{
 
@@ -152,7 +150,6 @@ export default class PostsScreen extends React.Component{
     
     return(
       <FlatList
-        centerContent={config.posts_for_destination(this.state.is_showing_drafts_posts)?.length === 0}
         data={config.posts_for_destination(this.state.is_showing_drafts_posts)}
         extraData={config.posts_for_destination(this.state.is_showing_drafts_posts)?.length && !selected_service.is_loading_posts}
         keyExtractor={this._key_extractor}
@@ -161,13 +158,6 @@ export default class PostsScreen extends React.Component{
           backgroundColor: App.theme_background_color_secondary(),
           width: "100%"
         }}
-        // ListEmptyComponent={
-        //   <View style={{ flex: 1, padding: 12, justifyContent: 'center', alignItems: 'center' }} >
-        //     <Text style={{ color: App.theme_text_color() }}>
-        //       { this.state.is_showing_drafts_posts ? "No drafts." : "No posts." }
-        //     </Text>
-        //   </View>
-        // }
         ItemSeparatorComponent={
           <View style={{
             height: StyleSheet.hairlineWidth,

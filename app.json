@@ -1,4 +1,8 @@
 {
   "name": "Micro.blog",
-  "displayName": "Micro.blog"
+  "displayName": "Micro.blog",
+  "plugins": [
+    "expo-secure-store",
+    "expo-web-browser"
+  ]
 }

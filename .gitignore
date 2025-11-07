@@ -33,6 +33,7 @@ local.properties
 .cxx/
 *.keystore
 !debug.keystore
+.kotlin/
 
 # node.js
 #
@@ -87,3 +88,7 @@ ios/.xcode.env.local
 .yarn/install-state.gz
 CLAUDE.md
 .cursor
+# Expo
+.expo
+dist/
+web-build/

@@ -169,7 +169,7 @@ export default Push = types.model('Push', {
 	}),
 	
 	set_devices_for_user: flow(function* (username, devices) {
-		console.log("Push::set_devices_for_user", username, devices)
+		console.log("Push::set_devices_for_user", username)
 		self.devices.set(username, devices)
 	}),
 

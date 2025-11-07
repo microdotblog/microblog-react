@@ -2,9 +2,10 @@ import { types, flow } from 'mobx-state-tree';
 import { Linking, Appearance, AppState, Platform, Dimensions, Alert, Keyboard } from 'react-native'
 import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
 import Toast from 'react-native-simple-toast';
-import { InAppBrowser } from 'react-native-inappbrowser-reborn'
+import * as WebBrowser from 'expo-web-browser';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SheetManager } from "react-native-actions-sheet";
+import { StackActions, CommonActions } from '@react-navigation/native';
 
 import Auth from './Auth';
 import Login from './Login';
@@ -70,6 +71,7 @@ export default App = types.model('App', {
   .actions(self => ({
   
     set_navigation: flow(function*(navigation = null) {
+      console.log("App:set_navigation", navigation != null)
       if (navigation) {
         self.navigation_ref = navigation
       }
@@ -78,12 +80,22 @@ export default App = types.model('App', {
     hydrate: flow(function*() {
       console.log("App:hydrate")
       self.is_loading = true
+      
+      yield App.set_current_initial_theme()
+      yield App.set_current_initial_font_scale()
+      yield Push.hydrate()
     
-      Auth.hydrate().then(async () => {
+      Settings.hydrate()
+      App.set_is_loading(false)
+      App.set_up_url_listener()
+      App.setup_keyboard_listeners()
+      
+      try{
+        yield Auth.hydrate()
         console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
-        await App.set_current_initial_theme()
-        await App.set_current_initial_font_scale()
-        await Push.hydrate()
+        yield App.set_current_initial_theme()
+        yield App.set_current_initial_font_scale()
+        yield Push.hydrate()
       
         Settings.hydrate()
         App.set_is_loading(false)
@@ -95,7 +107,10 @@ export default App = types.model('App', {
         else if (!Auth.is_logged_in()) {
           App.navigate_to_screen("Login")
         }
-      })
+      }
+      catch(error){
+        console.error(error)
+      }
     }),
 
     prep_and_hydrate_share_extension: flow(function*() {
@@ -178,10 +193,7 @@ export default App = types.model('App', {
     open_sheet: flow(function*(sheet_name = null, payload = null) {
       console.log("App:open_sheet", sheet_name)
       if (sheet_name != null) {
-        const sheet_is_open = SheetManager.get(sheet_name)?.current?.isOpen()
-        if (!sheet_is_open) {
-          SheetManager.show(sheet_name, { payload: payload })
-        }
+        SheetManager.show(sheet_name, { payload: payload })
       }
     }),
   
@@ -267,40 +279,75 @@ export default App = types.model('App', {
             Reply.hydrate(action_data)
             return App.open_sheet("reply_sheet", { conversation_id: action_data })
           case "user":
-            return self.navigation_ref.push(`${self.current_tab_key}-Profile`, { username: action_data })
+            const profile_screen_name = `${self.current_tab_key}-Profile`
+            try {
+              const state = self.navigation_ref.getState()
+              const tabs_route = state?.routes?.find(r => r.name === "Tabs")
+              if (tabs_route?.state) {
+                const tab_route = tabs_route.state.routes[tabs_route.state.index]
+                const stack_state = tab_route?.state
+                const stack_routes = stack_state?.routes
+                const stack_index = stack_state?.index ?? 0
+                const current_route = stack_routes?.[stack_index]
+                const is_on_profile_screen = current_route?.name === profile_screen_name
+                
+                console.log("App:navigate_to_screen:user:check", {
+                  profile_screen_name,
+                  current_route_name: current_route?.name,
+                  current_username: current_route?.params?.username,
+                  new_username: action_data,
+                  is_on_profile_screen
+                })
+                
+                if (is_on_profile_screen && current_route?.params?.username === action_data) {
+                  return
+                }
+                
+                if (is_on_profile_screen) {
+                  console.log("App:navigate_to_screen:user:pushing", profile_screen_name, action_data)
+                  return self.navigation_ref.dispatch(
+                    StackActions.push(profile_screen_name, { username: action_data })
+                  )
+                }
+              }
+            } catch (e) {
+              console.log("App:navigate_to_screen:error checking navigation state", e)
+            }
+            console.log("App:navigate_to_screen:user:navigating", profile_screen_name, action_data)
+            return self.navigation_ref.navigate(profile_screen_name, { username: action_data })
           case "discover/topic":
-            return self.navigation_ref.push("DiscoverTopic", { topic: action_data })
+            return self.navigation_ref.navigate("DiscoverTopic", { topic: action_data })
           case "open":
             Reply.hydrate(action_data)
             Push.check_and_remove_notifications_with_post_id(action_data)
             if (self.conversation_screen_focused) {
               return self.navigation_ref.navigate(`${self.current_tab_key}-Conversation`, { conversation_id: action_data })
             }
-            return self.navigation_ref.push(`${self.current_tab_key}-Conversation`, { conversation_id: action_data })
+            return self.navigation_ref.navigate(`${self.current_tab_key}-Conversation`, { conversation_id: action_data })
           case "post_service":
             yield Services.hydrate_with_user(action_data)
-            return self.navigation_ref.push("PostService", { user: action_data })
+            return self.navigation_ref.navigate("PostService", { user: action_data })
           case "add_bookmark":
-            return self.navigation_ref.push("AddBookmark")
+            return self.navigation_ref.navigate("AddBookmark")
           case "highlights":
-            return self.navigation_ref.push("Highlights")
+            return self.navigation_ref.navigate("Highlights")
           case "bookmark":
-            return self.navigation_ref.push("Bookmark", { bookmark_id: action_data })
+            return self.navigation_ref.navigate("Bookmark", { bookmark_id: action_data })
           case "following":
-            return self.navigation_ref.push(`${self.current_tab_key}-Following`, { username: action_data })
+            return self.navigation_ref.navigate(`${self.current_tab_key}-Following`, { username: action_data })
           case "uploads":
-            return self.navigation_ref.push(`${self.current_tab_key}-Uploads`)
+            return self.navigation_ref.navigate(`${self.current_tab_key}-Uploads`)
           case "replies":
-            return self.navigation_ref.push(`${self.current_tab_key}-Replies`)
+            return self.navigation_ref.navigate(`${self.current_tab_key}-Replies`)
           case "reply_edit":
-            return self.navigation_ref.push("ReplyEdit")
+            return self.navigation_ref.navigate("ReplyEdit")
           case "PageEdit":
             Auth.selected_user?.posting.hydrate_page_edit(action_data)
-            return self.navigation_ref.push("PageEdit")
+            return self.navigation_ref.navigate("PageEdit")
           case "Posts":
-            return self.navigation_ref.push(`${self.current_tab_key}-Posts`)
+            return self.navigation_ref.navigate(`${self.current_tab_key}-Posts`)
           case "Pages":
-            return self.navigation_ref.push(`${self.current_tab_key}-Pages`)
+            return self.navigation_ref.navigate(`${self.current_tab_key}-Pages`)
           case "Posting":
             if (action_data != null && !from_listener) {
               // Action data is usually markdown text from a highlight,
@@ -310,22 +357,22 @@ export default App = types.model('App', {
             else if (action_data != null && from_listener) {
               Auth.selected_user.posting.set_post_text_from_action(action_data)
             }
-            return self.navigation_ref.push("Posting")
+            return self.navigation_ref.navigate("Posting")
           case "PostEdit":
             Auth.selected_user?.posting.hydrate_post_edit(action_data)
-            return self.navigation_ref.push("PostEdit")
+            return self.navigation_ref.navigate("PostEdit")
           case "ImageOptions":
-            return self.navigation_ref.push("ImageOptions", action_data)
+            return self.navigation_ref.navigate("ImageOptions", action_data)
           case "PostUploads":
-            return self.navigation_ref.push(`PostUploads`, { did_open_from_editor: true })
+            return self.navigation_ref.navigate(`PostUploads`, { did_open_from_editor: true })
           case "ManageCollections":
-            return self.navigation_ref.push(`${self.current_tab_key}-Collections`)
+            return self.navigation_ref.navigate(`${self.current_tab_key}-Collections`)
           case "AddCollection":
-            return self.navigation_ref.push("AddCollection")
+            return self.navigation_ref.navigate("AddCollection")
           case "muting":
-            return self.navigation_ref.push(`muting`, { user: action_data })
+            return self.navigation_ref.navigate(`muting`, { user: action_data })
           default:
-            self.navigation_ref.push(screen_name)
+            self.navigation_ref.navigate(screen_name)
         }
       }
     }),
@@ -478,14 +525,11 @@ export default App = types.model('App', {
       else {
         Linking.canOpenURL(url).then(async (supported) => {
           if (supported) {
-            const is_inapp_browser_avail = await InAppBrowser.isAvailable()
-            if (is_inapp_browser_avail && !open_external && !Settings.open_links_in_external_browser) {
-              return InAppBrowser.open(url, {
+            if (!open_external && !Settings.open_links_in_external_browser) {
+              WebBrowser.openBrowserAsync(url, { 
+                controlsColor: '#f80',
                 dismissButtonStyle: 'close',
-                preferredControlTintColor: "#f80",
-                readerMode: Settings.open_links_with_reader_mode,
-                animated: true,
-                modalEnabled: false
+                readerMode: Settings.open_links_with_reader_mode
               })
             }
             else {

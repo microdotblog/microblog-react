@@ -334,7 +334,6 @@ class MicroBlogApi {
         }
       })
       .then(response => {
-        console.log('MicroBlogApi:get_push_info:data', response.data);
         return response.data;
       })
       .catch(error => {

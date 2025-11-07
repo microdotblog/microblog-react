@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { ScrollView, View, Text, Image, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, Image as RNImage } from 'react-native';
+import { Image } from 'expo-image';
 import MediaAsset from '../../stores/models/posting/MediaAsset';
 import CheckmarkIcon from '../../assets/icons/checkmark.png';
 // import ImageEditor from "@react-native-community/image-editor";
@@ -50,36 +51,36 @@ class FilterThumbnail extends React.Component {
 			}}>
 				<View>
 					{ filter == "Original" ?
-						<Image source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style }/>
+						<Image source={{ uri: asset.uri }} contentFit="cover" style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style }/>
 					: null }
 					{ filter == "Mayfair" ?
 						<Mayfair extractImageEnabled={true} onExtractImage={this.onSaveImage} image={
-							<Image source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
+							<RNImage source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
 						}/>
 					: null }
 					{ filter == "Warm" ?
 						<Warm extractImageEnabled={true} onExtractImage={this.onSaveImage} image={
-							<Image source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
+							<RNImage source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
 						}/>
 					: null }
 					{ filter == "Cool" ?
 						<Cool extractImageEnabled={true} onExtractImage={this.onSaveImage} image={
-							<Image source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
+							<RNImage source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
 						}/>
 					: null }
 					{ filter == "Sepia" ?
 						<Sepia extractImageEnabled={true} onExtractImage={this.onSaveImage} image={
-							<Image source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
+							<RNImage source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
 						}/>
 					: null }
 					{ filter == "Vintage" ?
 						<Vintage extractImageEnabled={true} onExtractImage={this.onSaveImage} image={
-							<Image source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
+							<RNImage source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
 						}/>
 					: null }
 					{ filter == "Grayscale" ?
 						<Grayscale extractImageEnabled={true} onExtractImage={this.onSaveImage} image={
-							<Image source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
+							<RNImage source={{ uri: asset.uri }} style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style } />
 						}/>
 					: null }
 					<Text style={{ color: App.theme_button_text_color(), paddingLeft: 12, marginTop: 12, marginRight: 12, textAlign: "center" }}>{ filter }</Text>
@@ -187,7 +188,7 @@ export default class ImageCropScreen extends React.Component{
 									console.log("on scroll", e.nativeEvent.contentOffset.x, e.nativeEvent.contentOffset.y)
 									this.setState({ crop_pt: e.nativeEvent.contentOffset })
 								}}>
-									<Image source={{ uri: asset.uri }} style={{ width: asset.scale_width_for_height(scroll_size), height: scroll_size, resizeMode: "contain" }} />
+									<Image source={{ uri: asset.uri }} contentFit="contain" style={{ width: asset.scale_width_for_height(scroll_size), height: scroll_size }} />
 								</ScrollView>
 							</View>
 						:
@@ -198,7 +199,7 @@ export default class ImageCropScreen extends React.Component{
 									console.log("on scroll", e.nativeEvent.contentOffset.x, e.nativeEvent.contentOffset.y)
 									this.setState({ crop_pt: e.nativeEvent.contentOffset })
 								}}>
-									<Image source={{ uri: asset.uri }} style={{ width: scroll_size, height: asset.scale_height_for_width(scroll_size), resizeMode: "contain" }} />
+									<Image source={{ uri: asset.uri }} contentFit="contain" style={{ width: scroll_size, height: asset.scale_height_for_width(scroll_size) }} />
 								</ScrollView>
 							</View>
 					)
@@ -207,7 +208,7 @@ export default class ImageCropScreen extends React.Component{
 						<ScrollView style={{ width: "100%", height: scroll_size, backgroundColor: App.theme_crop_background_color() }} bounces={ false } contentContainerStyle={{ width: scroll_size, height: scroll_size }} onLayout={(e) => {
 							this.setState({ scroll_size: e.nativeEvent.layout.width })
 						}}>
-							<Image source={{ uri: asset.uri }} style={{ width: scroll_size, height: scroll_size, resizeMode: "contain" }} />
+							<Image source={{ uri: asset.uri }} contentFit="contain" style={{ width: scroll_size, height: scroll_size }} />
 						</ScrollView>
 					</View>
 				}
@@ -223,7 +224,7 @@ export default class ImageCropScreen extends React.Component{
 						>
 							<Text style={{ color: (is_cropped ? App.theme_button_text_color() : App.theme_button_disabled_text_color()) }}>
 								Crop photo to square 
-								{ is_cropped ? <Image source={CheckmarkIcon} style={{ width: 12, height: 12, marginLeft: 5, tintColor: App.theme_button_text_color() }} /> : null }
+								{ is_cropped ? <RNImage source={CheckmarkIcon} style={{ width: 12, height: 12, marginLeft: 5, tintColor: App.theme_button_text_color() }} /> : null }
 							</Text>
 						</TouchableOpacity>
 					</View>

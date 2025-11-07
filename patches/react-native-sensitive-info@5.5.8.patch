@@ -1,0 +1,45 @@
+diff --git a/RNSensitiveInfo.js b/RNSensitiveInfo.js
+index b3e164c6bb00e1bb885e796f6f402909ecfb6071..34cec63f2020108cac0051861175a08c92aa5817 100644
+--- a/RNSensitiveInfo.js
++++ b/RNSensitiveInfo.js
+@@ -1,23 +1,23 @@
+-import {NativeModules} from 'react-native';
++import { NativeModules } from 'react-native';
+ 
+ const RNSensitiveInfo = NativeModules.RNSensitiveInfo;
+ 
+-module.exports = {
+-  ...RNSensitiveInfo,
+-  setInvalidatedByBiometricEnrollment(invalidatedByBiometricEnrollment) {
+-    if (RNSensitiveInfo.setInvalidatedByBiometricEnrollment == null) {
+-      return;
+-    }
++RNSensitiveInfo.setInvalidatedByBiometricEnrollment = (
++  invalidatedByBiometricEnrollment,
++) => {
++  if (RNSensitiveInfo.setInvalidatedByBiometricEnrollment == null) {
++    return undefined;
++  }
+ 
+-    return RNSensitiveInfo.setInvalidatedByBiometricEnrollment(
+-      invalidatedByBiometricEnrollment,
+-    );
+-  },
+-  cancelFingerprintAuth() {
+-    if (RNSensitiveInfo.cancelFingerprintAuth == null) {
+-      return;
+-    }
++  return RNSensitiveInfo.setInvalidatedByBiometricEnrollment(
++    invalidatedByBiometricEnrollment,
++  );
++};
++RNSensitiveInfo.cancelFingerprintAuth = () => {
++  if (RNSensitiveInfo.cancelFingerprintAuth == null) {
++    return undefined;
++  }
+ 
+-    return RNSensitiveInfo.cancelFingerprintAuth();
+-  },
++  return RNSensitiveInfo.cancelFingerprintAuth();
+ };
++export default RNSensitiveInfo;

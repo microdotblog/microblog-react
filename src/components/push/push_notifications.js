@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import Push from '../../stores/Push'
-import { View, Text, TouchableOpacity, Image, Platform } from 'react-native'
+import { View, Text, TouchableOpacity, Platform } from 'react-native'
+import { Image } from 'expo-image';
 import App from '../../stores/App'
 import { SFSymbol } from "react-native-sfsymbols";
 import { SvgXml } from 'react-native-svg';
@@ -37,6 +38,7 @@ export default class PushNotifications extends React.Component{
                 notification.from_avatar_url ?
                 <Image
                   source={{ uri: notification.from_avatar_url }}
+                  contentFit="cover"
                   style={{
                     width: 25,
                     height: 25,

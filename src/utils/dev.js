@@ -13,5 +13,6 @@ LogBox.ignoreLogs([
   "the creation of the observable instance must be done on the initializing phase",
   "`new NativeEventEmitter()` was called with a non-null argument without the required",
   "Sending `onAnimatedValueUpdate` with no listeners registered",
-  "Did not receive response to shouldStartLoad"
+  "Did not receive response to shouldStartLoad",
+  "Open debugger to view warnings"
 ])

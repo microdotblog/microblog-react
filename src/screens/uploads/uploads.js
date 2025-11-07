@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard, Dimensions, Image } from 'react-native';
+import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard, Dimensions, Image, Platform } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
@@ -126,6 +126,10 @@ export default class UploadsScreen extends React.Component{
           width: "100%"
         }}
         numColumns={this.state.num_columns}
+        removeClippedSubviews={true}
+        initialNumToRender={12}
+        maxToRenderPerBatch={6}
+        windowSize={5}
         refreshControl={
           <RefreshControl
             refreshing={false}

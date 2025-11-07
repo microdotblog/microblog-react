@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, Platform, ScrollView, Image, TextInput, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, ScrollView, TextInput, ActivityIndicator } from 'react-native';
+import { Image } from 'expo-image';
 import App from '../../stores/App';
 import { SFSymbol } from 'react-native-sfsymbols'
 import { SvgXml } from 'react-native-svg'
@@ -172,7 +173,7 @@ export default class ReplyToolbar extends React.Component{
                     }}
                   >
                     {user.avatar ? (
-                      <Image source={{ uri: user.avatar }} style={{ width: 20, height: 20, borderRadius: 10, marginRight: 6 }} />
+                      <Image source={{ uri: user.avatar }} contentFit="cover" style={{ width: 20, height: 20, borderRadius: 10, marginRight: 6 }} />
                     ) : (
                       <View style={{ width: 20, height: 20, borderRadius: 10, marginRight: 6, backgroundColor: App.theme_border_color() }} />
                     )}
@@ -215,7 +216,7 @@ export default class ReplyToolbar extends React.Component{
                       }}
                     >
                       {user.avatar ? (
-                        <Image source={{ uri: user.avatar }} style={{ width: 20, height: 20, borderRadius: 10, marginRight: 6 }} />
+                        <Image source={{ uri: user.avatar }} contentFit="cover" style={{ width: 20, height: 20, borderRadius: 10, marginRight: 6 }} />
                       ) : (
                         <View style={{ width: 20, height: 20, borderRadius: 10, marginRight: 6, backgroundColor: App.theme_border_color() }} />
                       )}

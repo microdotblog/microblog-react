@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { useRef } from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
-import ActionSheet, { useScrollHandlers, ActionSheetRef, SheetManager } from "react-native-actions-sheet";
+import ActionSheet, { SheetManager } from "react-native-actions-sheet";
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
 import CheckmarkIcon from '../../assets/icons/checkmark.png';
@@ -13,11 +12,6 @@ export default class PostsDestinationMenu extends React.Component{
   constructor(props){
     super(props);
     this.sheetId = props.sheetId
-    this.actionSheetRef = useRef<ActionSheetRef>(null)
-    this.scrollHandlers = useScrollHandlers<ScrollView>(
-      "destination-scroll",
-      this.actionSheetRef
-    )
   }
   
   _render_destinations = () => {
@@ -59,7 +53,6 @@ export default class PostsDestinationMenu extends React.Component{
     if (Auth.selected_user == null) { return null; }
     return(
       <ActionSheet
-        ref={this.actionSheetRef}
         id={this.props.sheetId}
         useBottomSafeAreaPadding={true}
         gestureEnabled={true}

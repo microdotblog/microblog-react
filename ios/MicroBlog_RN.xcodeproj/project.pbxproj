@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00E356F31AD99517003FC87E /* MicroBlog_RNTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* MicroBlog_RNTests.m */; };
+		0059A6FAA82F4F1F1C73AB32 /* libPods-MicroBlog_RN-MicroBlog_Share.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 156D7347EAC1139B8679B1FD /* libPods-MicroBlog_RN-MicroBlog_Share.a */; };
 		0221AB2A29D42C1500838597 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0221AB2829D42C1500838597 /* MainInterface.storyboard */; };
 		0221AB2E29D42C1500838597 /* MicroBlog_Share.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0221AB2429D42C1500838597 /* MicroBlog_Share.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		0221AB3529D42CE500838597 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0221AB3429D42CE500838597 /* ShareViewController.swift */; };
@@ -15,9 +15,9 @@
 		0251EE462716191A00B475D5 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0251EE452716191A00B475D5 /* File.swift */; };
 		02A72C7C2C2AB086006EF653 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 02A72C7B2C2AB086006EF653 /* PrivacyInfo.xcprivacy */; };
 		02A72C7D2C2AB086006EF653 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 02A72C7B2C2AB086006EF653 /* PrivacyInfo.xcprivacy */; };
-		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		2837C73874E55DEB2797484F /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961AB331816A548D082E9A56 /* ExpoModulesProvider.swift */; };
+		28E40035B1E151C13639876C /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCF007C5134030FD80BBAC8 /* ExpoModulesProvider.swift */; };
 		4B06FCA829FABD0800E97371 /* UIScrollViewDelegate+Zooming.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B06FCA729FABD0800E97371 /* UIScrollViewDelegate+Zooming.m */; };
 		4B1233D429ECCC0100174307 /* MBHighlightingTextManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1233D329ECCC0100174307 /* MBHighlightingTextManager.m */; };
 		4B1233D729ECD7D200174307 /* MBHighlightingTextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1233D529ECD7D200174307 /* MBHighlightingTextStorage.m */; };
@@ -33,20 +33,12 @@
 		4BAA745F2A24E78700953D91 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		4BB0A4602DFCA4DC00900B0B /* MBClipboardHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BB0A45F2DFCA4DC00900B0B /* MBClipboardHelper.m */; };
 		4BB0A4612DFCA4DC00900B0B /* MBClipboardHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BB0A45F2DFCA4DC00900B0B /* MBClipboardHelper.m */; };
-		52509892FFF0C47000E8F5DE /* libPods-MicroBlog_RN-MicroBlog_RNTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 60EE2B6292F1F3ED4E3AD989 /* libPods-MicroBlog_RN-MicroBlog_RNTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8C619CFF939F9E33E65A6DAA /* libPods-MicroBlog_RN.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1AD34313DED25C45B534DA /* libPods-MicroBlog_RN.a */; };
-		940A9DE717F90EE73B77B179 /* libPods-MicroBlog_RN-MicroBlog_Share.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E5FE254626EB23CB73E05290 /* libPods-MicroBlog_RN-MicroBlog_Share.a */; };
+		BF76CC3E2E8E980900F61FC2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF76CC3D2E8E980900F61FC2 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		00E356F41AD99517003FC87E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = MicroBlog_RN;
-		};
 		0221AB2C29D42C1500838597 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
@@ -71,9 +63,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		00E356EE1AD99517003FC87E /* MicroBlog_RNTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MicroBlog_RNTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E356F21AD99517003FC87E /* MicroBlog_RNTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MicroBlog_RNTests.m; sourceTree = "<group>"; };
 		0221AB2429D42C1500838597 /* MicroBlog_Share.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MicroBlog_Share.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		0221AB2929D42C1500838597 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		0221AB2B29D42C1500838597 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -86,12 +75,9 @@
 		02A72C7B2C2AB086006EF653 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		02F5714D28C028CD0055509F /* MicroBlog_RN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = MicroBlog_RN.entitlements; path = MicroBlog_RN/MicroBlog_RN.entitlements; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* MicroBlog_RN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MicroBlog_RN.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = MicroBlog_RN/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = MicroBlog_RN/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = MicroBlog_RN/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = MicroBlog_RN/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = MicroBlog_RN/main.m; sourceTree = "<group>"; };
-		2DA4E9496AE4EAC2DB6FB8F6 /* Pods-MicroBlog_RN-MicroBlog_Share.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MicroBlog_RN-MicroBlog_Share.release.xcconfig"; path = "Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/Pods-MicroBlog_RN-MicroBlog_Share.release.xcconfig"; sourceTree = "<group>"; };
+		156D7347EAC1139B8679B1FD /* libPods-MicroBlog_RN-MicroBlog_Share.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MicroBlog_RN-MicroBlog_Share.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		47E9C7DD11A09B7944E82B75 /* Pods-MicroBlog_RN.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MicroBlog_RN.debug.xcconfig"; path = "Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN.debug.xcconfig"; sourceTree = "<group>"; };
 		4B06FCA629FABD0800E97371 /* UIScrollViewDelegate+Zooming.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "UIScrollViewDelegate+Zooming.h"; path = "MicroBlog_RN/UIScrollViewDelegate+Zooming.h"; sourceTree = "<group>"; };
 		4B06FCA729FABD0800E97371 /* UIScrollViewDelegate+Zooming.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "UIScrollViewDelegate+Zooming.m"; path = "MicroBlog_RN/UIScrollViewDelegate+Zooming.m"; sourceTree = "<group>"; };
@@ -108,31 +94,23 @@
 		4B8CE8AA2A1FCC69006D79CF /* GetURL.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = GetURL.js; sourceTree = "<group>"; };
 		4BB0A45E2DFCA4DC00900B0B /* MBClipboardHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MBClipboardHelper.h; path = MicroBlog_RN/MBClipboardHelper.h; sourceTree = "<group>"; };
 		4BB0A45F2DFCA4DC00900B0B /* MBClipboardHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MBClipboardHelper.m; path = MicroBlog_RN/MBClipboardHelper.m; sourceTree = "<group>"; };
-		4C096FE28E3BF256DF2F0398 /* Pods-MicroBlog_RN-MicroBlog_RNTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MicroBlog_RN-MicroBlog_RNTests.release.xcconfig"; path = "Target Support Files/Pods-MicroBlog_RN-MicroBlog_RNTests/Pods-MicroBlog_RN-MicroBlog_RNTests.release.xcconfig"; sourceTree = "<group>"; };
-		60EE2B6292F1F3ED4E3AD989 /* libPods-MicroBlog_RN-MicroBlog_RNTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MicroBlog_RN-MicroBlog_RNTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		67F5CB031FE91036DC73F2D9 /* Pods-MicroBlog_RN-MicroBlog_Share.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MicroBlog_RN-MicroBlog_Share.debug.xcconfig"; path = "Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/Pods-MicroBlog_RN-MicroBlog_Share.debug.xcconfig"; sourceTree = "<group>"; };
 		7A1AD34313DED25C45B534DA /* libPods-MicroBlog_RN.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MicroBlog_RN.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F4610A1564E937F6AF1CE21 /* Pods-MicroBlog_RN.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MicroBlog_RN.release.xcconfig"; path = "Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = MicroBlog_RN/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		99BD11E1312F7B822738CA85 /* Pods-MicroBlog_RN-MicroBlog_RNTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MicroBlog_RN-MicroBlog_RNTests.debug.xcconfig"; path = "Target Support Files/Pods-MicroBlog_RN-MicroBlog_RNTests/Pods-MicroBlog_RN-MicroBlog_RNTests.debug.xcconfig"; sourceTree = "<group>"; };
-		E5FE254626EB23CB73E05290 /* libPods-MicroBlog_RN-MicroBlog_Share.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MicroBlog_RN-MicroBlog_Share.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		961AB331816A548D082E9A56 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		ABD2A85EB6981953D0A18909 /* Pods-MicroBlog_RN-MicroBlog_Share.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MicroBlog_RN-MicroBlog_Share.debug.xcconfig"; path = "Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/Pods-MicroBlog_RN-MicroBlog_Share.debug.xcconfig"; sourceTree = "<group>"; };
+		ADCF007C5134030FD80BBAC8 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-MicroBlog_RN/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		BF76CC3D2E8E980900F61FC2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = MicroBlog_RN/AppDelegate.swift; sourceTree = "<group>"; };
+		E42EEA474A635F48DFBD7F51 /* Pods-MicroBlog_RN-MicroBlog_Share.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MicroBlog_RN-MicroBlog_Share.release.xcconfig"; path = "Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/Pods-MicroBlog_RN-MicroBlog_Share.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		00E356EB1AD99517003FC87E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				52509892FFF0C47000E8F5DE /* libPods-MicroBlog_RN-MicroBlog_RNTests.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		0221AB2129D42C1500838597 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				940A9DE717F90EE73B77B179 /* libPods-MicroBlog_RN-MicroBlog_Share.a in Frameworks */,
+				0059A6FAA82F4F1F1C73AB32 /* libPods-MicroBlog_RN-MicroBlog_Share.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -147,23 +125,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		00E356EF1AD99517003FC87E /* MicroBlog_RNTests */ = {
-			isa = PBXGroup;
-			children = (
-				00E356F21AD99517003FC87E /* MicroBlog_RNTests.m */,
-				00E356F01AD99517003FC87E /* Supporting Files */,
-			);
-			path = MicroBlog_RNTests;
-			sourceTree = "<group>";
-		};
-		00E356F01AD99517003FC87E /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				00E356F11AD99517003FC87E /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 		0221AB2529D42C1500838597 /* MicroBlog_Share */ = {
 			isa = PBXGroup;
 			children = (
@@ -182,8 +143,6 @@
 			isa = PBXGroup;
 			children = (
 				02F5714D28C028CD0055509F /* MicroBlog_RN.entitlements */,
-				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
-				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				4B7619CF29EC9E7A0030A495 /* MBHighlightingTextView.h */,
 				4B7619D029EC9E7A0030A495 /* MBHighlightingTextView.m */,
 				4B1233D229ECCC0100174307 /* MBHighlightingTextManager.h */,
@@ -201,8 +160,8 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
-				13B07FB71A68108700A75B9A /* main.m */,
 				02A72C7B2C2AB086006EF653 /* PrivacyInfo.xcprivacy */,
+				BF76CC3D2E8E980900F61FC2 /* AppDelegate.swift */,
 			);
 			name = MicroBlog_RN;
 			sourceTree = "<group>";
@@ -212,10 +171,17 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				7A1AD34313DED25C45B534DA /* libPods-MicroBlog_RN.a */,
-				60EE2B6292F1F3ED4E3AD989 /* libPods-MicroBlog_RN-MicroBlog_RNTests.a */,
-				E5FE254626EB23CB73E05290 /* libPods-MicroBlog_RN-MicroBlog_Share.a */,
+				156D7347EAC1139B8679B1FD /* libPods-MicroBlog_RN-MicroBlog_Share.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		36F6F6821FE1FC286555CA3B /* MicroBlog_RN */ = {
+			isa = PBXGroup;
+			children = (
+				ADCF007C5134030FD80BBAC8 /* ExpoModulesProvider.swift */,
+			);
+			name = MicroBlog_RN;
 			sourceTree = "<group>";
 		};
 		40B014C54BC01310B7B6295D /* Pods */ = {
@@ -223,10 +189,8 @@
 			children = (
 				47E9C7DD11A09B7944E82B75 /* Pods-MicroBlog_RN.debug.xcconfig */,
 				7F4610A1564E937F6AF1CE21 /* Pods-MicroBlog_RN.release.xcconfig */,
-				99BD11E1312F7B822738CA85 /* Pods-MicroBlog_RN-MicroBlog_RNTests.debug.xcconfig */,
-				4C096FE28E3BF256DF2F0398 /* Pods-MicroBlog_RN-MicroBlog_RNTests.release.xcconfig */,
-				67F5CB031FE91036DC73F2D9 /* Pods-MicroBlog_RN-MicroBlog_Share.debug.xcconfig */,
-				2DA4E9496AE4EAC2DB6FB8F6 /* Pods-MicroBlog_RN-MicroBlog_Share.release.xcconfig */,
+				ABD2A85EB6981953D0A18909 /* Pods-MicroBlog_RN-MicroBlog_Share.debug.xcconfig */,
+				E42EEA474A635F48DFBD7F51 /* Pods-MicroBlog_RN-MicroBlog_Share.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -244,12 +208,12 @@
 				0251EE452716191A00B475D5 /* File.swift */,
 				13B07FAE1A68108700A75B9A /* MicroBlog_RN */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				00E356EF1AD99517003FC87E /* MicroBlog_RNTests */,
 				0221AB2529D42C1500838597 /* MicroBlog_Share */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				40B014C54BC01310B7B6295D /* Pods */,
 				0251EE442716191900B475D5 /* MicroBlog_RN-Bridging-Header.h */,
+				FAF53891EDA949F2323885FA /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -260,46 +224,42 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* MicroBlog_RN.app */,
-				00E356EE1AD99517003FC87E /* MicroBlog_RNTests.xctest */,
 				0221AB2429D42C1500838597 /* MicroBlog_Share.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
+		FAF53891EDA949F2323885FA /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				36F6F6821FE1FC286555CA3B /* MicroBlog_RN */,
+				FFC9B65B91E063221C5C261D /* MicroBlog_Share */,
+			);
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
+		FFC9B65B91E063221C5C261D /* MicroBlog_Share */ = {
+			isa = PBXGroup;
+			children = (
+				961AB331816A548D082E9A56 /* ExpoModulesProvider.swift */,
+			);
+			name = MicroBlog_Share;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* MicroBlog_RNTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "MicroBlog_RNTests" */;
-			buildPhases = (
-				61BFBA907A15344DC7657492 /* [CP] Check Pods Manifest.lock */,
-				00E356EA1AD99517003FC87E /* Sources */,
-				00E356EB1AD99517003FC87E /* Frameworks */,
-				00E356EC1AD99517003FC87E /* Resources */,
-				55EF306DB53AB629EAD3B0D9 /* [CP] Embed Pods Frameworks */,
-				FF2DE1918C6C2C0652A84730 /* [CP] Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				00E356F51AD99517003FC87E /* PBXTargetDependency */,
-			);
-			name = MicroBlog_RNTests;
-			productName = MicroBlog_RNTests;
-			productReference = 00E356EE1AD99517003FC87E /* MicroBlog_RNTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		0221AB2329D42C1500838597 /* MicroBlog_Share */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0221AB2F29D42C1500838597 /* Build configuration list for PBXNativeTarget "MicroBlog_Share" */;
 			buildPhases = (
-				440240A260BDFC8E19FC55B9 /* [CP] Check Pods Manifest.lock */,
+				4D1BBC01CD4A443A4FB1B850 /* [CP] Check Pods Manifest.lock */,
+				EDCD1D1395C1DEE14C352BA9 /* [Expo] Configure project */,
 				0221AB2029D42C1500838597 /* Sources */,
 				0221AB2129D42C1500838597 /* Frameworks */,
 				0221AB2229D42C1500838597 /* Resources */,
 				0221AB3929D433D300838597 /* Bundle React Native code and images */,
-				5C9E05F93C7EF786F369E8FC /* [CP] Copy Pods Resources */,
+				D154E38C221C432FADA5DD56 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -316,6 +276,7 @@
 			buildPhases = (
 				993BFA2DC71DB1F379D2A371 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
+				2D8EC8CE127AA4FC6BFF25AF /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
@@ -343,10 +304,6 @@
 				LastSwiftUpdateCheck = 1420;
 				LastUpgradeCheck = 1210;
 				TargetAttributes = {
-					00E356ED1AD99517003FC87E = {
-						CreatedOnToolsVersion = 6.2;
-						TestTargetID = 13B07F861A680F5B00A75B9A;
-					};
 					0221AB2329D42C1500838597 = {
 						CreatedOnToolsVersion = 14.2;
 						LastSwiftMigration = 1420;
@@ -370,20 +327,12 @@
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* MicroBlog_RN */,
-				00E356ED1AD99517003FC87E /* MicroBlog_RNTests */,
 				0221AB2329D42C1500838597 /* MicroBlog_Share */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		00E356EC1AD99517003FC87E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		0221AB2229D42C1500838597 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -420,7 +369,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+			shellScript = "if [[ -f \"$PODS_ROOT/../.xcode.env\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env\"\nfi\nif [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.local\"\nfi\n\n# The project root by default is one level up from the ios directory\nexport PROJECT_ROOT=\"$PROJECT_DIR\"/..\n\nif [[ \"$CONFIGURATION\" = *Debug* ]]; then\n  export SKIP_BUNDLING=1\nfi\nif [[ -z \"$ENTRY_FILE\" ]]; then\n  # Set the entry JS file using the bundler's entry resolution.\n  export ENTRY_FILE=\"$(\"$NODE_BINARY\" -e \"require('expo/scripts/resolveAppEntry')\" \"$PROJECT_ROOT\" ios absolute | tail -n 1)\"\nfi\n\nif [[ -z \"$CLI_PATH\" ]]; then\n  # Use Expo CLI\n  export CLI_PATH=\"$(\"$NODE_BINARY\" --print \"require.resolve('@expo/cli')\")\"\nfi\nif [[ -z \"$BUNDLE_COMMAND\" ]]; then\n  # Default Expo CLI command for bundling\n  export BUNDLE_COMMAND=\"export:embed\"\nfi\n\n`\"$NODE_BINARY\" --print \"require('path').dirname(require.resolve('react-native/package.json')) + '/scripts/react-native-xcode.sh'\"`\n";
 		};
 		0221AB3929D433D300838597 /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -438,9 +387,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\nexport ENTRY_FILE=index.share.js\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+			shellScript = "if [[ -f \"$PODS_ROOT/../.xcode.env\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env\"\nfi\nif [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.local\"\nfi\n\n# The project root by default is one level up from the ios directory\nexport PROJECT_ROOT=\"$PROJECT_DIR\"/..\n\nif [[ \"$CONFIGURATION\" = *Debug* ]]; then\n  export SKIP_BUNDLING=1\nfi\nif [[ -z \"$ENTRY_FILE\" ]]; then\n  # Set the entry JS file using the bundler's entry resolution.\n  export ENTRY_FILE=\"$(\"$NODE_BINARY\" -e \"require('expo/scripts/resolveAppEntry')\" \"$PROJECT_ROOT\" ios absolute | tail -n 1)\"\nfi\n\nif [[ -z \"$CLI_PATH\" ]]; then\n  # Use Expo CLI\n  export CLI_PATH=\"$(\"$NODE_BINARY\" --print \"require.resolve('@expo/cli')\")\"\nfi\nif [[ -z \"$BUNDLE_COMMAND\" ]]; then\n  # Default Expo CLI command for bundling\n  export BUNDLE_COMMAND=\"export:embed\"\nfi\n\n`\"$NODE_BINARY\" --print \"require('path').dirname(require.resolve('react-native/package.json')) + '/scripts/react-native-xcode.sh'\"`\n";
 		};
-		440240A260BDFC8E19FC55B9 /* [CP] Check Pods Manifest.lock */ = {
+		2D8EC8CE127AA4FC6BFF25AF /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-MicroBlog_RN/expo-configure-project.sh\"\n";
+		};
+		4D1BBC01CD4A443A4FB1B850 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -462,40 +430,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		55EF306DB53AB629EAD3B0D9 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_RNTests/Pods-MicroBlog_RN-MicroBlog_RNTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_RNTests/Pods-MicroBlog_RN-MicroBlog_RNTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_RNTests/Pods-MicroBlog_RN-MicroBlog_RNTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5C9E05F93C7EF786F369E8FC /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/Pods-MicroBlog_RN-MicroBlog_Share-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/Pods-MicroBlog_RN-MicroBlog_Share-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/Pods-MicroBlog_RN-MicroBlog_Share-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		5EF13E64DE20741BC70B39CC /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -511,28 +445,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		61BFBA907A15344DC7657492 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-MicroBlog_RN-MicroBlog_RNTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		993BFA2DC71DB1F379D2A371 /* [CP] Check Pods Manifest.lock */ = {
@@ -574,6 +486,42 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		D154E38C221C432FADA5DD56 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/Pods-MicroBlog_RN-MicroBlog_Share-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/Pods-MicroBlog_RN-MicroBlog_Share-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/Pods-MicroBlog_RN-MicroBlog_Share-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EDCD1D1395C1DEE14C352BA9 /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-MicroBlog_RN-MicroBlog_Share/expo-configure-project.sh\"\n";
+		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -590,37 +538,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		FF2DE1918C6C2C0652A84730 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_RNTests/Pods-MicroBlog_RN-MicroBlog_RNTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_RNTests/Pods-MicroBlog_RN-MicroBlog_RNTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_RNTests/Pods-MicroBlog_RN-MicroBlog_RNTests-resources.sh\"\n";
+			shellScript = "if [[ -f \"$PODS_ROOT/../.xcode.env\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env\"\nfi\nif [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.local\"\nfi\n\nexport RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > `$NODE_BINARY --print \"require('path').dirname(require.resolve('react-native/package.json')) + '/scripts/.packager.env'\"`\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open `$NODE_BINARY --print \"require('path').dirname(require.resolve('expo/package.json')) + '/scripts/launchPackager.command'\"` || echo \"Can't start packager automatically\"\n  fi\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		00E356EA1AD99517003FC87E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				00E356F31AD99517003FC87E /* MicroBlog_RNTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		0221AB2029D42C1500838597 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -633,6 +556,7 @@
 				0221AB3529D42CE500838597 /* ShareViewController.swift in Sources */,
 				4BAA745E2A24E56500953D91 /* MBHighlightingTextManager.m in Sources */,
 				4B719C392E63B0D6006D4E7D /* UIBarButtonItem+Plainify.m in Sources */,
+				2837C73874E55DEB2797484F /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -641,7 +565,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B7619D129EC9E7A0030A495 /* MBHighlightingTextView.m in Sources */,
-				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				4BB0A4602DFCA4DC00900B0B /* MBClipboardHelper.m in Sources */,
 				4B1233D729ECD7D200174307 /* MBHighlightingTextStorage.m in Sources */,
 				4B1233D429ECCC0100174307 /* MBHighlightingTextManager.m in Sources */,
@@ -649,18 +572,14 @@
 				4B06FCA829FABD0800E97371 /* UIScrollViewDelegate+Zooming.m in Sources */,
 				4B719C3A2E63B0D6006D4E7D /* UIBarButtonItem+Plainify.m in Sources */,
 				4B3498672AE86AA900233BA2 /* RCTInputAccessoryShadowView.m in Sources */,
-				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				BF76CC3E2E8E980900F61FC2 /* AppDelegate.swift in Sources */,
+				28E40035B1E151C13639876C /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* MicroBlog_RN */;
-			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
-		};
 		0221AB2D29D42C1500838597 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 0221AB2329D42C1500838597 /* MicroBlog_Share */;
@@ -680,72 +599,9 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		00E356F61AD99517003FC87E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 99BD11E1312F7B822738CA85 /* Pods-MicroBlog_RN-MicroBlog_RNTests.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = MicroBlog_RNTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-lc++",
-					"$(inherited)",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = YES;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				TARGETED_DEVICE_FAMILY = 1;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MicroBlog_RN.app/MicroBlog_RN";
-			};
-			name = Debug;
-		};
-		00E356F71AD99517003FC87E /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4C096FE28E3BF256DF2F0398 /* Pods-MicroBlog_RN-MicroBlog_RNTests.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COPY_PHASE_STRIP = NO;
-				INFOPLIST_FILE = MicroBlog_RNTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-lc++",
-					"$(inherited)",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = YES;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				TARGETED_DEVICE_FAMILY = 1;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MicroBlog_RN.app/MicroBlog_RN";
-			};
-			name = Release;
-		};
 		0221AB3029D42C1500838597 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 67F5CB031FE91036DC73F2D9 /* Pods-MicroBlog_RN-MicroBlog_Share.debug.xcconfig */;
+			baseConfigurationReference = ABD2A85EB6981953D0A18909 /* Pods-MicroBlog_RN-MicroBlog_Share.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -764,7 +620,7 @@
 				INFOPLIST_FILE = MicroBlog_Share/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MicroBlog_Share;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -773,6 +629,7 @@
 				MARKETING_VERSION = 3.6;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "blog.micro.ios.MicroBlog-Share";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -791,7 +648,7 @@
 		};
 		0221AB3129D42C1500838597 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2DA4E9496AE4EAC2DB6FB8F6 /* Pods-MicroBlog_RN-MicroBlog_Share.release.xcconfig */;
+			baseConfigurationReference = E42EEA474A635F48DFBD7F51 /* Pods-MicroBlog_RN-MicroBlog_Share.release.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -811,7 +668,7 @@
 				INFOPLIST_FILE = MicroBlog_Share/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MicroBlog_Share;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -819,6 +676,7 @@
 				);
 				MARKETING_VERSION = 3.6;
 				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "blog.micro.ios.MicroBlog-Share";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -847,6 +705,7 @@
 				DEVELOPMENT_TEAM = 3F9MDJ6K4E;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MicroBlog_RN/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -857,6 +716,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = blog.micro.ios;
 				PRODUCT_NAME = MicroBlog_RN;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -882,6 +742,7 @@
 				CURRENT_PROJECT_VERSION = 390;
 				DEVELOPMENT_TEAM = 3F9MDJ6K4E;
 				INFOPLIST_FILE = MicroBlog_RN/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -892,6 +753,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = blog.micro.ios;
 				PRODUCT_NAME = MicroBlog_RN;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -956,7 +818,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD = "";
 				LDPLUSPLUS = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -979,6 +841,7 @@
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				SWIFT_VERSION = 5.0;
 				USE_HERMES = true;
 			};
 			name = Debug;
@@ -1027,7 +890,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD = "";
 				LDPLUSPLUS = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1048,6 +911,7 @@
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
 				USE_HERMES = true;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1056,15 +920,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "MicroBlog_RNTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				00E356F61AD99517003FC87E /* Debug */,
-				00E356F71AD99517003FC87E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		0221AB2F29D42C1500838597 /* Build configuration list for PBXNativeTarget "MicroBlog_Share" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
