@@ -17,56 +17,18 @@ export default class UploadCell extends React.Component {
       did_load: false,
       num_columns: DeviceInfo.isTablet() ? 4 : 3,
     };
-    this.pulseAnim = new Animated.Value(0.5);
   }
 
   componentDidMount() {
-    if (!this.state.did_load) {
-      this.startPulse();
-    }
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.upload?.url !== this.props.upload?.url) {
       this.setState({ did_load: false });
-      if (!this.state.did_load) {
-        this.startPulse();
-      }
-    }
-    if (!prevState.did_load && this.state.did_load) {
-      this.stopPulse();
     }
   }
 
   componentWillUnmount() {
-    this.stopPulse();
-  }
-
-  startPulse = () => {
-    this.pulseAnim.setValue(0.5);
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(this.pulseAnim, {
-          toValue: 1,
-          duration: 1000,
-          useNativeDriver: true,
-        }),
-        Animated.timing(this.pulseAnim, {
-          toValue: 0.5,
-          duration: 1000,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-  }
-
-  stopPulse = () => {
-    this.pulseAnim.stopAnimation();
-    Animated.timing(this.pulseAnim, {
-      toValue: 1,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
   }
 
   render_cell(upload) {
@@ -139,7 +101,7 @@ export default class UploadCell extends React.Component {
           style={{
             width: dimension,
             height: dimension,
-            opacity: !this.state.did_load ? this.pulseAnim : 1,
+            opacity: 1
           }}
         >
           <Image
