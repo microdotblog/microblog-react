@@ -103,7 +103,7 @@ export default TempUpload = types.model('TempUpload', {
 
 		set_cached_uri: flow(function* (uri) {
 			self.cached_uri = uri
-		}
+		})
 
 	}))
 	.views(self => ({

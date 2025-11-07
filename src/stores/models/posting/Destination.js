@@ -183,9 +183,7 @@ export default Destination = types.model('Destination', {
 				cancel_source,
 				is_cancelled: () => temp_upload.cancelled,
 				on_progress: progress => temp_upload.update_progress(progress),
-				on_local_uri: uri => {
-					temp_upload.cached_uri = uri
-				}
+				on_local_uri: uri => temp_upload.set_cached_uri(uri)
 			})
 
 			temp_upload.url = result.url
