@@ -21,9 +21,11 @@ export default MediaAsset = types.model('MediaAsset', {
 	is_video: types.optional(types.boolean, false),
 	is_inline: types.optional(types.boolean, false),
 	cached_uri: types.maybe(types.string),
-	cancelled: types.optional(types.boolean, false),
-	cancel_source: types.maybeNull(types.frozen())
+	cancelled: types.optional(types.boolean, false)
 })
+.volatile(() => ({
+	cancel_source: null
+}))
 .actions(self => ({
 
 	upload: flow(function* (service_object) {
