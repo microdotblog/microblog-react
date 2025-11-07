@@ -99,6 +99,10 @@ export default TempUpload = types.model('TempUpload', {
 			let markdown = `![${ self.url }](${ self.url })`
 			Clipboard.setString(markdown)
 			Toast.showWithGravity("Markdown copied", Toast.SHORT, Toast.CENTER)
+		},
+
+		set_cached_uri: flow(function* (uri) {
+			self.cached_uri = uri
 		}
 
 	}))

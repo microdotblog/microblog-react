@@ -19,11 +19,14 @@ export default MediaAsset = types.model('MediaAsset', {
 	base64: types.maybe(types.string),
 	upload_id: types.maybe(types.number),
 	is_video: types.optional(types.boolean, false),
-	is_inline: types.optional(types.boolean, false)
+	is_inline: types.optional(types.boolean, false),
+	cached_uri: types.maybe(types.string),
+	cancelled: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
 	upload: flow(function* (service_object) {
+		self.cancelled = false
 		self.is_uploading = true
 		if (service_object.type !== "xmlrpc") {
 			self.cancel_source = axios.CancelToken.source()
@@ -85,6 +88,7 @@ export default MediaAsset = types.model('MediaAsset', {
 		if (self.cancel_source) {
 			console.log("MediaAsset:cancel_upload")
 			self.cancel_source.cancel("Upload canceled by the user.")
+			self.cancelled = true
 			self.is_uploading = false
 			self.progress = 0
 			self.did_upload = false

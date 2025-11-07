@@ -325,10 +325,10 @@ export default Service = types.model('Service', {
     const options = {
       title: "Select media",
       mediaType: "mixed",
-      videoQuality: Platform.OS === "android" ? "high" : "medium",
-      formatAsMp4: true,
-      quality: 0.95,
-      selectionLimit: 5
+      // videoQuality: Platform.OS === "android" ? "high" : "medium",
+      // quality: 0.95,
+      formatAsMp4: false,
+      selectionLimit: 1
     };
     launchImageLibrary(options, (res) => {
       console.log("Destination:pick_image:res", res)
