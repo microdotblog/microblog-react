@@ -341,7 +341,12 @@ export default Service = types.model('Service', {
         if (res.assets?.length > 0) {
           res.assets.forEach((asset) => {
             console.log("Destination:pick_image:asset", asset)
-            destination.upload_media(asset, self)
+            if (asset?.type?.startsWith("video")) {
+              destination.upload_large_media(asset, self);
+            }
+            else {
+              destination.upload_media(asset, self);
+            }
           })
         }
       }
