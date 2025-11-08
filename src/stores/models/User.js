@@ -1,7 +1,6 @@
 import { types, flow } from "mobx-state-tree";
 import Tokens from "./../Tokens";
 import Posting from "./Posting";
-import { Image } from "expo-image";
 import Muting from "./Muting";
 import Push from "../Push";
 import App from "../App";

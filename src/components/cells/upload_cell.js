@@ -5,9 +5,9 @@ import App from "../../stores/App";
 import { SvgXml } from "react-native-svg";
 import { SFSymbol } from "react-native-sfsymbols";
 import { MenuView } from "@react-native-menu/menu";
-import { Image } from "expo-image";
 import Auth from "../../stores/Auth";
 import DeviceInfo from "react-native-device-info";
+import MBImage from "../common/MBImage";
 
 @observer
 export default class UploadCell extends React.Component {
@@ -47,7 +47,7 @@ export default class UploadCell extends React.Component {
           }}
         >
           {upload.is_video() && has_poster && (
-            <Image
+            <MBImage
               key={upload.url}
               source={upload.poster}
               contentFit="cover"
@@ -104,7 +104,7 @@ export default class UploadCell extends React.Component {
             opacity: 1
           }}
         >
-          <Image
+          <MBImage
             key={upload.url}
             source={upload.url}
             contentFit="cover"

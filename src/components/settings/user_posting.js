@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import App from "../../stores/App";
 import Auth from "../../stores/Auth";
 import { SvgXml } from "react-native-svg";
-import { Image } from "expo-image";
+import MBImage from "../common/MBImage";
 
 @observer
 export default class UserPostingSettings extends React.Component {
@@ -28,7 +28,7 @@ export default class UserPostingSettings extends React.Component {
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Image
+            <MBImage
               source={`${user.avatar}?v=${App.now()}`}
               contentFit="contain"
               style={{

@@ -8,7 +8,7 @@ import { SvgXml } from "react-native-svg";
 import ContextMenu from "react-native-context-menu-view";
 import Clipboard from "@react-native-clipboard/clipboard";
 import Toast from "react-native-simple-toast";
-import { Image } from "expo-image";
+import MBImage from "../common/MBImage";
 
 @observer
 export default class PostCell extends React.Component {
@@ -93,7 +93,7 @@ export default class PostCell extends React.Component {
     const { page } = this.props;
     const images = page.images_from_content().map((url) => {
       return (
-        <Image
+        <MBImage
           key={url}
           source={url}
           contentFit="cover"

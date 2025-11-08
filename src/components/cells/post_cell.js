@@ -6,10 +6,10 @@ import Auth from "../../stores/Auth";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { RectButton } from "react-native-gesture-handler";
 import { SvgXml } from "react-native-svg";
-import { Image } from "expo-image";
 import ContextMenu from "react-native-context-menu-view";
 import Clipboard from "@react-native-clipboard/clipboard";
 import Toast from "react-native-simple-toast";
+import MBImage from "../common/MBImage";
 
 @observer
 export default class PostCell extends React.Component {
@@ -111,7 +111,7 @@ export default class PostCell extends React.Component {
     const { post } = this.props;
     const images = post.images_from_content().map((url) => {
       return (
-        <Image
+        <MBImage
           key={url}
           source={url}
           contentFit="cover"

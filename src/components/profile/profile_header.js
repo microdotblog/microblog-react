@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, ActivityIndicator, Image as RNImage, TouchableOpacity, ScrollView } from 'react-native';
-import { Image } from 'expo-image';
 import MicroBlogApi, { API_ERROR } from './../../api/MicroBlogApi';
 import App from './../../stores/App';
 import Hyperlink from 'react-native-hyperlink'
 import MoreIconHorizontal from './../../assets/icons/more_ios.png'
 import MoreIconHorizontalWhite from './../../assets/icons/more_ios_white.png'
+import MBImage from '../common/MBImage'
 
 @observer
 export default class ProfileHeader extends React.Component{
@@ -83,7 +83,7 @@ export default class ProfileHeader extends React.Component{
       <View style={{ padding: 12, backgroundColor: App.theme_button_background_color(), width: '100%' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <TouchableOpacity onPress={() => App.set_image_modal_data_and_activate(`${profile.author.avatar}${!this.state.is_mastodon ? `?v=${App.now()}`: ""}`)}>
-            <Image source={{ uri: `${profile.author.avatar}${!this.state.is_mastodon ? `?v=${App.now()}`: ""}` }} contentFit="cover" style={{ width: 50, height: 50, borderRadius: 50 }} />
+            <MBImage source={{ uri: `${profile.author.avatar}${!this.state.is_mastodon ? `?v=${App.now()}`: ""}` }} contentFit="cover" style={{ width: 50, height: 50, borderRadius: 50 }} />
           </TouchableOpacity>
           <View style={{ marginLeft: 15 }}>
             <Text style={{ fontWeight: '700', fontSize: 18, marginBottom: 2, color: App.theme_text_color() }}>{profile.author.name}</Text>
