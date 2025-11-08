@@ -137,17 +137,17 @@ export default class CollectionsSheet extends React.Component {
 					}}
 				>
 					<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 5 }}>
-						{ this.state.is_networking && 
-							<ActivityIndicator color={App.theme_accent_color()} />
-						}
 						{ !this.state.is_networking && this.state.collections.length == 0 &&
 							<Text style={{ fontSize: 16, paddingTop: 5, color: App.theme_text_color() }}>Add a new collection to organize photos and embed them together in a blog post.</Text>
 						}
 						{ this.state.collections.length > 0 && 
 							<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color() }}>Select collections for this upload:</Text>
 						}
+						{ this.state.is_networking && 
+							<ActivityIndicator color={App.theme_accent_color()} />
+						}
 					</View>
-					{ this.state.is_networking && 
+					{ this.state.collections.length > 0 &&
 						<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
 							<FlatList
 								data={this.state.collections}
