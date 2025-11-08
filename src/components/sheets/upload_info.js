@@ -98,7 +98,7 @@ export default class UploadInfoSheet extends React.Component {
 							/>
 							:
 							<Text style={{ fontSize: 16, color: App.theme_text_color(), paddingBottom: 25 }}>
-								{ this.state.is_ai? '🤖' : null }
+								{ this.state.is_ai && (this.state.alt_text.length > 0) ? '🤖' : null }
 								{this.state.alt_text}
 							</Text>
 						}
