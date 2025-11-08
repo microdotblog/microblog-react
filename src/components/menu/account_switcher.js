@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, Image, Platform } from "react-native";
 import Auth from "./../../stores/Auth";
 import App from "./../../stores/App";
 import { SFSymbol } from "react-native-sfsymbols";
-import { Image as ExpoImage } from "expo-image";
+import MBImage from "../common/MBImage";
 // IMAGES
 import AddAccountImage from "./../../assets/icons/add_account.png";
 
@@ -41,7 +41,7 @@ export default class AccountSwitcher extends React.Component {
           }}
         >
           <View style={{ marginRight: 15 }}>
-            <ExpoImage
+            <MBImage
               source={`${Auth.selected_user.avatar}?v=${App.now()}`}
               contentFit="contain"
               style={{ width: 40, height: 40, borderRadius: 50 }}
@@ -101,7 +101,7 @@ export default class AccountSwitcher extends React.Component {
                 }}
               >
                 <View style={{ marginRight: 15 }}>
-                  <ExpoImage
+                  <MBImage
                     source={`${user.avatar}?v=${App.now()}`}
                     contentFit="contain"
                     style={{ width: 40, height: 40, borderRadius: 50 }}

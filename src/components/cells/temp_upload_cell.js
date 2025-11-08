@@ -5,7 +5,7 @@ import App from "../../stores/App";
 import { MenuView } from "@react-native-menu/menu";
 import { SvgXml } from "react-native-svg";
 import { SFSymbol } from "react-native-sfsymbols";
-import { Image } from "expo-image";
+import MBImage from "../common/MBImage";
 
 @observer
 export default class TempUploadCell extends React.Component {
@@ -78,7 +78,7 @@ export default class TempUploadCell extends React.Component {
               )}
             </View>
           ) : (
-            <Image
+            <MBImage
               key={upload.uri}
               source={upload.uri}
               contentFit="cover"

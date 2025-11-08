@@ -14,7 +14,7 @@ import Push from "../../stores/Push";
 import Settings from "../../stores/Settings";
 import UserPostingSettings from "../../components/settings/user_posting";
 import UserMutingSettings from "../../components/settings/user_muting";
-import { Image } from "expo-image";
+import MBImage from "../../components/common/MBImage";
 
 @observer
 export default class SettingsScreen extends React.Component {
@@ -151,7 +151,7 @@ export default class SettingsScreen extends React.Component {
                 }}
               >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Image
+                  <MBImage
                     source={`${user.avatar}?v=${App.now()}`}
                     contentFit="contain"
                     style={{

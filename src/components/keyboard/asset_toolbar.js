@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, TouchableOpacity, ActivityIndicator, Platform, ScrollView } from 'react-native';
-import { Image } from 'expo-image';
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
 import Share from '../../stores/Share'
+import MBImage from '../common/MBImage'
 
 @observer
 export default class AssetToolbar extends React.Component{
@@ -54,10 +54,10 @@ export default class AssetToolbar extends React.Component{
                 {
                   asset.is_video ?
                   <>
-                    <Image source={{ uri: asset.remote_poster_url ? asset.remote_poster_url : asset.uri }} contentFit="cover" style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
+                    <MBImage source={{ uri: asset.remote_poster_url ? asset.remote_poster_url : asset.uri }} contentFit="cover" style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
                   </>
                   :
-                  <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} contentFit="cover" style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
+                  <MBImage source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} contentFit="cover" style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
                 }
                 {
                   asset.is_uploading ?

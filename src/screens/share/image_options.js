@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, TouchableOpacity, ScrollView, Image as RNImage, ActivityIndicator, TextInput, KeyboardAvoidingView, Dimensions } from 'react-native';
-import { Image } from 'expo-image';
 import App from '../../stores/App';
 import Share from '../../stores/Share';
 import Clipboard from '@react-native-clipboard/clipboard';
 import MicroPubApi from '../../api/MicroPubApi';
+import MBImage from '../../components/common/MBImage';
 
 @observer
 export default class ShareImageOptionsScreen extends React.Component{
@@ -114,7 +114,7 @@ export default class ShareImageOptionsScreen extends React.Component{
               backgroundColor: App.theme_background_color
             }}
           >
-            <Image source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} contentFit="contain" style={{ width: this.state.media_width, height: this.state.media_height }} />
+            <MBImage source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} contentFit="contain" style={{ width: this.state.media_width, height: this.state.media_height }} />
             {
               asset.is_uploading ?
                 <>

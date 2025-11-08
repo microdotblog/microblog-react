@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { ScrollView, View, Text, TouchableOpacity, Image as RNImage } from 'react-native';
-import { Image } from 'expo-image';
 import MediaAsset from '../../stores/models/posting/MediaAsset';
 import CheckmarkIcon from '../../assets/icons/checkmark.png';
+import MBImage from '../../components/common/MBImage';
 // import ImageEditor from "@react-native-community/image-editor";
 // import { Mayfair, Warm, Cool, Sepia, Vintage, Grayscale } from "react-native-image-filter-kit";
 
@@ -51,7 +51,7 @@ class FilterThumbnail extends React.Component {
 			}}>
 				<View>
 					{ filter == "Original" ?
-						<Image source={{ uri: asset.uri }} contentFit="cover" style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style }/>
+						<MBImage source={{ uri: asset.uri }} contentFit="cover" style={ this.isSelectedHandler(this.filter) ? selected_box_style : box_style }/>
 					: null }
 					{ filter == "Mayfair" ?
 						<Mayfair extractImageEnabled={true} onExtractImage={this.onSaveImage} image={
@@ -188,7 +188,7 @@ export default class ImageCropScreen extends React.Component{
 									console.log("on scroll", e.nativeEvent.contentOffset.x, e.nativeEvent.contentOffset.y)
 									this.setState({ crop_pt: e.nativeEvent.contentOffset })
 								}}>
-									<Image source={{ uri: asset.uri }} contentFit="contain" style={{ width: asset.scale_width_for_height(scroll_size), height: scroll_size }} />
+									<MBImage source={{ uri: asset.uri }} contentFit="contain" style={{ width: asset.scale_width_for_height(scroll_size), height: scroll_size }} />
 								</ScrollView>
 							</View>
 						:
@@ -199,7 +199,7 @@ export default class ImageCropScreen extends React.Component{
 									console.log("on scroll", e.nativeEvent.contentOffset.x, e.nativeEvent.contentOffset.y)
 									this.setState({ crop_pt: e.nativeEvent.contentOffset })
 								}}>
-									<Image source={{ uri: asset.uri }} contentFit="contain" style={{ width: scroll_size, height: asset.scale_height_for_width(scroll_size) }} />
+									<MBImage source={{ uri: asset.uri }} contentFit="contain" style={{ width: scroll_size, height: asset.scale_height_for_width(scroll_size) }} />
 								</ScrollView>
 							</View>
 					)
@@ -208,7 +208,7 @@ export default class ImageCropScreen extends React.Component{
 						<ScrollView style={{ width: "100%", height: scroll_size, backgroundColor: App.theme_crop_background_color() }} bounces={ false } contentContainerStyle={{ width: scroll_size, height: scroll_size }} onLayout={(e) => {
 							this.setState({ scroll_size: e.nativeEvent.layout.width })
 						}}>
-							<Image source={{ uri: asset.uri }} contentFit="contain" style={{ width: scroll_size, height: scroll_size }} />
+							<MBImage source={{ uri: asset.uri }} contentFit="contain" style={{ width: scroll_size, height: scroll_size }} />
 						</ScrollView>
 					</View>
 				}

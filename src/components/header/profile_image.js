@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { TouchableOpacity, View } from 'react-native';
-import { Image } from 'expo-image';
 import Auth from './../../stores/Auth';
 import App from '../../stores/App';
 import { isLiquidGlass } from './../../utils/ui';
+import MBImage from '../common/MBImage'
 
 @observer
 export default class ProfileImage extends React.Component{
@@ -35,7 +35,7 @@ export default class ProfileImage extends React.Component{
         >
           {
             Auth.selected_user.avatar != null && Auth.selected_user.avatar !== "" ?
-            <Image
+            <MBImage
               key={`avatar-${routeKey}`}
               source={{
                 uri: `${Auth.selected_user.avatar}?v=${App.now()}`
