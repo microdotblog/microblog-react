@@ -26,7 +26,6 @@ export default class PostingScreen extends React.Component{
     const { posting } = Auth.selected_user
     return(
       <>
-        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
           {
             posting.should_show_title() ?
             <TextInput
@@ -93,7 +92,6 @@ export default class PostingScreen extends React.Component{
             inputAccessoryViewID={this.input_accessory_view_id}
           />
           <LoadingComponent should_show={posting.is_sending_post && posting.post_text != ""} />
-        </KeyboardAvoidingView>
         <KeyboardStickyView>
           <AssetToolbar componentId={this.props.componentId} />
           <UsernameToolbar componentId={this.props.componentId} object={posting} />
