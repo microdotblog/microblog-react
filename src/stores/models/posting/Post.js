@@ -37,12 +37,24 @@ export default Post = types.model('Post', {
   },
   
   images_from_content(){
-    const regex = /<img.*?src=["'](.*?)["'].*?>/g
+    if (!self.content) {
+      return []
+    }
+    
+    const img_regex = /<img.*?src=["'](.*?)["'].*?>/g
+    const video_regex = /<video.*?poster=["'](.*?)["'].*?>/g
     const images = []
     
     let match
-    while ((match = regex.exec(self.content)) !== null) {
+    while ((match = img_regex.exec(self.content)) !== null) {
       images.push(match[1])
+    }
+    
+    while ((match = video_regex.exec(self.content)) !== null) {
+      const poster = match[1] ? match[1].trim() : ""
+      if (poster.length > 0) {
+        images.push(poster)
+      }
     }
     
     return images;
