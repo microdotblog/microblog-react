@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { TextInput } from 'react-native';
-import { KeyboardAvoidingView, KeyboardStickyView } from "react-native-keyboard-controller";
+import { KeyboardStickyView } from "react-native-keyboard-controller";
 import Auth from '../../stores/Auth';
 import App from '../../stores/App';
 import PostToolbar from '../../components/keyboard/post_toolbar';
@@ -26,7 +26,6 @@ export default class PostingScreen extends React.Component{
     const { posting } = Auth.selected_user
     return(
       <>
-        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
           {
             posting.should_show_title() ?
             <TextInput
@@ -93,7 +92,6 @@ export default class PostingScreen extends React.Component{
             inputAccessoryViewID={this.input_accessory_view_id}
           />
           <LoadingComponent should_show={posting.is_sending_post && posting.post_text != ""} />
-        </KeyboardAvoidingView>
         <KeyboardStickyView>
           <AssetToolbar componentId={this.props.componentId} />
           <UsernameToolbar componentId={this.props.componentId} object={posting} />
