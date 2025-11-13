@@ -89,14 +89,14 @@ export default class PagesScreen extends React.Component{
     const { config } = selected_service
     return(
       <FlatList
-        centerContent={config.pages_for_destination()?.length === 0}
         data={config.pages_for_destination()}
         extraData={config.pages_for_destination()?.length && !selected_service.is_loading_pages}
         keyExtractor={this._key_extractor}
         renderItem={this.render_page_item}
         style={{
           backgroundColor: App.theme_background_color_secondary(),
-          width: "100%"
+          width: "100%",
+          flex: 1
         }}
         // ListEmptyComponent={
         //   <View style={{ flex: 1, padding: 12, justifyContent: 'center', alignItems: 'center' }} >
@@ -122,7 +122,7 @@ export default class PagesScreen extends React.Component{
   render() {
     return (
       <SheetProvider>
-        <View style={{ flex: 1, alignItems: 'center' }}>
+        <View style={{ flex: 1, justifyContent: 'flex-start' }}>
           {
             Auth.is_logged_in() && !Auth.is_selecting_user ?
               <>
