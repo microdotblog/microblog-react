@@ -29,8 +29,11 @@ const WebViewModule = observer((props) => {
   React.useEffect(() => {
     if (Auth.selected_user) {
       setState(prevState => ({ ...prevState, opacity: 0.0 }))
-      if (webViewRef.current && !Auth.did_load_one_or_more_webviews) {
-        webViewRef.current.reload()
+      if (webViewRef.current) {
+        webViewRef.current.clearCache(true)
+        if (!Auth.did_load_one_or_more_webviews) {
+          webViewRef.current.reload()
+        }
       }
     }
   }, [Auth.selected_user?.username])
@@ -74,6 +77,8 @@ const WebViewModule = observer((props) => {
         startInLoadingState={props.should_show_loading}
         pullToRefreshEnabled={false}
         decelerationRate={0.998}
+        cacheEnabled={false}
+        cacheMode={Platform.OS === 'android' ? 'LOAD_NO_CACHE' : undefined}
         onLoadEnd={(event) => {
           Auth.set_did_load_one_or_more_webviews();
           if (App.theme == "light") {
