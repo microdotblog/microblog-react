@@ -69,7 +69,16 @@ export default class SettingsScreen extends React.Component {
             <Switch
               value={Settings.open_links_in_external_browser}
               onValueChange={Settings.toggle_open_links_in_external_browser}
-              trackColor={{ true: App.theme_accent_color() }}
+              trackColor={{
+                false: App.theme_switch_track_color(),
+                true: App.theme_accent_color()
+              }}
+              thumbColor={
+                Settings.open_links_in_external_browser
+                  ? "#ffffff"
+                  : App.theme === "dark" ? "#f4f3f4" : "#f4f3f4"
+              }
+              ios_backgroundColor={App.theme_switch_track_color()}
             />
           </View>
           {Platform.OS === "ios" && (
@@ -93,7 +102,18 @@ export default class SettingsScreen extends React.Component {
                     : Settings.open_links_with_reader_mode
                 }
                 onValueChange={Settings.toggle_open_links_with_reader_mode}
-                trackColor={{ true: App.theme_accent_color() }}
+                trackColor={{
+                  false: App.theme_switch_track_color(),
+                  true: App.theme_accent_color()
+                }}
+                thumbColor={
+                  (Settings.open_links_in_external_browser
+                    ? false
+                    : Settings.open_links_with_reader_mode)
+                    ? "#ffffff"
+                    : App.theme === "dark" ? "#f4f3f4" : "#f4f3f4"
+                }
+                ios_backgroundColor={App.theme_switch_track_color()}
               />
             </View>
           )}
@@ -117,17 +137,29 @@ export default class SettingsScreen extends React.Component {
           Push Notifications
         </Text>
         {!this.state.push_permissions && (
-          <Text
+          <View
             style={{
-              color: App.theme_error_text_color(),
-              paddingHorizontal: 10,
+              backgroundColor: App.theme === "dark" ? "#374151" : "#e8eaed",
+              borderRadius: 8,
+              paddingHorizontal: 12,
+              paddingVertical: 10,
+              marginHorizontal: 10,
               marginBottom: 15,
-              fontWeight: "500",
+              borderLeftWidth: 3,
+              borderLeftColor: App.theme_accent_color(),
             }}
           >
-            Push notifications are not enabled. Please enable them in your
-            device settings.
-          </Text>
+            <Text
+              style={{
+                color: App.theme_text_color(),
+                fontSize: 14,
+                fontWeight: "500",
+                lineHeight: 20,
+              }}
+            >
+              Push notifications are disabled in your device settings. Enable them to receive notifications from your accounts.
+            </Text>
+          </View>
         )}
         <View
           style={{
@@ -177,7 +209,16 @@ export default class SettingsScreen extends React.Component {
                     disabled={user.toggling_push}
                     value={user.is_registered_for_push()}
                     onValueChange={user.toggle_push_notifications}
-                    trackColor={{ true: App.theme_accent_color() }}
+                    trackColor={{
+                      false: App.theme_switch_track_color(),
+                      true: App.theme_accent_color()
+                    }}
+                    thumbColor={
+                      user.is_registered_for_push()
+                        ? "#ffffff"
+                        : App.theme === "dark" ? "#f4f3f4" : "#f4f3f4"
+                    }
+                    ios_backgroundColor={App.theme_switch_track_color()}
                   />
                 </View>
               </View>
