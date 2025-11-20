@@ -1,7 +1,11 @@
 PODS:
   - boost (1.84.0)
   - DoubleConversion (1.1.6)
+  - EXApplication (6.1.5):
+    - ExpoModulesCore
   - EXConstants (17.1.7):
+    - ExpoModulesCore
+  - EXNotifications (0.31.4):
     - ExpoModulesCore
   - Expo (53.0.23):
     - DoubleConversion
@@ -36,7 +40,7 @@ PODS:
     - ExpoModulesCore
   - ExpoFont (13.3.2):
     - ExpoModulesCore
-  - ExpoImage (2.4.0):
+  - ExpoImage (2.4.1):
     - ExpoModulesCore
     - libavif/libdav1d
     - SDWebImage (~> 5.21.0)
@@ -1474,7 +1478,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-keyboard-controller (1.19.0):
+  - react-native-keyboard-controller (1.19.5):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1489,7 +1493,7 @@ PODS:
     - React-hermes
     - React-ImageManager
     - React-jsi
-    - react-native-keyboard-controller/common (= 1.19.0)
+    - react-native-keyboard-controller/common (= 1.19.5)
     - React-NativeModulesApple
     - React-RCTFabric
     - React-renderercss
@@ -1499,7 +1503,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-keyboard-controller/common (1.19.0):
+  - react-native-keyboard-controller/common (1.19.5):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1725,7 +1729,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-webview (13.13.5):
+  - react-native-webview (13.16.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2393,7 +2397,9 @@ PODS:
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
+  - EXApplication (from `../node_modules/expo-application/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
+  - EXNotifications (from `../node_modules/expo-notifications/ios`)
   - Expo (from `../node_modules/expo`)
   - ExpoAsset (from `../node_modules/expo-asset/ios`)
   - ExpoFileSystem (from `../node_modules/expo-file-system/ios`)
@@ -2513,8 +2519,12 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
+  EXApplication:
+    :path: "../node_modules/expo-application/ios"
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
+  EXNotifications:
+    :path: "../node_modules/expo-notifications/ios"
   Expo:
     :path: "../node_modules/expo"
   ExpoAsset:
@@ -2716,22 +2726,24 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
-  DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
+  boost: 1dca942403ed9342f98334bf4c3621f011aa7946
+  DoubleConversion: f16ae600a246532c4020132d54af21d0ddb2a385
+  EXApplication: 1e06972201838375ca1ec1ba34d586a98a5dc718
   EXConstants: 98bcf0f22b820f9b28f9fee55ff2daededadd2f8
+  EXNotifications: be5e949edf1d60b70e77178b81aa505298fadd07
   Expo: dd7f49380001a55ea776f905f8b3c1c540160b09
   ExpoAsset: ef06e880126c375f580d4923fdd1cdf4ee6ee7d6
   ExpoFileSystem: 7f92f7be2f5c5ed40a7c9efc8fa30821181d9d63
   ExpoFont: cf508bc2e6b70871e05386d71cab927c8524cc8e
-  ExpoImage: e4102c93d1dbe99ff54b075452d1bc9d6ec21b7c
+  ExpoImage: b0b4a838c62bb9d5438bb475cccc85619a5f59dc
   ExpoKeepAwake: bf0811570c8da182bfb879169437d4de298376e7
   ExpoModulesCore: 00a1b5c73248465bd0b93f59f8538c4573dac579
   ExpoSecureStore: 3f1b632d6d40bcc62b4983ef9199cd079592a50a
   ExpoWebBrowser: dc39a88485f007e61a3dff05d6a75f22ab4a2e92
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
   FBLazyVector: b60fe06f0f15b7d7408f169442176e69e8eeacde
-  fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
-  glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
+  fmt: 01b82d4ca6470831d1cc0852a1af644be019e8f6
+  glog: 08b301085f15bcbb6ff8632a8ebaf239aae04e6a
   hermes-engine: 13c84524b3b6e884b2cf3b3b1e002ffd147d88a3
   libavif: 84bbb62fb232c3018d6f1bab79beea87e35de7b7
   libdav1d: 23581a4d8ec811ff171ed5e2e05cd27bad64c39f
@@ -2771,14 +2783,14 @@ SPEC CHECKSUMS:
   react-native-cookies: d648ab7025833b977c0b19e142503034f5f29411
   react-native-document-picker: 52817f2ac5174b08fb218dedb00440787e315936
   react-native-image-picker: 8a3f16000e794f5381a7fe47bb48fd8d06741e47
-  react-native-keyboard-controller: bef5d3b10a11eca3bc2c9c5572c1a003b13ab08d
+  react-native-keyboard-controller: fbe295fd2dbadde0300fa5b01dec8deb3ec6b021
   react-native-menu: 9efed55ad478c20b85bbd5c376f15b2cc5e41181
   react-native-safe-area-context: 895c49ee2613865f90318789be89a8e286fe7b69
   react-native-sensitive-info: 31674faa5e17977b394fb67986c35ef94f8ffe81
   react-native-sfsymbols: 3309f24c98d32705568c84b714268f3ec62017c7
   react-native-simple-toast: c441c833fe4c18473c09fd3b5789f0b279dd074d
   react-native-video: fccfd55807cbe814c2b9e505c1bc3fc0b9fd9e25
-  react-native-webview: 520bcb79c3f2af91e157cdd695732a34ab5f25c8
+  react-native-webview: 1d8659a52cb8b8504f6c965555d1b27bdd313880
   React-NativeModulesApple: 74051ff264ce0b89ac799b56314f8f440a95ee4d
   React-oscompat: 0047f0ce53a328ce225777a6c617970556602c7c
   React-perflogger: bf00d816c3c3ad91658b44f93ce9ee343b4c70df
@@ -2830,4 +2842,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 101be349ab1d704481c999dd0f31cc3ca05df79e
 
-COCOAPODS: 1.16.2
+COCOAPODS: 1.15.2

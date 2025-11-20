@@ -37,7 +37,8 @@ export default class RepliesScreen extends React.Component{
       <ScrollView 
         style={{
           backgroundColor: App.theme_background_color_secondary(),
-          width: '100%'
+          width: '100%',
+          flex: 1
         }}
         refreshControl={
           <RefreshControl
@@ -57,7 +58,7 @@ export default class RepliesScreen extends React.Component{
   
   render() {
     return(
-      <View style={{ flex: 1, alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'flex-start' }}>
         {
           Auth.is_logged_in() && !Auth.is_selecting_user ?
             <>

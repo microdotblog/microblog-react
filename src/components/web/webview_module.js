@@ -13,12 +13,30 @@ const WebViewModule = observer((props) => {
   const webViewRef = React.useRef(null);
   const [state, setState] = React.useState({
     endpoint: props.endpoint,
-    signin_endpoint: `hybrid/signin?token=${Auth.selected_user.token()}&redirect_to=${props.endpoint}&theme=${App.theme}&show_actions=true`,
     opacity: 0.0,
     is_pull_to_refresh_enabled: true
   });
 
   const web_url = "https://micro.blog";
+
+  const signin_endpoint = React.useMemo(() => {
+    if (Auth.selected_user?.token()) {
+      return `hybrid/signin?token=${Auth.selected_user.token()}&redirect_to=${props.endpoint}&theme=${App.theme}&show_actions=true`
+    }
+    return null
+  }, [Auth.selected_user?.username, props.endpoint, App.theme])
+
+  React.useEffect(() => {
+    if (Auth.selected_user) {
+      setState(prevState => ({ ...prevState, opacity: 0.0 }))
+      if (webViewRef.current) {
+        webViewRef.current.clearCache(true)
+        if (!Auth.did_load_one_or_more_webviews) {
+          webViewRef.current.reload()
+        }
+      }
+    }
+  }, [Auth.selected_user?.username])
 
   useFocusEffect(
     React.useCallback(() => {
@@ -44,14 +62,23 @@ const WebViewModule = observer((props) => {
   const onContentProcessDidTerminate = () => webViewRef.current?.reload();
 
   const _webview = () => {
+    const webview_uri = Auth.did_load_one_or_more_webviews && Auth.selected_user
+      ? `${web_url}/${props.endpoint}${return_url_options()}`
+      : signin_endpoint
+        ? `${web_url}/${signin_endpoint}${return_url_options()}`
+        : `${web_url}/${props.endpoint}${return_url_options()}`
+    
     return (
       <WebView
         ref={webViewRef}
-        source={{ uri: `${web_url}/${Auth.did_load_one_or_more_webviews ? props.endpoint : state.signin_endpoint}${return_url_options()}` }}
+        key={`webview-${Auth.selected_user?.username || 'none'}-${props.endpoint}`}
+        source={{ uri: webview_uri }}
         containerStyle={{ flex: 1 }}
         startInLoadingState={props.should_show_loading}
         pullToRefreshEnabled={false}
         decelerationRate={0.998}
+        cacheEnabled={false}
+        cacheMode={Platform.OS === 'android' ? 'LOAD_NO_CACHE' : undefined}
         onLoadEnd={(event) => {
           Auth.set_did_load_one_or_more_webviews();
           if (App.theme == "light") {

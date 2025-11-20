@@ -136,9 +136,9 @@ export default Auth = types.model('Auth', {
   
   clear_cookies: flow(function* () {
     console.log("Auth:clear_cookies")
+    CookieManager.clearAll()
     self.is_selecting_user = true
     self.did_load_one_or_more_webviews = false
-    CookieManager.clearAll()
   }),
 
   set_did_load_one_or_more_webviews: flow(function* () {

@@ -156,7 +156,8 @@ export default class PostsScreen extends React.Component{
         renderItem={this.render_post_item}
         style={{
           backgroundColor: App.theme_background_color_secondary(),
-          width: "100%"
+          width: "100%",
+          flex: 1
         }}
         ItemSeparatorComponent={
           <View style={{
@@ -177,7 +178,7 @@ export default class PostsScreen extends React.Component{
   render() {
     return (
       <SheetProvider>
-        <View style={{ flex: 1, alignItems: 'center' }}>
+        <View style={{ flex: 1, justifyContent: 'flex-start' }}>
           {
             Auth.is_logged_in() && !Auth.is_selecting_user ?
               <>
