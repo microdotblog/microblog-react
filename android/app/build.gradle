@@ -88,8 +88,8 @@ android {
         applicationId "blog.micro.android"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 76
-        versionName "2.6"
+        versionCode 77
+        versionName "2.6.1"
     }
 
     signingConfigs {
