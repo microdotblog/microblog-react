@@ -15,6 +15,7 @@ import TabNavigator from './stacks/TabNavigator';
 import LoginScreen from './login/login';
 import ReplyScreen from './conversation/reply';
 import CloseModalButton from '../components/header/close';
+import Reply from '../stores/Reply';
 import PostReplyButton from '../components/header/post_reply';
 import HelpScreen from './help/help';
 import SettingsScreen from './settings/settings';
@@ -229,6 +230,13 @@ export default class MainApp extends React.Component {
                   </Stack.Group>
                 </Stack.Navigator>
               </NavigationContainer>
+              {
+                Reply.is_sheet_open &&
+                <View
+                  pointerEvents={'none'}
+                  style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0,0,0,0.1)', zIndex: 10 }}
+                />
+              }
               <PublishingProgress />
             </SheetProvider>
           </KeyboardProvider>
