@@ -1,19 +1,62 @@
 import Clipboard from '@react-native-clipboard/clipboard'
-import { types } from 'mobx-state-tree'
+import { types, flow } from 'mobx-state-tree'
+import { Image } from 'react-native'
 import Toast from 'react-native-simple-toast';
+
+const get_image_size = uri => {
+	return new Promise(resolve => {
+		Image.getSize(uri,
+			(width, height) => resolve({ width, height }),
+			() => resolve({ width: null, height: null })
+		)
+	})
+}
 
 export default Upload = types.model('Upload', {
 	url: types.identifier,
 	published: types.maybe(types.string),
 	poster: types.maybe(types.string),
 	alt: types.maybe(types.string),
+	width: types.maybe(types.number),
+	height: types.maybe(types.number),
 	is_ai: types.optional(types.boolean, true),
 	cdn: types.optional(types.map(types.string), {})
 })
 	.actions(self => ({
 
-		copy_html_to_clipboard() {
+		fetch_video_dimensions: flow(function* () {
+			if (!self.poster || self.poster.length == 0) {
+				return
+			}
+			if (self.width != undefined && self.height != undefined) {
+				return
+			}
+			try {
+				const size = yield get_image_size(self.poster)
+				if (size.width != null && self.width == undefined) {
+					self.width = size.width
+				}
+				if (size.height != null && self.height == undefined) {
+					self.height = size.height
+				}
+			}
+			catch (error) {
+				console.log("Upload:fetch_video_dimensions:error", error)
+			}
+		}),
+
+		best_post_markup_async: flow(function* () {
+			if (self.is_video()) {
+				yield self.fetch_video_dimensions()
+			}
+			return self.best_post_markup()
+		}),
+
+		copy_html_to_clipboard: flow(function* () {
 			let html = "";
+			if (self.is_video()) {
+				yield self.fetch_video_dimensions()
+			}
 			if (self.alt && self.alt.length > 0) {
 				html = `<img src="${ self.url }" alt="${ self.alt.replace('"', '') }">`
 			}
@@ -22,12 +65,9 @@ export default Upload = types.model('Upload', {
 			}
 
 			if (self.is_video()) {
-				if (self.poster && (self.poster.length > 0)) {
-					html = `<video controls src="${ self.url }" poster="${ self.poster }"></video>`
-				}
-				else {						
-					html = `<video controls src="${ self.url }"></video>`
-				}
+				const dimensions = self.video_dimension_attributes()
+				const poster = self.poster && (self.poster.length > 0) ? ` poster="${ self.poster }"` : ""
+				html = `<video controls src="${ self.url }"${ dimensions }${ poster }></video>`
 			}
 			else if (self.is_audio()) {
 				html = `<audio controls src="${ self.url }"></audio>`
@@ -35,7 +75,7 @@ export default Upload = types.model('Upload', {
 
 			Clipboard.setString(html)
 			Toast.showWithGravity("HTML copied", Toast.SHORT, Toast.CENTER)
-		},
+		}),
 
 		copy_html_for_narration_to_clipboard() {
 			let html = `<audio src="${ self.url }" preload="metadata" style="display: none"></audio>`;			
@@ -67,6 +107,16 @@ export default Upload = types.model('Upload', {
 			const date = new Date(self.published)
 			return date.toLocaleString()
 		},
+		video_dimension_attributes() {
+			let dimensions = ""
+			if (self.width != undefined && self.width != null) {
+				dimensions += ` width="${ self.width }"`
+			}
+			if (self.height != undefined && self.height != null) {
+				dimensions += ` height="${ self.height }"`
+			}
+			return dimensions
+		},
 		is_video() {
 			return self.url.endsWith(".mp4") || self.url.endsWith(".mov") || self.url.endsWith(".m4v") || self.url.endsWith(".webm") || self.url.endsWith(".ogv") || self.url.endsWith(".ogg") || self.url.endsWith(".avi") || self.url.endsWith(".wmv") || self.url.endsWith(".flv") || self.url.endsWith(".swf") || self.url.endsWith(".m3u8")
 		},
@@ -77,7 +127,9 @@ export default Upload = types.model('Upload', {
 			if(this.is_audio() || this.is_video()){
 				let html = `<img src="${ self.url }">`
 				if (self.is_video()) {
-					html = `<video controls src="${ self.url }"></video>`
+					const dimensions = self.video_dimension_attributes()
+					const poster = self.poster ? ` poster="${ self.poster }"` : ""
+					html = `<video controls src="${ self.url }"${ dimensions }${ poster }></video>`
 				}
 				else if (self.is_audio()) {
 					html = `<audio controls src="${ self.url }"></audio>`

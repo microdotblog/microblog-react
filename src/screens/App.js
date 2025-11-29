@@ -86,8 +86,9 @@ export default class MainApp extends React.Component {
   }
 
   animate_overlay = (should_show = false) => {
+    let new_opacity = App.is_dark_mode() ? 0.2 : 0.1;
     Animated.timing(this.overlay_opacity, {
-      toValue: should_show ? 0.1 : 0,
+      toValue: should_show ? new_opacity : 0,
       duration: 500,
       useNativeDriver: true
     }).start()

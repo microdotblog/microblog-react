@@ -141,11 +141,10 @@ export default class UploadCell extends React.Component {
     if (this.props.add_to_editor) {
       return (
         <Pressable
-          onPress={() => {
+          onPress={async () => {
             this.props.trigger_pop();
-            Auth.selected_user.posting?.add_to_post_text(
-              upload.best_post_markup()
-            );
+            const markup = await upload.best_post_markup_async();
+            Auth.selected_user.posting?.add_to_post_text(markup);
           }}
           style={{
             padding: 5,
@@ -162,7 +161,7 @@ export default class UploadCell extends React.Component {
             padding: 5,
             backgroundColor: App.theme_background_color_secondary(),
           }}
-          onPressAction={({ nativeEvent }) => {
+          onPressAction={async ({ nativeEvent }) => {
             const event_id = nativeEvent.event;
             if (event_id === "copy_link") {
               upload.copy_link_to_clipboard();
@@ -184,9 +183,8 @@ export default class UploadCell extends React.Component {
               );
             } else if (event_id === "add_to_post") {
               this.props.trigger_pop();
-              Auth.selected_user.posting?.add_to_post_text(
-                upload.best_post_markup()
-              );
+              const markup = await upload.best_post_markup_async();
+              Auth.selected_user.posting?.add_to_post_text(markup);
             }
           }}
           actions={[

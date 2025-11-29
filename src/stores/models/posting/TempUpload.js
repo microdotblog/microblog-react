@@ -1,9 +1,19 @@
 import Clipboard from '@react-native-clipboard/clipboard'
 import { types, flow } from 'mobx-state-tree'
+import { Image } from 'react-native'
 import Toast from 'react-native-simple-toast'
 import axios from 'axios'
 import MicroPubApi, { POST_ERROR } from '../../../api/MicroPubApi'
 import RNFS from 'react-native-fs'
+
+const get_image_size = uri => {
+	return new Promise(resolve => {
+		Image.getSize(uri,
+			(width, height) => resolve({ width, height }),
+			() => resolve({ width: null, height: null })
+		)
+	})
+}
 
 export default TempUpload = types.model('TempUpload', {
 	uri: types.identifier,
@@ -13,6 +23,8 @@ export default TempUpload = types.model('TempUpload', {
 	url: types.maybe(types.string),
 	published: types.maybe(types.string),
 	poster: types.maybe(types.string),
+	width: types.maybe(types.number),
+	height: types.maybe(types.number),
 	is_uploading: types.optional(types.boolean, false),
 	progress: types.optional(types.number, 0),
 	did_upload: types.optional(types.boolean, false),
@@ -81,17 +93,21 @@ export default TempUpload = types.model('TempUpload', {
 			}
 		}),
 
-		copy_html_to_clipboard() {
+		copy_html_to_clipboard: flow(function* () {
+			if (self.is_video()) {
+				yield self.fetch_video_dimensions()
+			}
 			let html = `<img src="${ self.url }">`
 			if (self.is_video()) {
-				html = `<video controls src="${ self.url }"></video>`
+				const dimensions = self.video_dimension_attributes()
+				html = `<video controls src="${ self.url }"${ dimensions }></video>`
 			}
 			else if (self.is_audio()) {
 				html = `<audio controls src="${ self.url }"></audio>`
 			}
 			Clipboard.setString(html)
 			Toast.showWithGravity("HTML copied", Toast.SHORT, Toast.CENTER)
-		},
+		}),
 
 		copy_link_to_clipboard() {
 			Clipboard.setString(self.url)
@@ -106,10 +122,41 @@ export default TempUpload = types.model('TempUpload', {
 
 		set_cached_uri: flow(function* (uri) {
 			self.cached_uri = uri
+		}),
+
+		fetch_video_dimensions: flow(function* () {
+			if (!self.poster || self.poster.length == 0) {
+				return
+			}
+			if (self.width != undefined && self.height != undefined) {
+				return
+			}
+			try {
+				const size = yield get_image_size(self.poster)
+				if (size.width != null && self.width == undefined) {
+					self.width = size.width
+				}
+				if (size.height != null && self.height == undefined) {
+					self.height = size.height
+				}
+			}
+			catch (error) {
+				console.log("TempUpload:fetch_video_dimensions:error", error)
+			}
 		})
 
 	}))
 	.views(self => ({
+		video_dimension_attributes() {
+			let dimensions = ""
+			if (self.width != undefined && self.width != null) {
+				dimensions += ` width="${ self.width }"`
+			}
+			if (self.height != undefined && self.height != null) {
+				dimensions += ` height="${ self.height }"`
+			}
+			return dimensions
+		},
 		is_video() {
 			const uri = self.uri?.toLowerCase()
 			return uri?.endsWith(".mp4") || uri?.endsWith(".mov") || uri?.endsWith(".m4v") || uri?.endsWith(".webm") || uri?.endsWith(".ogv") || uri?.endsWith(".ogg") || uri?.endsWith(".avi") || uri?.endsWith(".wmv") || uri?.endsWith(".flv") || uri?.endsWith(".swf")
