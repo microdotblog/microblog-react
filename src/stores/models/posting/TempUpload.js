@@ -100,7 +100,7 @@ export default TempUpload = types.model('TempUpload', {
 			let html = `<img src="${ self.url }">`
 			if (self.is_video()) {
 				const dimensions = self.video_dimension_attributes()
-				html = `<video controls src="${ self.url }"${ dimensions }"></video>`
+				html = `<video controls src="${ self.url }"${ dimensions }></video>`
 			}
 			else if (self.is_audio()) {
 				html = `<audio controls src="${ self.url }"></audio>`
