@@ -29,10 +29,10 @@ export default Reply = types.model('Reply', {
   hydrate: flow(function* (conversation_id = null) {
     const reply_sheet_is_open = SheetManager.get('reply_sheet')?.current?.isOpen()
     if (reply_sheet_is_open) {
-      if (conversation_id !== self.conversation_id) {
-        self.show_back_button = true
-      }
-      return
+      // if (conversation_id !== self.conversation_id) {
+      //   self.show_back_button = true
+      // }
+      // return
     }
     
     self.show_back_button = false
