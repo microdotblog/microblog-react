@@ -129,7 +129,7 @@ export default Upload = types.model('Upload', {
 				if (self.is_video()) {
 					const dimensions = self.video_dimension_attributes()
 					const poster = self.poster ? ` poster="${ self.poster }"` : ""
-					html = `<video controls src="${ self.url }"${ dimensions }${ poster }"></video>`
+					html = `<video controls src="${ self.url }"${ dimensions }${ poster }></video>`
 				}
 				else if (self.is_audio()) {
 					html = `<audio controls src="${ self.url }"></audio>`
