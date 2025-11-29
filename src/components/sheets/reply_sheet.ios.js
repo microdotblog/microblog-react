@@ -33,9 +33,13 @@ export default class ReplySheet extends React.Component {
         useBottomSafeAreaPadding={true}
         gestureEnabled={true}
         containerStyle={{ backgroundColor: App.theme_modal_background_color(), padding: 0 }}
+        overdrawEnabled={true}
+        overlayColor={'transparent'}
         snapPoints={[70]}
         initialSnapIndex={1}
         backgroundInteractionEnabled={true}
+        onOpen={() => Reply.set_sheet_open(true)}
+        onClose={() => Reply.set_sheet_open(false)}
         isModal={true}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 12, paddingBottom: 12, borderBottomWidth: 1, borderColor: App.theme_border_color(), backgroundColor: App.theme_modal_background_color() }}>

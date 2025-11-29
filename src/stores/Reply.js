@@ -12,6 +12,7 @@ export default Reply = types.model('Reply', {
 	is_sending_reply: types.optional(types.boolean, false),
 	conversation_id: types.maybeNull(types.string),
 	show_back_button: types.optional(types.boolean, false),
+	is_sheet_open: types.optional(types.boolean, false),
 	text_selection: types.optional(
     types.model('Selection', {
       start: types.optional(types.number, 0),
@@ -28,10 +29,10 @@ export default Reply = types.model('Reply', {
   hydrate: flow(function* (conversation_id = null) {
     const reply_sheet_is_open = SheetManager.get('reply_sheet')?.current?.isOpen()
     if (reply_sheet_is_open) {
-      if (conversation_id !== self.conversation_id) {
-        self.show_back_button = true
-      }
-      return
+      // if (conversation_id !== self.conversation_id) {
+      //   self.show_back_button = true
+      // }
+      // return
     }
     
     self.show_back_button = false
@@ -86,6 +87,10 @@ export default Reply = types.model('Reply', {
   set_reply_text_from_typing: flow(function* (value) {
     self.reply_text = value
     App.check_usernames(self.reply_text)
+  }),
+  
+  set_sheet_open: flow(function* (value = false) {
+    self.is_sheet_open = value
   }),
   
   send_reply: flow(function* () {
