@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { View, ActivityIndicator, Platform, StatusBar } from 'react-native';
+import { View, ActivityIndicator, Platform, StatusBar, Animated } from 'react-native';
 import { observer } from 'mobx-react';
+import { autorun } from 'mobx';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SheetProvider } from "react-native-actions-sheet";
@@ -41,6 +42,9 @@ const Stack = createNativeStackNavigator();
 
 @observer
 export default class MainApp extends React.Component {
+  overlay_opacity = new Animated.Value(0)
+  prev_sheet_open = false
+  overlay_disposer = null
 
   async componentDidMount() {
     App.hydrate().then( () => {
@@ -61,8 +65,34 @@ export default class MainApp extends React.Component {
         })
       }
     })
+    this.prev_sheet_open = Reply.is_sheet_open
+    this.overlay_disposer = autorun(() => {
+      this.handle_sheet_overlay(Reply.is_sheet_open)
+    })
   }
   
+  componentWillUnmount() {
+    if (this.overlay_disposer) {
+      this.overlay_disposer()
+      this.overlay_disposer = null
+    }
+  }
+
+  handle_sheet_overlay = (sheet_is_open = false) => {
+    if (sheet_is_open !== this.prev_sheet_open) {
+      this.animate_overlay(sheet_is_open)
+      this.prev_sheet_open = sheet_is_open
+    }
+  }
+
+  animate_overlay = (should_show = false) => {
+    Animated.timing(this.overlay_opacity, {
+      toValue: should_show ? 0.1 : 0,
+      duration: 500,
+      useNativeDriver: true
+    }).start()
+  }
+
   render() {
     if(App.is_loading){
       return(
@@ -230,13 +260,10 @@ export default class MainApp extends React.Component {
                   </Stack.Group>
                 </Stack.Navigator>
               </NavigationContainer>
-              {
-                Reply.is_sheet_open &&
-                <View
-                  pointerEvents={'none'}
-                  style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0,0,0,0.1)', zIndex: 10 }}
-                />
-              }
+              <Animated.View
+                pointerEvents={'none'}
+                style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: '#000', zIndex: 10, opacity: this.overlay_opacity }}
+              />
               <PublishingProgress />
             </SheetProvider>
           </KeyboardProvider>
