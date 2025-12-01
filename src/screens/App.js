@@ -47,16 +47,16 @@ export default class MainApp extends React.Component {
   overlay_disposer = null
 
   async componentDidMount() {
-    App.hydrate().then( () => {
+    App.hydrate().then(() => {
       if (Platform.OS == "android") {
         ShareMenu.addNewShareListener((share) => {
           console.log("App:set_up_url_listener:share", share)
           if (share?.data != null) {
             Share.hydrate_android_share(share)
             App.navigate_to_screen("Share")
-          }        
+          }
         })
-        ShareMenu.getInitialShare(async (share) => { 
+        ShareMenu.getInitialShare(async (share) => {
           console.log("App:set_up_url_listener:getInitialShare", share)
           if (share?.data != null) {
             Share.hydrate_android_share(share)
@@ -70,7 +70,7 @@ export default class MainApp extends React.Component {
       this.handle_sheet_overlay(Reply.is_sheet_open)
     })
   }
-  
+
   componentWillUnmount() {
     if (this.overlay_disposer) {
       this.overlay_disposer()
@@ -95,47 +95,47 @@ export default class MainApp extends React.Component {
   }
 
   render() {
-    if(App.is_loading){
-      return(
+    if (App.is_loading) {
+      return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: App.theme_background_color() }}>
           <ActivityIndicator color={App.theme_accent_color()} size="large" />
         </View>
       )
     }
-    return(
+    return (
       <SafeAreaProvider initialMetrics={initialWindowMetrics}>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <KeyboardProvider>
             <SheetProvider>
               {
                 Platform.OS === 'android' &&
-                <StatusBar 
-                  barStyle={App.is_dark_mode() ? 'light-content' : 'dark-content'} 
+                <StatusBar
+                  barStyle={App.is_dark_mode() ? 'light-content' : 'dark-content'}
                   backgroundColor="transparent"
                   translucent={true}
                 />
               }
               <NavigationContainer
                 theme={{
-                dark: App.is_dark_mode(),
-                colors: {
-                  background: App.theme_background_color(),
-                  text: App.theme_text_color(),
-                  card: App.theme_navbar_background_color()
-                },
-                fonts: DefaultTheme.fonts}}
+                  dark: App.is_dark_mode(),
+                  colors: {
+                    background: App.theme_background_color(),
+                    text: App.theme_text_color(),
+                    card: App.theme_navbar_background_color()
+                  },
+                  fonts: DefaultTheme.fonts
+                }}
                 ref={navigationRef => {
                   App.set_navigation(navigationRef)
                 }}
               >
                 <Stack.Navigator
                   initialRouteName="Tabs"
-                  screenOptions={{ 
-                    headerShown: false, 
-                    headerTintColor: App.theme_text_color(),
-                    headerStatusBarHeight: Platform.OS === 'android' ? 0 : undefined
+                  screenOptions={{
+                    headerShown: false,
+                    headerTintColor: App.theme_text_color()
                   }}
-                  
+
                 >
                   <Stack.Screen name="Tabs" component={TabNavigator} />
                   <Stack.Screen
@@ -144,8 +144,7 @@ export default class MainApp extends React.Component {
                     options={{
                       title: "Sign In",
                       headerShown: true,
-                      headerBackTitle: "Back",
-                      headerStatusBarHeight: Platform.OS === 'android' ? 0 : undefined
+                      headerBackTitle: "Back"
                     }}
                   />
                   <Stack.Group
@@ -153,8 +152,7 @@ export default class MainApp extends React.Component {
                       presentation: "modal",
                       headerShown: true,
                       gestureEnabled: true,
-                      headerLeft: () => <CloseModalButton />,
-                      headerStatusBarHeight: Platform.OS === 'android' ? 0 : undefined
+                      headerLeft: () => <CloseModalButton />
                     }}
                   >
                     <Stack.Screen
@@ -272,5 +270,5 @@ export default class MainApp extends React.Component {
       </SafeAreaProvider>
     )
   }
-  
+
 }
