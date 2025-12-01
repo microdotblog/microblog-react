@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { RefreshControl, Platform } from "react-native";
+import { RefreshControl, Platform, View } from "react-native";
 import { useFocusEffect } from '@react-navigation/native';
 import Auth from '../../stores/Auth';
 import App from '../../stores/App';
 import { ScrollView } from 'react-native-gesture-handler';
 import WebView from 'react-native-webview';
-import WebLoadingViewModule from './loading_view';
 import WebErrorViewModule from './error_view';
+import LoadingBanner from './loading_banner';
 
 const WebViewModule = observer((props) => {
   const webViewRef = React.useRef(null);
@@ -15,7 +15,9 @@ const WebViewModule = observer((props) => {
     endpoint: props.endpoint,
     signin_endpoint: `hybrid/signin?token=${Auth.selected_user.token()}&redirect_to=${props.endpoint}&theme=${App.theme}&show_actions=true`,
     opacity: 0.0,
-    is_pull_to_refresh_enabled: true
+    is_pull_to_refresh_enabled: true,
+    is_loading: true,
+    is_initial_load: true
   });
 
   const web_url = "https://micro.blog";
@@ -27,7 +29,13 @@ const WebViewModule = observer((props) => {
   );
 
   const on_refresh = () => {
-    webViewRef.current?.reload();
+    setState(prevState => {
+      if (!prevState.is_initial_load) {
+        return { ...prevState, is_loading: true, opacity: 1.0 };
+      }
+      return prevState;
+    });
+    webViewRef.current?.injectJavaScript('window.location.reload();');
   };
 
   const return_url_options = () => {
@@ -49,19 +57,35 @@ const WebViewModule = observer((props) => {
         ref={webViewRef}
         source={{ uri: `${web_url}/${Auth.did_load_one_or_more_webviews ? props.endpoint : state.signin_endpoint}${return_url_options()}` }}
         containerStyle={{ flex: 1 }}
-        startInLoadingState={props.should_show_loading}
         pullToRefreshEnabled={false}
         decelerationRate={0.998}
+        cacheEnabled={true}
+        cacheMode="LOAD_CACHE_ELSE_NETWORK"
+        onLoadStart={() => {
+          setState(prevState => {
+            return { ...prevState, is_loading: true };
+          });
+        }}
         onLoadEnd={(event) => {
           Auth.set_did_load_one_or_more_webviews();
-          if (App.theme == "light") {
-            setState(prevState => ({ ...prevState, opacity: 1.0 }));
-          }
-          else {
-            setTimeout(() => {
-              setState(prevState => ({ ...prevState, opacity: 1.0 }));
-            }, 200);
-          }
+          
+          setState(prevState => {
+            if (prevState.is_initial_load) {
+              if (App.theme == "light") {
+                return { ...prevState, opacity: 1.0, is_initial_load: false, is_loading: false };
+              }
+              else {
+                setTimeout(() => {
+                  setState(prev => ({ ...prev, opacity: 1.0, is_initial_load: false, is_loading: false }));
+                }, 200);
+                return { ...prevState, is_loading: false };
+              }
+            }
+            else {
+              webViewRef.current?.injectJavaScript('window.scrollTo({ top: 0, behavior: "smooth" })');
+              return { ...prevState, is_loading: false };
+            }
+          });
         }}
         nestedScrollEnabled={true}
         onShouldStartLoadWithRequest={(event) => {
@@ -82,7 +106,6 @@ const WebViewModule = observer((props) => {
           App.handle_web_view_message(event.nativeEvent.data);
         }}
         style={{ flex: 1, backgroundColor: App.theme_background_color(), opacity: state.opacity }}
-        renderLoading={() => <WebLoadingViewModule loading_text={props.loading_text} />}
         renderError={(name, code, description) => <WebErrorViewModule error_name={description} />}
         injectedJavaScript={Platform.OS === 'ios' ? `const meta = document.createElement('meta'); meta.setAttribute('content', 'width=width, initial-scale=${App.web_font_scale()}'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);` : null}
         onContentProcessDidTerminate={onContentProcessDidTerminate}
@@ -90,8 +113,16 @@ const WebViewModule = observer((props) => {
     );
   };
 
+  const profileHeaderRef = React.useRef(null);
+  const [profileHeaderHeight, setProfileHeaderHeight] = React.useState(0);
+
   return (
     <>
+      <LoadingBanner 
+        visible={state.is_loading} 
+        loading_text={props.loading_text ?? "Loading posts..."}
+        topOffset={props.profile != null ? profileHeaderHeight + (Platform.OS === "ios" ? 12 : 8) : (Platform.OS === "ios" ? 12 : 8)}
+      />
       <ScrollView
         overScrollMode={Platform.OS === 'ios' ? 'auto' : 'always'}
         style={{ flex: 1, width: '100%', height: '100%', backgroundColor: App.theme_background_color() }}
@@ -106,7 +137,17 @@ const WebViewModule = observer((props) => {
       >
         {
           props.profile != null ?
-          props.profile
+          <View 
+            ref={profileHeaderRef}
+            onLayout={(event) => {
+              const { height } = event.nativeEvent.layout;
+              if (height > 0) {
+                setProfileHeaderHeight(height);
+              }
+            }}
+          >
+            {props.profile}
+          </View>
           : null
         }
         {_webview()}
