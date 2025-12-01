@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react"
-import { View, Text, Animated, Platform, ActivityIndicator } from "react-native"
+import { View, Text, Animated, Platform } from "react-native"
 import App from "../../stores/App"
 
 const LoadingBanner = observer(({ visible, loading_text = "Loading posts...", topOffset }) => {
   const slideAnim = useRef(new Animated.Value(-100)).current
+  const progressAnim = useRef(new Animated.Value(0)).current
   const [wasVisible, setWasVisible] = useState(false)
 
   const slideIn = () => {
@@ -35,6 +36,30 @@ const LoadingBanner = observer(({ visible, loading_text = "Loading posts...", to
       setWasVisible(false)
     }
   }, [visible, wasVisible])
+
+  useEffect(() => {
+    if (visible) {
+      const loopAnimation = Animated.loop(
+        Animated.sequence([
+          Animated.timing(progressAnim, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(progressAnim, {
+            toValue: 0,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+        ])
+      )
+      loopAnimation.start()
+      return () => loopAnimation.stop()
+    }
+    else {
+      progressAnim.setValue(0)
+    }
+  }, [visible])
 
   if (!visible && !wasVisible) {
     return null
@@ -71,11 +96,33 @@ const LoadingBanner = observer(({ visible, loading_text = "Loading posts...", to
         <Text style={{ fontSize: 15, fontWeight: "500", color: App.theme_text_color() }}>
           {loading_text}
         </Text>
-        <ActivityIndicator
-          animating={true}
-          color={App.theme_accent_color()}
-          size="small"
-        />
+        <View
+          style={{
+            width: 60,
+            height: 4,
+            backgroundColor: App.theme_section_background_color(),
+            borderRadius: 2,
+            overflow: "hidden",
+            marginLeft: 12,
+          }}
+        >
+          <Animated.View
+            style={{
+              height: "100%",
+              width: "40%",
+              backgroundColor: App.theme_accent_color(),
+              borderRadius: 2,
+              transform: [
+                {
+                  translateX: progressAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, 36],
+                  }),
+                },
+              ],
+            }}
+          />
+        </View>
       </View>
     </Animated.View>
   )
