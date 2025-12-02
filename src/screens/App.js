@@ -103,9 +103,9 @@ export default class MainApp extends React.Component {
       )
     }
     return (
-      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+      <SafeAreaProvider initialMetrics={initialWindowMetrics} >
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <KeyboardProvider>
+          <KeyboardProvider navigationBarTranslucent={true}>
             <SheetProvider>
               {
                 Platform.OS === 'android' &&

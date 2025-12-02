@@ -11,17 +11,20 @@ import TabIcon from '../../components/tabs/tab';
 const Tab = createBottomTabNavigator();
 
 @observer
-export default class TabNavigator extends React.Component{
+export default class TabNavigator extends React.Component {
 
   render() {
-    return(
+    return (
       <Tab.Navigator
         id="tab_navigator"
         initialRouteName="TimelineStack"
         screenOptions={({ route }) => ({
           tabBarStyle: {
             borderTopColor: App.theme_tabbar_divider_color(),
-            borderTopWidth: 0.5
+            borderTopWidth: 0.5,
+            backgroundColor: App.theme_navbar_background_color(),
+            elevation: 0,
+            shadowOpacity: 0
           },
           tabBarIcon: ({ focused, color, size }) => {
             return <TabIcon route={route} focused={focused} size={size} color={color} />;
