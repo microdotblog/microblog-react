@@ -17,7 +17,8 @@ const WebViewModule = observer((props) => {
     opacity: 0.0,
     is_pull_to_refresh_enabled: true,
     is_loading: true,
-    is_initial_load: true
+    is_initial_load: true,
+    loading_progress: 0
   });
 
   const web_url = "https://micro.blog";
@@ -59,33 +60,49 @@ const WebViewModule = observer((props) => {
         containerStyle={{ flex: 1 }}
         pullToRefreshEnabled={false}
         decelerationRate={0.998}
-        cacheEnabled={true}
-        cacheMode="LOAD_CACHE_ELSE_NETWORK"
         onLoadStart={() => {
           setState(prevState => {
-            return { ...prevState, is_loading: true };
+            return { ...prevState, is_loading: true, loading_progress: 0 };
           });
         }}
-        onLoadEnd={(event) => {
+        onLoadProgress={(event) => {
+          try {
+            if (event && event.nativeEvent && typeof event.nativeEvent.progress === 'number') {
+              const progressValue = Math.max(0, Math.min(1, event.nativeEvent.progress));
+              setState(prevState => {
+                return { ...prevState, loading_progress: progressValue };
+              });
+            }
+          } catch (error) {
+            console.log("WebViewModule:onLoadProgress:error", error);
+          }
+        }}
+        onLoadEnd={(_event) => {
           Auth.set_did_load_one_or_more_webviews();
           
           setState(prevState => {
-            if (prevState.is_initial_load) {
-              if (App.theme == "light") {
-                return { ...prevState, opacity: 1.0, is_initial_load: false, is_loading: false };
+            return { ...prevState, loading_progress: 1 };
+          });
+          
+          setTimeout(() => {
+            setState(prevState => {
+              if (prevState.is_initial_load) {
+                if (App.theme == "light") {
+                  return { ...prevState, opacity: 1.0, is_initial_load: false, is_loading: false };
+                }
+                else {
+                  setTimeout(() => {
+                    setState(prev => ({ ...prev, opacity: 1.0, is_initial_load: false, is_loading: false }));
+                  }, 200);
+                  return { ...prevState, is_loading: false };
+                }
               }
               else {
-                setTimeout(() => {
-                  setState(prev => ({ ...prev, opacity: 1.0, is_initial_load: false, is_loading: false }));
-                }, 200);
+                webViewRef.current?.injectJavaScript('window.scrollTo({ top: 0, behavior: "smooth" })');
                 return { ...prevState, is_loading: false };
               }
-            }
-            else {
-              webViewRef.current?.injectJavaScript('window.scrollTo({ top: 0, behavior: "smooth" })');
-              return { ...prevState, is_loading: false };
-            }
-          });
+            });
+          }, 300);
         }}
         nestedScrollEnabled={true}
         onShouldStartLoadWithRequest={(event) => {
@@ -124,6 +141,7 @@ const WebViewModule = observer((props) => {
           visible={state.is_loading} 
           loading_text={props.loading_text ?? "Loading posts..."}
           topOffset={props.profile != null ? profileHeaderHeight + (Platform.OS === "ios" ? 12 : 8) : (Platform.OS === "ios" ? 12 : 8)}
+          progress={state.loading_progress}
         />
       )}
       <ScrollView
