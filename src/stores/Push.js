@@ -190,7 +190,13 @@ export default Push = types.model('Push', {
 				callback(permissions.alert)
 			})
 		} else {
-			callback(true)
+			PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS)
+				.then((hasPermission) => {
+					callback(hasPermission)
+				})
+				.catch(() => {
+					callback(false)
+				})
 		}
 	},
 	

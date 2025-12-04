@@ -5,20 +5,11 @@ import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
-import android.os.Bundle
-import android.os.Build
-import androidx.core.view.WindowCompat
+
 
 class MainActivity : ReactActivity() {
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(null)
-    
-    // Configure edge-to-edge for Android 15+ (API 30+)
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-      WindowCompat.setDecorFitsSystemWindows(window, false)
-    }
-  }
+
 
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule
