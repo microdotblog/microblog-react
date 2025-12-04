@@ -31,7 +31,7 @@ export default Page = types.model('Page', {
       text = text.substring(0, 300) + '...'
     }
     
-    return text;
+    return text.trim();
   },
   
   images_from_content(){
