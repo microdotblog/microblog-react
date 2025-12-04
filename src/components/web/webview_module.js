@@ -20,8 +20,7 @@ const WebViewModule = observer((props) => {
     is_pull_to_refresh_enabled: true,
     is_loading: true,
     is_initial_load: true,
-    loading_progress: 0,
-    is_loading_signin: !Auth.did_load_one_or_more_webviews
+    loading_progress: 0
   });
   
   if (initialUrlRef.current === null) {
@@ -67,47 +66,21 @@ const WebViewModule = observer((props) => {
         containerStyle={{ flex: 1 }}
         pullToRefreshEnabled={false}
         decelerationRate={0.998}
-        onLoadStart={(event) => {
-          const isSigninUrl = event?.nativeEvent?.url?.includes('hybrid/signin');
+        onLoadStart={() => {
           setState(prevState => {
-            if (isSigninUrl) {
-              return { 
-                ...prevState, 
-                is_loading: true, 
-                loading_progress: prevState.loading_progress || 0,
-                is_loading_signin: true
-              };
-            }
-            else {
-              const baseProgress = prevState.loading_progress >= 0.25 ? 0.25 : 0;
-              return { 
-                ...prevState, 
-                is_loading: true, 
-                loading_progress: baseProgress,
-                is_loading_signin: false
-              };
-            }
+            return { 
+              ...prevState, 
+              is_loading: true, 
+              loading_progress: 0
+            };
           });
         }}
         onLoadProgress={(event) => {
           try {
             if (event && event.nativeEvent && typeof event.nativeEvent.progress === 'number') {
-              const rawProgress = Math.max(0, Math.min(1, event.nativeEvent.progress));
-              const url = event?.nativeEvent?.url || '';
-              const isSigninUrl = url.includes('hybrid/signin');
-              const isActualEndpoint = url.includes(props.endpoint);
-              
+              const progressValue = Math.max(0, Math.min(1, event.nativeEvent.progress));
               setState(prevState => {
-                if (isSigninUrl && !isActualEndpoint) {
-                  const signinProgress = Math.min(rawProgress * 0.25, 0.25);
-                  return { ...prevState, loading_progress: signinProgress };
-                }
-                else if (isActualEndpoint && !isSigninUrl) {
-                  const baseProgress = prevState.loading_progress >= 0.25 ? 0.25 : 0;
-                  const actualProgress = Math.min(baseProgress + (rawProgress * 0.75), 1.0);
-                  return { ...prevState, loading_progress: actualProgress };
-                }
-                return prevState;
+                return { ...prevState, loading_progress: progressValue };
               });
             }
           } catch (error) {
@@ -120,10 +93,6 @@ const WebViewModule = observer((props) => {
           const isActualEndpoint = url.includes(props.endpoint);
           
           setState(prevState => {
-            if (isSigninUrl && !isActualEndpoint) {
-              return { ...prevState, is_loading_signin: false, loading_progress: 0.25, is_loading: true };
-            }
-            
             if (isActualEndpoint && !isSigninUrl) {
               if (!hasSetDidLoadRef.current && !Auth.did_load_one_or_more_webviews) {
                 Auth.set_did_load_one_or_more_webviews();
@@ -132,8 +101,7 @@ const WebViewModule = observer((props) => {
               
               const newState = { 
                 ...prevState, 
-                loading_progress: 1,
-                is_loading_signin: false
+                loading_progress: 1
               };
               
               setTimeout(() => {
