@@ -115,14 +115,17 @@ const WebViewModule = observer((props) => {
 
   const profileHeaderRef = React.useRef(null);
   const [profileHeaderHeight, setProfileHeaderHeight] = React.useState(0);
+  const is_conversation = props.endpoint.includes("conversation");
 
   return (
     <>
-      <LoadingBanner 
-        visible={state.is_loading} 
-        loading_text={props.loading_text ?? "Loading posts..."}
-        topOffset={props.profile != null ? profileHeaderHeight + (Platform.OS === "ios" ? 12 : 8) : (Platform.OS === "ios" ? 12 : 8)}
-      />
+      {!is_conversation && (
+        <LoadingBanner 
+          visible={state.is_loading} 
+          loading_text={props.loading_text ?? "Loading posts..."}
+          topOffset={props.profile != null ? profileHeaderHeight + (Platform.OS === "ios" ? 12 : 8) : (Platform.OS === "ios" ? 12 : 8)}
+        />
+      )}
       <ScrollView
         overScrollMode={Platform.OS === 'ios' ? 'auto' : 'always'}
         style={{ flex: 1, width: '100%', height: '100%', backgroundColor: App.theme_background_color() }}
