@@ -11,14 +11,21 @@ import LoadingBanner from './loading_banner';
 
 const WebViewModule = observer((props) => {
   const webViewRef = React.useRef(null);
+  const hasSetDidLoadRef = React.useRef(false);
+  const initialUrlRef = React.useRef(null);
   const [state, setState] = React.useState({
     endpoint: props.endpoint,
     signin_endpoint: `hybrid/signin?token=${Auth.selected_user.token()}&redirect_to=${props.endpoint}&theme=${App.theme}&show_actions=true`,
     opacity: 0.0,
     is_pull_to_refresh_enabled: true,
     is_loading: true,
-    is_initial_load: true
+    is_initial_load: true,
+    loading_progress: 0
   });
+  
+  if (initialUrlRef.current === null) {
+    initialUrlRef.current = Auth.did_load_one_or_more_webviews ? props.endpoint : state.signin_endpoint;
+  }
 
   const web_url = "https://micro.blog";
 
@@ -39,7 +46,7 @@ const WebViewModule = observer((props) => {
   };
 
   const return_url_options = () => {
-    let url_options = props.endpoint.includes("#post_") ? "" : "show_actions=true&fontsize=17";
+    let url_options = props.endpoint.includes("#post_") ? "" : `show_actions=true&fontsize=17&theme=${App.theme}`;
     if (url_options && url_options !== "") {
       url_options = `${!props.is_search && !props.is_filtered ? "?" : "&"}${url_options}&theme=${App.theme}`;
     }
@@ -55,36 +62,72 @@ const WebViewModule = observer((props) => {
     return (
       <WebView
         ref={webViewRef}
-        source={{ uri: `${web_url}/${Auth.did_load_one_or_more_webviews ? props.endpoint : state.signin_endpoint}${return_url_options()}` }}
+        source={{ uri: `${web_url}/${initialUrlRef.current}${return_url_options()}` }}
         containerStyle={{ flex: 1 }}
         pullToRefreshEnabled={false}
         decelerationRate={0.998}
-        cacheEnabled={true}
-        cacheMode="LOAD_CACHE_ELSE_NETWORK"
         onLoadStart={() => {
           setState(prevState => {
-            return { ...prevState, is_loading: true };
+            return { 
+              ...prevState, 
+              is_loading: true, 
+              loading_progress: 0
+            };
           });
         }}
+        onLoadProgress={(event) => {
+          try {
+            if (event && event.nativeEvent && typeof event.nativeEvent.progress === 'number') {
+              const progressValue = Math.max(0, Math.min(1, event.nativeEvent.progress));
+              setState(prevState => {
+                return { ...prevState, loading_progress: progressValue };
+              });
+            }
+          } catch (error) {
+            console.log("WebViewModule:onLoadProgress:error", error);
+          }
+        }}
         onLoadEnd={(event) => {
-          Auth.set_did_load_one_or_more_webviews();
+          const url = event?.nativeEvent?.url || '';
+          const isSigninUrl = url.includes('hybrid/signin');
+          const isActualEndpoint = url.includes(props.endpoint);
           
           setState(prevState => {
-            if (prevState.is_initial_load) {
-              if (App.theme == "light") {
-                return { ...prevState, opacity: 1.0, is_initial_load: false, is_loading: false };
+            if (isActualEndpoint && !isSigninUrl) {
+              if (!hasSetDidLoadRef.current && !Auth.did_load_one_or_more_webviews) {
+                Auth.set_did_load_one_or_more_webviews();
+                hasSetDidLoadRef.current = true;
               }
-              else {
-                setTimeout(() => {
-                  setState(prev => ({ ...prev, opacity: 1.0, is_initial_load: false, is_loading: false }));
-                }, 200);
-                return { ...prevState, is_loading: false };
-              }
+              
+              const newState = { 
+                ...prevState, 
+                loading_progress: 1
+              };
+              
+              setTimeout(() => {
+                setState(prevState => {
+                  if (prevState.is_initial_load) {
+                    if (App.theme == "light") {
+                      return { ...prevState, opacity: 1.0, is_initial_load: false, is_loading: false };
+                    }
+                    else {
+                      setTimeout(() => {
+                        setState(prev => ({ ...prev, opacity: 1.0, is_initial_load: false, is_loading: false }));
+                      }, 200);
+                      return { ...prevState, is_loading: false };
+                    }
+                  }
+                  else {
+                    webViewRef.current?.injectJavaScript('window.scrollTo({ top: 0, behavior: "smooth" })');
+                    return { ...prevState, is_loading: false };
+                  }
+                });
+              }, 300);
+              
+              return newState;
             }
-            else {
-              webViewRef.current?.injectJavaScript('window.scrollTo({ top: 0, behavior: "smooth" })');
-              return { ...prevState, is_loading: false };
-            }
+            
+            return prevState;
           });
         }}
         nestedScrollEnabled={true}
@@ -124,6 +167,7 @@ const WebViewModule = observer((props) => {
           visible={state.is_loading} 
           loading_text={props.loading_text ?? "Loading posts..."}
           topOffset={props.profile != null ? profileHeaderHeight + (Platform.OS === "ios" ? 12 : 8) : (Platform.OS === "ios" ? 12 : 8)}
+          progress={state.loading_progress}
         />
       )}
       <ScrollView

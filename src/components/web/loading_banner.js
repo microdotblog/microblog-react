@@ -3,10 +3,12 @@ import { observer } from "mobx-react"
 import { View, Text, Animated, Platform } from "react-native"
 import App from "../../stores/App"
 
-const LoadingBanner = observer(({ visible, loading_text = "Loading posts...", topOffset }) => {
+const LoadingBanner = observer(({ visible, loading_text = "Loading posts...", topOffset, progress }) => {
   const slideAnim = useRef(new Animated.Value(-100)).current
   const progressAnim = useRef(new Animated.Value(0)).current
+  const sweepAnim = useRef(new Animated.Value(0)).current
   const [wasVisible, setWasVisible] = useState(false)
+  const hasProgress = progress !== undefined && progress !== null && typeof progress === 'number' && !isNaN(progress)
 
   const slideIn = () => {
     Animated.spring(slideAnim, {
@@ -38,15 +40,25 @@ const LoadingBanner = observer(({ visible, loading_text = "Loading posts...", to
   }, [visible, wasVisible])
 
   useEffect(() => {
-    if (visible) {
+    if (hasProgress && visible) {
+      const progressValue = Math.max(0, Math.min(1, progress));
+      const currentValue = progressAnim._value || 0;
+      const duration = progressValue === 1 ? 400 : 200;
+      Animated.timing(progressAnim, {
+        toValue: progressValue,
+        duration: duration,
+        useNativeDriver: false,
+      }).start()
+    }
+    else if (!hasProgress && visible) {
       const loopAnimation = Animated.loop(
         Animated.sequence([
-          Animated.timing(progressAnim, {
+          Animated.timing(sweepAnim, {
             toValue: 1,
             duration: 1000,
             useNativeDriver: true,
           }),
-          Animated.timing(progressAnim, {
+          Animated.timing(sweepAnim, {
             toValue: 0,
             duration: 1000,
             useNativeDriver: true,
@@ -57,9 +69,14 @@ const LoadingBanner = observer(({ visible, loading_text = "Loading posts...", to
       return () => loopAnimation.stop()
     }
     else {
-      progressAnim.setValue(0)
+      if (hasProgress) {
+        progressAnim.setValue(0)
+      }
+      else {
+        sweepAnim.setValue(0)
+      }
     }
-  }, [visible])
+  }, [visible, progress])
 
   if (!visible && !wasVisible) {
     return null
@@ -106,22 +123,37 @@ const LoadingBanner = observer(({ visible, loading_text = "Loading posts...", to
             marginLeft: 12,
           }}
         >
-          <Animated.View
-            style={{
-              height: "100%",
-              width: "40%",
-              backgroundColor: App.theme_accent_color(),
-              borderRadius: 2,
-              transform: [
-                {
-                  translateX: progressAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0, 36],
-                  }),
-                },
-              ],
-            }}
-          />
+          {hasProgress ? (
+            <Animated.View
+              style={{
+                height: "100%",
+                width: progressAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: ["0%", "100%"],
+                  extrapolate: "clamp",
+                }),
+                backgroundColor: App.theme_accent_color(),
+                borderRadius: 2,
+              }}
+            />
+          ) : (
+            <Animated.View
+              style={{
+                height: "100%",
+                width: "40%",
+                backgroundColor: App.theme_accent_color(),
+                borderRadius: 2,
+                transform: [
+                  {
+                    translateX: sweepAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0, 36],
+                    }),
+                  },
+                ],
+              }}
+            />
+          )}
         </View>
       </View>
     </Animated.View>
