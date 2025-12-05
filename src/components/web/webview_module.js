@@ -12,7 +12,10 @@ import LoadingBanner from './loading_banner';
 const WebViewModule = observer((props) => {
   const webViewRef = React.useRef(null);
   const hasSetDidLoadRef = React.useRef(false);
-  const initialUrlRef = React.useRef(null);
+  const [currentUrl, setCurrentUrl] = React.useState(() => {
+    const signinEndpoint = `hybrid/signin?token=${Auth.selected_user.token()}&redirect_to=${props.endpoint}&theme=${App.theme}&show_actions=true`;
+    return Auth.did_load_one_or_more_webviews ? props.endpoint : signinEndpoint;
+  });
   const [state, setState] = React.useState({
     endpoint: props.endpoint,
     signin_endpoint: `hybrid/signin?token=${Auth.selected_user.token()}&redirect_to=${props.endpoint}&theme=${App.theme}&show_actions=true`,
@@ -23,9 +26,20 @@ const WebViewModule = observer((props) => {
     loading_progress: 0
   });
   
-  if (initialUrlRef.current === null) {
-    initialUrlRef.current = Auth.did_load_one_or_more_webviews ? props.endpoint : state.signin_endpoint;
-  }
+  React.useEffect(() => {
+    if (props.endpoint !== state.endpoint) {
+      const newSigninEndpoint = `hybrid/signin?token=${Auth.selected_user.token()}&redirect_to=${props.endpoint}&theme=${App.theme}&show_actions=true`;
+      const newUrl = Auth.did_load_one_or_more_webviews ? props.endpoint : newSigninEndpoint;
+      setCurrentUrl(newUrl);
+      setState(prevState => ({
+        ...prevState,
+        endpoint: props.endpoint,
+        signin_endpoint: newSigninEndpoint,
+        loading_progress: 0,
+        is_loading: true
+      }));
+    }
+  }, [props.endpoint]);
 
   const web_url = "https://micro.blog";
 
@@ -62,7 +76,7 @@ const WebViewModule = observer((props) => {
     return (
       <WebView
         ref={webViewRef}
-        source={{ uri: `${web_url}/${initialUrlRef.current}${return_url_options()}` }}
+        source={{ uri: `${web_url}/${currentUrl}${return_url_options()}` }}
         containerStyle={{ flex: 1 }}
         pullToRefreshEnabled={false}
         decelerationRate={0.998}
@@ -132,10 +146,38 @@ const WebViewModule = observer((props) => {
         }}
         nestedScrollEnabled={true}
         onShouldStartLoadWithRequest={(event) => {
-          if(event.url.indexOf(props.endpoint) <= -1){
+          const url = event.url;
+          
+          // Extract base path without query params for comparison
+          const getBasePath = (urlOrEndpoint) => {
+            // Remove protocol and domain if present
+            let path = urlOrEndpoint.replace(/^https?:\/\/[^\/]+/, '');
+            // Remove leading slash
+            path = path.replace(/^\//, '');
+            // Remove query params and hash
+            path = path.split('?')[0].split('#')[0];
+            return path;
+          };
+          
+          const urlBasePath = getBasePath(url);
+          const endpointBasePath = getBasePath(props.endpoint);
+          
+          // Allow signin URL to load (needed for initial authentication flow)
+          if (urlBasePath === 'hybrid/signin') {
+            return true;
+          }
+          
+          // Allow if it's the same base endpoint (e.g., hybrid/favorites with different tag filters)
+          if (urlBasePath === endpointBasePath) {
+            return true;
+          }
+          
+          // Block navigation for different endpoints
+          if (urlBasePath !== endpointBasePath) {
             App.handle_url_from_webview(event.url);
             return false;
           }
+          
           return true;
         }}
         onScroll={(e) => {
