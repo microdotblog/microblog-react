@@ -162,13 +162,13 @@ const WebViewModule = observer((props) => {
           const urlBasePath = getBasePath(url);
           const endpointBasePath = getBasePath(props.endpoint);
           
-          // Allow if it's the same base endpoint (e.g., hybrid/favorites with different tag filters)
-          if (urlBasePath === endpointBasePath) {
+          // Allow signin URL to load (needed for initial authentication flow)
+          if (urlBasePath === 'hybrid/signin') {
             return true;
           }
           
-          // Special case: allow hybrid/favorites URLs when on bookmark screen (tag filtering)
-          if (endpointBasePath === 'hybrid/favorites' && urlBasePath === 'hybrid/favorites') {
+          // Allow if it's the same base endpoint (e.g., hybrid/favorites with different tag filters)
+          if (urlBasePath === endpointBasePath) {
             return true;
           }
           
