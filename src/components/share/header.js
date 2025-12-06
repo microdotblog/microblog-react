@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, Platform } from 'react-native'
 import Share from '../../stores/Share'
 import App from '../../stores/App'
 import { SvgXml } from 'react-native-svg'
@@ -9,8 +9,27 @@ import { SvgXml } from 'react-native-svg'
 export default class ShareHeaderComponent extends React.Component {
 	
 	render() {
+		const header_base_style = {
+			paddingVertical: 15,
+			paddingHorizontal: 8,
+			borderBottomWidth: 1,
+			borderBottomColor: App.theme_border_color(),
+			flexDirection: 'row',
+			justifyContent: 'space-between'
+		}
+		
+		let header_ios_style = {};
+		if ((Platform.OS == 'ios') && (parseInt(Platform.Version, 10) >= 26)) {
+			// Liquid Glass
+			header_ios_style = {
+				marginTop: 3,
+				marginLeft: 7,
+				marginRight: 7
+			}
+		}
+	
 		return (
-			<View style={{paddingVertical: 15, paddingHorizontal: 8, borderBottomWidth: 1, borderBottomColor: App.theme_border_color() , flexDirection: "row", justifyContent: "space-between"}}>
+			<View style={[ header_base_style, Platform.OS == 'ios' && header_ios_style ]}>
 				{
 					Share.image_options_open ?
 					<TouchableOpacity onPress={Share.close_image_options}>
