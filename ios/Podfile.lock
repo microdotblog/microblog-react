@@ -1474,7 +1474,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-keyboard-controller (1.20.0):
+  - react-native-keyboard-controller (1.20.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1489,7 +1489,7 @@ PODS:
     - React-hermes
     - React-ImageManager
     - React-jsi
-    - react-native-keyboard-controller/common (= 1.20.0)
+    - react-native-keyboard-controller/common (= 1.20.1)
     - React-NativeModulesApple
     - React-RCTFabric
     - React-renderercss
@@ -1499,7 +1499,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-keyboard-controller/common (1.20.0):
+  - react-native-keyboard-controller/common (1.20.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2771,7 +2771,7 @@ SPEC CHECKSUMS:
   react-native-cookies: d648ab7025833b977c0b19e142503034f5f29411
   react-native-document-picker: 52817f2ac5174b08fb218dedb00440787e315936
   react-native-image-picker: 8a3f16000e794f5381a7fe47bb48fd8d06741e47
-  react-native-keyboard-controller: 4294285c6034e8e28e09051b75004f9650444b40
+  react-native-keyboard-controller: 0faec0497327d901a610bd3f5810525a41a17bf1
   react-native-menu: 9efed55ad478c20b85bbd5c376f15b2cc5e41181
   react-native-safe-area-context: 0b8555c40461feb7198e999912a3446602e7c601
   react-native-sensitive-info: 31674faa5e17977b394fb67986c35ef94f8ffe81

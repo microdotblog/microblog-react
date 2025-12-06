@@ -149,7 +149,7 @@ export default class MainApp extends React.Component {
                   />
                   <Stack.Group
                     screenOptions={{
-                      presentation: "modal",
+                      presentation: "fullScreenModal",
                       headerShown: true,
                       gestureEnabled: true,
                       headerLeft: () => <CloseModalButton />

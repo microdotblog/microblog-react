@@ -45,7 +45,7 @@
     "react-native-hyperlink": "^0.0.22",
     "react-native-image-picker": "7.2.3",
     "react-native-image-viewing": "^0.2.2",
-    "react-native-keyboard-controller": "^1.20.0",
+    "react-native-keyboard-controller": "^1.20.1",
     "react-native-push-notification": "^8.1.1",
     "react-native-reanimated": "~3.17.5",
     "react-native-safe-area-context": "^5.6.2",
