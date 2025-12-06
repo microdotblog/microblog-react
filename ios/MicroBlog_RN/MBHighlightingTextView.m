@@ -60,9 +60,7 @@
     CGFloat bottom_views_height = 0;
     CGFloat bottom_safe_inset = 0;
     
-    if (![self isIpad]) {
-      bottom_views_height += self.inputAccessoryView.bounds.size.height;
-    }
+    bottom_views_height += self.inputAccessoryView.bounds.size.height;
 
     for (UIView* sibling_v in self.superview.subviews) {
       if ((sibling_v != self) && !sibling_v.hidden) {
@@ -80,12 +78,7 @@
 
     CGRect r = parent.bounds;
     r.origin.y = top_views_height;
-    if ([self isIpad]) {
-      r.size.height = r.size.height - top_views_height - bottom_views_height - bottom_safe_inset - keyboardHeight;
-    }
-    else {
-      r.size.height = r.size.height - bottom_views_height - bottom_safe_inset - keyboardHeight;
-    }
+    r.size.height = r.size.height - bottom_views_height - bottom_safe_inset - keyboardHeight;
 
     // only set frame and offset if height has changed
     if (self.frame.size.height != r.size.height) {
@@ -190,21 +183,19 @@
 {
   CGFloat covered_height = 0.0;
   
-  if (![self isIpadPortrait]) {
-    // in iPad portrait, keyboard does not cover anything
-    NSDictionary* info = [notification userInfo];
-    CGRect kb_r = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    
-    // convert to the same coordinate space as this view (i.e. the modal's content)
-    CGRect kb_in_view_r = [self.superview convertRect:kb_r fromView:nil];
-    
-    // intersecction between modal in its own coordinates
-    CGRect modal_r = self.superview.bounds;
-    CGRect intersection = CGRectIntersection(modal_r, kb_in_view_r);
-    
-    // if intersection is non-empty, its height is how much the keyboard covers our content
-    covered_height = CGRectIsNull(intersection) ? 0.0 : intersection.size.height;
-  }
+  // in iPad portrait, keyboard does not cover anything
+  NSDictionary* info = [notification userInfo];
+  CGRect kb_r = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+  
+  // convert to the same coordinate space as this view (i.e. the modal's content)
+  CGRect kb_in_view_r = [self.superview convertRect:kb_r fromView:nil];
+  
+  // intersecction between modal in its own coordinates
+  CGRect modal_r = self.superview.bounds;
+  CGRect intersection = CGRectIntersection(modal_r, kb_in_view_r);
+  
+  // if intersection is non-empty, its height is how much the keyboard covers our content
+  covered_height = CGRectIsNull(intersection) ? 0.0 : intersection.size.height;
   
   // remember height for later layout
   self.keyboardHeight = covered_height;
@@ -217,10 +208,6 @@
  
 - (void) keyboardWillHideNotification:(NSNotification*)aNotification
 {
-  if ([self isIpadPortrait]) {
-    return;
-  }
-
   [UIView animateWithDuration:0.3 animations:^{
     [self adjustHeightForKeyboardHeight:0];
     [self layoutIfNeeded];
