@@ -58,6 +58,7 @@
   if (parent) {
     CGFloat top_views_height = 0;
     CGFloat bottom_views_height = 0;
+    CGFloat bottom_safe_inset = 0;
     
     if (![self isIpad]) {
       bottom_views_height += self.inputAccessoryView.bounds.size.height;
@@ -75,13 +76,15 @@
       }
     }
 
+    bottom_safe_inset = self.window.safeAreaInsets.bottom;
+
     CGRect r = parent.bounds;
     r.origin.y = top_views_height;
     if ([self isIpad]) {
-      r.size.height = r.size.height - top_views_height - bottom_views_height - keyboardHeight;
+      r.size.height = r.size.height - top_views_height - bottom_views_height - bottom_safe_inset - keyboardHeight;
     }
     else {
-      r.size.height = r.size.height - bottom_views_height - keyboardHeight;
+      r.size.height = r.size.height - bottom_views_height - bottom_safe_inset - keyboardHeight;
     }
 
     // only set frame and offset if height has changed
