@@ -1,11 +1,22 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, TextInput, ActivityIndicator, InputAccessoryView, Platform } from 'react-native';
-import { KeyboardAvoidingView } from "react-native-keyboard-controller";
+import { KeyboardAvoidingView, KeyboardStickyView } from "react-native-keyboard-controller";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Reply from '../../stores/Reply'
 import ReplyToolbar from '../../components/keyboard/reply_toolbar'
 import UsernameToolbar from '../../components/keyboard/username_toolbar'
 import App from '../../stores/App'
+
+const AndroidToolbarWrapper = ({ componentId, reply }) => {
+  const insets = useSafeAreaInsets()
+  return (
+    <KeyboardStickyView style={{ width: '100%', paddingBottom: insets.bottom }}>
+      <UsernameToolbar componentId={componentId} object={reply} />
+      <ReplyToolbar reply={reply} use_absolute={false} />
+    </KeyboardStickyView>
+  )
+}
 
 @observer
 export default class ReplyScreen extends React.Component{
@@ -17,66 +28,68 @@ export default class ReplyScreen extends React.Component{
   
   render() {
     return(
-      <KeyboardAvoidingView behavior={ Platform.OS === 'ios' ? 'padding' : undefined } style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
-        <TextInput
-          placeholderTextColor="lightgrey"
-          style={{
-            fontSize: 18,
-            justifyContent: 'flex-start',
-						alignItems: 'flex-start',
-            marginTop: 3,
-            marginBottom: 38,
-            padding: 8,
-            color: App.theme_text_color(),
-            paddingBottom: Reply.reply_text_length() > 280 ? 90 : 0,
-          }}
-          editable={!Reply.is_sending_reply}
-          multiline={true}
-          scrollEnabled={true}
-          returnKeyType={'default'}
-					keyboardType={'default'}
-					autoFocus={true}
-					autoCorrect={true}
-					clearButtonMode={'while-editing'}
-					enablesReturnKeyAutomatically={true}
-					underlineColorAndroid={'transparent'}
-          value={Reply.reply_text}
-          onChangeText={(text) => !Reply.is_sending_reply ? Reply.set_reply_text_from_typing(text) : null}
-          onSelectionChange={({ nativeEvent: { selection } }) => {
-            Reply.set_text_selection(selection)
-          }}
-          inputAccessoryViewID={this.input_accessory_view_id}
-        />
+      <>
+        <KeyboardAvoidingView behavior={ Platform.OS === 'ios' ? 'padding' : 'height' } keyboardVerticalOffset={ Platform.OS === 'android' ? 125 : undefined } style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
+          <TextInput
+            placeholderTextColor="lightgrey"
+            style={{
+              fontSize: 18,
+              justifyContent: 'flex-start',
+							alignItems: 'flex-start',
+              marginTop: 3,
+              marginBottom: 38,
+              padding: 8,
+              color: App.theme_text_color(),
+              paddingBottom: Reply.reply_text_length() > 280 ? 90 : 0,
+            }}
+            editable={!Reply.is_sending_reply}
+            multiline={true}
+            scrollEnabled={true}
+            returnKeyType={'default'}
+						keyboardType={'default'}
+						autoFocus={true}
+						autoCorrect={true}
+						clearButtonMode={'while-editing'}
+						enablesReturnKeyAutomatically={true}
+						underlineColorAndroid={'transparent'}
+            value={Reply.reply_text}
+            onChangeText={(text) => !Reply.is_sending_reply ? Reply.set_reply_text_from_typing(text) : null}
+            onSelectionChange={({ nativeEvent: { selection } }) => {
+              Reply.set_text_selection(selection)
+            }}
+            inputAccessoryViewID={this.input_accessory_view_id}
+          />
+          {
+            Platform.OS === 'ios' ?
+              <InputAccessoryView nativeID={this.input_accessory_view_id}>
+                <UsernameToolbar componentId={this.props.componentId} object={Reply} />
+                <ReplyToolbar reply={Reply} />
+              </InputAccessoryView>
+            : null
+          }
+          {
+            Reply.is_sending_reply ?
+            <View 
+              style={{ 
+                position: 'absolute',
+                top: 0,
+                height: 200,
+                width: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
+                zIndex: 10
+              }} 
+            >
+              <ActivityIndicator color="#f80" size={'large'} />
+            </View>
+            : null
+          }
+        </KeyboardAvoidingView>
         {
-          Platform.OS === 'ios' ?
-            <InputAccessoryView nativeID={this.input_accessory_view_id}>
-              <UsernameToolbar componentId={this.props.componentId} object={Reply} />
-              <ReplyToolbar reply={Reply} />
-            </InputAccessoryView>
-          :  
-          <>
-            <UsernameToolbar componentId={this.props.componentId} object={Reply} />
-            <ReplyToolbar reply={Reply} />
-          </>
+          Platform.OS === 'android' &&
+          <AndroidToolbarWrapper componentId={this.props.componentId} reply={Reply} />
         }
-        {
-          Reply.is_sending_reply ?
-          <View 
-            style={{ 
-              position: 'absolute',
-              top: 0,
-              height: 200,
-              width: '100%',
-              justifyContent: 'center',
-              alignItems: 'center',
-              zIndex: 10
-            }} 
-          >
-            <ActivityIndicator color="#f80" size={'large'} />
-          </View>
-          : null
-        }
-      </KeyboardAvoidingView>
+      </>
     )
   }
   
