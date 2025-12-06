@@ -32,13 +32,15 @@ export default class TagsButton extends React.Component {
           {
             title: "Recent tags",
             attributes: {
-              disabled: true
-            }
+              disabled: true,
+            },
+            titleColor: App.theme_text_color()
           },
           ...Auth.selected_user?.bookmark_recent_tags.map((tag) => {
             return {
               title: tag,
-              id: tag
+              id: tag,
+              titleColor: App.theme_text_color()
             }
           }),
           {
@@ -46,7 +48,8 @@ export default class TagsButton extends React.Component {
             id: "all_tags",
             image: Platform.select({
               ios: 'tag'
-            })
+            }),
+            titleColor: App.theme_text_color()
           },
         ]}
       >
