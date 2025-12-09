@@ -11,7 +11,7 @@ export default class GenericScreenComponent extends React.Component{
 
   render() {
     return(
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: App.theme_background_color() }}>
         {
           this.props.can_show_web_view != null && this.props.can_show_web_view ?
             <>
