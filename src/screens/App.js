@@ -42,6 +42,7 @@ const Stack = createNativeStackNavigator();
 
 @observer
 export default class MainApp extends React.Component {
+  state = { current_route: null }
   overlay_opacity = new Animated.Value(0)
   prev_sheet_open = false
   overlay_disposer = null
@@ -95,6 +96,7 @@ export default class MainApp extends React.Component {
   }
 
   render() {
+    const is_reply_pane_open = (this.state.current_route === "Reply") || Reply.is_sheet_open
     if (App.is_loading) {
       return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: App.theme_background_color() }}>
@@ -105,7 +107,7 @@ export default class MainApp extends React.Component {
     return (
       <SafeAreaProvider initialMetrics={initialWindowMetrics} >
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <KeyboardProvider statusBarTranslucent={true} navigationBarTranslucent={true}>
+          <KeyboardProvider statusBarTranslucent={true} navigationBarTranslucent={!is_reply_pane_open}>
             <SheetProvider>
               {
                 Platform.OS === 'android' &&
@@ -116,6 +118,12 @@ export default class MainApp extends React.Component {
                 />
               }
               <NavigationContainer
+                onStateChange={(state) => {
+                  const route = state?.routes?.[state.index]
+                  const nested = route?.state?.routes?.[route.state?.index]
+                  const name = nested?.name || route?.name
+                  this.setState({ current_route: name })
+                }}
                 theme={{
                   dark: App.is_dark_mode(),
                   colors: {

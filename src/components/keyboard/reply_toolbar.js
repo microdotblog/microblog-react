@@ -73,20 +73,21 @@ export default class ReplyToolbar extends React.Component{
   }
 
 	render() {
+    const use_absolute = this.props.use_absolute !== false
     return(
       <View
-        style={{
+        style={[{
           width: '100%',
           backgroundColor: App.theme_section_background_color(),
           ...Platform.select({
-            android: {
+            android: use_absolute ? {
               position: 'absolute',
               bottom: 0,
               right: 0,
               left: 0,
-            }
+            } : {}
           })
-        }}
+        }, this.props.style]}
       >
         {this.state.showSearchBar && (
           <View style={{ width: '100%', backgroundColor: App.theme_section_background_color(), paddingVertical: Platform.OS === 'android' ? 4 : 6, borderBottomWidth: 1, borderColor: App.theme_border_color(), zIndex: 3 }}>
