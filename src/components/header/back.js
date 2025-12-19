@@ -43,7 +43,7 @@ const BackButtonContent = observer(() => {
       }}
       style={button_style}
       labelVisible={false}
-      hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
+      hitSlop={{ top: STANDARD_SLOP, bottom: STANDARD_SLOP, left: STANDARD_SLOP, right: STANDARD_SLOP }}
       backImage={() => (
         Platform.OS === 'ios' ?
           <SFSymbol

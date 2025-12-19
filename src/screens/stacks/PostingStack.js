@@ -11,6 +11,7 @@ import ImageOptionsScreen from '../../screens/posts/image_options';
 import UploadsScreen from '../uploads/uploads'
 import NewUploadButton from '../../components/header/new_upload';
 import RefreshActivity from '../../components/header/refresh_activity';
+import BackButton from '../../components/header/back';
 import App from '../../stores/App'
 
 const PostingStack = createNativeStackNavigator();
@@ -36,15 +37,16 @@ export default class Posting extends React.Component{
           component={PostingScreen}
           options={{
             headerTitle: "New Post",
-            headerRight: () => <PostButton />,
-            headerLeft: () => <CloseModalButton />
+            headerLeft: () => <CloseModalButton />,
+            headerRight: () => <PostButton />
           }}
         />
         <PostingStack.Screen
           name="PostingOptions"
           component={PostingOptionsScreen}
           options={{
-            headerTitle: "Posting Options"
+            headerTitle: "Posting Options",
+            headerLeft: () => <BackButton />
           }}
         />
         <PostingStack.Screen
@@ -52,6 +54,7 @@ export default class Posting extends React.Component{
           component={ImageOptionsScreen}
           options={({ route, navigation }) => ({
             headerTitle: "Image Options",
+            headerLeft: () => <BackButton />,
             headerRight: () => <RemoveImageButton navigation={navigation} asset={route.params?.asset} index={route.params?.index} />
           })}
         />
@@ -60,6 +63,7 @@ export default class Posting extends React.Component{
           component={UploadsScreen}
           options={{
             headerTitle: "Uploads",
+            headerLeft: () => <BackButton />,
             headerRight: () => {
               return (
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
