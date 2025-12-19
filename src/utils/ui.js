@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-export const STANDARD_SLOP = 7;
+export const STANDARD_SLOP = 10;
 
 export function isLiquidGlass() {
 	return (
