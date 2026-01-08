@@ -1,7 +1,8 @@
-import { Alert, Platform } from 'react-native';
+import { Alert } from 'react-native';
 import axios from 'axios';
 import { DOMParser } from "@xmldom/xmldom";
 import App from "./../stores/App";
+import { buildUploadFileName } from "../utils/file_names"
 
 export const FETCH_ERROR = 2
 export const POST_ERROR = 3
@@ -330,13 +331,9 @@ class MicroPubApi {
 
 	async upload_media(service, file, destination) {
 		const data = new FormData()
-		// Get extension from file name, for example: 12345.jpg
-		let extension = file.uri.split('.').pop()
-		if (Platform.OS === "android" && file.name != null && file.name !== "") {
-			extension = file.name.split('.').pop()
-		}
+		const file_name = buildUploadFileName(file, Date.now())
 		data.append("file", {
-			name: `media.${extension.toLowerCase()}`,
+			name: file_name,
 			type: file.type,
 			uri: file.uri,
 		})
