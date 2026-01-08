@@ -2,6 +2,7 @@ import { Platform } from "react-native"
 import RNFS from "react-native-fs"
 import axios from "axios"
 import MicroPubApi, { POST_ERROR, FETCH_ERROR } from "../../../api/MicroPubApi"
+import { buildUploadFileName, inferExtensionFromType, sanitizeFileName } from "../../../utils/file_names"
 
 export const LARGE_UPLOAD_CHUNK_SIZE = 1000 * 1024
 export const LARGE_UPLOAD_MAX_SIZE = 1024 * 1024 * 1024
@@ -9,38 +10,6 @@ export const LARGE_UPLOAD_POLL_INTERVAL = 4000
 export const LARGE_UPLOAD_MAX_ATTEMPTS = 45
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-export const infer_extension_from_type = (mime = "") => {
-	if (mime.includes("quicktime")) {
-		return ".mov"
-	}
-	if (mime.includes("mp4")) {
-		return ".mp4"
-	}
-	if (mime.includes("m4v")) {
-		return ".m4v"
-	}
-	if (mime.includes("webm")) {
-		return ".webm"
-	}
-	if (mime.includes("ogg")) {
-		return ".ogv"
-	}
-	return ".mp4"
-}
-
-export const build_file_name = (media, fallback_id) => {
-	if (media?.fileName) {
-		return media.fileName
-	}
-	if (media?.filename) {
-		return media.filename
-	}
-	if (media?.name) {
-		return media.name
-	}
-	return `upload-${fallback_id}${infer_extension_from_type(media?.type || "")}`
-}
 
 export const ensure_local_uri_for_upload = async (media, fallback_name) => {
 	const current_uri = media?.cached_uri || media?.cachedUri || media?.uri
@@ -50,8 +19,8 @@ export const ensure_local_uri_for_upload = async (media, fallback_name) => {
 	if (current_uri.startsWith("file://")) {
 		return current_uri
 	}
-	const target_name = fallback_name || `upload-${Date.now()}${infer_extension_from_type(media?.type || "")}`
-	const safe_name = target_name.replace(/[^\w.\-]/g, "_")
+	const target_name = fallback_name || `upload-${Date.now()}${inferExtensionFromType(media?.type || "")}`
+	const safe_name = sanitizeFileName(target_name)
 	const target_path = `${RNFS.CachesDirectoryPath}/${Date.now()}-${safe_name}`
 	let source_path = current_uri
 	try {
@@ -98,7 +67,7 @@ export async function upload_large_media_task({
 
 	const active_cancel_source = cancel_source || create_cancel_source()
 	const file_id = Math.floor(Math.random() * 1000000)
-	const file_name = build_file_name(media, file_id)
+	const file_name = buildUploadFileName(media, file_id)
 	const file_type = media?.type || "video/mp4"
 
 	try {
