@@ -67,6 +67,7 @@ export default App = types.model('App', {
     current_raw_tab_key: null,
     keyboard_show_listener: null,
     keyboard_hide_listener: null,
+    post_search_request_id: 0,
   }))
   .actions(self => ({
   
@@ -779,25 +780,46 @@ export default App = types.model('App', {
       console.log("App:toggle_uploads_search_is_open")
       self.uploads_search_is_open = !self.uploads_search_is_open
     }),
+
+    set_post_search_text(text) {
+      self.post_search_request_id += 1
+      self.post_search_query = text
+      self.is_searching_posts = false
+    },
   
     set_posts_query: flow(function*(text, destination, show_drafts = false) {
       console.log("App:set_posts_query", text, show_drafts)
+      self.post_search_request_id += 1
+      const request_id = self.post_search_request_id
       self.post_search_query = text
+
       if (text?.length > 2) {
         self.is_searching_posts = true
         const results = yield MicroBlogApi.search_posts_and_pages(text, destination?.uid, false, show_drafts)
+        if (request_id !== self.post_search_request_id || text !== self.post_search_query) {
+          return
+        }
         if (results !== API_ERROR && results.items != null) {
           if (show_drafts) {
-            destination.set_drafts(results.items);
+            destination?.set_drafts(results.items);
           }
           else {
-            destination.set_posts(results.items);
+            destination?.set_posts(results.items);
           }
         }
         self.is_searching_posts = false
       }
-      else if (self.post_search_query == "") {
-        Auth.selected_user.posting?.selected_service?.update_posts_for_active_destination()
+      else {
+        if (request_id !== self.post_search_request_id || text !== self.post_search_query) {
+          return
+        }
+        self.is_searching_posts = false
+        if (destination != null) {
+          Auth.selected_user.posting?.selected_service?.check_for_posts_for_destination(destination, show_drafts)
+        }
+        else if (self.post_search_query == "") {
+          Auth.selected_user.posting?.selected_service?.update_posts_for_active_destination()
+        }
       }
     }),
   
