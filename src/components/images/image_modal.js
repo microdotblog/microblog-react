@@ -4,7 +4,7 @@ import { ImageZoom } from '@likashefqet/react-native-image-zoom';
 import { Gesture, GestureDetector, gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import Animated, { Extrapolation, interpolate, runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import App from "../../stores/App"
-import { Modal, Platform, SafeAreaView, TouchableOpacity, Image, View, useWindowDimensions } from 'react-native'
+import { Modal, Platform, SafeAreaView, TouchableOpacity, Image, View, useWindowDimensions, ActivityIndicator, Text } from 'react-native'
 import { SFSymbol } from "react-native-sfsymbols";
 import ArrowBackIcon from './../../assets/icons/arrow_back.png';
 
@@ -16,6 +16,8 @@ const ImageModalContent = gestureHandlerRootHOC(observer(({ image_url }) => {
 	const { height } = useWindowDimensions()
 	const scale = useSharedValue(1)
 	const translate_y = useSharedValue(0)
+	const [is_loading_image, set_is_loading_image] = React.useState(true)
+	const [did_fail_image, set_did_fail_image] = React.useState(false)
 
 	const close_modal = React.useCallback(() => {
 		App.reset_image_modal()
@@ -25,6 +27,8 @@ const ImageModalContent = gestureHandlerRootHOC(observer(({ image_url }) => {
 		if (App.image_modal_is_open) {
 			scale.value = 1
 			translate_y.value = 0
+			set_is_loading_image(true)
+			set_did_fail_image(false)
 		}
 	}, [image_url, scale, translate_y])
 
@@ -102,7 +106,58 @@ const ImageModalContent = gestureHandlerRootHOC(observer(({ image_url }) => {
 						resizeMode="contain"
 						isDoubleTapEnabled={true}
 						scale={scale}
+						onLoadStart={() => {
+							set_is_loading_image(true)
+							set_did_fail_image(false)
+						}}
+						onLoad={() => {
+							set_did_fail_image(false)
+						}}
+						onLoadEnd={() => {
+							set_is_loading_image(false)
+						}}
+						onError={() => {
+							set_did_fail_image(true)
+							set_is_loading_image(false)
+						}}
 					/>
+					{
+						is_loading_image &&
+						<View
+							style={{
+								position: 'absolute',
+								top: 0,
+								left: 0,
+								right: 0,
+								bottom: 0,
+								justifyContent: 'center',
+								alignItems: 'center',
+							}}
+							pointerEvents="none"
+						>
+							<ActivityIndicator color={App.theme_accent_color()} size="large" />
+						</View>
+					}
+					{
+						did_fail_image &&
+						<View
+							style={{
+								position: 'absolute',
+								top: 0,
+								left: 0,
+								right: 0,
+								bottom: 0,
+								justifyContent: 'center',
+								alignItems: 'center',
+								paddingHorizontal: 30,
+							}}
+							pointerEvents="none"
+						>
+							<Text style={{ color: 'white', textAlign: 'center' }}>
+								Couldn&apos;t load image.
+							</Text>
+						</View>
+					}
 					<SafeAreaView style={{ position: 'absolute', left: 15, top: 15 }}>
 						<TouchableOpacity onPress={App.reset_image_modal}>
 							{
