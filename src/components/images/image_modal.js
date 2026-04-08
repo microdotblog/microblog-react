@@ -1,10 +1,27 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import ImageView from "react-native-image-viewing";
+import { ImageZoom } from '@likashefqet/react-native-image-zoom';
+import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import App from "../../stores/App"
-import { Platform, SafeAreaView, TouchableOpacity, Image } from 'react-native'
+import { Modal, Platform, SafeAreaView, TouchableOpacity, Image, View } from 'react-native'
 import { SFSymbol } from "react-native-sfsymbols";
 import ArrowBackIcon from './../../assets/icons/arrow_back.png';
+
+const ImageModalContent = gestureHandlerRootHOC(({ image_url, close_button }) => {
+	return (
+		<View style={{ flex: 1, backgroundColor: '#000' }}>
+			<View style={{ flex: 1 }}>
+				<ImageZoom
+					uri={image_url}
+					style={{ width: '100%', height: '100%' }}
+					resizeMode="contain"
+					isDoubleTapEnabled={true}
+				/>
+				{close_button()}
+			</View>
+		</View>
+	)
+})
 
 @observer
 export default class ImageModalModule extends React.Component{
@@ -32,26 +49,26 @@ export default class ImageModalModule extends React.Component{
 							style={{ width: 32, height: 32, tintColor: 'white' }}
 						/>
 					}
-					
 				</TouchableOpacity>
 			</SafeAreaView>
 		)
 	}
 
 	render() {
-		if (App.image_modal_is_open) {
-			return (
-				<ImageView
-					images={[ { uri: App.current_image_url } ]}
-					visible={App.image_modal_is_open}
-					onRequestClose={App.reset_image_modal}
-					swipeToCloseEnabled={true}
-					HeaderComponent={() => this.close_button()}
-					doubleTapToZoomEnabled={true}
+		return (
+			<Modal
+				visible={App.image_modal_is_open}
+				animationType="fade"
+				presentationStyle="fullScreen"
+				statusBarTranslucent={true}
+				onRequestClose={App.reset_image_modal}
+			>
+				<ImageModalContent
+					image_url={App.current_image_url || ''}
+					close_button={this.close_button}
 				/>
-			)
-		}
-    return null
-  }
-  
+			</Modal>
+		)
+	}
+
 }
