@@ -16,8 +16,10 @@ export default class PostsScreen extends React.Component{
     super(props);
     this.state = {
       is_showing_drafts_button: false,
-      is_showing_drafts_posts: false
+      is_showing_drafts_posts: false,
+      post_search_text: App.post_search_query,
     };
+    this.posts_search_timeout = null;
   }
   
   componentDidMount() {
@@ -32,9 +34,61 @@ export default class PostsScreen extends React.Component{
   }
 
   componentWillUnmount() {
+    this._clear_posts_search_timeout();
     if (this.focusListener) {
       this.focusListener();
     }
+  }
+
+  _open_search = () => {
+    this.setState({ post_search_text: App.post_search_query });
+    App.toggle_post_search_is_open();
+  }
+
+  _submit_search = (event) => {
+    const { selected_service } = Auth.selected_user.posting;
+    const { config } = selected_service;
+    const text = event?.nativeEvent?.text ?? this.state.post_search_text;
+
+    this._clear_posts_search_timeout();
+    Keyboard.dismiss();
+    this.setState({ post_search_text: text });
+    App.set_posts_query(text, config.posts_destination(), this.state.is_showing_drafts_posts);
+  }
+
+  _cancel_search = () => {
+    const { selected_service } = Auth.selected_user.posting;
+    const { config } = selected_service;
+
+    this._clear_posts_search_timeout();
+    this.setState({ post_search_text: '' });
+    App.toggle_post_search_is_open();
+    App.set_post_search_text('');
+    App.set_posts_query('', config.posts_destination(), this.state.is_showing_drafts_posts);
+  }
+
+  _clear_posts_search_timeout = () => {
+    if (this.posts_search_timeout) {
+      clearTimeout(this.posts_search_timeout);
+      this.posts_search_timeout = null;
+    }
+  }
+
+  _schedule_posts_search = (text) => {
+    const { selected_service } = Auth.selected_user.posting;
+    const { config } = selected_service;
+
+    this._clear_posts_search_timeout();
+    this.posts_search_timeout = setTimeout(() => {
+      App.set_posts_query(text, config.posts_destination(), this.state.is_showing_drafts_posts);
+      this.posts_search_timeout = null;
+    }, 2000);
+  }
+
+  _change_posts_search_text = (text) => {
+    this.setState({ post_search_text: text });
+    App.set_post_search_text(text);
+    this._schedule_posts_search(text);
   }
   
   _return_header = () => {
@@ -96,7 +150,7 @@ export default class PostsScreen extends React.Component{
             borderRadius: 5,
             marginLeft: 5,
           }}
-          onPress={App.toggle_post_search_is_open}
+          onPress={this._open_search}
         >
         {
           Platform.OS === "ios" ?
@@ -113,13 +167,10 @@ export default class PostsScreen extends React.Component{
       :
       <SearchBar
         placeholder="Search posts"
-        onSubmitEditing={() => {Keyboard.dismiss()}}
-        onChangeText={(text) => App.set_posts_query(text, config.posts_destination(), this.state.is_showing_drafts_posts)}
-        value={App.post_search_query}
-        onCancel={() => {
-            App.toggle_post_search_is_open();
-            App.set_posts_query("", null, this.state.is_showing_drafts_posts);
-        }}
+        onSubmitEditing={this._submit_search}
+        onChangeText={this._change_posts_search_text}
+        value={this.state.post_search_text}
+        onCancel={this._cancel_search}
       />
     )
   }
