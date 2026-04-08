@@ -83,6 +83,10 @@ const ImageModalContent = gestureHandlerRootHOC(observer(({ image_url }) => {
 		transform: [{ translateY: translate_y.value }],
 	}))
 
+	const close_button_style = useAnimatedStyle(() => ({
+		opacity: interpolate(translate_y.value, [0, height * 0.35], [1, 0], Extrapolation.CLAMP),
+	}))
+
 	return (
 		<View style={{ flex: 1 }}>
 			<Animated.View
@@ -160,29 +164,31 @@ const ImageModalContent = gestureHandlerRootHOC(observer(({ image_url }) => {
 					}
 				</Animated.View>
 			</GestureDetector>
-			<SafeAreaView style={{ position: 'absolute', left: 15, top: 15 }}>
-				<TouchableOpacity onPress={App.reset_image_modal}>
-					{
-						Platform.OS === 'ios' ?
-							<SFSymbol
-								name="xmark"
-								weight="semibold"
-								scale="large"
-								color="white"
-								size={16}
+			<Animated.View style={[{ position: 'absolute', left: 15, top: 15 }, close_button_style]}>
+				<SafeAreaView>
+					<TouchableOpacity onPress={App.reset_image_modal}>
+						{
+							Platform.OS === 'ios' ?
+								<SFSymbol
+									name="xmark"
+									weight="semibold"
+									scale="large"
+									color="white"
+									size={16}
+									resizeMode="center"
+									multicolor={false}
+									style={{ width: 32, height: 32 }}
+								/>
+							:
+							<Image
+								source={ArrowBackIcon}
 								resizeMode="center"
-								multicolor={false}
-								style={{ width: 32, height: 32 }}
+								style={{ width: 32, height: 32, tintColor: 'white' }}
 							/>
-						:
-						<Image
-							source={ArrowBackIcon}
-							resizeMode="center"
-							style={{ width: 32, height: 32, tintColor: 'white' }}
-						/>
-					}
-				</TouchableOpacity>
-			</SafeAreaView>
+						}
+					</TouchableOpacity>
+				</SafeAreaView>
+			</Animated.View>
 		</View>
 	)
 }))
@@ -191,8 +197,9 @@ const ImageModalModule = observer(() => {
 	return (
 		<Modal
 			visible={App.image_modal_is_open}
+			transparent={true}
 			animationType="fade"
-			presentationStyle="fullScreen"
+			presentationStyle="overFullScreen"
 			statusBarTranslucent={true}
 			onRequestClose={App.reset_image_modal}
 		>
