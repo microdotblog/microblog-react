@@ -158,31 +158,31 @@ const ImageModalContent = gestureHandlerRootHOC(observer(({ image_url }) => {
 							</Text>
 						</View>
 					}
-					<SafeAreaView style={{ position: 'absolute', left: 15, top: 15 }}>
-						<TouchableOpacity onPress={App.reset_image_modal}>
-							{
-								Platform.OS === 'ios' ?
-									<SFSymbol
-										name="xmark"
-										weight="semibold"
-										scale="large"
-										color="white"
-										size={16}
-										resizeMode="center"
-										multicolor={false}
-										style={{ width: 32, height: 32 }}
-									/>
-								:
-								<Image
-									source={ArrowBackIcon}
-									resizeMode="center"
-									style={{ width: 32, height: 32, tintColor: 'white' }}
-								/>
-							}
-						</TouchableOpacity>
-					</SafeAreaView>
 				</Animated.View>
 			</GestureDetector>
+			<SafeAreaView style={{ position: 'absolute', left: 15, top: 15 }}>
+				<TouchableOpacity onPress={App.reset_image_modal}>
+					{
+						Platform.OS === 'ios' ?
+							<SFSymbol
+								name="xmark"
+								weight="semibold"
+								scale="large"
+								color="white"
+								size={16}
+								resizeMode="center"
+								multicolor={false}
+								style={{ width: 32, height: 32 }}
+							/>
+						:
+						<Image
+							source={ArrowBackIcon}
+							resizeMode="center"
+							style={{ width: 32, height: 32, tintColor: 'white' }}
+						/>
+					}
+				</TouchableOpacity>
+			</SafeAreaView>
 		</View>
 	)
 }))
