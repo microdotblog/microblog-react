@@ -145,10 +145,10 @@ class XMLRPCApi {
 				console.log('XMLRPCApi:error', err)
 				// Check if error is incorrect password/username
 				if (err?.toString()?.includes("username or password")) {
-					Alert.alert("Whoops. Your username or password is wrong. Please try again.")
+					Alert.alert("Your username or password is wrong. Please try again.")
 				}
 				else {
-					Alert.alert("Whoops, an error occured. Please try again.")
+					Alert.alert("An error occured. Please try again.")
 				}
 				return XML_ERROR
 			})
@@ -172,10 +172,10 @@ class XMLRPCApi {
 				console.log('XMLRPCApi:error', err)
 				// Check if error is incorrect password/username
 				if (err?.toString()?.includes("username or password")) {
-					Alert.alert("Whoops. Your username or password is wrong. Please try again.")
+					Alert.alert("Your username or password is wrong. Please try again.")
 				}
 				else {
-					Alert.alert("Whoops, an error occured. Please try again.")
+					Alert.alert("An error occured. Please try again.")
 				}
 				return XML_ERROR
 			})
@@ -247,10 +247,10 @@ class XMLRPCApi {
 				console.log('XMLRPCApi:error', err)
 				// Check if error is incorrect password/username
 				if (err?.toString()?.includes("username or password")) {
-					Alert.alert("Whoops. Your username or password is wrong. Please try again.")
+					Alert.alert("Your username or password is wrong. Please try again.")
 				}
 				else {
-					Alert.alert("Whoops, an error occured. Please try again.")
+					Alert.alert("An error occured. Please try again.")
 				}
 				return XML_ERROR
 			})
