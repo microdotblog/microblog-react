@@ -955,6 +955,9 @@ export default App = types.model('App', {
       // return self.theme === "dark" ? "#1d2530" : "#fff"
       return self.theme === "dark" ? "#1F2937" : "#fff"
     },
+    theme_loading_banner_background_color() {
+      return self.theme === "dark" ? "#1b232f" : "#fafafa"
+    },
     theme_navigation_icon_color() {
       return self.theme === "dark" ? "#9CA3AF" : "#000"
     },
