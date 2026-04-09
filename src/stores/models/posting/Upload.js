@@ -12,6 +12,12 @@ const get_image_size = uri => {
 	})
 }
 
+const UploadVariants = types.model('UploadVariants', {
+	large: types.maybe(types.string),
+	medium: types.maybe(types.string),
+	small: types.maybe(types.string)
+})
+
 export default Upload = types.model('Upload', {
 	url: types.identifier,
 	published: types.maybe(types.string),
@@ -20,7 +26,8 @@ export default Upload = types.model('Upload', {
 	width: types.maybe(types.number),
 	height: types.maybe(types.number),
 	is_ai: types.optional(types.boolean, true),
-	cdn: types.optional(types.map(types.string), {})
+	sizes: types.optional(UploadVariants, {}),
+	cdn: types.optional(UploadVariants, {})
 })
 	.actions(self => ({
 
