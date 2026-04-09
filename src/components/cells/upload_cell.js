@@ -106,7 +106,7 @@ export default class UploadCell extends React.Component {
         >
           <MBImage
             key={upload.url}
-            source={upload.url}
+            source={best_url}
             contentFit="cover"
             style={{
               width: dimension,
