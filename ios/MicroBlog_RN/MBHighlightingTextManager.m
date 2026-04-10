@@ -9,7 +9,9 @@
 
 #import "MBHighlightingTextView.h"
 #import "MBHighlightingTextStorage.h"
+#import <React/RCTInputAccessoryView.h>
 #import <React/RCTUIManager.h>
+#import <React/UIView+React.h>
 
 @implementation MBHighlightingTextManager
 
@@ -21,9 +23,38 @@ RCT_EXPORT_VIEW_PROPERTY(onSelectionChange, RCTBubblingEventBlock)
 RCT_CUSTOM_VIEW_PROPERTY(inputAccessoryViewID, NSString, MBHighlightingTextView)
 {
   if (json) {
-//    NSString* input_id = [RCTConvert NSString:json];
-//    NSLog(@"inputAccessoryViewID = %@", input_id);
+    NSString* native_id = [RCTConvert NSString:json];
+    MBHighlightingTextView* text_view = view;
+
+    __weak MBHighlightingTextManager* weak_self = self;
+    __weak MBHighlightingTextView* weak_view = text_view;
+    [self.bridge.uiManager rootViewForReactTag:text_view.reactTag withCompletion:^(UIView *root_view) {
+      MBHighlightingTextManager* strong_self = weak_self;
+      MBHighlightingTextView* strong_view = weak_view;
+      if (strong_self == nil || strong_view == nil || root_view == nil) {
+        return;
+      }
+
+      UIView* accessory_view = [strong_self.bridge.uiManager viewForNativeID:native_id withRootTag:root_view.reactTag];
+      if ([accessory_view isKindOfClass:[RCTInputAccessoryView class]]) {
+        strong_view.inputAccessoryView = ((RCTInputAccessoryView *)accessory_view).inputAccessoryView;
+        [strong_view reloadInputViews];
+        [strong_view refreshInsets];
+      }
+    }];
   }
+  else {
+    view.inputAccessoryView = nil;
+    [view reloadInputViews];
+    [view refreshInsets];
+  }
+}
+
+RCT_CUSTOM_VIEW_PROPERTY(bottomOverlayHeight, NSNumber, MBHighlightingTextView)
+{
+  CGFloat bottom_overlay_height = json ? [RCTConvert CGFloat:json] : 0;
+  view.bottom_overlay_height = bottom_overlay_height;
+  [view refreshInsets];
 }
 
 RCT_CUSTOM_VIEW_PROPERTY(fontSize, NSNumber, MBHighlightingTextView)
@@ -39,8 +70,9 @@ RCT_CUSTOM_VIEW_PROPERTY(value, NSString, MBHighlightingTextView)
   if (json) {
     if (!self.isTyping) {
       NSString* new_text = [RCTConvert NSString:json];
-      if (![[self.textStorage string] isEqualToString:new_text]) {
-        self.textView.text = new_text;
+      NSString* current_text = view.text != nil ? view.text : @"";
+      if (![current_text isEqualToString:new_text]) {
+        view.text = new_text;
       }
     }
   }
@@ -60,7 +92,7 @@ RCT_CUSTOM_VIEW_PROPERTY(selection, NSString, MBHighlightingTextView)
       end_pos = [[pieces lastObject] integerValue];
     }
 
-    self.textView.selectedRange = NSMakeRange(start_pos, end_pos - start_pos);
+    view.selectedRange = NSMakeRange(start_pos, end_pos - start_pos);
   }
 }
 
@@ -69,7 +101,7 @@ RCT_CUSTOM_VIEW_PROPERTY(autoFocus, BOOL, MBHighlightingTextView)
   if (json) {
     BOOL needs_focus = [RCTConvert BOOL:json];
     if (needs_focus) {
-      [self.textView becomeFirstResponder];
+      [view becomeFirstResponder];
     }
   }
 }
@@ -113,7 +145,6 @@ RCT_CUSTOM_VIEW_PROPERTY(autoFocus, BOOL, MBHighlightingTextView)
 
   // make the view
   self.textView = [[MBHighlightingTextView alloc] initWithFrame:r textContainer:text_container];
-  self.textView.hidden = YES;
   self.textView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   self.textView.translatesAutoresizingMaskIntoConstraints = NO;
   self.textView.delegate = self;
@@ -153,9 +184,6 @@ RCT_CUSTOM_VIEW_PROPERTY(autoFocus, BOOL, MBHighlightingTextView)
   // callback to JS
   MBHighlightingTextView* v = (MBHighlightingTextView *)textView;
   [v callTextChanged:textView.text];
-  
-  // fix height and scrolling
-  [v adjustHeight];
 }
 
 - (void) textViewDidChangeSelection:(UITextView *)textView

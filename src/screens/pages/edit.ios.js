@@ -10,6 +10,13 @@ import LoadingComponent from '../../components/generic/loading';
 
 @observer
 export default class PageEditScreen extends React.Component{
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      toolbar_height: 0,
+    }
+  }
   
   render() {
     const { posting } = Auth.selected_user
@@ -66,6 +73,7 @@ export default class PageEditScreen extends React.Component{
             enablesReturnKeyAutomatically={true}
             underlineColorAndroid={'transparent'}
             value={posting.post_text}
+            bottomOverlayHeight={this.state.toolbar_height}
             selection={posting.text_selection_flat}
             onChangeText={({ nativeEvent: { text } }) => {
               !posting.is_sending_post ? posting.set_post_text_from_typing(text) : null
@@ -75,7 +83,12 @@ export default class PageEditScreen extends React.Component{
             }}
           />
           <LoadingComponent should_show={posting.is_sending_post && posting.post_text != ""} />
-        <KeyboardStickyView>
+        <KeyboardStickyView onLayout={({ nativeEvent }) => {
+          const toolbar_height = nativeEvent.layout.height
+          if (toolbar_height !== this.state.toolbar_height) {
+            this.setState({ toolbar_height })
+          }
+        }}>
           <PostToolbar componentId={this.props.componentId} is_post_edit hide_count hide_settings />
         </KeyboardStickyView>
       </>
