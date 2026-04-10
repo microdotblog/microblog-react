@@ -9,96 +9,68 @@
 
 #import <React/UIView+React.h>
 
+@interface MBHighlightingTextView ()
+
+@property (assign, nonatomic) BOOL did_setup_keyboard_notifications;
+@property (assign, nonatomic) UIEdgeInsets base_content_inset;
+@property (assign, nonatomic) UIEdgeInsets base_scroll_indicator_inset;
+@property (assign, nonatomic) CGFloat keyboard_overlap_height;
+
+@end
+
 @implementation MBHighlightingTextView
 
-- (id) init
+- (void) dealloc
 {
-  self = [super init];
-  if (self) {
-    self.keyboardHeight = 0;
+  if (self.did_setup_keyboard_notifications) {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
   }
-
-  return self;
 }
 
-- (void) setupNotifications
+- (void) setupKeyboardNotificationsIfNeeded
 {
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowNotification:) name:UIKeyboardWillShowNotification object:nil];
+  if (self.did_setup_keyboard_notifications) {
+    return;
+  }
+
+  self.base_content_inset = self.contentInset;
+  self.base_scroll_indicator_inset = self.scrollIndicatorInsets;
+
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrameNotification:) name:UIKeyboardWillChangeFrameNotification object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHideNotification:) name:UIKeyboardWillHideNotification object:nil];
+
+  self.did_setup_keyboard_notifications = YES;
 }
 
-- (void) setupAccessoryView
+- (void) applyBottomInset:(CGFloat)bottom_inset duration:(NSTimeInterval)duration curve:(UIViewAnimationCurve)curve scrollCaretToSelection:(BOOL)scroll_caret_to_selection
 {
-  UIView* root = [self findRootView];
-  UIView* v = [self findAccessoryViewFromView:root withNativeID:@"input_toolbar"];
-  if (v) {
-    self.reactAccessoryView = v;
-    
-    if (self.inputAccessoryView == nil) {
-      self.inputAccessoryView = [self.reactAccessoryView inputAccessoryView];
-      [self reloadInputViews];
-    }
+  UIEdgeInsets content_inset = self.base_content_inset;
+  content_inset.bottom += bottom_inset;
+
+  UIEdgeInsets indicator_inset = self.base_scroll_indicator_inset;
+  indicator_inset.bottom += bottom_inset;
+
+  UIViewAnimationOptions options = ((NSUInteger) curve << 16) | UIViewAnimationOptionBeginFromCurrentState;
+  [UIView animateWithDuration:duration delay:0 options:options animations:^{
+    self.contentInset = content_inset;
+    self.scrollIndicatorInsets = indicator_inset;
+  } completion:nil];
+
+  if (scroll_caret_to_selection && self.selectedTextRange != nil) {
+    CGRect caret_rect = [self caretRectForPosition:self.selectedTextRange.end];
+    [self scrollRectToVisible:CGRectInset(caret_rect, 0, -8) animated:NO];
   }
 }
 
-- (void) adjustHeight
+- (void) updateInsetsWithDuration:(NSTimeInterval)duration curve:(UIViewAnimationCurve)curve scrollCaretToSelection:(BOOL)scroll_caret_to_selection
 {
-  [self adjustHeightForKeyboardHeight:self.keyboardHeight animated:NO];
+  CGFloat bottom_inset = self.keyboard_overlap_height + self.bottom_overlay_height;
+  [self applyBottomInset:bottom_inset duration:duration curve:curve scrollCaretToSelection:scroll_caret_to_selection];
 }
 
-- (void) adjustHeightForKeyboardHeight:(CGFloat)keyboardHeight
+- (void) refreshInsets
 {
-  [self adjustHeightForKeyboardHeight:keyboardHeight animated:YES];
-}
-
-- (void) adjustHeightForKeyboardHeight:(CGFloat)keyboardHeight animated:(BOOL)animated
-{
-  // adjust position and height taking into account other views
-  UIView* parent = self.superview;
-  if (parent) {
-    CGFloat top_views_height = 0;
-    CGFloat bottom_views_height = 0;
-    CGFloat bottom_safe_inset = 0;
-    
-    bottom_views_height += self.inputAccessoryView.bounds.size.height;
-
-    for (UIView* sibling_v in self.superview.subviews) {
-      if ((sibling_v != self) && !sibling_v.hidden) {
-        // views with origin < 200 are probably above the text view
-        if (sibling_v.frame.origin.y < 200) {
-          top_views_height += sibling_v.bounds.size.height;
-        }
-        else {
-          bottom_views_height += sibling_v.bounds.size.height;
-        }
-      }
-    }
-
-    bottom_safe_inset = self.window.safeAreaInsets.bottom;
-
-    CGRect r = parent.bounds;
-    r.origin.y = top_views_height;
-    r.size.height = r.size.height - bottom_views_height - bottom_safe_inset - keyboardHeight;
-
-    // only set frame and offset if height has changed
-    if (self.frame.size.height != r.size.height) {
-      self.frame = r;
-      [self setContentOffset:CGPointZero animated:animated];
-    }
-  }
-}
-
-- (void) finishSetup
-{
-  [self setupNotifications];
-  [self setupAccessoryView];
-  [self adjustHeightForKeyboardHeight:0 animated:NO];
-  
-  self.hidden = NO;
-}
-
-- (void) didSetProps:(NSArray<NSString *> *)changedProps
-{
+  [self updateInsetsWithDuration:0 curve:UIViewAnimationCurveEaseInOut scrollCaretToSelection:NO];
 }
 
 - (BOOL) isIpad
@@ -114,45 +86,18 @@
   return (is_ipad && is_portrait);
 }
 
-- (UIView *) findRootView
+- (void) didMoveToWindow
 {
-  UIView* root = self;
-  while ([root superview] != nil) {
-      root = [root superview];
-  }
-  
-  return root;
+  [super didMoveToWindow];
+
+  [self setupKeyboardNotificationsIfNeeded];
 }
 
-- (UIView *) findAccessoryViewFromView:(UIView *)view withNativeID:(NSString *)nativeID
+- (void) layoutSubviews
 {
-  UIView* found_view = nil;
+  [super layoutSubviews];
 
-  // is this the view?
-  if ([[view nativeID] isEqualToString:nativeID]) {
-    return view;
-  }
-
-  // look at subviews and call recursively
-  NSArray* subs = view.subviews;
-  for (UIView* sub in subs) {
-    found_view = [self findAccessoryViewFromView:sub withNativeID:nativeID];
-    if (found_view) {
-      break;
-    }
-  }
-  
-  return found_view;
-}
-
-- (void) didMoveToSuperview
-{
-  [super didMoveToSuperview];
-
-  if (self.superview != nil) {
-    // give the other React Native layout time to do whatever it's doing
-    [self performSelector:@selector(finishSetup) withObject:nil afterDelay:1.0];
-  }
+  [self updateInsetsWithDuration:0 curve:UIViewAnimationCurveEaseInOut scrollCaretToSelection:NO];
 }
 
 - (void) callTextChanged:(NSString *)text
@@ -179,40 +124,31 @@
 
 #pragma mark -
 
-- (void) keyboardWillShowNotification:(NSNotification*)notification
+- (void) keyboardWillChangeFrameNotification:(NSNotification*)notification
 {
-  CGFloat covered_height = 0.0;
-  
-  // in iPad portrait, keyboard does not cover anything
   NSDictionary* info = [notification userInfo];
   CGRect kb_r = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-  
-  // convert to the same coordinate space as this view (i.e. the modal's content)
-  CGRect kb_in_view_r = [self.superview convertRect:kb_r fromView:nil];
-  
-  // intersecction between modal in its own coordinates
-  CGRect modal_r = self.superview.bounds;
-  CGRect intersection = CGRectIntersection(modal_r, kb_in_view_r);
-  
-  // if intersection is non-empty, its height is how much the keyboard covers our content
-  covered_height = CGRectIsNull(intersection) ? 0.0 : intersection.size.height;
-  
-  // remember height for later layout
-  self.keyboardHeight = covered_height;
-  
-  [UIView animateWithDuration:0.3 animations:^{
-    [self adjustHeightForKeyboardHeight:self.keyboardHeight];
-    [self layoutIfNeeded];
-  }];
-}
- 
-- (void) keyboardWillHideNotification:(NSNotification*)aNotification
-{
-  [UIView animateWithDuration:0.3 animations:^{
-    [self adjustHeightForKeyboardHeight:0];
-    [self layoutIfNeeded];
-  }];
+  CGRect kb_in_view_r = [self convertRect:kb_r fromView:nil];
+  CGRect intersection = CGRectIntersection(self.bounds, kb_in_view_r);
+
+  CGFloat covered_height = CGRectIsNull(intersection) ? 0.0 : intersection.size.height;
+  if (covered_height > 0 && self.inputAccessoryView != nil && self.bottom_overlay_height <= 0) {
+    covered_height += self.inputAccessoryView.bounds.size.height;
+  }
+
+  self.keyboard_overlap_height = covered_height;
+  NSTimeInterval duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+  UIViewAnimationCurve curve = (UIViewAnimationCurve) [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
+  [self updateInsetsWithDuration:duration curve:curve scrollCaretToSelection:YES];
 }
 
+- (void) keyboardWillHideNotification:(NSNotification*)notification
+{
+  NSDictionary* info = [notification userInfo];
+  self.keyboard_overlap_height = 0;
+  NSTimeInterval duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+  UIViewAnimationCurve curve = (UIViewAnimationCurve) [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
+  [self updateInsetsWithDuration:duration curve:curve scrollCaretToSelection:NO];
+}
 
 @end

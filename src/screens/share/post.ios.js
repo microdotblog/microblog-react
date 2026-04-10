@@ -17,6 +17,7 @@ export default class SharePostScreen extends React.Component {
 
 	render() {
 		const { selected_user } = Share
+    const selection_flat = `${Share.text_selection.start} ${Share.text_selection.end}`
 		return (
 			Share.is_logged_in() && selected_user?.posting != null ?
 				<View style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
@@ -37,11 +38,12 @@ export default class SharePostScreen extends React.Component {
 					<HighlightingText
 						placeholderTextColor="lightgrey"
 						style={{
-							height: 300,
+							minHeight: 300,
 							fontSize: 18,
 							justifyContent: 'flex-start',
 							alignItems: 'flex-start',
 							marginTop: 0,
+							flex: 1,
 							padding: 8,
 							color: App.theme_text_color()
 						}}
@@ -56,7 +58,7 @@ export default class SharePostScreen extends React.Component {
 						enablesReturnKeyAutomatically={true}
 						underlineColorAndroid={'transparent'}
 						value={Share.share_text}
-						selection={selected_user?.posting.text_selection_flat }
+						selection={selection_flat}
 						onChangeText={({ nativeEvent: { text } }) => !selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null}
 						onSelectionChange={({ nativeEvent: { selection } }) => {
 							Share.set_text_selection(selection)
