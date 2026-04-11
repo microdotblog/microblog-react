@@ -15,7 +15,9 @@ export default class PostingScreen extends React.Component{
   
   constructor(props) {
 		super(props)
-    this.input_accessory_view_id = "input_toolbar";
+    this.state = {
+      toolbar_height: 0,
+    }
   }
   
   componentDidMount() {
@@ -51,10 +53,9 @@ export default class PostingScreen extends React.Component{
   					  autoCorrect={true}
   					  clearButtonMode={'while-editing'}
   					  enablesReturnKeyAutomatically={true}
-  					  underlineColorAndroid={'transparent'}
+              underlineColorAndroid={'transparent'}
               value={posting.post_title}
               onChangeText={(text) => !posting.is_sending_post ? posting.set_post_title(text) : null}
-              inputAccessoryViewID={this.input_accessory_view_id}
             />
             : null
           }
@@ -82,6 +83,7 @@ export default class PostingScreen extends React.Component{
             enablesReturnKeyAutomatically={true}
             underlineColorAndroid={'transparent'}
             value={posting.post_text}
+            bottomOverlayHeight={this.state.toolbar_height}
             selection={posting.text_selection_flat}
             onChangeText={({ nativeEvent: { text } }) => {
               !posting.is_sending_post ? posting.set_post_text_from_typing(text) : null
@@ -89,10 +91,14 @@ export default class PostingScreen extends React.Component{
             onSelectionChange={({ nativeEvent: { selection } }) => {
               posting.set_text_selection(selection)
             }}
-            inputAccessoryViewID={this.input_accessory_view_id}
           />
           <LoadingComponent should_show={posting.is_sending_post && posting.post_text != ""} />
-        <KeyboardStickyView>
+        <KeyboardStickyView onLayout={({ nativeEvent }) => {
+          const toolbar_height = nativeEvent.layout.height
+          if (toolbar_height !== this.state.toolbar_height) {
+            this.setState({ toolbar_height })
+          }
+        }}>
           <AssetToolbar componentId={this.props.componentId} />
           <UsernameToolbar componentId={this.props.componentId} object={posting} />
           <PostToolbar componentId={this.props.componentId} />

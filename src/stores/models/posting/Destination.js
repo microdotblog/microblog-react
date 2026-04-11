@@ -135,6 +135,7 @@ export default Destination = types.model('Destination', {
 			const poster = entry.poster || ""
 			const alt = entry.alt || ""
 			const is_ai = entry["microblog-ai"]
+			const sizes = entry.sizes || {}
 			const cdn = entry.cdn || {}
 			const upload = {
 				url: url,
@@ -142,6 +143,7 @@ export default Destination = types.model('Destination', {
 				poster: poster,
 				alt: alt,
 				is_ai: is_ai,
+				sizes: sizes,
 				cdn: cdn
 			}
 			if (url === "") {

@@ -79,7 +79,7 @@ class MicroPubApi {
         return this.discover_micropub_endpoints(url, true)
       }
       else {
-        Alert.alert("Whoops, an error occurred trying to connect. Please try again.")
+        Alert.alert("An error occurred trying to connect. Please try again.")
       }
       return MICROPUB_NOT_FOUND
     }

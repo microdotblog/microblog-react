@@ -84,6 +84,7 @@ const LoadingBanner = observer(({ visible, loading_text = "Loading posts...", to
 
   const defaultTop = Platform.OS === "ios" ? 12 : 8
   const top = topOffset !== undefined ? topOffset : defaultTop
+  const is_dark_mode = App.is_dark_mode()
 
   return (
     <Animated.View
@@ -93,18 +94,18 @@ const LoadingBanner = observer(({ visible, loading_text = "Loading posts...", to
         left: 12,
         right: 12,
         zIndex: 1000,
-        backgroundColor: App.theme_background_color(),
+        backgroundColor: App.theme_loading_banner_background_color(),
         borderRadius: 12,
         padding: 12,
         shadowColor: "#000",
         shadowOffset: {
           width: 0,
-          height: 4,
+          height: is_dark_mode ? 4 : 1,
         },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 8,
-        borderWidth: 1,
+        shadowOpacity: is_dark_mode ? 0.3 : 0.08,
+        shadowRadius: is_dark_mode ? 8 : 3,
+        elevation: is_dark_mode ? 8 : 2,
+        borderWidth: 0.5,
         borderColor: App.theme_border_color(),
         transform: [{ translateY: slideAnim }],
       }}
@@ -161,4 +162,3 @@ const LoadingBanner = observer(({ visible, loading_text = "Loading posts...", to
 })
 
 export default LoadingBanner
-

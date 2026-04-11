@@ -139,6 +139,20 @@ export default Service = types.model('Service', {
       self.check_for_posts_for_destination(active_destination)
     }
   }),
+
+  refresh_posts_for_current_view: flow(function* (post = null) {
+    const active_destination = self.config.posts_destination()
+    const show_drafts = post?.is_draft ? post.is_draft() : false
+
+    if(active_destination){
+      if(App.post_search_query?.length > 2){
+        yield App.set_posts_query(App.post_search_query, active_destination, show_drafts)
+      }
+      else {
+        yield self.check_for_posts_for_destination(active_destination, show_drafts)
+      }
+    }
+  }),
   
   set_active_destination: flow(function* (destination, type = null) { 
     if(destination){
@@ -202,7 +216,7 @@ export default Service = types.model('Service', {
     const status = yield MicroPubApi.delete_post(self.service_object(), post.url)
     if(status !== DELETE_ERROR){
       App.show_toast("Post was deleted.")
-      self.update_posts_for_active_destination()
+      yield self.refresh_posts_for_current_view(post)
     }
     else{
       Alert.alert("Whoops", "Could not delete post. Please try again.")
@@ -214,7 +228,7 @@ export default Service = types.model('Service', {
     const status = yield MicroPubApi.delete_post(self.service_object(), page.url)
     if(status !== DELETE_ERROR){
       App.show_toast("Page was deleted.")
-      self.update_pages_for_active_destination()
+      yield self.refresh_pages_for_current_view()
     }
     else{
       Alert.alert("Whoops", "Could not delete post. Please try again.")
@@ -226,7 +240,7 @@ export default Service = types.model('Service', {
     const status = yield MicroPubApi.publish_draft(self.service_object(), post.content, post.url, post.name)
     if(status !== DELETE_ERROR){
       App.show_toast("Post was published.")
-      self.update_posts_for_active_destination()
+      yield self.refresh_posts_for_current_view(post)
     }
     else{
       Alert.alert("Error Publishing", "Could not publish the draft. Please try again.")
@@ -250,6 +264,19 @@ export default Service = types.model('Service', {
     const active_destination = self.config.posts_destination()
     if(active_destination){
       self.check_for_pages_for_destination(active_destination)
+    }
+  }),
+
+  refresh_pages_for_current_view: flow(function* () {
+    const active_destination = self.config.pages_destination()
+
+    if(active_destination){
+      if(App.page_search_query?.length > 2){
+        yield App.set_pages_query(App.page_search_query, active_destination)
+      }
+      else {
+        yield self.check_for_pages_for_destination(active_destination)
+      }
     }
   }),
   
