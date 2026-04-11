@@ -17,7 +17,7 @@ export default class SharePostScreen extends React.Component {
 
 	render() {
 		const { selected_user } = Share
-    const { posting } = selected_user
+    const posting = selected_user?.posting
     const selection_flat = `${Share.text_selection.start} ${Share.text_selection.end}`
 		return (
 			Share.is_logged_in() && posting != null ?
