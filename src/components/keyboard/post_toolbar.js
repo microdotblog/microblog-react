@@ -303,13 +303,16 @@ export default class PostToolbar extends React.Component{
 							<Text
 								style={{
 									fontWeight: '400',
-									padding: 2,
+									paddingVertical: 2,
+									paddingHorizontal: 6,
 									color: App.theme_text_color(),
 									position: 'absolute',
 									top: posting.post_chars_offset(this.props.is_post_edit),
-									right: 0,
-									backgroundColor: posting.post_assets.length > 5 ? App.theme_background_color() : null,
-									opacity: posting.post_assets.length > 5 ? .7 : 1
+									right: -5,
+									backgroundColor: App.theme_chars_background_color(),
+									borderRadius: 6,
+									overflow: 'hidden',
+									zIndex: 5
 								}}
 							><Text style={{ color: posting.post_text_length() > posting.max_post_length() ? '#a94442' : App.theme_text_color() }}>{posting.post_text_length()}</Text>/{posting.max_post_length()}</Text>
 						}
