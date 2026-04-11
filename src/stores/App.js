@@ -1025,7 +1025,7 @@ export default App = types.model('App', {
       return self.theme === "dark" ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.6)"
     },
     theme_chars_background_color() {
-      return self.theme === "dark" ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.6)"
+      return self.theme === "dark" ? "rgba(28,32,40,0.8)" : "rgba(255,255,255,0.8)"
     },
     theme_settings_group_background_color() {
       return self.theme === "dark" ? "#1a232e" : "#e8eaed"
