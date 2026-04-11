@@ -657,13 +657,7 @@ export default Posting = types.model('Posting', {
   },
   
   post_chars_offset(is_post_edit) {
-    var offset = 0
-    if (is_post_edit) {
-      offset = -55
-    }
-    else {
-      offset = -35
-    }
+    var offset = -35
     
    if (App.found_users.length > 0) {
      // if usernames bar, move chars counter higher
