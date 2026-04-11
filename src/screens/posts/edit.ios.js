@@ -61,7 +61,7 @@ export default class PostEditScreen extends React.Component{
               justifyContent: 'flex-start',
               alignItems: 'flex-start',
               marginTop: 0,
-              paddingBottom: posting.post_text_length() > posting.max_post_length() ? 150 : 0,
+              paddingBottom: posting.post_text_length() > posting.max_post_length() ? 50 : 0,
               flex: 1,
               padding: 8,
               color: App.theme_text_color()
