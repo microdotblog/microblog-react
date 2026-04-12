@@ -7,6 +7,7 @@ import CookieManager from '@react-native-cookies/cookies';
 import Push from './Push'
 import App from './App'
 import Toast from 'react-native-simple-toast';
+import { invalidate_webview_bootstrap_state } from '../utils/webview_recovery'
 
 export default Auth = types.model('Auth', {
   users: types.optional(types.array(User), []),
@@ -139,6 +140,11 @@ export default Auth = types.model('Auth', {
     CookieManager.clearAll()
     self.is_selecting_user = true
     self.did_load_one_or_more_webviews = false
+  }),
+
+  invalidate_webview_bootstrap: flow(function* () {
+    console.log("Auth:invalidate_webview_bootstrap")
+    invalidate_webview_bootstrap_state(self)
   }),
 
   set_did_load_one_or_more_webviews: flow(function* () {
