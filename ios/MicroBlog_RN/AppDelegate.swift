@@ -86,7 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
       response.actionIdentifier,
       String(describing: response.notification.request.content.userInfo)
     )
-    RNCPushNotificationIOS.didReceiveNotificationResponse(response)
+    RNCPushNotificationIOS.didReceive(response)
     completionHandler()
   }
 
