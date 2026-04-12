@@ -91,6 +91,26 @@ describe('push notification routing', () => {
     })).toBe('show')
   })
 
+  test('opens a tapped foreground banner once navigation is ready', () => {
+    const notification = normalise_notification_payload({
+      message: 'Alice mentioned you',
+      data: {
+        post_id: '123',
+        to_user: { username: 'vincent' },
+        from_user: { username: 'alice' }
+      },
+      foreground: true,
+      userInteraction: true
+    }, 'ios')
+
+    expect(determine_notification_action({
+      notification,
+      has_navigation: true,
+      has_local_user: true,
+      is_app_active: false
+    })).toBe('open')
+  })
+
   test('falls back to the in-app sheet when a tapped payload cannot be opened', () => {
     const notification = normalise_notification_payload({
       message: 'Alice mentioned you',

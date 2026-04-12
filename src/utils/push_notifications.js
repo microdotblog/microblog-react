@@ -24,6 +24,7 @@ export function normalise_notification_payload(notification, platform_os = 'ios'
   const to_user = parse_notification_user(data.to_user)
   const from_user = parse_notification_user(data.from_user)
   const tapped_from_os = notification?.userInteraction === true || notification?.foreground === false
+  const opened_from_foreground_banner = notification?.userInteraction === true && notification?.foreground === true
   const post_id = data?.post_id != null ? String(data.post_id) : null
 
   return {
@@ -34,7 +35,8 @@ export function normalise_notification_payload(notification, platform_os = 'ios'
     post_id,
     to_username: to_user?.username || null,
     from_username: from_user?.username || null,
-    should_open: tapped_from_os && post_id != null
+    should_open: tapped_from_os && post_id != null,
+    opened_from_foreground_banner
   }
 }
 
@@ -44,7 +46,7 @@ export function determine_notification_action({ notification, has_navigation, ha
       return 'show'
     }
 
-    if (has_navigation && has_local_user && is_app_active) {
+    if (has_navigation && has_local_user && (is_app_active || notification?.opened_from_foreground_banner)) {
       return 'open'
     }
 
@@ -59,7 +61,11 @@ export function determine_pending_notification_action({ notification, has_naviga
     return 'show'
   }
 
-  if (!has_navigation || !is_app_active) {
+  if (!has_navigation) {
+    return 'wait'
+  }
+
+  if (!is_app_active && !notification?.opened_from_foreground_banner) {
     return 'wait'
   }
 

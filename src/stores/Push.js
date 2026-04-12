@@ -136,6 +136,15 @@ export default Push = types.model('Push', {
 		return false
 	}),
 
+	schedule_pending_notification_replay: flow(function* () {
+		console.log("Push:schedule_pending_notification_replay")
+		;[0, 250, 500, 1000, 1500, 2500, 4000, 6000].forEach((delay) => {
+			setTimeout(() => {
+				Push.replay_pending_notification()
+			}, delay)
+		})
+	}),
+
 	handle_notification: flow(function* (notification) {
 		console.log("Push::handle_notification", notification, Auth.selected_user)
 		const nice_notification_object = normalise_notification_payload(notification, Platform.OS)
@@ -152,6 +161,7 @@ export default Push = types.model('Push', {
 
 		if (action === 'queue') {
 			yield Push.set_pending_notification(nice_notification_object)
+			yield Push.schedule_pending_notification_replay()
 			return false
 		}
 
@@ -170,6 +180,7 @@ export default Push = types.model('Push', {
 		}
 
 		if (!self.auth_ready) {
+			console.log("Push:replay_pending_notification:waiting_for_auth")
 			return false
 		}
 
@@ -179,6 +190,13 @@ export default Push = types.model('Push', {
 			has_navigation: self.has_navigation(),
 			has_local_user: self.local_user_for_notification(pending_notification) != null,
 			is_app_active: self.is_app_active()
+		})
+		console.log("Push:replay_pending_notification:action", action, {
+			has_navigation: self.has_navigation(),
+			has_local_user: self.local_user_for_notification(pending_notification) != null,
+			is_app_active: self.is_app_active(),
+			navigation_ready: App.navigation_ready,
+			app_state: App.app_state
 		})
 
 		if (action === 'wait') {
@@ -276,7 +294,9 @@ export default Push = types.model('Push', {
 	},
 
 	has_navigation() {
-		return App.navigation_ref != null && App.navigation_ready
+		return App.navigation_ref != null
+			&& App.navigation_ready
+			&& (typeof App.navigation_ref.isReady !== 'function' || App.navigation_ref.isReady())
 	},
 
 	is_app_active() {

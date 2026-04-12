@@ -84,6 +84,8 @@ export default App = types.model('App', {
       console.log("App:set_navigation", navigation != null)
       if (navigation) {
         self.navigation_ref = navigation
+        self.navigation_ready = typeof navigation.isReady === 'function' ? navigation.isReady() : false
+        Push.replay_pending_notification()
       }
       else{
         self.navigation_ref = null
@@ -298,7 +300,8 @@ export default App = types.model('App', {
   
     navigate_to_screen: flow(function*(screen_name = null, action_data = null, from_listener = false) {
       console.log("App:navigate_to_screen", screen_name, action_data, from_listener)
-      if (screen_name != null && self.navigation_ref != null && self.navigation_ready && !self.is_scrolling) {
+      const navigation_is_ready = self.navigation_ref != null && self.navigation_ready && (typeof self.navigation_ref.isReady !== 'function' || self.navigation_ref.isReady())
+      if (screen_name != null && navigation_is_ready && !self.is_scrolling) {
         switch (screen_name) {
           case "photo":
             return App.set_image_modal_data_and_activate(action_data)
