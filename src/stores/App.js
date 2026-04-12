@@ -15,6 +15,7 @@ import Settings from "./Settings"
 import Services from './Services';
 import Contact from './models/posting/Contact'
 import Push from './Push'
+import { normalise_theme, should_remount_webview_on_android_resume } from '../utils/webview_recovery'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -59,7 +60,8 @@ export default App = types.model('App', {
   is_publishing: types.optional(types.boolean, false),
   latest_published_url: types.maybeNull(types.string),
   keyboard_height: types.optional(types.number, 0),
-  is_keyboard_visible: types.optional(types.boolean, false)
+  is_keyboard_visible: types.optional(types.boolean, false),
+  web_view_epoch: types.optional(types.number, 0),
 })
   .volatile(self => ({
     navigation_ref: null,
@@ -67,6 +69,11 @@ export default App = types.model('App', {
     current_raw_tab_key: null,
     keyboard_show_listener: null,
     keyboard_hide_listener: null,
+    app_state_listener: null,
+    appearance_listener: null,
+    font_scale_listener: null,
+    url_listener: null,
+    previous_app_state: AppState.currentState,
     post_search_request_id: 0,
   }))
   .actions(self => ({
@@ -137,6 +144,10 @@ export default App = types.model('App', {
 
     setup_keyboard_listeners: flow(function*() {
       console.log("App:setup_keyboard_listeners")
+      if (self.keyboard_show_listener != null || self.keyboard_hide_listener != null) {
+        return
+      }
+
       if (Platform.OS === 'android') {
         self.keyboard_show_listener = Keyboard.addListener('keyboardDidShow', (event) => {
           console.log("Keyboard shown with height:", event.endCoordinates.height)
@@ -164,7 +175,11 @@ export default App = types.model('App', {
 
     set_up_url_listener: flow(function*() {
       console.log("App:set_up_url_listener")
-      Linking.addEventListener('url', (event) => {
+      if (self.url_listener != null) {
+        return
+      }
+
+      self.url_listener = Linking.addEventListener('url', (event) => {
         console.log("App:set_up_url_listener:event", event)
         if (event?.url && event?.url.indexOf('/signin/') > -1) {
           Login.trigger_login_from_url(event.url)
@@ -601,35 +616,73 @@ export default App = types.model('App', {
     }),
 
     set_current_initial_theme: flow(function*() {
-      console.log("App:set_current_theme", Appearance.getColorScheme())
-      self.theme = Appearance.getColorScheme()
+      const color_scheme = normalise_theme(Appearance.getColorScheme())
+      console.log("App:set_current_theme", color_scheme)
+      self.theme = color_scheme
       App.set_up_appearance_listener()
+    }),
+
+    handle_app_state_change: flow(function*(nextAppState) {
+      const should_force_web_view_remount = should_remount_webview_on_android_resume({
+        next_app_state: nextAppState,
+        platform_os: Platform.OS,
+        previous_app_state: self.previous_app_state,
+        system_theme: Appearance.getColorScheme(),
+        theme: self.theme,
+      })
+
+      self.previous_app_state = nextAppState
+
+      if (nextAppState === "active") {
+        const color_scheme = normalise_theme(Appearance.getColorScheme())
+        if (self.theme !== color_scheme || should_force_web_view_remount) {
+          App.change_current_theme(color_scheme, should_force_web_view_remount)
+        }
+      }
+    }),
+
+    handle_appearance_change: flow(function*(colorScheme) {
+      if (AppState.currentState === "background" || AppState.currentState === "inactive") {
+        return
+      }
+
+      console.log("App:set_up_appearance_listener:change", colorScheme)
+      App.change_current_theme(colorScheme)
     }),
 
     set_up_appearance_listener: flow(function*() {
       console.log("App:set_up_appearance_listener")
-      AppState.addEventListener("change", nextAppState => {
-        if (nextAppState === "active") {
-          const colorScheme = Appearance.getColorScheme()
-          if (self.theme !== colorScheme) {
-            App.change_current_theme(colorScheme)
-          }
-        }
+      if (self.app_state_listener != null || self.appearance_listener != null) {
+        return
+      }
+
+      self.previous_app_state = AppState.currentState
+
+      self.app_state_listener = AppState.addEventListener("change", nextAppState => {
+        App.handle_app_state_change(nextAppState)
       })
-      Appearance.addChangeListener(({ colorScheme }) => {
-        if (AppState.currentState === "background" || AppState.currentState === "inactive") {
-          return
-        }
-        console.log("App:set_up_appearance_listener:change", colorScheme)
-        App.change_current_theme(colorScheme)
+      self.appearance_listener = Appearance.addChangeListener(({ colorScheme }) => {
+        App.handle_appearance_change(colorScheme)
       })
     }),
 
-    change_current_theme: flow(function*(color) {
-      console.log("App:change_current_theme", color)
-      self.is_switching_theme = true
-      self.theme = color
-      self.is_switching_theme = false
+    bump_web_view_epoch: flow(function*() {
+      self.web_view_epoch = self.web_view_epoch + 1
+    }),
+
+    change_current_theme: flow(function*(color, should_force_web_view_remount = false) {
+      const next_theme = normalise_theme(color)
+      console.log("App:change_current_theme", next_theme, should_force_web_view_remount)
+
+      if (self.theme === next_theme && !should_force_web_view_remount) {
+        return
+      }
+
+      self.theme = next_theme
+
+      if (should_force_web_view_remount) {
+        App.bump_web_view_epoch()
+      }
     }),
   
     set_current_initial_font_scale: flow(function*() {
@@ -641,7 +694,11 @@ export default App = types.model('App', {
   
     set_up_font_scale_listener: flow(function*() {
       console.log("App:set_up_font_scale_listener")
-      Dimensions.addEventListener(
+      if (self.font_scale_listener != null) {
+        return
+      }
+
+      self.font_scale_listener = Dimensions.addEventListener(
         "change",
         ({ screen }) => {
           console.log("App:set_up_font_scale_listener:change", screen?.fontScale)
@@ -1086,7 +1143,7 @@ export default App = types.model('App', {
     },
     should_reload_web_view() {
       // When it returns true, this will trigger a reload of the webviews
-      return self.is_switching_theme || self.is_changing_font_scale
+      return self.is_changing_font_scale
     },
     now() {
       let now = new Date()
