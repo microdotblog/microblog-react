@@ -118,6 +118,9 @@ export default class MainApp extends React.Component {
                 />
               }
               <NavigationContainer
+                onReady={() => {
+                  App.set_navigation_ready(true)
+                }}
                 onStateChange={(state) => {
                   const route = state?.routes?.[state.index]
                   const nested = route?.state?.routes?.[route.state?.index]

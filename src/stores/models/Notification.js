@@ -28,12 +28,7 @@ export default Notification = types.model('Notification', {
 	}),
 	
 	afterCreate: flow(function* () {
-		if (self.should_open != null && self.should_open) {
-			self.handle_action()
-		}
-		else{
-			self.hydrate()
-		}
+		self.hydrate()
 	}),
 
 	handle_action: flow(function* () { 
@@ -59,10 +54,13 @@ export default Notification = types.model('Notification', {
 	},
 
 	can_show_notification() {
-		return self.message && this.local_user() != null && !self.should_open
+		return self.message && !self.should_open
 	},
 
 	trimmed_message() {
+		if (!self.message) {
+			return null
+		}
 		if (self.message.length > 255) {
 			return `${self.message.slice(0, 250)}...`
 		}

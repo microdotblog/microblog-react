@@ -1,5 +1,6 @@
 package blog.micro.android;
 import expo.modules.ReactActivityDelegateWrapper
+import android.content.Intent
 import android.os.Bundle;
 import com.swmansion.rnscreens.fragment.restoration.RNScreensFragmentFactory;
 
@@ -28,5 +29,10 @@ class MainActivity : ReactActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         supportFragmentManager.fragmentFactory = RNScreensFragmentFactory()
         super.onCreate(savedInstanceState);
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
     }
 }

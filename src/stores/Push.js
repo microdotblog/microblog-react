@@ -1,48 +1,32 @@
-import { types, flow, destroy } from 'mobx-state-tree';
+import { types, flow, destroy } from 'mobx-state-tree'
 import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi'
-import PushNotification from "react-native-push-notification";
+import PushNotification from "react-native-push-notification"
 import Notification from './models/Notification'
 import Auth from './Auth'
-import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import PushNotificationIOS from "@react-native-community/push-notification-ios"
 import { Platform, PermissionsAndroid } from 'react-native'
 import App from './App'
 import Device from './models/Device'
+import {
+	normalise_notification_payload,
+	determine_notification_action,
+	determine_pending_notification_action
+} from '../utils/push_notifications'
 
 export default Push = types.model('Push', {
 	token: types.optional(types.string, ""),
 	notifications: types.optional(types.array(Notification), []),
 	notificiations_open: types.optional(types.boolean, false),
-	devices: types.optional(types.map(types.array(Device)), {})
+	devices: types.optional(types.map(types.array(Device)), {}),
+	pending_notification: types.maybeNull(types.frozen()),
+	auth_ready: types.optional(types.boolean, false)
 })
 .actions(self => ({
 
-  hydrate: flow(function* () {
+	hydrate: flow(function* () {
 		console.log("Push:hydrate")
-
-		PushNotification.configure({
-			onRegister: function (data) {
-				console.log("Push:hydrate:onRegister:data", data);
-				Push.set_token(data.token)
-			},
-			onRegistrationError: function (error) {
-				console.log("Push:hydrate:onRegistrationError:error", error);
-			},
-			onNotification: function(data) {
-				Push.handle_notification(data)
-			},
-			onAction: function(data){
-				console.log("Push:onAction:data", data);
-			},
-			permissions: {
-				alert: true,
-				badge: true,
-				sound: true
-			},
-			popInitialNotification: true,
-			requestPermissions: true
-		})
 	}),
-	
+
 	set_token: flow(function* (token) {
 		console.log("Push::set_token", token)
 		self.token = token
@@ -59,7 +43,7 @@ export default Push = types.model('Push', {
 			}
 		}
 		else if(self.token == "" && Auth.is_logged_in() && self.has_push_permissions){
-		  Push.request_permissions()
+			Push.request_permissions()
 		}
 		return false
 	}),
@@ -74,7 +58,7 @@ export default Push = types.model('Push', {
 			}
 		}
 		else if(self.token == ""){
-		  return true
+			return true
 		}
 		return false
 	}),
@@ -114,25 +98,105 @@ export default Push = types.model('Push', {
 		}
 	}),
 
-	handle_notification: flow(function* (notification) {
-		console.log("Push::handle_notification", notification, Auth.selected_user)
-		const nice_notification_object = {
-			id: Platform.OS === 'ios' ? notification.data?.notificationId != null ? notification.data?.notificationId : notification.data?.post_id : notification.id,
-			message: notification.message,
-			post_id: notification.data?.post_id,
-			to_username: Platform.OS === 'ios' ? notification.data?.to_user?.username : JSON.parse(notification.data?.to_user)?.username,
-			from_username: Platform.OS === 'ios' ? notification.data?.from_user?.username : JSON.parse(notification.data?.from_user)?.username,
-			should_open: Platform.OS === 'ios'  && notification.foreground === false,
-			did_load_before_user_was_loaded: Auth.selected_user == null
-		}
-		// Check if we have an existing notification in our array.
-		// This will never happen, except for DEV for sending through test messages.
-		const existing_notification = self.notifications.find(notification => notification.id === nice_notification_object.id)
+	set_pending_notification: flow(function* (notification) {
+		console.log("Push:set_pending_notification", notification)
+		self.pending_notification = notification
+	}),
+
+	clear_pending_notification: flow(function* () {
+		console.log("Push:clear_pending_notification")
+		self.pending_notification = null
+	}),
+
+	set_auth_ready: flow(function* (ready = true) {
+		console.log("Push:set_auth_ready", ready)
+		self.auth_ready = ready
+	}),
+
+	store_notification: flow(function* (notification) {
+		console.log("Push:store_notification", notification)
+		const existing_notification = self.notifications.find(item => item.id === notification.id)
 		if (existing_notification) {
 			destroy(existing_notification)
 		}
-		self.notifications.push(Notification.create(nice_notification_object))
-		Push.open_notification_sheet()
+		self.notifications.push(Notification.create(notification))
+	}),
+
+	open_notification: flow(function* (notification) {
+		console.log("Push:open_notification", notification)
+		const local_user = self.local_user_for_notification(notification)
+		if (local_user != null && notification?.post_id != null) {
+			if (Auth.selected_user !== local_user) {
+				yield Auth.select_user(local_user)
+			}
+			App.navigate_to_screen("open", notification.post_id)
+			Push.close_notification_sheet()
+			return true
+		}
+		return false
+	}),
+
+	handle_notification: flow(function* (notification) {
+		console.log("Push::handle_notification", notification, Auth.selected_user)
+		const nice_notification_object = normalise_notification_payload(notification, Platform.OS)
+		const action = determine_notification_action({
+			notification: nice_notification_object,
+			has_navigation: self.has_navigation(),
+			has_local_user: self.local_user_for_notification(nice_notification_object) != null,
+			is_app_active: self.is_app_active()
+		})
+
+		if (action === 'open') {
+			return yield Push.open_notification(nice_notification_object)
+		}
+
+		if (action === 'queue') {
+			yield Push.set_pending_notification(nice_notification_object)
+			return false
+		}
+
+		yield Push.store_notification({
+			...nice_notification_object,
+			should_open: false
+		})
+		yield Push.open_notification_sheet()
+		return false
+	}),
+
+	replay_pending_notification: flow(function* () {
+		console.log("Push:replay_pending_notification", self.pending_notification)
+		if (self.pending_notification == null) {
+			return false
+		}
+
+		if (!self.auth_ready) {
+			return false
+		}
+
+		const pending_notification = self.pending_notification
+		const action = determine_pending_notification_action({
+			notification: pending_notification,
+			has_navigation: self.has_navigation(),
+			has_local_user: self.local_user_for_notification(pending_notification) != null,
+			is_app_active: self.is_app_active()
+		})
+
+		if (action === 'wait') {
+			return false
+		}
+
+		yield Push.clear_pending_notification()
+
+		if (action === 'open') {
+			return yield Push.open_notification(pending_notification)
+		}
+
+		yield Push.store_notification({
+			...pending_notification,
+			should_open: false
+		})
+		yield Push.open_notification_sheet()
+		return false
 	}),
 	
 	open_notification_sheet: flow(function* () {
@@ -164,7 +228,7 @@ export default Push = types.model('Push', {
 		}
 		
 		if(self.has_push_permissions() && user_token){
-		  return yield self.register_token(user_token)
+			return yield self.register_token(user_token)
 		}
 	}),
 	
@@ -181,7 +245,7 @@ export default Push = types.model('Push', {
 	},
 	
 	handle_first_notification() {
-		return self.notifications.find(n => n.did_load_before_user_was_loaded)?.handle_action()
+		return self.pending_notification != null ? Push.replay_pending_notification() : null
 	},
 	
 	has_push_permissions(callback) {
@@ -202,6 +266,21 @@ export default Push = types.model('Push', {
 	
 	is_registered_device_for_user(username) {
 		return self.devices.get(username)?.some(device => device.token === Push.token)
+	},
+
+	local_user_for_notification(notification) {
+		if (notification?.to_username == null) {
+			return null
+		}
+		return Auth.users.find(u => u.username === notification.to_username)
+	},
+
+	has_navigation() {
+		return App.navigation_ref != null && App.navigation_ready
+	},
+
+	is_app_active() {
+		return App.app_state === 'active'
 	}
 	
 }))

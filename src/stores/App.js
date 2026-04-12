@@ -23,6 +23,8 @@ let PUBLISHING_PROGRESS_TIMEOUT = null
 
 export default App = types.model('App', {
   is_loading: types.optional(types.boolean, false),
+  navigation_ready: types.optional(types.boolean, false),
+  app_state: types.optional(types.string, AppState.currentState || 'active'),
   image_modal_is_open: types.optional(types.boolean, false),
   current_image_url: types.maybeNull(types.string),
   is_scrolling: types.optional(types.boolean, false),
@@ -83,34 +85,38 @@ export default App = types.model('App', {
       if (navigation) {
         self.navigation_ref = navigation
       }
+      else{
+        self.navigation_ref = null
+        self.navigation_ready = false
+      }
+    }),
+
+    set_navigation_ready: flow(function*(ready = true) {
+      console.log("App:set_navigation_ready", ready)
+      self.navigation_ready = ready
+      if (ready) {
+        Push.replay_pending_notification()
+      }
     }),
 
     hydrate: flow(function*() {
       console.log("App:hydrate")
       self.is_loading = true
+      self.navigation_ready = false
+      self.app_state = AppState.currentState || 'active'
+      Push.set_auth_ready(false)
       
       yield App.set_current_initial_theme()
       yield App.set_current_initial_font_scale()
-      yield Push.hydrate()
-    
       Settings.hydrate()
-      App.set_is_loading(false)
       App.set_up_url_listener()
       App.setup_keyboard_listeners()
       
       try{
         yield Auth.hydrate()
         console.log("App:hydrate:started:is_logged_in", Auth.is_logged_in())
-        yield App.set_current_initial_theme()
-        yield App.set_current_initial_font_scale()
-        yield Push.hydrate()
-      
-        Settings.hydrate()
-        App.set_is_loading(false)
-        App.set_up_url_listener()
-        App.setup_keyboard_listeners()
         if (Auth.is_logged_in()) {
-          Push.handle_first_notification()
+          Push.replay_pending_notification()
         }
         else if (!Auth.is_logged_in()) {
           App.navigate_to_screen("Login")
@@ -118,6 +124,11 @@ export default App = types.model('App', {
       }
       catch(error){
         console.error(error)
+      }
+      finally{
+        Push.set_auth_ready(true)
+        Push.replay_pending_notification()
+        App.set_is_loading(false)
       }
     }),
 
@@ -287,7 +298,7 @@ export default App = types.model('App', {
   
     navigate_to_screen: flow(function*(screen_name = null, action_data = null, from_listener = false) {
       console.log("App:navigate_to_screen", screen_name, action_data, from_listener)
-      if (screen_name != null && self.navigation_ref != null && !self.is_scrolling) {
+      if (screen_name != null && self.navigation_ref != null && self.navigation_ready && !self.is_scrolling) {
         switch (screen_name) {
           case "photo":
             return App.set_image_modal_data_and_activate(action_data)
@@ -623,6 +634,7 @@ export default App = types.model('App', {
     }),
 
     handle_app_state_change: flow(function*(nextAppState) {
+      console.log("App:handle_app_state_change", self.previous_app_state, "->", nextAppState)
       const should_force_web_view_remount = should_remount_webview_on_android_resume({
         next_app_state: nextAppState,
         platform_os: Platform.OS,
@@ -632,12 +644,14 @@ export default App = types.model('App', {
       })
 
       self.previous_app_state = nextAppState
+      self.app_state = nextAppState
 
       if (nextAppState === "active") {
         const color_scheme = normalise_theme(Appearance.getColorScheme())
         if (self.theme !== color_scheme || should_force_web_view_remount) {
           App.change_current_theme(color_scheme, should_force_web_view_remount)
         }
+        Push.replay_pending_notification()
       }
     }),
 
