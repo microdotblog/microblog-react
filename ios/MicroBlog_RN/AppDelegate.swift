@@ -11,9 +11,10 @@ import React
 import React_RCTAppDelegate
 import ReactAppDependencyProvider
 import RNShareMenu
+import UserNotifications
 
 @main
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
   var window: UIWindow?
 
   var reactNativeDelegate: ReactNativeDelegate?
@@ -23,6 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
+    NSLog("PushDebug:didFinishLaunchingWithOptions launchOptions=%@", String(describing: launchOptions))
     let delegate = ReactNativeDelegate()
     let factory = RCTReactNativeFactory(delegate: delegate)
     delegate.dependencyProvider = RCTAppDependencyProvider()
@@ -38,6 +40,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       launchOptions: launchOptions
     )
 
+    UNUserNotificationCenter.current().delegate = self
+
     return true
   }
 
@@ -52,11 +56,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   // Required for the register event.
   func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    NSLog("PushDebug:didRegisterForRemoteNotificationsWithDeviceToken")
     RNCPushNotificationIOS.didRegisterForRemoteNotifications(withDeviceToken: deviceToken)
   }
 
   // Required for the notification event. You must call the completion handler after handling the remote notification.
   func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    NSLog("PushDebug:didReceiveRemoteNotification userInfo=%@", String(describing: userInfo))
     RNCPushNotificationIOS.didReceiveRemoteNotification(userInfo, fetchCompletionHandler: completionHandler)
   }
 
@@ -68,6 +74,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   // Required for the localNotification event.
   func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
     RNCPushNotificationIOS.didReceive(notification)
+  }
+
+  func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    didReceive response: UNNotificationResponse,
+    withCompletionHandler completionHandler: @escaping () -> Void
+  ) {
+    NSLog(
+      "PushDebug:userNotificationCenter:didReceive response action=%@ userInfo=%@",
+      response.actionIdentifier,
+      String(describing: response.notification.request.content.userInfo)
+    )
+    RNCPushNotificationIOS.didReceiveNotificationResponse(response)
+    completionHandler()
+  }
+
+  func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    willPresent notification: UNNotification,
+    withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+  ) {
+    NSLog(
+      "PushDebug:userNotificationCenter:willPresent userInfo=%@",
+      String(describing: notification.request.content.userInfo)
+    )
+    completionHandler([.badge, .sound, .banner, .list])
   }
 }
 
