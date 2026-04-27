@@ -1,0 +1,98 @@
+diff --git a/src/Hyperlink.tsx b/src/Hyperlink.tsx
+index c2d8ef6..e54501d 100644
+--- a/src/Hyperlink.tsx
++++ b/src/Hyperlink.tsx
+@@ -73,11 +73,11 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
+ 		let elements = [];
+ 		let _lastIndex = 0;
+ 
+-		const componentProps = {
+-			...component.props,
+-			ref: undefined,
+-			key: undefined,
+-		};
++		const componentProps = {
++			...component.props,
++		};
++		delete componentProps.key;
++		delete componentProps.ref;
+ 
+ 		try {
+ 			this.state.linkifyIt
+@@ -136,11 +136,11 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
+ 		let { props: { children } = { children: undefined } } = component || {};
+ 		if (!children) return component;
+ 
+-		const componentProps = {
+-			...component.props,
+-			ref: undefined,
+-			key: undefined,
+-		};
++		const componentProps = {
++			...component.props,
++		};
++		delete componentProps.key;
++		delete componentProps.ref;
+ 
+ 		return React.cloneElement(
+ 			component,
+diff --git a/dist/commonjs/Hyperlink.js b/dist/commonjs/Hyperlink.js
+index 69385a6..f4a98bf 100644
+--- a/dist/commonjs/Hyperlink.js
++++ b/dist/commonjs/Hyperlink.js
+@@ -56,9 +56,8 @@ class Hyperlink extends _react.Component {
+       if (!this.state.linkifyIt.pretest(component.props.children) || !this.state.linkifyIt.test(component.props.children)) return component;
+       let elements = [];
+       let _lastIndex = 0;
+-      const componentProps = { ...component.props,
+-        ref: undefined,
+-        key: undefined
+-      };
++      const componentProps = { ...component.props };
++      delete componentProps.key;
++      delete componentProps.ref;
+ 
+       try {
+@@ -117,9 +116,8 @@ class Hyperlink extends _react.Component {
+         }
+       } = component || {};
+       if (!children) return component;
+-      const componentProps = { ...component.props,
+-        ref: undefined,
+-        key: undefined
+-      };
++      const componentProps = { ...component.props };
++      delete componentProps.key;
++      delete componentProps.ref;
+       return /*#__PURE__*/_react.default.cloneElement(component, componentProps, _react.default.Children.map(children, child => {
+         let {
+diff --git a/dist/module/Hyperlink.js b/dist/module/Hyperlink.js
+index 4b798f3..49d08b7 100644
+--- a/dist/module/Hyperlink.js
++++ b/dist/module/Hyperlink.js
+@@ -36,9 +36,8 @@ class Hyperlink extends Component {
+       if (!this.state.linkifyIt.pretest(component.props.children) || !this.state.linkifyIt.test(component.props.children)) return component;
+       let elements = [];
+       let _lastIndex = 0;
+-      const componentProps = { ...component.props,
+-        ref: undefined,
+-        key: undefined
+-      };
++      const componentProps = { ...component.props };
++      delete componentProps.key;
++      delete componentProps.ref;
+ 
+       try {
+@@ -97,9 +96,8 @@ class Hyperlink extends Component {
+         }
+       } = component || {};
+       if (!children) return component;
+-      const componentProps = { ...component.props,
+-        ref: undefined,
+-        key: undefined
+-      };
++      const componentProps = { ...component.props };
++      delete componentProps.key;
++      delete componentProps.ref;
+       return /*#__PURE__*/React.cloneElement(component, componentProps, React.Children.map(children, child => {
+         let {
