@@ -18,8 +18,10 @@ export default class ProfileImage extends React.Component{
     
     if (isLiquidGlass()) {
       button_style = {
-        paddingLeft: 4,
-        paddingTop: 2
+        width: 44,
+        height: 44,
+        alignItems: 'center',
+        justifyContent: 'center'
       }
     }
     
