@@ -36,10 +36,10 @@ const Share = types.model('Share', {
 })
 	.actions(self => ({
 
-		hydrate: flow(function* (shared_data = null) {
+		hydrate: flow(function* (shared_data = null, color_scheme = null) {
 			console.log('Share:hydrate', self)
 			yield self.trigger_loading()
-			yield App.prep_and_hydrate_share_extension()
+			yield App.prep_and_hydrate_share_extension(color_scheme)
 			const store = yield AsyncStorage.getItem('Share')
 			if (store) {
 				applySnapshot(self, JSON.parse(store))

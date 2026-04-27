@@ -134,10 +134,13 @@ export default App = types.model('App', {
       }
     }),
 
-    prep_and_hydrate_share_extension: flow(function*() {
+    prep_and_hydrate_share_extension: flow(function*(color_scheme = null) {
       console.log("App:prep_and_hydrate_share_extension")
       self.is_share_extension = true
       yield App.set_current_initial_theme()
+      if (color_scheme != null) {
+        yield App.change_current_theme(color_scheme)
+      }
     }),
 
     dehydrate_share_extension: flow(function*() {

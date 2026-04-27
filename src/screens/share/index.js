@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react'
 import * as React from 'react'
-import { ActivityIndicator, Button, Text, View, Platform } from 'react-native'
+import { ActivityIndicator, Button, Text, View, Platform, useColorScheme } from 'react-native'
 import { KeyboardProvider } from "react-native-keyboard-controller"
 import App from '../../stores/App'
 import Share from '../../stores/Share'
@@ -8,17 +8,28 @@ import SharePostScreen from './post'
 import ShareImageOptionsScreen from './image_options'
 import ShareHeaderComponent from '../../components/share/header'
 
+const ShareThemeSync = ({ colorScheme }) => {
+	const current_color_scheme = useColorScheme()
+
+	React.useEffect(() => {
+		App.change_current_theme(colorScheme || current_color_scheme)
+	}, [ colorScheme, current_color_scheme ])
+
+	return null
+}
+
 @observer
 export default class ShareScreen extends React.Component {
 
 	componentDidMount() {
 		console.log('ShareScreen:componentDidMount')
-		Platform.OS === "ios" && Share.hydrate()
+		Platform.OS === "ios" && Share.hydrate(null, this.props.colorScheme)
 	}
 
 	render() {
 		return (
 			<KeyboardProvider statusBarTranslucent={true}>
+				<ShareThemeSync colorScheme={this.props.colorScheme} />
 				<View style={{
 					flex: 1,
 					backgroundColor: App.theme_background_color()
