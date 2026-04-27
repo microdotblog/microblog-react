@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { View, TextInput, InputAccessoryView, KeyboardAvoidingView, TouchableOpacity, Text } from 'react-native'
+import { View, TextInput, TouchableOpacity, Text } from 'react-native'
 import ActionSheet from 'react-native-actions-sheet'
 import Reply from '../../stores/Reply'
 import ReplyToolbar from '../keyboard/reply_toolbar'
@@ -10,11 +10,6 @@ import LoadingComponent from '../generic/loading'
 
 @observer
 export default class ReplySheet extends React.Component {
-  constructor(props) {
-    super(props)
-    this.input_accessory_view_id = 'input_toolbar'
-  }
-
   handleClose = () => {
     App.close_sheet('reply_sheet')
   }
@@ -53,50 +48,42 @@ export default class ReplySheet extends React.Component {
             <Text style={{ color: App.theme_accent_color(), fontWeight: '700', fontSize: 16 }}>Send</Text>
           </TouchableOpacity>
         </View>
-        <View>
-          <KeyboardAvoidingView
-            behavior={'padding'}
-            style={{ backgroundColor: App.theme_modal_background_color() }}
-          >
-            <TextInput
-              placeholderTextColor="lightgrey"
-              style={{
-                minHeight: 120,
-                maxHeight: 240,
-                textAlignVertical: 'top',
-                fontSize: 18,
-                justifyContent: 'flex-start',
-                alignItems: 'flex-start',
-                marginTop: 3,
-                marginBottom: 38,
-                padding: 8,
-                color: App.theme_text_color(),
-                paddingBottom: Reply.reply_text_length() > 0 ? 35 : 0
-              }}
-              editable={!Reply.is_sending_reply}
-              multiline={true}
-              scrollEnabled={true}
-              returnKeyType={'default'}
-              keyboardType={'default'}
-              autoFocus={true}
-              autoCorrect={true}
-              clearButtonMode={'while-editing'}
-              enablesReturnKeyAutomatically={true}
-              underlineColorAndroid={'transparent'}
-              value={Reply.reply_text}
-              onChangeText={text => !Reply.is_sending_reply ? Reply.set_reply_text_from_typing(text) : null}
-              onSelectionChange={({ nativeEvent: { selection } }) => {
-                Reply.set_text_selection(selection)
-              }}
-              inputAccessoryViewID={this.input_accessory_view_id}
-            />
-            <InputAccessoryView nativeID={this.input_accessory_view_id}>
-              <ReplyToolbar reply={Reply} />
-            </InputAccessoryView>
-            <LoadingComponent should_show={Reply.is_sending_reply} size={'small'} />
-            <LoadingComponent should_show={Reply.is_loading_conversation} size={'small'} message={'Loading conversation...'} />
-          </KeyboardAvoidingView>
+        <View style={{ backgroundColor: App.theme_modal_background_color() }}>
+          <TextInput
+            placeholderTextColor="lightgrey"
+            style={{
+              minHeight: 120,
+              maxHeight: 240,
+              textAlignVertical: 'top',
+              fontSize: 18,
+              justifyContent: 'flex-start',
+              alignItems: 'flex-start',
+              marginTop: 3,
+              marginBottom: 8,
+              padding: 8,
+              color: App.theme_text_color(),
+              paddingBottom: Reply.reply_text_length() > 0 ? 35 : 0
+            }}
+            editable={!Reply.is_sending_reply}
+            multiline={true}
+            scrollEnabled={true}
+            returnKeyType={'default'}
+            keyboardType={'default'}
+            autoFocus={true}
+            autoCorrect={true}
+            clearButtonMode={'while-editing'}
+            enablesReturnKeyAutomatically={true}
+            underlineColorAndroid={'transparent'}
+            value={Reply.reply_text}
+            onChangeText={text => !Reply.is_sending_reply ? Reply.set_reply_text_from_typing(text) : null}
+            onSelectionChange={({ nativeEvent: { selection } }) => {
+              Reply.set_text_selection(selection)
+            }}
+          />
+          <LoadingComponent should_show={Reply.is_sending_reply} size={'small'} />
+          <LoadingComponent should_show={Reply.is_loading_conversation} size={'small'} message={'Loading conversation...'} />
         </View>
+        <ReplyToolbar reply={Reply} />
       </ActionSheet>
     )
   }
