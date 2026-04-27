@@ -39,7 +39,7 @@ export default class ShareScreen extends React.Component {
 									<ShareHeaderComponent />
 									{
 										Share.image_options_open ?
-										<ShareImageOptionsScreen asset={Platform.OS === "ios" ? Share.selected_user?.posting?.post_assets[0] : null} />
+										<ShareImageOptionsScreen asset={Platform.OS === "ios" ? Share.image_options_asset() : null} />
 										:
 										<>
 										<SharePostScreen />
