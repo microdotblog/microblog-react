@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, ScrollView, Image as RNImage, ActivityIndicator, TextInput, KeyboardAvoidingView, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, TextInput, KeyboardAvoidingView, Dimensions } from 'react-native';
 import App from '../../stores/App';
 import Share from '../../stores/Share';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -12,32 +12,11 @@ export default class ShareImageOptionsScreen extends React.Component{
 
   constructor(props) {
     super(props);
-    const { asset } = this.props
-
-    const max_media_height = 250; // cap media height
-    const window_width = Dimensions.get('window').width;
-    let media_width = window_width;
-    let media_height = window_width; // default to 1:1
-    
     this.state = {
-      media_width: media_width,
-      media_height: media_height,
       isLoadingAlt: Share.selected_user.is_using_ai,
       generatedAltText: "",
       copyButtonTitle: "Copy Text"
     };
-    
-    RNImage.getSize(asset.uri, (width, height) => {
-      const aspect_ratio = width / height;
-      media_height = window_width / aspect_ratio;
-      
-      if (media_height > max_media_height) {
-        media_height = max_media_height;
-        media_width = max_media_height * aspect_ratio;
-      }
-      
-      this.setState({ media_width: media_width, media_height: media_height });
-    });
 
     if (Share.selected_user.is_using_ai) {
       this._download_image_info();
@@ -62,6 +41,9 @@ export default class ShareImageOptionsScreen extends React.Component{
   
   _check_uploads_for_text(results) {
     const { asset } = this.props;
+    if (!asset) {
+      return false
+    }
     let found = false;
   
     if (results.items != null) {
@@ -95,10 +77,38 @@ export default class ShareImageOptionsScreen extends React.Component{
   
     return found;
   }
+
+  _media_dimensions(asset) {
+    const max_media_height = 250; // cap media height
+    const window_width = Dimensions.get('window').width;
+    let media_width = window_width;
+    let media_height = window_width; // default to 1:1
+
+    if (asset?.width && asset?.height) {
+      const aspect_ratio = asset.width / asset.height;
+      media_height = window_width / aspect_ratio;
+
+      if (media_height > max_media_height) {
+        media_height = max_media_height;
+        media_width = max_media_height * aspect_ratio;
+      }
+    }
+
+    return { media_width, media_height }
+  }
+
+  _image_uri(asset) {
+    return asset?.uri ? asset.uri : asset?.remote_url
+  }
   
   render() {
     const { posting } = Share.selected_user
     const { asset } = this.props
+    if (!asset) {
+      return null
+    }
+    const { media_width, media_height } = this._media_dimensions(asset)
+    const image_uri = this._image_uri(asset)
     
     return(
       <KeyboardAvoidingView behavior={"padding"} style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
@@ -111,10 +121,14 @@ export default class ShareImageOptionsScreen extends React.Component{
               position: 'relative',
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: App.theme_background_color
+              backgroundColor: App.theme_background_color()
             }}
           >
-            <MBImage source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} contentFit="contain" style={{ width: this.state.media_width, height: this.state.media_height }} />
+            {
+              image_uri ?
+              <MBImage source={{ uri: image_uri }} contentFit="contain" style={{ width: media_width, height: media_height }} />
+              : null
+            }
             {
               asset.is_uploading ?
                 <>

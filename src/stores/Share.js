@@ -9,7 +9,7 @@ import { Platform, Keyboard } from 'react-native'
 import App from "./App"
 import Auth from './Auth';
 
-export default Share = types.model('Share', {
+const Share = types.model('Share', {
 	is_loading: types.optional(types.boolean, true),
 	share_type: types.optional(types.string, "text"),
 	share_data: types.optional(types.string, ""),
@@ -31,6 +31,7 @@ export default Share = types.model('Share', {
 	toolbar_select_user_open: types.optional(types.boolean, false),
 	error_message: types.maybeNull(types.string),
 	image_options_open: types.optional(types.boolean, false),
+	image_options_asset_uri: types.maybeNull(types.string),
 	temp_direct_shared_data: types.optional(types.string, ""),
 })
 	.actions(self => ({
@@ -49,6 +50,7 @@ export default Share = types.model('Share', {
 				self.share_image_data = null
 				self.error_message = null
 				self.image_options_open = false
+				self.image_options_asset_uri = null
 				self.temp_direct_shared_data = ""
 			}
 			if (Platform.OS === "ios") {
@@ -113,7 +115,7 @@ export default Share = types.model('Share', {
 			else {
 				const share_data = yield ShareMenuReactView.data()
 				console.log('Share:set_data', share_data)
-				data_array = share_data.data
+				const data_array = share_data.data
 				data = data_array[ 0 ].data
 				mime_type = data_array[ 0 ].mimeType
 			}
@@ -339,12 +341,14 @@ export default Share = types.model('Share', {
 				console.log('Share:trigger_image_options:blocked - upload in progress')
 				return false
 			}
+			self.image_options_asset_uri = asset.uri
 			self.image_options_open = true
 		}),
 		
 		close_image_options: flow(function* () {
 			console.log('Share:close_image_options')
 			self.image_options_open = false
+			self.image_options_asset_uri = null
 		}),
 
 	}))
@@ -363,8 +367,8 @@ export default Share = types.model('Share', {
 		sorted_users() {
 			if (Platform.OS === "ios") {
 				return self.users.slice().sort((a, b) => {
-					const a_is_selected = Share.selected_user?.username === a.username
-					const b_is_selected = Share.selected_user?.username === b.username
+					const a_is_selected = self.selected_user?.username === a.username
+					const b_is_selected = self.selected_user?.username === b.username
 					return b_is_selected - a_is_selected
 				})
 			}
@@ -375,6 +379,18 @@ export default Share = types.model('Share', {
 					return b_is_selected - a_is_selected
 				})
 			}
+		},
+		image_options_asset() {
+			const assets = self.selected_user?.posting?.post_assets
+			if (!assets?.length) {
+				return null
+			}
+			if (self.image_options_asset_uri) {
+				return assets.find(asset => asset.uri === self.image_options_asset_uri) || assets[0]
+			}
+			return assets[0]
 		}
 	}))
 	.create()
+
+export default Share
