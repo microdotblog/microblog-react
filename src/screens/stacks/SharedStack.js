@@ -77,7 +77,10 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={RepliesScreen}
 			options={({ route }) => ({
 				headerTitle: "Replies",
-				...headerRightElement(() => <RefreshActivity type="replies" />)
+				...headerRightElement(
+					() => <RefreshActivity type="replies" />,
+					{ hidesSharedBackground: true }
+				)
 			})}
 		/>,
 		<Stack.Screen
@@ -86,7 +89,10 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={PagesScreen}
 			options={({ route }) => ({
 				headerTitle: "Pages",
-				...headerRightElement(() => <RefreshActivity type="pages" />)
+				...headerRightElement(
+					() => <RefreshActivity type="pages" />,
+					{ hidesSharedBackground: true }
+				)
 			})}
 		/>,
 		<Stack.Screen
@@ -95,7 +101,10 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={PostsScreen}
 			options={({ route }) => ({
 				headerTitle: "Posts",
-				...headerRightElement(() => <RefreshActivity type="posts" />)
+				...headerRightElement(
+					() => <RefreshActivity type="posts" />,
+					{ hidesSharedBackground: true }
+				)
 			})}
 		/>,
 		<Stack.Screen
@@ -113,7 +122,10 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={MutingScreen}
 			options={({ route }) => ({
 				headerTitle: "Muting",
-				...headerRightElement(() => <RefreshActivity type="muting" />)
+				...headerRightElement(
+					() => <RefreshActivity type="muting" />,
+					{ hidesSharedBackground: true }
+				)
 			})}
 		/>,
 	]
