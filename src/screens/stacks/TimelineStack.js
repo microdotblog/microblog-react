@@ -9,6 +9,7 @@ import NewPostButton from '../../components/header/new_post';
 import BackButton from '../../components/header/back';
 import { getSharedScreens } from './SharedStack'
 import App from '../../stores/App'
+import { headerLeftElement, headerRightElement } from '../../utils/navigation'
 
 const TimelineStack = createNativeStackNavigator();
 
@@ -29,13 +30,13 @@ export default class Timeline extends React.Component{
           name="Timeline"
           component={TimelineScreen}
           options={({ route }) => ({
-            headerLeft: () => <ProfileImage routeKey={route.name} />,
-            headerRight: () => <NewPostButton />,
+            ...headerLeftElement(() => <ProfileImage routeKey={route.name} />),
+            ...headerRightElement(() => <NewPostButton />),
           })}
         />
         <TimelineStack.Group
           screenOptions={({ }) => ({
-            headerLeft: () => <BackButton />,
+            ...headerLeftElement(() => <BackButton />),
             headerBackTitleVisible: false,
           })}
         >

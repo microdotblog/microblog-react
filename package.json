@@ -95,6 +95,7 @@
   },
   "patchedDependencies": {
     "@react-native-cookies/cookies@6.2.1": "patches/@react-native-cookies+cookies+6.2.1.patch",
+    "@react-navigation/bottom-tabs@7.8.8": "patches/@react-navigation+bottom-tabs+7.8.8.patch",
     "react-native-fs@2.20.0": "patches/react-native-fs+2.20.0.patch",
     "react-native-hyperlink@0.0.22": "patches/react-native-hyperlink@0.0.22.patch",
     "react-native-push-notification@8.1.1": "patches/react-native-push-notification+8.1.1.patch",

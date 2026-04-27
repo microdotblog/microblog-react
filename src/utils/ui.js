@@ -1,10 +1,20 @@
-import { Platform } from 'react-native';
+import { DynamicColorIOS, Platform } from 'react-native'
 
-export const STANDARD_SLOP = 10;
+export const STANDARD_SLOP = 10
 
 export function isLiquidGlass() {
 	return (
-		false
-		// (Platform.OS == 'ios') && (parseInt(Platform.Version, 10) >= 26)
-	);
+		(Platform.OS === 'ios') && (parseInt(Platform.Version, 10) >= 26)
+	)
+}
+
+export function liquidGlassTintColor() {
+	if (Platform.OS === 'ios') {
+		return DynamicColorIOS({
+			dark: 'white',
+			light: 'black'
+		})
+	}
+
+	return undefined
 }

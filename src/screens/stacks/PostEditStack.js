@@ -7,6 +7,7 @@ import PostingOptionsScreen from '../../screens/posts/options';
 import ClosePostClearButton from '../../components/header/close_post_clear';
 import UpdatePostButton from '../../components/header/update_post';
 import App from '../../stores/App'
+import { headerLeftElement, headerRightElement } from '../../utils/navigation'
 
 const PostingEditStack = createNativeStackNavigator();
 
@@ -31,8 +32,8 @@ export default class PostEditStack extends React.Component{
           component={PostEditScreen}
           options={{
             headerTitle: "Edit Post",
-            headerRight: () => <UpdatePostButton />,
-            headerLeft: () => <ClosePostClearButton />
+            ...headerRightElement(() => <UpdatePostButton />),
+            ...headerLeftElement(() => <ClosePostClearButton />)
           }}
         />
         <PostingEditStack.Screen
