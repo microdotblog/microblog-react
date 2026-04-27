@@ -66,7 +66,7 @@ export default class TabNavigator extends React.Component {
   }
 
   tab_tint_color() {
-    return isLiquidGlass() ? liquidGlassTintColor() : App.theme_accent_color()
+    return App.theme_accent_color()
   }
 
   inactive_tab_tint_color() {
