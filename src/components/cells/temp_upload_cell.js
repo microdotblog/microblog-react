@@ -12,6 +12,7 @@ export default class TempUploadCell extends React.Component {
   render() {
     const { upload } = this.props;
     const dimension = Dimensions.get("screen")?.width / 4 - 10;
+    const destructive_icon_color = App.theme_warning_text_color()
     const actions = [
       {
         title: "Cancel upload",
@@ -19,6 +20,7 @@ export default class TempUploadCell extends React.Component {
         image: Platform.select({
           ios: "trash",
         }),
+        imageColor: destructive_icon_color,
         attributes: {
           destructive: true,
         },
