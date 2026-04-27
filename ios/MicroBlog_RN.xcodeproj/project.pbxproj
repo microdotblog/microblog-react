@@ -69,7 +69,7 @@
 		0221AB3329D42CE400838597 /* MicroBlog_Share-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MicroBlog_Share-Bridging-Header.h"; sourceTree = "<group>"; };
 		0221AB3429D42CE500838597 /* ShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ShareViewController.swift; path = "../../node_modules/react-native-share-menu/ios/ShareViewController.swift"; sourceTree = "<group>"; };
 		0221AB3629D4307300838597 /* MicroBlog_Share.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MicroBlog_Share.entitlements; sourceTree = "<group>"; };
-		0221AB3729D4327B00838597 /* ReactShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReactShareViewController.swift; path = "../../node_modules/react-native-share-menu/ios/ReactShareViewController.swift"; sourceTree = "<group>"; };
+		0221AB3729D4327B00838597 /* ReactShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReactShareViewController.swift; sourceTree = "<group>"; };
 		0251EE442716191900B475D5 /* MicroBlog_RN-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MicroBlog_RN-Bridging-Header.h"; sourceTree = "<group>"; };
 		0251EE452716191A00B475D5 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		02A72C7B2C2AB086006EF653 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
