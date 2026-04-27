@@ -17,7 +17,12 @@ export default class NewPostButton extends React.Component{
     };
 
     if (isLiquidGlass()) {
-      button_style.paddingLeft = 4;
+      button_style = {
+        width: 44,
+        height: 44,
+        justifyContent: 'center',
+        alignItems: 'center'
+      }
     }
     
     if(Auth.selected_user != null && Auth.selected_user.posting?.posting_enabled()){

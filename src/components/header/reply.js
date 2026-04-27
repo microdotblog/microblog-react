@@ -14,8 +14,10 @@ export default class ReplyButton extends React.Component {
     
     if (isLiquidGlass()) {
       button_style = {
-        marginLeft: 7,
-        marginTop: 2
+        width: 44,
+        height: 44,
+        alignItems: 'center',
+        justifyContent: 'center'
       }
     }
 

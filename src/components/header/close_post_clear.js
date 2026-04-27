@@ -13,8 +13,12 @@ export default class ClosePostClearButton extends React.Component {
     let button_style = {};
   
     if (isLiquidGlass()) {
-      button_style.paddingLeft = 8;
-      button_style.paddingTop = 5;
+      button_style = {
+        width: 44,
+        height: 44,
+        alignItems: 'center',
+        justifyContent: 'center'
+      }
     }
 
     return (
