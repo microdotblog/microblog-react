@@ -1,4 +1,4 @@
-import { types, flow } from "mobx-state-tree"
+import { types, flow, isAlive } from "mobx-state-tree"
 import { Alert } from "react-native"
 import Post from "./Post"
 import Page from "./Page"
@@ -183,51 +183,73 @@ export default Destination = types.model('Destination', {
 				media,
 				service_object,
 				cancel_source,
-				is_cancelled: () => temp_upload.cancelled,
-				on_progress: progress => temp_upload.update_progress(progress),
-				on_local_uri: uri => temp_upload.set_cached_uri(uri)
+				is_cancelled: () => !isAlive(temp_upload) || temp_upload.cancelled,
+				on_progress: progress => {
+					if (isAlive(temp_upload)) {
+						temp_upload.update_progress(progress)
+					}
+				},
+				on_local_uri: uri => {
+					if (isAlive(temp_upload)) {
+						temp_upload.set_cached_uri(uri)
+					}
+				}
 			})
 
+			if (!isAlive(self) || !isAlive(temp_upload)) {
+				return
+			}
 			temp_upload.url = result.url
 			if (result.poster) {
 				temp_upload.poster = result.poster
 			}
 			temp_upload.did_upload = true
+			const uploaded_url = temp_upload.url
+			const uploaded_poster = temp_upload.poster
 
 			const upload_entry = {
-				url: temp_upload.url,
-				poster: temp_upload.poster
+				url: uploaded_url,
+				poster: uploaded_poster
 			}
 			self.uploads.unshift(upload_entry)
 
 			yield service.check_for_uploads_for_destination(self)
 
-			const asset = self.uploads.find(a => a.url === temp_upload.url)
+			if (!isAlive(self)) {
+				return
+			}
+			const asset = self.uploads.find(a => a.url === uploaded_url)
 			if (App.post_modal_is_open && asset) {
 				Auth.selected_user.posting?.add_to_post_text(asset.best_post_markup())
 			}
 
-			const temp_index = self.temp_uploads.indexOf(temp_upload)
-			if (temp_index >= 0) {
-				self.temp_uploads.splice(temp_index, 1)
+			if (isAlive(temp_upload)) {
+				const temp_index = self.temp_uploads.indexOf(temp_upload)
+				if (temp_index >= 0) {
+					self.temp_uploads.splice(temp_index, 1)
+				}
 			}
 		}
 		catch (error) {
-			const was_cancelled = temp_upload.cancelled
+			const was_cancelled = !isAlive(temp_upload) || temp_upload.cancelled
 			console.log("Destination:upload_large_media:error", error)
 			if (!was_cancelled) {
 				Alert.alert("Upload Failed", error?.message || "Could not upload video.")
 			}
-			temp_upload.did_upload = false
-			yield temp_upload.update_progress(0)
-			const temp_index = self.temp_uploads.indexOf(temp_upload)
-			if (temp_index >= 0) {
-				self.temp_uploads.splice(temp_index, 1)
+			if (isAlive(temp_upload)) {
+				temp_upload.did_upload = false
+				yield temp_upload.update_progress(0)
+				const temp_index = self.temp_uploads.indexOf(temp_upload)
+				if (temp_index >= 0) {
+					self.temp_uploads.splice(temp_index, 1)
+				}
 			}
 		}
 		finally {
-			temp_upload.is_uploading = false
-			temp_upload.cancel_source = null
+			if (isAlive(temp_upload)) {
+				temp_upload.is_uploading = false
+				temp_upload.cancel_source = null
+			}
 		}
 	}),
 
@@ -236,18 +258,20 @@ export default Destination = types.model('Destination', {
 		const temp_upload = TempUpload.create(media)
 		self.temp_uploads.push(temp_upload)
 		const result = yield temp_upload.upload(service.service_object(), self)
-		if (result) {
+		if (result && isAlive(self) && isAlive(temp_upload)) {
 			console.log("Destination:upload_media:success", result)
+			const uploaded_url = temp_upload.url
+			const uploaded_poster = temp_upload.poster
 			const upload = {
-				url: temp_upload.url,
-				poster: temp_upload.poster,
+				url: uploaded_url,
+				poster: uploaded_poster,
 			}
 			self.uploads.unshift(upload)
 			self.temp_uploads.remove(temp_upload)
 			// Because we're uploading from within the post editor, we also
 			// want to automatically set the upload within the post.
 			if(App.post_modal_is_open){
-				const asset = self.uploads.find(a => a.url === upload.url)
+				const asset = self.uploads.find(a => a.url === uploaded_url)
 				if(asset){
 					Auth.selected_user.posting?.add_to_post_text(asset.best_post_markup())
 					// TODO: Should we bring this back?

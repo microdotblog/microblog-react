@@ -1,4 +1,4 @@
-import { types, flow, destroy } from 'mobx-state-tree';
+import { types, flow, destroy, isAlive } from 'mobx-state-tree';
 import Service from './posting/Service';
 import { blog_services } from './../enums/blog_services';
 import { Alert, Platform, Linking, NativeModules } from 'react-native';
@@ -320,6 +320,9 @@ export default Posting = types.model('Posting', {
 
   upload_video_asset: flow(function* (media_asset) {
     try {
+      if (!isAlive(media_asset)) {
+        return false
+      }
       console.log("Posting:upload_video_asset:start", media_asset?.uri)
       const service_object = self.selected_service?.service_object()
       if (!service_object) {
@@ -330,14 +333,35 @@ export default Posting = types.model('Posting', {
       media_asset.progress = 0
       media_asset.cancelled = false
       media_asset.cancel_source = create_cancel_source()
+      const upload_media = {
+        uri: media_asset.uri,
+        type: media_asset.type,
+        fileName: media_asset.fileName,
+        filename: media_asset.filename,
+        name: media_asset.name,
+        fileSize: media_asset.fileSize,
+        file_size: media_asset.file_size,
+        cached_uri: media_asset.cached_uri
+      }
       const result = yield upload_large_media_task({
-        media: media_asset,
+        media: upload_media,
         service_object,
         cancel_source: media_asset.cancel_source,
-        is_cancelled: () => media_asset.cancelled,
-        on_progress: progress => media_asset.update_progress(progress),
-        on_local_uri: uri => media_asset.set_cached_uri(uri)
+        is_cancelled: () => !isAlive(media_asset) || media_asset.cancelled,
+        on_progress: progress => {
+          if (isAlive(media_asset)) {
+            media_asset.update_progress(progress)
+          }
+        },
+        on_local_uri: uri => {
+          if (isAlive(media_asset)) {
+            media_asset.set_cached_uri(uri)
+          }
+        }
       })
+      if (!isAlive(media_asset)) {
+        return false
+      }
       media_asset.remote_url = result.url
       if (result.poster) {
         media_asset.remote_poster_url = result.poster
@@ -345,19 +369,23 @@ export default Posting = types.model('Posting', {
       media_asset.did_upload = true
     }
     catch (error) {
-      const was_cancelled = media_asset.cancelled
+      const was_cancelled = !isAlive(media_asset) || media_asset.cancelled
       console.log("Posting:upload_video_asset:error", error)
       if (!was_cancelled) {
         Alert.alert("Upload Failed", error?.message || "Could not upload video.")
       }
-      media_asset.did_upload = false
-      if (!was_cancelled) {
-        media_asset.progress = 0
+      if (isAlive(media_asset)) {
+        media_asset.did_upload = false
+        if (!was_cancelled) {
+          media_asset.progress = 0
+        }
       }
     }
     finally {
-      media_asset.is_uploading = false
-      media_asset.cancel_source = null
+      if (isAlive(media_asset)) {
+        media_asset.is_uploading = false
+        media_asset.cancel_source = null
+      }
     }
   }),
   
@@ -406,7 +434,7 @@ export default Posting = types.model('Posting', {
       console.log("Posting:asset_option_screen:blocked - upload in progress")
       return false
     }
-    return App.navigate_to_screen("ImageOptions", { asset: asset, index: index })
+    return App.navigate_to_screen("ImageOptions", { asset_uri: asset.uri, index: index })
   }),
   
   remove_asset: flow(function* (media_index) {

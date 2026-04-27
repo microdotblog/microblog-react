@@ -56,7 +56,7 @@ export default class Posting extends React.Component{
           options={({ route, navigation }) => ({
             headerTitle: "Image Options",
             ...headerLeftElement(() => <BackButton />),
-            ...headerRightElement(() => <RemoveImageButton navigation={navigation} asset={route.params?.asset} index={route.params?.index} />)
+            ...headerRightElement(() => <RemoveImageButton navigation={navigation} asset_uri={route.params?.asset_uri} index={route.params?.index} />)
           })}
         />
         <PostingStack.Screen

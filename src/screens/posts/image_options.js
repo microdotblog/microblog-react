@@ -6,8 +6,8 @@ import Auth from '../../stores/Auth';
 import App from '../../stores/App'
 import Clipboard from '@react-native-clipboard/clipboard';
 import Video from 'react-native-video';
-import MicroPubApi from '../../api/MicroPubApi';
-import MBImage from '../../components/common/MBImage';
+import MicroPubApi from '../../api/MicroPubApi'
+import MBImage from '../../components/common/MBImage'
 
 @observer
 export default class ImageOptionsScreen extends React.Component{
@@ -41,9 +41,21 @@ export default class ImageOptionsScreen extends React.Component{
     });
   }
 
+  _current_asset = () => {
+    const { asset_uri } = this.props.route.params || {}
+    const posting = Auth.selected_user.posting
+    if (asset_uri) {
+      return posting.post_assets.find(file => file.uri === asset_uri)
+    }
+    return null
+  }
+
   _check_uploads_for_text(results) {
-    const { asset } = this.props.route.params;
-    let found = false;
+    const asset = this._current_asset()
+    if (!asset) {
+      return false
+    }
+    let found = false
   
     if (results.items != null) {
       for (let item of results.items) {
@@ -79,7 +91,10 @@ export default class ImageOptionsScreen extends React.Component{
   
   render() {
     const { posting } = Auth.selected_user
-    const { asset } = this.props.route.params
+    const asset = this._current_asset()
+    if (!asset) {
+      return null
+    }
         
     const max_media_height = 250; // cap media height
     const window_width = Dimensions.get('window').width;
