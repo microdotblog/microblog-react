@@ -24,7 +24,7 @@ class ReactShareViewController: ShareViewController, ReactShareViewDelegate {
 
     let rootView = factory.rootViewFactory.view(
       withModuleName: "ShareMenuModuleComponent",
-      initialProperties: nil,
+      initialProperties: ["colorScheme": currentColorScheme()],
       launchOptions: nil
     )
     rootView.backgroundColor = configuredBackgroundColor()
@@ -68,6 +68,15 @@ class ReactShareViewController: ShareViewController, ReactShareViewDelegate {
     let alpha = numberValue(backgroundColorConfig[COLOR_ALPHA_KEY], fallback: 1)
 
     return UIColor(red: red, green: green, blue: blue, alpha: alpha)
+  }
+
+  private func currentColorScheme() -> String {
+    var interfaceStyle = traitCollection.userInterfaceStyle
+    if interfaceStyle == .unspecified {
+      interfaceStyle = UIScreen.main.traitCollection.userInterfaceStyle
+    }
+
+    return interfaceStyle == .dark ? "dark" : "light"
   }
 
   private func numberValue(_ value: Any?, fallback: CGFloat) -> CGFloat {
