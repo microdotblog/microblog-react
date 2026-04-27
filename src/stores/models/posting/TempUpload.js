@@ -1,5 +1,5 @@
 import Clipboard from '@react-native-clipboard/clipboard'
-import { types, flow } from 'mobx-state-tree'
+import { types, flow, isAlive } from 'mobx-state-tree'
 import { Image } from 'react-native'
 import Toast from 'react-native-simple-toast'
 import axios from 'axios'
@@ -39,7 +39,21 @@ export default TempUpload = types.model('TempUpload', {
 			console.log("TempUpload:upload", service_object, destination.uri)
 			self.is_uploading = true
 			self.cancel_source = axios.CancelToken.source()
-			const response = yield MicroPubApi.upload_media(service_object, self, destination.uri)
+			const upload_file = {
+				uri: self.uri,
+				type: self.type,
+				name: self.name,
+				cancel_source: self.cancel_source,
+				update_progress: progress => {
+					if (isAlive(self)) {
+						self.update_progress(progress)
+					}
+				}
+			}
+			const response = yield MicroPubApi.upload_media(service_object, upload_file, destination.uri)
+			if (!isAlive(self)) {
+				return false
+			}
 			console.log("TempUpload:upload", response)
 			if (response !== POST_ERROR && response.success) {
 				const upload_url = response.headers?.location || response.data?.url
