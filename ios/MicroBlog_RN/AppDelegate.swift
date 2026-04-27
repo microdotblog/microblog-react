@@ -4,29 +4,26 @@
 //
 //  Created by Vincent Ritter on 02/10/2025.
 //
-
-
-import UIKit
+internal import Expo
 import React
-import React_RCTAppDelegate
 import ReactAppDependencyProvider
 import RNShareMenu
 import UserNotifications
 
 @main
-class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: ExpoAppDelegate, UNUserNotificationCenterDelegate {
   var window: UIWindow?
 
-  var reactNativeDelegate: ReactNativeDelegate?
+  var reactNativeDelegate: ExpoReactNativeFactoryDelegate?
   var reactNativeFactory: RCTReactNativeFactory?
 
-  func application(
+  public override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
     NSLog("PushDebug:didFinishLaunchingWithOptions launchOptions=%@", String(describing: launchOptions))
     let delegate = ReactNativeDelegate()
-    let factory = RCTReactNativeFactory(delegate: delegate)
+    let factory = ExpoReactNativeFactory(delegate: delegate)
     delegate.dependencyProvider = RCTAppDependencyProvider()
 
     reactNativeDelegate = delegate
@@ -42,11 +39,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     UNUserNotificationCenter.current().delegate = self
 
-    return true
+    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
-  func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-    return ShareMenuManager.application(application, open: url, options: options)
+  public override func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+    return ShareMenuManager.application(application, open: url, options: options) || super.application(application, open: url, options: options)
   }
 
   // Required to register for notifications
@@ -55,19 +52,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
   }
 
   // Required for the register event.
-  func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+  public override func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
     NSLog("PushDebug:didRegisterForRemoteNotificationsWithDeviceToken")
     RNCPushNotificationIOS.didRegisterForRemoteNotifications(withDeviceToken: deviceToken)
   }
 
   // Required for the notification event. You must call the completion handler after handling the remote notification.
-  func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+  public override func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
     NSLog("PushDebug:didReceiveRemoteNotification userInfo=%@", String(describing: userInfo))
     RNCPushNotificationIOS.didReceiveRemoteNotification(userInfo, fetchCompletionHandler: completionHandler)
   }
 
   // Required for the registrationError event.
-  func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+  public override func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
     RNCPushNotificationIOS.didFailToRegisterForRemoteNotificationsWithError(error)
   }
 
@@ -103,14 +100,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
   }
 }
 
-class ReactNativeDelegate: RCTDefaultReactNativeFactoryDelegate {
+class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
   override func sourceURL(for bridge: RCTBridge) -> URL? {
-    self.bundleURL()
+    bridge.bundleURL ?? bundleURL()
   }
 
   override func bundleURL() -> URL? {
 #if DEBUG
-    RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index")
+    RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: ".expo/.virtual-metro-entry")
 #else
     Bundle.main.url(forResource: "main", withExtension: "jsbundle")
 #endif
