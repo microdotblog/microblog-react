@@ -24,8 +24,8 @@ export default class CloseModalButton extends React.Component {
     
     if (isLiquidGlass()) {
       button_style = {
-        width: 44,
-        height: 44,
+        width: 28,
+        height: 28,
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row'

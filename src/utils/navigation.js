@@ -1,17 +1,17 @@
 import { isLiquidGlass } from './ui'
 
-function customHeaderItem(element) {
+function customHeaderItem(element, options = {}) {
   return {
     type: 'custom',
     element,
-    hidesSharedBackground: false
+    hidesSharedBackground: options.hidesSharedBackground === true
   }
 }
 
-export function headerLeftElement(renderElement) {
+export function headerLeftElement(renderElement, options = {}) {
   if (isLiquidGlass()) {
     return {
-      unstable_headerLeftItems: () => [customHeaderItem(renderElement())]
+      unstable_headerLeftItems: () => [customHeaderItem(renderElement(), options)]
     }
   }
 
@@ -20,10 +20,10 @@ export function headerLeftElement(renderElement) {
   }
 }
 
-export function headerRightElement(renderElement) {
+export function headerRightElement(renderElement, options = {}) {
   if (isLiquidGlass()) {
     return {
-      unstable_headerRightItems: () => [customHeaderItem(renderElement())]
+      unstable_headerRightItems: () => [customHeaderItem(renderElement(), options)]
     }
   }
 
