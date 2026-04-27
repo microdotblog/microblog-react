@@ -138,6 +138,9 @@ export default class UploadCell extends React.Component {
 
   render() {
     const { upload } = this.props;
+    const icon_color = App.theme_text_color()
+    const destructive_icon_color = App.theme_warning_text_color()
+
     if (this.props.add_to_editor) {
       return (
         <Pressable
@@ -194,6 +197,7 @@ export default class UploadCell extends React.Component {
               image: Platform.select({
                 ios: "link",
               }),
+              imageColor: icon_color,
             },
             {
               title: "Copy HTML",
@@ -201,6 +205,7 @@ export default class UploadCell extends React.Component {
               image: Platform.select({
                 ios: "curlybraces",
               }),
+              imageColor: icon_color,
             },
             ...(upload.is_audio()
               ? [
@@ -210,6 +215,7 @@ export default class UploadCell extends React.Component {
                     image: Platform.select({
                       ios: "curlybraces",
                     }),
+                    imageColor: icon_color,
                   },
                 ]
               : []),
@@ -221,6 +227,7 @@ export default class UploadCell extends React.Component {
                     image: Platform.select({
                       ios: "textformat",
                     }),
+                    imageColor: icon_color,
                   },
                 ]
               : []),
@@ -230,6 +237,7 @@ export default class UploadCell extends React.Component {
               image: Platform.select({
                 ios: "photo.on.rectangle",
               }),
+              imageColor: icon_color,
             },
             {
               title: "Get Info",
@@ -237,6 +245,7 @@ export default class UploadCell extends React.Component {
               image: Platform.select({
                 ios: "info.circle",
               }),
+              imageColor: icon_color,
             },
             {
               title: "Open in Browser",
@@ -244,6 +253,7 @@ export default class UploadCell extends React.Component {
               image: Platform.select({
                 ios: "safari",
               }),
+              imageColor: icon_color,
             },
             {
               title: "Delete...",
@@ -251,6 +261,7 @@ export default class UploadCell extends React.Component {
               image: Platform.select({
                 ios: "trash",
               }),
+              imageColor: destructive_icon_color,
               attributes: {
                 destructive: true,
               },
