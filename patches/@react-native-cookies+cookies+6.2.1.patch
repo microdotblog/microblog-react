@@ -1,6 +1,6 @@
-diff --git a/node_modules/@react-native-cookies/cookies/android/build.gradle b/node_modules/@react-native-cookies/cookies/android/build.gradle
---- a/node_modules/@react-native-cookies/cookies/android/build.gradle
-+++ b/node_modules/@react-native-cookies/cookies/android/build.gradle
+diff --git a/android/build.gradle b/android/build.gradle
+--- a/android/build.gradle
++++ b/android/build.gradle
 @@ -31,7 +31,7 @@ buildscript {
      if (project == rootProject) {
          repositories {
