@@ -110,6 +110,7 @@ export default class ImageOptionsScreen extends React.Component{
         media_width = max_media_height * aspect_ratio;
       }
     }
+    const image_uri = asset.uri ? asset.uri : asset.remote_url
 
     return(
       <KeyboardAvoidingView behavior={"padding"} style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
@@ -135,7 +136,7 @@ export default class ImageOptionsScreen extends React.Component{
                 repeat
               />
               :
-              <MBImage source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} contentFit="contain" style={{ width: media_width, height: media_height }} />
+              <MBImage source={{ uri: image_uri }} contentFit="contain" style={{ width: media_width, height: media_height }} />
             }
             {
               asset.is_uploading ?
