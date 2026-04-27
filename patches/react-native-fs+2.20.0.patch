@@ -1,7 +1,7 @@
-diff --git a/node_modules/react-native-fs/RNFSManager.m b/node_modules/react-native-fs/RNFSManager.m
+diff --git a/RNFSManager.m b/RNFSManager.m
 index 5ddd941..7bca62a 100755
---- a/node_modules/react-native-fs/RNFSManager.m
-+++ b/node_modules/react-native-fs/RNFSManager.m
+--- a/RNFSManager.m
++++ b/RNFSManager.m
 @@ -294,8 +294,8 @@ + (BOOL)requiresMainQueueSetup
  }
  

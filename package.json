@@ -9,7 +9,6 @@
     "start": "react-native start --client-logs",
     "test": "jest",
     "lint": "eslint .",
-    "postinstall": "patch-package",
     "check-dependencies": "rnx-align-deps",
     "fix-dependencies": "rnx-align-deps --write",
     "pods": "npx pod-install ios",
@@ -84,8 +83,6 @@
     "babel-preset-expo": "~55.0.18",
     "eslint": "^8.57.1",
     "jest": "^29.7.0",
-    "patch-package": "^6.5.1",
-    "postinstall-postinstall": "^2.1.0",
     "prettier": "2.8.8",
     "react-test-renderer": "19.2.0",
     "typescript": "~5.8.3"
@@ -97,7 +94,10 @@
     "node": ">=20.19.4"
   },
   "patchedDependencies": {
+    "@react-native-cookies/cookies@6.2.1": "patches/@react-native-cookies+cookies+6.2.1.patch",
+    "react-native-fs@2.20.0": "patches/react-native-fs+2.20.0.patch",
     "react-native-hyperlink@0.0.22": "patches/react-native-hyperlink@0.0.22.patch",
+    "react-native-push-notification@8.1.1": "patches/react-native-push-notification+8.1.1.patch",
     "react-native-sensitive-info@5.5.8": "patches/react-native-sensitive-info@5.5.8.patch"
   }
 }
