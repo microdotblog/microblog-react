@@ -2,6 +2,7 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import { RefreshControl, Platform, View } from "react-native"
 import { useFocusEffect } from '@react-navigation/native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Auth from '../../stores/Auth'
 import App from '../../stores/App'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -15,8 +16,10 @@ import {
   is_webview_endpoint_url,
   should_attempt_webview_recovery,
 } from '../../utils/webview_recovery'
+import { liquidGlassWebViewBottomInset } from '../../utils/ui'
 
 const WebViewModule = observer((props) => {
+  const insets = useSafeAreaInsets()
   const webViewRef = React.useRef(null)
   const hasSetDidLoadRef = React.useRef(false)
   const hasAttemptedRecoveryRef = React.useRef(false)
@@ -39,6 +42,33 @@ const WebViewModule = observer((props) => {
     token: Auth.selected_user?.token?.() ?? '',
     web_url,
   })
+  const web_view_bottom_padding = liquidGlassWebViewBottomInset(insets.bottom)
+  const web_view_css_properties_javascript = `
+    (() => {
+      const bottom_padding = '${web_view_bottom_padding}px'
+      const apply_bottom_padding = () => {
+        document.documentElement.style.setProperty('--microblog-webview-bottom-padding', bottom_padding)
+
+        if (document.body) {
+          document.body.style.setProperty('padding-bottom', 'var(--microblog-webview-bottom-padding)')
+        }
+      }
+
+      apply_bottom_padding()
+
+      if (!document.body) {
+        document.addEventListener('DOMContentLoaded', apply_bottom_padding, { once: true })
+      }
+    })()
+    true
+  `
+  const web_view_injected_javascript = Platform.OS === 'ios' ? `
+    const meta = document.createElement('meta')
+    meta.setAttribute('content', 'width=width, initial-scale=${App.web_font_scale()}')
+    meta.setAttribute('name', 'viewport')
+    document.getElementsByTagName('head')[0].appendChild(meta)
+    ${web_view_css_properties_javascript}
+  ` : null
 
   useFocusEffect(
     React.useCallback(() => {
@@ -57,6 +87,12 @@ const WebViewModule = observer((props) => {
   React.useEffect(() => {
     hasAttemptedRecoveryRef.current = false
   }, [props.endpoint])
+
+  React.useEffect(() => {
+    if (Platform.OS === 'ios') {
+      webViewRef.current?.injectJavaScript(web_view_css_properties_javascript)
+    }
+  }, [web_view_css_properties_javascript])
 
   const on_refresh = () => {
     setState(prevState => {
@@ -215,7 +251,8 @@ const WebViewModule = observer((props) => {
         }}
         style={{ flex: 1, backgroundColor: App.theme_background_color(), opacity: state.opacity }}
         renderError={(name, code, description) => <WebErrorViewModule error_name={description} />}
-        injectedJavaScript={Platform.OS === 'ios' ? `const meta = document.createElement('meta'); meta.setAttribute('content', 'width=width, initial-scale=${App.web_font_scale()}'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);` : null}
+        injectedJavaScript={web_view_injected_javascript}
+        injectedJavaScriptBeforeContentLoaded={Platform.OS === 'ios' ? web_view_css_properties_javascript : null}
         onContentProcessDidTerminate={onContentProcessDidTerminate}
       />
     )
