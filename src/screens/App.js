@@ -37,6 +37,7 @@ import Share from '../stores/Share'
 import ShareMenu from 'react-native-share-menu'
 import ShareScreen from './share'
 import PublishingProgress from '../components/generic/publishing_progress'
+import { headerLeftElement, headerRightElement } from '../utils/navigation'
 
 const Stack = createNativeStackNavigator();
 
@@ -163,7 +164,7 @@ export default class MainApp extends React.Component {
                       presentation: "fullScreenModal",
                       headerShown: true,
                       gestureEnabled: true,
-                      headerLeft: () => <CloseModalButton />
+                      ...headerLeftElement(() => <CloseModalButton />)
                     }}
                   >
                     <Stack.Screen
@@ -172,7 +173,7 @@ export default class MainApp extends React.Component {
                       options={({ route }) => ({
                         headerTitle: "New Reply",
                         gestureEnabled: true,
-                        headerRight: () => <PostReplyButton conversation_id={route.params?.conversation_id} />
+                        ...headerRightElement(() => <PostReplyButton conversation_id={route.params?.conversation_id} />)
                       })}
                     />
                     <Stack.Screen
@@ -224,7 +225,7 @@ export default class MainApp extends React.Component {
                       options={{
                         headerTitle: "Update Reply",
                         gestureEnabled: false,
-                        headerRight: () => <UpdateReplyButton />
+                        ...headerRightElement(() => <UpdateReplyButton />)
                       }}
                     />
                     <Stack.Screen
@@ -233,8 +234,8 @@ export default class MainApp extends React.Component {
                       options={{
                         headerTitle: "Edit Page",
                         gestureEnabled: false,
-                        headerLeft: () => <ClosePostClearButton />,
-                        headerRight: () => <UpdatePageButton />
+                        ...headerLeftElement(() => <ClosePostClearButton />),
+                        ...headerRightElement(() => <UpdatePageButton />)
                       }}
                     />
                     <Stack.Screen

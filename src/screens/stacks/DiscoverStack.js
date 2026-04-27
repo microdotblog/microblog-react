@@ -9,6 +9,7 @@ import BackButton from '../../components/header/back';
 import DiscoverTopicScreen from '../../screens/discover/topic';
 import { getSharedScreens } from './SharedStack'
 import App from '../../stores/App'
+import { headerLeftElement, headerRightElement } from '../../utils/navigation'
 
 const DiscoverStack = createNativeStackNavigator();
 
@@ -29,13 +30,13 @@ export default class Discover extends React.Component{
           name="Discover"
           component={DiscoverScreen}
           options={({ route }) => ({
-            headerLeft: () => <ProfileImage routeKey={route.name} />,
-            headerRight: () => <NewPostButton />
+            ...headerLeftElement(() => <ProfileImage routeKey={route.name} />),
+            ...headerRightElement(() => <NewPostButton />)
           })}
         />
         <DiscoverStack.Group
           screenOptions={({ }) => ({
-            headerLeft: () => <BackButton />,
+            ...headerLeftElement(() => <BackButton />),
             headerBackTitleVisible: false
           })}
         >
@@ -45,7 +46,7 @@ export default class Discover extends React.Component{
             component={DiscoverTopicScreen}
             options={({ route }) => ({
               headerTitle: `${route.params?.topic.emoji} ${route.params?.topic.title}`,
-              headerRight: () => <NewPostButton />
+              ...headerRightElement(() => <NewPostButton />)
             })}
           />
         </DiscoverStack.Group>

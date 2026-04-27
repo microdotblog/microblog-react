@@ -1,0 +1,39 @@
+diff --git a/src/unstable/NativeBottomTabView.native.tsx b/src/unstable/NativeBottomTabView.native.tsx
+--- a/src/unstable/NativeBottomTabView.native.tsx
++++ b/src/unstable/NativeBottomTabView.native.tsx
+@@ -15,8 +15,7 @@ import Color from 'color';
+ import * as React from 'react';
+ import { type ColorValue, Platform, PlatformColor } from 'react-native';
+ import {
+-  BottomTabs,
+-  BottomTabsScreen,
++  Tabs,
+   type BottomTabsScreenItemStateAppearance,
+   type PlatformIcon,
+ } from 'react-native-screens';
+@@ -31,6 +30,9 @@ import type {
+   NativeBottomTabNavigationProp,
+ } from './types';
++
++const BottomTabs = Tabs.Host;
++const BottomTabsScreen = Tabs.Screen;
++
+ type Props = NativeBottomTabNavigationConfig & {
+   state: TabNavigationState<ParamListBase>;
+   navigation: NativeBottomTabNavigationHelpers;
+diff --git a/lib/module/unstable/NativeBottomTabView.native.js b/lib/module/unstable/NativeBottomTabView.native.js
+--- a/lib/module/unstable/NativeBottomTabView.native.js
++++ b/lib/module/unstable/NativeBottomTabView.native.js
+@@ -5,9 +5,11 @@ import { CommonActions, StackActions, useTheme } from '@react-navigation/native';
+ import Color from 'color';
+ import * as React from 'react';
+ import { Platform, PlatformColor } from 'react-native';
+-import { BottomTabs, BottomTabsScreen } from 'react-native-screens';
++import { Tabs } from 'react-native-screens';
+ import { NativeScreen } from "./NativeScreen/NativeScreen.js";
+ import { jsx as _jsx } from "react/jsx-runtime";
++const BottomTabs = Tabs.Host;
++const BottomTabsScreen = Tabs.Screen;
+ export function NativeBottomTabView({
+   state,
+   navigation,

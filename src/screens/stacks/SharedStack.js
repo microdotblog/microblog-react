@@ -16,6 +16,7 @@ import CollectionsScreen from '../uploads/collections'
 import NewPostButton from '../../components/header/new_post';
 import NewCollectionButton from '../../components/header/new_collection';
 import App from '../../stores/App'
+import { headerRightElement } from '../../utils/navigation'
 
 export const getSharedScreens = (Stack, tab_name) => {
 	return [
@@ -25,7 +26,7 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={ProfileScreen}
 			options={({ route }) => ({
 				headerTitle: `@${route.params?.username}`,
-				headerRight: () => <NewPostButton />
+				...headerRightElement(() => <NewPostButton />)
 			})}
 		/>,
 		<Stack.Screen
@@ -34,7 +35,7 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={ConversationScreen}
 			options={({ route }) => ({
 				headerTitle: `Conversation`,
-				headerRight: () => <ReplyButton conversation_id={route.params?.conversation_id} />
+				...headerRightElement(() => <ReplyButton conversation_id={route.params?.conversation_id} />)
 			})}
 			listeners={() => ({
 				focus: () => {
@@ -51,7 +52,7 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={FollowingScreen}
 			options={({ route }) => ({
 				headerTitle: `Following`,
-				headerRight: () => <NewPostButton />
+				...headerRightElement(() => <NewPostButton />)
 			})}
 		/>,
 		<Stack.Screen
@@ -60,14 +61,14 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={UploadsScreen}
 			options={({ route }) => ({
 				headerTitle: `Uploads`,
-				headerRight: () => {
+				...headerRightElement(() => {
 					return (
 						<View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
 							<RefreshActivity type="uploads" />
 							<NewUploadButton />
 						</View>
 					)
-				}
+				})
 			})}
 		/>,
 		<Stack.Screen
@@ -76,7 +77,7 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={RepliesScreen}
 			options={({ route }) => ({
 				headerTitle: "Replies",
-				headerRight: () => <RefreshActivity type="replies" />
+				...headerRightElement(() => <RefreshActivity type="replies" />)
 			})}
 		/>,
 		<Stack.Screen
@@ -85,7 +86,7 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={PagesScreen}
 			options={({ route }) => ({
 				headerTitle: "Pages",
-				headerRight: () => <RefreshActivity type="pages" />
+				...headerRightElement(() => <RefreshActivity type="pages" />)
 			})}
 		/>,
 		<Stack.Screen
@@ -94,7 +95,7 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={PostsScreen}
 			options={({ route }) => ({
 				headerTitle: "Posts",
-				headerRight: () => <RefreshActivity type="posts" />
+				...headerRightElement(() => <RefreshActivity type="posts" />)
 			})}
 		/>,
 		<Stack.Screen
@@ -103,7 +104,7 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={CollectionsScreen}
 			options={({ route }) => ({
 				headerTitle: "Collections",
-				headerRight: () => <NewCollectionButton />
+				...headerRightElement(() => <NewCollectionButton />)
 			})}
 		/>,
 		<Stack.Screen
@@ -112,7 +113,7 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={MutingScreen}
 			options={({ route }) => ({
 				headerTitle: "Muting",
-				headerRight: () => <RefreshActivity type="muting" />
+				...headerRightElement(() => <RefreshActivity type="muting" />)
 			})}
 		/>,
 	]

@@ -1,17 +1,88 @@
-import * as React from 'react';
-import { observer } from 'mobx-react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import App from '../../stores/App';
-import TimelineStack from './TimelineStack';
-import MentionsStack from './MentionsStack';
-import BookmarksStack from './BookmarksStack';
-import DiscoverStack from './DiscoverStack';
-import TabIcon from '../../components/tabs/tab';
+import * as React from 'react'
+import { Platform } from 'react-native'
+import { observer } from 'mobx-react'
+import { createNativeBottomTabNavigator } from '@react-navigation/bottom-tabs/unstable'
+import App from '../../stores/App'
+import TimelineStack from './TimelineStack'
+import MentionsStack from './MentionsStack'
+import BookmarksStack from './BookmarksStack'
+import DiscoverStack from './DiscoverStack'
+import TimelineIcon from './../../assets/icons/tab_bar/timeline.png'
+import MentionsIcon from './../../assets/icons/tab_bar/mentions.png'
+import DiscoverIcon from './../../assets/icons/tab_bar/discover.png'
+import BookmarksIcon from './../../assets/icons/nav/bookmarks.png'
+import { isLiquidGlass, liquidGlassTintColor } from '../../utils/ui'
 
-const Tab = createBottomTabNavigator();
+const Tab = createNativeBottomTabNavigator()
+
+const TAB_ICONS = {
+  TimelineStack: {
+    ios: {
+      default: 'bubble.left.and.bubble.right',
+      selected: 'bubble.left.and.bubble.right.fill'
+    },
+    image: TimelineIcon
+  },
+  MentionsStack: {
+    ios: {
+      default: 'at',
+      selected: 'at'
+    },
+    image: MentionsIcon
+  },
+  BookmarksStack: {
+    ios: {
+      default: 'star',
+      selected: 'star.fill'
+    },
+    image: BookmarksIcon
+  },
+  DiscoverStack: {
+    ios: {
+      default: 'magnifyingglass',
+      selected: 'magnifyingglass'
+    },
+    image: DiscoverIcon
+  }
+}
 
 @observer
 export default class TabNavigator extends React.Component {
+
+  tab_icon(route_name, focused) {
+    const icon = TAB_ICONS[route_name]
+
+    if (Platform.OS === 'ios') {
+      return {
+        type: 'sfSymbol',
+        name: focused ? icon.ios.selected : icon.ios.default
+      }
+    }
+
+    return {
+      type: 'image',
+      source: icon.image
+    }
+  }
+
+  tab_tint_color() {
+    return isLiquidGlass() ? liquidGlassTintColor() : App.theme_accent_color()
+  }
+
+  inactive_tab_tint_color() {
+    return isLiquidGlass() ? liquidGlassTintColor() : App.theme_text_color()
+  }
+
+  tab_bar_style() {
+    if (isLiquidGlass()) {
+      return undefined
+    }
+
+    return {
+      backgroundColor: App.theme_navbar_background_color(),
+      shadowColor: App.theme_tabbar_divider_color()
+    }
+  }
 
   render() {
     return (
@@ -19,22 +90,17 @@ export default class TabNavigator extends React.Component {
         id="tab_navigator"
         initialRouteName="TimelineStack"
         screenOptions={({ route }) => ({
-          tabBarStyle: {
-            borderTopColor: App.theme_tabbar_divider_color(),
-            borderTopWidth: 0.5,
-            backgroundColor: App.theme_navbar_background_color(),
-            elevation: 0,
-            shadowOpacity: 0
-          },
-          tabBarIcon: ({ focused, color, size }) => {
-            return <TabIcon route={route} focused={focused} size={size} color={color} />;
+          tabBarStyle: this.tab_bar_style(),
+          tabBarIcon: ({ focused }) => {
+            return this.tab_icon(route.name, focused)
           },
           headerShown: false,
-          tabBarActiveTintColor: App.theme_accent_color()
+          tabBarActiveTintColor: this.tab_tint_color(),
+          tabBarInactiveTintColor: this.inactive_tab_tint_color()
         })}
         screenListeners={{
           state: (e) => {
-            App.set_current_tab_index(e.data.state.index)
+            App.set_current_tab_index(e.data?.state?.index)
           },
           focus: (e) => {
             App.set_current_tab_key(e.target)
