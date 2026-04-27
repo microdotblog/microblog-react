@@ -33,6 +33,10 @@
 		4BAA745F2A24E78700953D91 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		4BB0A4602DFCA4DC00900B0B /* MBClipboardHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BB0A45F2DFCA4DC00900B0B /* MBClipboardHelper.m */; };
 		4BB0A4612DFCA4DC00900B0B /* MBClipboardHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BB0A45F2DFCA4DC00900B0B /* MBClipboardHelper.m */; };
+		4BD1A3032F08000000A10001 /* MBLiquidGlassButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD1A3012F08000000A10001 /* MBLiquidGlassButton.m */; };
+		4BD1A3042F08000000A10001 /* MBLiquidGlassButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD1A3012F08000000A10001 /* MBLiquidGlassButton.m */; };
+		4BD1A3052F08000000A10001 /* MBLiquidGlassButtonManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD1A3022F08000000A10001 /* MBLiquidGlassButtonManager.m */; };
+		4BD1A3062F08000000A10001 /* MBLiquidGlassButtonManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD1A3022F08000000A10001 /* MBLiquidGlassButtonManager.m */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8C619CFF939F9E33E65A6DAA /* libPods-MicroBlog_RN.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1AD34313DED25C45B534DA /* libPods-MicroBlog_RN.a */; };
 		BF76CC3E2E8E980900F61FC2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF76CC3D2E8E980900F61FC2 /* AppDelegate.swift */; };
@@ -94,6 +98,9 @@
 		4B8CE8AA2A1FCC69006D79CF /* GetURL.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = GetURL.js; sourceTree = "<group>"; };
 		4BB0A45E2DFCA4DC00900B0B /* MBClipboardHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MBClipboardHelper.h; path = MicroBlog_RN/MBClipboardHelper.h; sourceTree = "<group>"; };
 		4BB0A45F2DFCA4DC00900B0B /* MBClipboardHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MBClipboardHelper.m; path = MicroBlog_RN/MBClipboardHelper.m; sourceTree = "<group>"; };
+		4BD1A3002F08000000A10001 /* MBLiquidGlassButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MBLiquidGlassButton.h; path = MicroBlog_RN/MBLiquidGlassButton.h; sourceTree = "<group>"; };
+		4BD1A3012F08000000A10001 /* MBLiquidGlassButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MBLiquidGlassButton.m; path = MicroBlog_RN/MBLiquidGlassButton.m; sourceTree = "<group>"; };
+		4BD1A3022F08000000A10001 /* MBLiquidGlassButtonManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MBLiquidGlassButtonManager.m; path = MicroBlog_RN/MBLiquidGlassButtonManager.m; sourceTree = "<group>"; };
 		7A1AD34313DED25C45B534DA /* libPods-MicroBlog_RN.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MicroBlog_RN.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F4610A1564E937F6AF1CE21 /* Pods-MicroBlog_RN.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MicroBlog_RN.release.xcconfig"; path = "Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = MicroBlog_RN/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -157,6 +164,9 @@
 				4B719C382E63B0D6006D4E7D /* UIBarButtonItem+Plainify.m */,
 				4B3498652AE86AA900233BA2 /* RCTInputAccessoryShadowView.h */,
 				4B3498662AE86AA900233BA2 /* RCTInputAccessoryShadowView.m */,
+				4BD1A3002F08000000A10001 /* MBLiquidGlassButton.h */,
+				4BD1A3012F08000000A10001 /* MBLiquidGlassButton.m */,
+				4BD1A3022F08000000A10001 /* MBLiquidGlassButtonManager.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
@@ -546,6 +556,8 @@
 				0221AB3529D42CE500838597 /* ShareViewController.swift in Sources */,
 				4BAA745E2A24E56500953D91 /* MBHighlightingTextManager.m in Sources */,
 				4B719C392E63B0D6006D4E7D /* UIBarButtonItem+Plainify.m in Sources */,
+				4BD1A3042F08000000A10001 /* MBLiquidGlassButton.m in Sources */,
+				4BD1A3062F08000000A10001 /* MBLiquidGlassButtonManager.m in Sources */,
 				2837C73874E55DEB2797484F /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -562,6 +574,8 @@
 				4B06FCA829FABD0800E97371 /* UIScrollViewDelegate+Zooming.m in Sources */,
 				4B719C3A2E63B0D6006D4E7D /* UIBarButtonItem+Plainify.m in Sources */,
 				4B3498672AE86AA900233BA2 /* RCTInputAccessoryShadowView.m in Sources */,
+				4BD1A3032F08000000A10001 /* MBLiquidGlassButton.m in Sources */,
+				4BD1A3052F08000000A10001 /* MBLiquidGlassButtonManager.m in Sources */,
 				BF76CC3E2E8E980900F61FC2 /* AppDelegate.swift in Sources */,
 				28E40035B1E151C13639876C /* ExpoModulesProvider.swift in Sources */,
 			);
