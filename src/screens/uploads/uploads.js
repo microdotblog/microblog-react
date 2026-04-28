@@ -12,6 +12,8 @@ import SearchBar from '../../components/search_bar';
 import { SFSymbol } from "react-native-sfsymbols";
 import { SvgXml } from 'react-native-svg';
 import DeviceInfo from 'react-native-device-info';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
+import { liquidGlassScrollContentBottomPadding } from '../../utils/ui'
 
 @observer
 export default class UploadsScreen extends React.Component{
@@ -115,28 +117,38 @@ export default class UploadsScreen extends React.Component{
     const { selected_service } = Auth.selected_user.posting
     const { config } = selected_service
     return(
-      <FlatList
-        ref={this.flatListRef}
-        data={config.uploads_for_destination()}
-        extraData={config.uploads_for_destination()?.length && !selected_service.is_loading_uploads}
-        keyExtractor={this._key_extractor}
-        renderItem={this.render_upload_item}
-        style={{
-          backgroundColor: App.theme_background_color_secondary(),
-          width: "100%"
+      <SafeAreaInsetsContext.Consumer>
+        {insets => {
+          const bottom_padding = liquidGlassScrollContentBottomPadding(insets?.bottom, 10)
+
+          return (
+            <FlatList
+              ref={this.flatListRef}
+              data={config.uploads_for_destination()}
+              extraData={config.uploads_for_destination()?.length && !selected_service.is_loading_uploads}
+              keyExtractor={this._key_extractor}
+              renderItem={this.render_upload_item}
+              style={{
+                backgroundColor: App.theme_background_color_secondary(),
+                width: "100%"
+              }}
+              contentContainerStyle={{ paddingBottom: bottom_padding }}
+              scrollIndicatorInsets={Platform.OS === 'ios' ? { bottom: bottom_padding } : undefined}
+              numColumns={this.state.num_columns}
+              removeClippedSubviews={true}
+              initialNumToRender={12}
+              maxToRenderPerBatch={6}
+              windowSize={5}
+              refreshControl={
+                <RefreshControl
+                  refreshing={false}
+                  onRefresh={() => selected_service.check_for_uploads_for_destination(config.posts_destination())}
+                />
+              }
+            />
+          )
         }}
-        numColumns={this.state.num_columns}
-        removeClippedSubviews={true}
-        initialNumToRender={12}
-        maxToRenderPerBatch={6}
-        windowSize={5}
-        refreshControl={
-          <RefreshControl
-            refreshing={false}
-            onRefresh={() => selected_service.check_for_uploads_for_destination(config.posts_destination())}
-          />
-        }
-      />
+      </SafeAreaInsetsContext.Consumer>
     )
   }
 
