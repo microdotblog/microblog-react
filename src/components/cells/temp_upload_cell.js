@@ -12,6 +12,7 @@ export default class TempUploadCell extends React.Component {
   render() {
     const { upload } = this.props;
     const dimension = Dimensions.get("screen")?.width / 4 - 10;
+    const preview_uri = upload.cached_uri || upload.uri
     const destructive_icon_color = App.theme_warning_text_color()
     const actions = [
       {
@@ -81,9 +82,12 @@ export default class TempUploadCell extends React.Component {
             </View>
           ) : (
             <MBImage
-              key={upload.uri}
-              source={upload.uri}
+              key={preview_uri}
+              source={{ uri: preview_uri }}
               contentFit="cover"
+              transition={120}
+              cachePolicy="memory-disk"
+              recyclingKey={preview_uri}
               style={{
                 width: dimension,
                 height: dimension,

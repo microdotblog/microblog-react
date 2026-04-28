@@ -9,7 +9,7 @@ import App from "../../App"
 import MicroPubApi, { POST_ERROR } from "../../../api/MicroPubApi"
 import { upload_large_media_task, create_cancel_source } from "./uploadLargeMediaTask"
 
-export default Destination = types.model('Destination', {
+const Destination = types.model('Destination', {
 	uid: types.identifier,
 	name: types.maybeNull(types.string),
 	"microblog-audio": types.optional(types.boolean, false),
@@ -133,6 +133,8 @@ export default Destination = types.model('Destination', {
 			const url = entry.url || ""
 			const published = entry.published || ""
 			const poster = entry.poster || ""
+			const existing_upload = self.uploads.find(upload => upload.url === url)
+			const preview_uri = entry.preview_uri || existing_upload?.preview_uri
 			const alt = entry.alt || ""
 			const is_ai = entry["microblog-ai"]
 			const sizes = entry.sizes || {}
@@ -141,6 +143,7 @@ export default Destination = types.model('Destination', {
 				url: url,
 				published: published,
 				poster: poster,
+				preview_uri: preview_uri,
 				alt: alt,
 				is_ai: is_ai,
 				sizes: sizes,
@@ -206,10 +209,12 @@ export default Destination = types.model('Destination', {
 			temp_upload.did_upload = true
 			const uploaded_url = temp_upload.url
 			const uploaded_poster = temp_upload.poster
+			const preview_uri = temp_upload.cached_uri || temp_upload.uri
 
 			const upload_entry = {
 				url: uploaded_url,
-				poster: uploaded_poster
+				poster: uploaded_poster,
+				preview_uri: preview_uri
 			}
 			self.uploads.unshift(upload_entry)
 
@@ -262,9 +267,11 @@ export default Destination = types.model('Destination', {
 			console.log("Destination:upload_media:success", result)
 			const uploaded_url = temp_upload.url
 			const uploaded_poster = temp_upload.poster
+			const preview_uri = temp_upload.cached_uri || temp_upload.uri
 			const upload = {
 				url: uploaded_url,
 				poster: uploaded_poster,
+				preview_uri: preview_uri
 			}
 			self.uploads.unshift(upload)
 			self.temp_uploads.remove(temp_upload)
@@ -283,3 +290,5 @@ export default Destination = types.model('Destination', {
 	})
 
 }))
+
+export default Destination
