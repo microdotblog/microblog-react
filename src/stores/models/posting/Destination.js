@@ -6,8 +6,18 @@ import Upload from "./Upload"
 import TempUpload from "./TempUpload"
 import Auth from "../../Auth"
 import App from "../../App"
-import MicroPubApi, { POST_ERROR } from "../../../api/MicroPubApi"
 import { upload_large_media_task, create_cancel_source } from "./uploadLargeMediaTask"
+
+const upload_from_temp_upload = temp_upload => ({
+	url: temp_upload.url,
+	published: "",
+	poster: temp_upload.poster || "",
+	preview_uri: temp_upload.cached_uri || temp_upload.uri,
+	alt: "",
+	is_ai: false,
+	sizes: {},
+	cdn: {}
+})
 
 const Destination = types.model('Destination', {
 	uid: types.identifier,
@@ -208,20 +218,16 @@ const Destination = types.model('Destination', {
 			}
 			temp_upload.did_upload = true
 			const uploaded_url = temp_upload.url
-			const uploaded_poster = temp_upload.poster
-			const preview_uri = temp_upload.cached_uri || temp_upload.uri
-
-			const upload_entry = {
-				url: uploaded_url,
-				poster: uploaded_poster,
-				preview_uri: preview_uri
-			}
+			const upload_entry = upload_from_temp_upload(temp_upload)
 			self.uploads.unshift(upload_entry)
 
-			yield service.check_for_uploads_for_destination(self)
+			yield service.check_for_uploads_for_destination(self, false)
 
 			if (!isAlive(self)) {
 				return
+			}
+			if (!self.uploads.find(a => a.url === uploaded_url)) {
+				self.uploads.unshift(upload_entry)
 			}
 			const asset = self.uploads.find(a => a.url === uploaded_url)
 			if (App.post_modal_is_open && asset) {
@@ -266,15 +272,16 @@ const Destination = types.model('Destination', {
 		if (result && isAlive(self) && isAlive(temp_upload)) {
 			console.log("Destination:upload_media:success", result)
 			const uploaded_url = temp_upload.url
-			const uploaded_poster = temp_upload.poster
-			const preview_uri = temp_upload.cached_uri || temp_upload.uri
-			const upload = {
-				url: uploaded_url,
-				poster: uploaded_poster,
-				preview_uri: preview_uri
-			}
+			const upload = upload_from_temp_upload(temp_upload)
 			self.uploads.unshift(upload)
 			self.temp_uploads.remove(temp_upload)
+			yield service.check_for_uploads_for_destination(self, false)
+			if (!isAlive(self)) {
+				return
+			}
+			if (!self.uploads.find(a => a.url === uploaded_url)) {
+				self.uploads.unshift(upload)
+			}
 			// Because we're uploading from within the post editor, we also
 			// want to automatically set the upload within the post.
 			if(App.post_modal_is_open){
@@ -285,7 +292,6 @@ const Destination = types.model('Destination', {
 					// Navigation.pop(UPLOADS_MODAL_SCREEN)
 				}
 			}
-			//service.check_for_uploads_for_destination(self)
 		}
 	})
 

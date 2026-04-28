@@ -3,7 +3,8 @@ import { observer } from 'mobx-react';
 import { TouchableOpacity, View, Text, TextInput, ActivityIndicator } from 'react-native';
 import ActionSheet, { SheetManager } from "react-native-actions-sheet";
 import App from '../../stores/App'
-import MicroPubApi, { POST_ERROR } from '../../api/MicroPubApi';
+import Auth from '../../stores/Auth'
+import MicroPubApi from '../../api/MicroPubApi'
 import Clipboard from '@react-native-clipboard/clipboard'
 import Toast from 'react-native-simple-toast';
 
@@ -12,9 +13,10 @@ export default class UploadInfoSheet extends React.Component {
 	constructor(props) {
 		super(props);
 		this.upload = this.props.payload.upload;
+		const alt_text = this.upload.alt || ""
 		this.state = {
-			alt_text: this.upload.alt,
-			is_ai: this.upload.is_ai,
+			alt_text: alt_text,
+			is_ai: this.upload.is_ai || false,
 			is_editing: false,
 			is_saving: false
 		};
@@ -31,7 +33,6 @@ export default class UploadInfoSheet extends React.Component {
 	}
 
 	save_alt_text() {
-		const s = this.state.alt_text;
 		MicroPubApi.set_alt_for_upload(this.current_service(), this.current_destination_uid(), this.upload.url, this.state.alt_text).then(data => {
 			this.setState({ is_saving: false, is_ai: false });
 			Auth.selected_user.posting?.selected_service?.update_uploads_for_active_destination();
@@ -114,7 +115,7 @@ export default class UploadInfoSheet extends React.Component {
 										borderWidth: 1
 									}}
 									onPress={() => {
-										const s = this.state.alt_text.replace('"', '');
+										const s = (this.state.alt_text || "").replace('"', '')
 										Clipboard.setString(s);
 										SheetManager.hide(this.props.sheetId);
 										setTimeout(function() {

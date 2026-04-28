@@ -15,10 +15,11 @@ const get_image_size = uri => {
 	})
 }
 
-export default TempUpload = types.model('TempUpload', {
+const TempUpload = types.model('TempUpload', {
 	uri: types.identifier,
 	cached_uri: types.maybe(types.string),
 	name: types.maybe(types.string),
+	fileName: types.maybe(types.string),
 	type: types.maybe(types.string),
 	url: types.maybe(types.string),
 	published: types.maybe(types.string),
@@ -36,13 +37,13 @@ export default TempUpload = types.model('TempUpload', {
 	.actions(self => ({
 
 		upload: flow(function* (service_object, destination) {
-			console.log("TempUpload:upload", service_object, destination.uri)
+			console.log("TempUpload:upload", service_object, destination.uid)
 			self.is_uploading = true
 			self.cancel_source = axios.CancelToken.source()
 			const upload_file = {
 				uri: self.uri,
 				type: self.type,
-				name: self.name,
+				name: self.name || self.fileName,
 				cancel_source: self.cancel_source,
 				update_progress: progress => {
 					if (isAlive(self)) {
@@ -50,7 +51,7 @@ export default TempUpload = types.model('TempUpload', {
 					}
 				}
 			}
-			const response = yield MicroPubApi.upload_media(service_object, upload_file, destination.uri)
+			const response = yield MicroPubApi.upload_media(service_object, upload_file, destination.uid)
 			if (!isAlive(self)) {
 				return false
 			}
@@ -59,6 +60,7 @@ export default TempUpload = types.model('TempUpload', {
 				const upload_url = response.headers?.location || response.data?.url
 				if (upload_url && upload_url.trim() !== "") {
 					self.url = upload_url
+					self.poster = response.data?.poster || response.poster || ""
 					self.did_upload = true
 					console.log("TempUpload:upload:success", self.url)
 				} else {
@@ -179,3 +181,5 @@ export default TempUpload = types.model('TempUpload', {
 			return self.uri?.endsWith(".mp3") || self.uri?.endsWith(".wav") || self.uri?.endsWith(".ogg") || self.uri?.endsWith(".flac") || self.uri?.endsWith(".m4a") || self.uri?.endsWith(".aac") || self.uri?.endsWith(".wma")
 		}
 	}))
+
+export default TempUpload

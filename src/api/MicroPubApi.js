@@ -11,6 +11,18 @@ export const NO_AUTH = 6
 export const DELETE_ERROR = 7
 export const MICROPUB_NOT_FOUND = 8
 
+const progress_from_upload_event = progressEvent => {
+	const loaded = Number(progressEvent?.loaded)
+	const total = Number(progressEvent?.total)
+	if (!Number.isFinite(loaded) || loaded <= 0) {
+		return 0
+	}
+	if (!Number.isFinite(total) || total <= 0) {
+		return 1
+	}
+	return Math.max(1, Math.min(100, Math.round((loaded * 100) / total)))
+}
+
 class MicroPubApi {
   
   async discover_micropub_endpoints(url, alternate_html_match = false) {
@@ -292,10 +304,7 @@ class MicroPubApi {
 				headers: { Authorization: `Bearer ${ service.token }` },
 				timeout: 60000,
 				onUploadProgress: progressEvent => {
-					const progress = Math.round(
-						(progressEvent.loaded * 100) / progressEvent.total
-					)
-					file.update_progress(progress)
+					file.update_progress(progress_from_upload_event(progressEvent))
 				},
 				cancelToken: file.cancel_source.token,
 			})
@@ -340,7 +349,10 @@ class MicroPubApi {
 			type: file.type,
 			uri: file.uri,
 		})
-		data.append("mp-destination", App.current_screen_name === "microblog.UploadsScreen" || service.temporary_destination !== null && service.temporary_destination !== service.destination ? service.temporary_destination : service.destination)
+		const upload_destination = destination || (App.current_screen_name === "microblog.UploadsScreen" || service.temporary_destination !== null && service.temporary_destination !== service.destination ? service.temporary_destination : service.destination)
+		if (upload_destination) {
+			data.append("mp-destination", upload_destination)
+		}
 		console.log('MicroPubApi:upload_media', service, file, data)
 
 		const upload = axios
@@ -348,10 +360,7 @@ class MicroPubApi {
 				headers: { Authorization: `Bearer ${ service.token }` },
 				timeout: 60000, // 60 second timeout
 				onUploadProgress: progressEvent => {
-					const progress = Math.round(
-						(progressEvent.loaded * 100) / progressEvent.total
-					)
-					file.update_progress(progress)
+					file.update_progress(progress_from_upload_event(progressEvent))
 				},
 				cancelToken: file.cancel_source.token,
 			})
