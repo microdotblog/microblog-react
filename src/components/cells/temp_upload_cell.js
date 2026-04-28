@@ -1,6 +1,6 @@
 import * as React from "react";
 import { observer } from "mobx-react";
-import { Dimensions, View, Platform } from "react-native";
+import { ActivityIndicator, Dimensions, Text, View, Platform } from "react-native";
 import App from "../../stores/App";
 import { MenuView } from "@react-native-menu/menu";
 import { SvgXml } from "react-native-svg";
@@ -9,11 +9,22 @@ import MBImage from "../common/MBImage";
 
 @observer
 export default class TempUploadCell extends React.Component {
+  progress_for(upload) {
+    const progress = Number(upload.progress)
+    if (!Number.isFinite(progress)) {
+      return 0
+    }
+    return Math.max(0, Math.min(100, progress))
+  }
+
   render() {
     const { upload } = this.props;
     const dimension = Dimensions.get("screen")?.width / 4 - 10;
     const preview_uri = upload.cached_uri || upload.uri
     const destructive_icon_color = App.theme_warning_text_color()
+    const progress = this.progress_for(upload)
+    const progress_width = `${Math.max(progress, progress > 0 ? 4 : 8)}%`
+    const progress_label = progress > 1 ? `${progress}%` : "Uploading"
     const actions = [
       {
         title: "Cancel upload",
@@ -99,19 +110,56 @@ export default class TempUploadCell extends React.Component {
           )}
 
           {upload.is_uploading && (
-            <View
-              style={{
-                width: `${upload.progress}%`,
-                height: 5,
-                backgroundColor: App.theme_accent_color(),
-                position: "absolute",
-                left: 0,
-                bottom: 0,
-                borderBottomLeftRadius: 2,
-                borderBottomRightRadius: upload.progress === 100 ? 2 : 0,
-                zIndex: 2,
-              }}
-            />
+            <>
+              <View
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  backgroundColor: "rgba(0,0,0,.45)",
+                  borderRadius: 5,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 1,
+                }}
+              >
+                <ActivityIndicator animating={true} color="#fff" size="small" />
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontSize: 12,
+                    fontWeight: "600",
+                    marginTop: 6,
+                  }}
+                >
+                  {progress_label}
+                </Text>
+              </View>
+              <View
+                style={{
+                  height: 5,
+                  backgroundColor: "rgba(255,255,255,.35)",
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  borderBottomLeftRadius: 5,
+                  borderBottomRightRadius: 5,
+                  overflow: "hidden",
+                  zIndex: 2,
+                }}
+              >
+                <View
+                  style={{
+                    width: progress_width,
+                    height: 5,
+                    backgroundColor: App.theme_accent_color(),
+                  }}
+                />
+              </View>
+            </>
           )}
         </View>
       </MenuView>

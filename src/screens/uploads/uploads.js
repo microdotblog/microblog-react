@@ -198,7 +198,8 @@ export default class UploadsScreen extends React.Component{
     const { selected_service } = Auth.selected_user.posting
     const { config } = selected_service
     const temp_uploads = config.temp_uploads_for_destination()?.slice() || []
-    const dimension = (Dimensions.get("screen")?.width / 4) + 5
+    const cell_dimension = Dimensions.get("screen")?.width / 4 - 10
+    const row_height = cell_dimension + 22
     if (temp_uploads.length) {
       return (
         <FlatList
@@ -208,12 +209,14 @@ export default class UploadsScreen extends React.Component{
           renderItem={this.render_temporary_upload_item}
           style={{
             width: "100%",
-            minHeight: dimension,
+            height: row_height,
+            maxHeight: row_height,
+            flexGrow: 0,
             borderBottomColor: App.theme_border_color(),
             borderBottomWidth: 2,
-            paddingBottom: 10,
             marginBottom: 10
           }}
+          contentContainerStyle={{ paddingBottom: 10 }}
           horizontal={true}
         />
       )
