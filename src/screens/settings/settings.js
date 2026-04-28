@@ -33,7 +33,7 @@ export default class SettingsScreen extends React.Component {
 
   _set_auto_android_theme = async (enabled) => {
     await Settings.set_auto_android_theme(enabled)
-    await App.sync_current_theme(Platform.OS === "android")
+    await App.sync_current_theme()
   }
 
   _render_appearance_settings = () => {
@@ -71,7 +71,7 @@ export default class SettingsScreen extends React.Component {
             }}
           >
             <Text style={{ fontSize: 16, color: App.theme_text_color() }}>
-              Auto theme
+              Use Material You accent colour
             </Text>
             <Switch
               value={Settings.auto_android_theme}
@@ -87,6 +87,16 @@ export default class SettingsScreen extends React.Component {
               }
             />
           </View>
+          <Text
+            style={{
+              color: App.theme === "dark" ? App.theme_placeholder_alt_text_color() : "#4B5563",
+              fontSize: 13,
+              lineHeight: 18,
+              paddingBottom: 12,
+            }}
+          >
+            Light and dark mode always follow Android. Turn this on to use your system accent colour for the interface.
+          </Text>
         </View>
       </View>
     )

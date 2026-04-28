@@ -1060,13 +1060,11 @@ export default App = types.model('App', {
   }))
   .views(self => ({
     should_follow_system_theme() {
-      return Platform.OS !== "android" || Settings.auto_android_theme
+      return true
     },
     resolved_theme() {
       return resolve_app_theme({
-        platform_os: Platform.OS,
         system_theme: Appearance.getColorScheme(),
-        auto_android_theme: Settings.auto_android_theme,
       })
     },
     is_dark_mode() {

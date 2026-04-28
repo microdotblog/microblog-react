@@ -14,7 +14,7 @@ describe('theme resolution', () => {
     expect(normalise_theme('no-preference')).toBe('light')
   })
 
-  test('follows the Android system theme when auto theme is enabled', () => {
+  test('follows the Android system theme when Material You accent is enabled', () => {
     expect(resolve_app_theme({
       platform_os: 'android',
       system_theme: 'dark',
@@ -22,16 +22,16 @@ describe('theme resolution', () => {
     })).toBe('dark')
   })
 
-  test('uses the default theme on Android when auto theme is disabled', () => {
+  test('still follows the Android system theme when Material You accent is disabled', () => {
     expect(should_follow_system_theme({
       platform_os: 'android',
       auto_android_theme: false,
-    })).toBe(false)
+    })).toBe(true)
     expect(resolve_app_theme({
       platform_os: 'android',
       system_theme: 'dark',
       auto_android_theme: false,
-    })).toBe('light')
+    })).toBe('dark')
   })
 
   test('keeps non-Android platforms following the system theme', () => {
@@ -48,7 +48,7 @@ describe('theme resolution', () => {
     expect(normalise_accent_color(null)).toBe('#f80')
   })
 
-  test('uses Android system accent only when auto theme is enabled', () => {
+  test('uses Android system accent only when Material You accent is enabled', () => {
     expect(resolve_app_accent_color({
       platform_os: 'android',
       auto_android_theme: true,

@@ -17,22 +17,13 @@ export const normalise_accent_color = (color = null) => {
   return DEFAULT_ACCENT_COLOR
 }
 
-export const should_follow_system_theme = ({
-  platform_os = '',
-  auto_android_theme = true,
-}) => {
-  return platform_os !== 'android' || auto_android_theme
+export const should_follow_system_theme = () => {
+  return true
 }
 
 export const resolve_app_theme = ({
-  platform_os = '',
   system_theme = null,
-  auto_android_theme = true,
 }) => {
-  if (!should_follow_system_theme({ platform_os, auto_android_theme })) {
-    return DEFAULT_THEME
-  }
-
   return normalise_theme(system_theme)
 }
 
