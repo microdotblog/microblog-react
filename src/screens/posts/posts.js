@@ -9,6 +9,8 @@ import { SheetProvider } from "react-native-actions-sheet";
 import SearchIcon from '../../assets/icons/nav/discover.png';
 import SearchBar from '../../components/search_bar';
 import { SFSymbol } from "react-native-sfsymbols";
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
+import { liquidGlassScrollContentBottomPadding } from '../../utils/ui'
 @observer
 export default class PostsScreen extends React.Component{
 
@@ -200,29 +202,39 @@ export default class PostsScreen extends React.Component{
     }, 500);
     
     return(
-      <FlatList
-        data={config.posts_for_destination(this.state.is_showing_drafts_posts)}
-        extraData={config.posts_for_destination(this.state.is_showing_drafts_posts)?.length && !selected_service.is_loading_posts}
-        keyExtractor={this._key_extractor}
-        renderItem={this.render_post_item}
-        style={{
-          backgroundColor: App.theme_background_color_secondary(),
-          width: "100%",
-          flex: 1
+      <SafeAreaInsetsContext.Consumer>
+        {insets => {
+          const bottom_padding = liquidGlassScrollContentBottomPadding(insets?.bottom, 10)
+
+          return (
+            <FlatList
+              data={config.posts_for_destination(this.state.is_showing_drafts_posts)}
+              extraData={config.posts_for_destination(this.state.is_showing_drafts_posts)?.length && !selected_service.is_loading_posts}
+              keyExtractor={this._key_extractor}
+              renderItem={this.render_post_item}
+              style={{
+                backgroundColor: App.theme_background_color_secondary(),
+                width: "100%",
+                flex: 1
+              }}
+              contentContainerStyle={{ paddingBottom: bottom_padding }}
+              scrollIndicatorInsets={Platform.OS === 'ios' ? { bottom: bottom_padding } : undefined}
+              ItemSeparatorComponent={
+                <View style={{
+                  height: StyleSheet.hairlineWidth,
+                  backgroundColor: App.theme_alt_background_div_color()
+                }} />
+              }
+              refreshControl={
+                <RefreshControl
+                  refreshing={false}
+                  onRefresh={() => selected_service.check_for_posts_for_destination(config.posts_destination(), this.state.is_showing_drafts_posts)}
+                />
+              }
+            />
+          )
         }}
-        ItemSeparatorComponent={
-          <View style={{
-            height: StyleSheet.hairlineWidth,
-            backgroundColor: App.theme_alt_background_div_color()
-          }} />
-        }
-        refreshControl={
-          <RefreshControl
-            refreshing={false}
-            onRefresh={() => selected_service.check_for_posts_for_destination(config.posts_destination(), this.state.is_showing_drafts_posts)}
-          />
-        }
-      />
+      </SafeAreaInsetsContext.Consumer>
     )
   }
   
