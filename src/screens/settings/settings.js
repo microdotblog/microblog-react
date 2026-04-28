@@ -31,6 +31,67 @@ export default class SettingsScreen extends React.Component {
     });
   }
 
+  _set_auto_android_theme = async (enabled) => {
+    await Settings.set_auto_android_theme(enabled)
+    App.sync_current_theme(Platform.OS === "android")
+  }
+
+  _render_appearance_settings = () => {
+    if (Platform.OS !== "android") {
+      return null
+    }
+
+    return (
+      <View>
+        <Text
+          style={{
+            fontWeight: "500",
+            marginBottom: 10,
+            marginTop: 15,
+            marginLeft: 10,
+            color: App.theme_text_color(),
+          }}
+        >
+          Appearance
+        </Text>
+        <View
+          style={{
+            paddingHorizontal: 12,
+            backgroundColor: App.theme_settings_group_background_color(),
+            borderRadius: 8,
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingVertical: 10,
+            }}
+          >
+            <Text style={{ fontSize: 16, color: App.theme_text_color() }}>
+              Auto theme
+            </Text>
+            <Switch
+              value={Settings.auto_android_theme}
+              onValueChange={this._set_auto_android_theme}
+              trackColor={{
+                false: App.theme_switch_track_color(),
+                true: App.theme_accent_color()
+              }}
+              thumbColor={
+                Settings.auto_android_theme
+                  ? "#ffffff"
+                  : App.theme === "dark" ? "#f4f3f4" : "#f4f3f4"
+              }
+            />
+          </View>
+        </View>
+      </View>
+    )
+  }
+
   _render_browser_settings = () => {
     return (
       <View>
@@ -327,6 +388,7 @@ export default class SettingsScreen extends React.Component {
           backgroundColor: App.theme_background_color(),
         }}
       >
+        {this._render_appearance_settings()}
         {this._render_browser_settings()}
         {this._render_posting_settings()}
         {this._render_muting_settings()}

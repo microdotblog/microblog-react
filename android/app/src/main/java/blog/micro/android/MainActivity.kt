@@ -38,6 +38,7 @@ class MainActivity : ReactActivity() {
 
   // react-native-screens override
   override fun onCreate(savedInstanceState: Bundle?) {
+    setTheme(R.style.AppTheme)
     supportFragmentManager.fragmentFactory = RNScreensFragmentFactory()
     super.onCreate(null)
   }
