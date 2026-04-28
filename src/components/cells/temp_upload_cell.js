@@ -1,6 +1,6 @@
 import * as React from "react";
 import { observer } from "mobx-react";
-import { ActivityIndicator, Dimensions, Text, View, Platform } from "react-native";
+import { ActivityIndicator, Animated, Dimensions, View, Platform } from "react-native";
 import App from "../../stores/App";
 import { MenuView } from "@react-native-menu/menu";
 import { SvgXml } from "react-native-svg";
@@ -9,12 +9,46 @@ import MBImage from "../common/MBImage";
 
 @observer
 export default class TempUploadCell extends React.Component {
+  constructor(props) {
+    super(props)
+    this.processingOpacity = new Animated.Value(0)
+    this.wasProcessing = false
+  }
+
+  componentDidMount() {
+    this.update_processing_animation(this.is_processing(this.props.upload))
+  }
+
+  componentDidUpdate() {
+    const is_processing = this.is_processing(this.props.upload)
+    this.update_processing_animation(is_processing)
+  }
+
   progress_for(upload) {
     const progress = Number(upload.progress)
     if (!Number.isFinite(progress)) {
       return 0
     }
     return Math.max(0, Math.min(100, progress))
+  }
+
+  is_processing(upload) {
+    return upload?.is_uploading && this.progress_for(upload) >= 100
+  }
+
+  update_processing_animation(is_processing) {
+    if (is_processing && !this.wasProcessing) {
+      this.processingOpacity.setValue(0)
+      Animated.timing(this.processingOpacity, {
+        toValue: 1,
+        duration: 250,
+        useNativeDriver: true,
+      }).start()
+    }
+    else if (!is_processing && this.wasProcessing) {
+      this.processingOpacity.setValue(0)
+    }
+    this.wasProcessing = is_processing
   }
 
   render() {
@@ -24,7 +58,8 @@ export default class TempUploadCell extends React.Component {
     const destructive_icon_color = App.theme_warning_text_color()
     const progress = this.progress_for(upload)
     const progress_width = `${Math.max(progress, progress > 0 ? 4 : 8)}%`
-    const progress_label = progress > 1 ? `${progress}%` : "Uploading"
+    const is_processing = this.is_processing(upload)
+    const progress_label = is_processing ? "Processing" : progress > 1 ? `${progress}%` : "Uploading"
     const actions = [
       {
         title: "Cancel upload",
@@ -126,16 +161,17 @@ export default class TempUploadCell extends React.Component {
                 }}
               >
                 <ActivityIndicator animating={true} color="#fff" size="small" />
-                <Text
+                <Animated.Text
                   style={{
                     color: "#fff",
                     fontSize: 12,
                     fontWeight: "600",
                     marginTop: 6,
+                    opacity: is_processing ? this.processingOpacity : 1,
                   }}
                 >
                   {progress_label}
-                </Text>
+                </Animated.Text>
               </View>
               <View
                 style={{
