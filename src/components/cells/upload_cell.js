@@ -15,6 +15,7 @@ export default class UploadCell extends React.Component {
     super(props);
     this.state = {
       did_load: false,
+      use_original_url: false,
       num_columns: DeviceInfo.isTablet() ? 4 : 3,
     };
   }
@@ -24,7 +25,7 @@ export default class UploadCell extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.upload?.url !== this.props.upload?.url) {
-      this.setState({ did_load: false });
+      this.setState({ did_load: false, use_original_url: false });
     }
   }
 
@@ -91,10 +92,8 @@ export default class UploadCell extends React.Component {
         </View>
       );
     } else {
-      let best_url = upload.url;
-      if (upload.cdn && upload.cdn.small) {
-        best_url = upload.cdn.small;
-      }
+      const best_url = upload.cdn?.medium || upload.cdn?.large || upload.url;
+      const image_url = this.state.use_original_url ? upload.url : best_url;
 
       return (
         <Animated.View
@@ -105,8 +104,8 @@ export default class UploadCell extends React.Component {
           }}
         >
           <MBImage
-            key={upload.url}
-            source={best_url}
+            key={image_url}
+            source={image_url}
             contentFit="cover"
             style={{
               width: dimension,
@@ -117,6 +116,11 @@ export default class UploadCell extends React.Component {
             }}
             onLoad={() => {
               this.setState({ did_load: true });
+            }}
+            onError={() => {
+              if (image_url !== upload.url) {
+                this.setState({ did_load: false, use_original_url: true });
+              }
             }}
           />
         </Animated.View>
