@@ -123,6 +123,8 @@ export default class SettingsScreen extends React.Component {
   };
 
   _render_push_settings = () => {
+    const show_user_identity = Auth.users.length > 1
+
     return (
       <View style={{ marginTop: 15 }}>
         <Text
@@ -183,18 +185,20 @@ export default class SettingsScreen extends React.Component {
                 }}
               >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <MBImage
-                    source={`${user.avatar}?v=${App.now()}`}
-                    contentFit="contain"
-                    style={{
-                      width: 24,
-                      height: 24,
-                      borderRadius: 50,
-                      marginRight: 8,
-                    }}
-                  />
+                  {show_user_identity && (
+                    <MBImage
+                      source={`${user.avatar}?v=${App.now()}`}
+                      contentFit="contain"
+                      style={{
+                        width: 24,
+                        height: 24,
+                        borderRadius: 50,
+                        marginRight: 8,
+                      }}
+                    />
+                  )}
                   <Text style={{ fontSize: 16, color: App.theme_text_color() }}>
-                    @{user.username}
+                    {show_user_identity ? `@${user.username}` : "Enable push notifications"}
                   </Text>
                 </View>
                 <View style={{ flexDirection: "row" }}>
@@ -230,6 +234,8 @@ export default class SettingsScreen extends React.Component {
   };
 
   _render_posting_settings = () => {
+    const show_user_identity = Auth.users.length > 1
+
     return (
       <View style={{ marginTop: 15 }}>
         <Text
@@ -266,6 +272,7 @@ export default class SettingsScreen extends React.Component {
                 componentId={this.props.componentId}
                 user={user}
                 index={index}
+                show_user_identity={show_user_identity}
                 key={`user-${user.username}-${index}`}
               />
             );
@@ -276,6 +283,8 @@ export default class SettingsScreen extends React.Component {
   };
 
   _render_muting_settings = () => {
+    const show_user_identity = Auth.users.length > 1
+
     return (
       <View style={{ marginTop: 15 }}>
         <Text
@@ -301,6 +310,7 @@ export default class SettingsScreen extends React.Component {
               key={`user-${user.username}-${index}`}
               user={user}
               index={index}
+              show_user_identity={show_user_identity}
             />
           ))}
         </View>
