@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { requireNativeComponent, Platform, TextInput } from 'react-native'
+import { requireNativeComponent, Platform } from 'react-native'
 import App from '../../stores/App'
 
 const MBHighlightingTextView = requireNativeComponent('MBHighlightingTextView')
@@ -8,10 +8,23 @@ const MBHighlightingTextView = requireNativeComponent('MBHighlightingTextView')
 @observer
 export default class HighlightingText extends React.Component {
   render() {
+    const colorScheme = this.props.colorScheme || App.theme
+
     if (Platform.OS === 'ios') {
-      return <MBHighlightingTextView {...this.props} colorScheme={this.props.colorScheme || App.theme} />
+      return <MBHighlightingTextView {...this.props} colorScheme={colorScheme} />
     }
 
-    return <TextInput {...this.props} />
+    const {
+      onChangeText,
+      ...props
+    } = this.props
+
+    return (
+      <MBHighlightingTextView
+        {...props}
+        colorScheme={colorScheme}
+        onChange={onChangeText}
+      />
+    )
   }
 }

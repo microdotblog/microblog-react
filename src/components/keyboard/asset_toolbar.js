@@ -40,6 +40,7 @@ export default class AssetToolbar extends React.Component{
           horizontal
           style={{
             flexDirection: 'row',
+            marginTop: 4,
             padding: 8
           }}
           contentContainerStyle={{
