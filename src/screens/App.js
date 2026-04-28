@@ -14,6 +14,7 @@ import {
 import App from './../stores/App';
 import TabNavigator from './stacks/TabNavigator';
 import LoginScreen from './login/login';
+import AppleUsernameScreen from './login/apple_username';
 import ReplyScreen from './conversation/reply';
 import CloseModalButton from '../components/header/close';
 import Reply from '../stores/Reply';
@@ -157,6 +158,15 @@ export default class MainApp extends React.Component {
                       title: "Sign In",
                       headerShown: true,
                       headerBackTitle: "Back"
+                    }}
+                  />
+                  <Stack.Screen
+                    name="AppleUsername"
+                    component={AppleUsernameScreen}
+                    options={{
+                      title: "Create Account",
+                      headerShown: true,
+                      headerBackTitle: "Sign In"
                     }}
                   />
                   <Stack.Group

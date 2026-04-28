@@ -1,23 +1,34 @@
 import { flow, types, applySnapshot } from 'mobx-state-tree';
-import MicroBlogApi, { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_INCORRECT, LOGIN_TOKEN_INVALID } from './../api/MicroBlogApi';
+import MicroBlogApi, { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_INCORRECT, LOGIN_TOKEN_INVALID, APPLE_USERNAME_REQUIRED } from './../api/MicroBlogApi';
 import StringChecker from './../utils/string_checker';
 import { Alert, Platform } from 'react-native';
 import Auth from './Auth';
 import App from './App';
-import { SheetManager } from "react-native-actions-sheet";
 
-export default Login = types.model('Login', {
+const Login = types.model('Login', {
   input_value: types.optional(types.string, ""),
   is_loading: types.optional(types.boolean, false),
   message: types.maybeNull(types.string),
   show_error: types.optional(types.boolean, false),
   error_message: types.maybeNull(types.string),
-  did_trigger_login_from_url: types.optional(types.boolean, false)
+  did_trigger_login_from_url: types.optional(types.boolean, false),
+  apple_user_id: types.maybeNull(types.string),
+  apple_identity_token: types.maybeNull(types.string),
+  apple_email: types.maybeNull(types.string),
+  apple_full_name: types.maybeNull(types.string),
+  apple_username: types.optional(types.string, "")
 })
 .actions(self => ({
   
   set_input_value: flow(function* (value) {
     self.input_value = value
+    if(self.show_error){
+      self.reset_errors()
+    }
+  }),
+
+  set_apple_username: flow(function* (value) {
+    self.apple_username = value
     if(self.show_error){
       self.reset_errors()
     }
@@ -83,23 +94,112 @@ export default Login = types.model('Login', {
     console.log("LOGIN:trigger_login:login_with_token:login", login)
     if(login !== LOGIN_ERROR && login !== LOGIN_TOKEN_INVALID){
       console.log("LOGIN:trigger_login:login_with_token:login:SUCCESS")
-      const result = yield Auth.handle_new_login(login)
-      if(result){
-        // THIS IS ALWAYS TRUE FOR NOW 😇
-        App.close_sheet("main_sheet")
-        App.navigation().goBack()
-        self.reset()
-      }
-      else{
-        self.show_error = true
-        self.error_message = "An error occured whilst trying to sign you in. Please try again."
-        Alert.alert("Ooops", self.error_message)
-      }
+      yield self.finish_login_with_data(login)
     }
     else if(login === LOGIN_TOKEN_INVALID){
       self.show_error = true
       self.error_message = "Your sign in details were incorrect. Please double check and try again."
       Alert.alert("Invalid token", self.error_message)
+    }
+    else{
+      self.show_error = true
+      self.error_message = "An error occured whilst trying to sign you in. Please try again."
+      Alert.alert("Ooops", self.error_message)
+    }
+  }),
+
+  login_with_apple_credentials: flow(function* ({ user_id, identity_token, email = "", full_name = "" }) {
+    console.log("LOGIN:login_with_apple_credentials", user_id)
+    self.is_loading = true
+    self.message = null
+    if(self.show_error){
+      self.reset_errors()
+    }
+
+    self.apple_user_id = user_id || null
+    self.apple_identity_token = identity_token || null
+    self.apple_email = email || ""
+    self.apple_full_name = full_name || ""
+
+    if(self.apple_user_id == null || self.apple_identity_token == null){
+      self.show_error = true
+      self.error_message = "An error occured whilst trying to sign you in with Apple. Please try again."
+      Alert.alert("Ooops", self.error_message)
+      self.is_loading = false
+      return false
+    }
+
+    const login = yield MicroBlogApi.login_with_apple({
+      user_id: self.apple_user_id,
+      identity_token: self.apple_identity_token,
+      email: self.apple_email,
+      full_name: self.apple_full_name
+    })
+    yield self.handle_apple_login_result(login)
+    self.is_loading = false
+  }),
+
+  register_apple_username: flow(function* () {
+    console.log("LOGIN:register_apple_username", self.apple_username)
+    if(!self.can_submit_apple_username()){
+      return false
+    }
+
+    self.is_loading = true
+    self.message = null
+    if(self.show_error){
+      self.reset_errors()
+    }
+
+    const login = yield MicroBlogApi.login_with_apple({
+      user_id: self.apple_user_id,
+      identity_token: self.apple_identity_token,
+      username: self.apple_username
+    })
+    yield self.handle_apple_login_result(login, true)
+    self.is_loading = false
+  }),
+
+  handle_apple_login_result: flow(function* (login, reset_navigation = false) {
+    console.log("LOGIN:handle_apple_login_result", login)
+    if(login?.error != null){
+      self.show_error = true
+      self.error_message = login.error
+      Alert.alert("Unable to sign in with Apple", self.error_message)
+    }
+    else if(login === APPLE_USERNAME_REQUIRED){
+      App.navigate_to_screen("AppleUsername")
+    }
+    else if(login !== LOGIN_ERROR && login !== LOGIN_INCORRECT){
+      yield self.finish_login_with_data(login, reset_navigation)
+    }
+    else if(login === LOGIN_INCORRECT){
+      self.show_error = true
+      self.error_message = "Your sign in details were incorrect. Please double check and try again."
+      Alert.alert("Wrong details", self.error_message)
+    }
+    else{
+      self.show_error = true
+      self.error_message = "An error occured whilst trying to sign you in with Apple. Please try again."
+      Alert.alert("Ooops", self.error_message)
+    }
+  }),
+
+  finish_login_with_data: flow(function* (login, reset_navigation = false) {
+    const result = yield Auth.handle_new_login(login)
+    if(result){
+      // THIS IS ALWAYS TRUE FOR NOW 😇
+      App.close_sheet("main_sheet")
+      if(reset_navigation && App.navigation().reset != null){
+        App.navigation().reset({
+          index: 0,
+          routes: [{ name: "Tabs" }]
+        })
+      }
+      else{
+        App.navigation().goBack()
+      }
+      self.reset()
     }
     else{
       self.show_error = true
@@ -136,7 +236,16 @@ export default Login = types.model('Login', {
   
   can_submit(){
     return this.credentials_seem_valid() && self.input_value !== "" && self.input_value.length > 0
+  },
+
+  can_submit_apple_username(){
+    return self.apple_user_id != null &&
+      self.apple_identity_token != null &&
+      self.apple_username != null &&
+      self.apple_username.length > 0
   }
   
 }))
 .create();
+
+export default Login

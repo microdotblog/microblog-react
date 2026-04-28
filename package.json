@@ -15,6 +15,7 @@
     "adb": "adb reverse tcp:8081 tcp:8081"
   },
   "dependencies": {
+    "@invertase/react-native-apple-authentication": "^2.4.1",
     "@likashefqet/react-native-image-zoom": "likashefqet/react-native-image-zoom",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-clipboard/clipboard": "^1.16.3",
