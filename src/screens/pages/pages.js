@@ -11,7 +11,7 @@ import SearchBar from '../../components/search_bar';
 import { SFSymbol } from "react-native-sfsymbols";
 import { SvgXml } from 'react-native-svg';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
-import { liquidGlassScrollContentBottomPadding } from '../../utils/ui'
+import { tabBarScrollContentBottomPadding } from '../../utils/ui'
 
 @observer
 export default class PagesScreen extends React.Component{
@@ -92,7 +92,7 @@ export default class PagesScreen extends React.Component{
     return(
       <SafeAreaInsetsContext.Consumer>
         {insets => {
-          const bottom_padding = liquidGlassScrollContentBottomPadding(insets?.bottom, 10)
+          const bottom_padding = tabBarScrollContentBottomPadding(insets?.bottom, 10)
 
           return (
             <FlatList

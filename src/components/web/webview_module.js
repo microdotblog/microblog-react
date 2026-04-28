@@ -16,7 +16,7 @@ import {
   is_webview_endpoint_url,
   should_attempt_webview_recovery,
 } from '../../utils/webview_recovery'
-import { liquidGlassWebViewBottomInset } from '../../utils/ui'
+import { tabBarBottomInset } from '../../utils/ui'
 
 const WebViewModule = observer((props) => {
   const insets = useSafeAreaInsets()
@@ -42,7 +42,8 @@ const WebViewModule = observer((props) => {
     token: Auth.selected_user?.token?.() ?? '',
     web_url,
   })
-  const web_view_bottom_padding = liquidGlassWebViewBottomInset(insets.bottom)
+  const should_inject_web_view_padding = Platform.OS === 'ios' || Platform.OS === 'android'
+  const web_view_bottom_padding = tabBarBottomInset(insets.bottom)
   const web_view_css_properties_javascript = `
     (() => {
       const bottom_padding = '${web_view_bottom_padding}px'
@@ -68,7 +69,7 @@ const WebViewModule = observer((props) => {
     meta.setAttribute('name', 'viewport')
     document.getElementsByTagName('head')[0].appendChild(meta)
     ${web_view_css_properties_javascript}
-  ` : null
+  ` : should_inject_web_view_padding ? web_view_css_properties_javascript : null
 
   useFocusEffect(
     React.useCallback(() => {
@@ -89,10 +90,10 @@ const WebViewModule = observer((props) => {
   }, [props.endpoint])
 
   React.useEffect(() => {
-    if (Platform.OS === 'ios') {
+    if (should_inject_web_view_padding) {
       webViewRef.current?.injectJavaScript(web_view_css_properties_javascript)
     }
-  }, [web_view_css_properties_javascript])
+  }, [should_inject_web_view_padding, web_view_css_properties_javascript])
 
   const on_refresh = () => {
     setState(prevState => {
@@ -252,7 +253,7 @@ const WebViewModule = observer((props) => {
         style={{ flex: 1, backgroundColor: App.theme_background_color(), opacity: state.opacity }}
         renderError={(name, code, description) => <WebErrorViewModule error_name={description} />}
         injectedJavaScript={web_view_injected_javascript}
-        injectedJavaScriptBeforeContentLoaded={Platform.OS === 'ios' ? web_view_css_properties_javascript : null}
+        injectedJavaScriptBeforeContentLoaded={should_inject_web_view_padding ? web_view_css_properties_javascript : null}
         onContentProcessDidTerminate={onContentProcessDidTerminate}
       />
     )

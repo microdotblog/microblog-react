@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, RefreshControl, Platform } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
 import Replies from '../../stores/Replies';
 import ReplyCell from '../../components/cells/reply_cell';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
+import { tabBarScrollContentBottomPadding } from '../../utils/ui'
 
 @observer
 export default class RepliesScreen extends React.Component{
@@ -34,25 +36,35 @@ export default class RepliesScreen extends React.Component{
   
   _return_replies_list = () => {
     return(
-      <ScrollView 
-        style={{
-          backgroundColor: App.theme_background_color_secondary(),
-          width: '100%',
-          flex: 1
+      <SafeAreaInsetsContext.Consumer>
+        {insets => {
+          const bottom_padding = tabBarScrollContentBottomPadding(insets?.bottom, 10)
+
+          return (
+            <ScrollView 
+              style={{
+                backgroundColor: App.theme_background_color_secondary(),
+                width: '100%',
+                flex: 1
+              }}
+              contentContainerStyle={{ paddingBottom: bottom_padding }}
+              scrollIndicatorInsets={Platform.OS === 'ios' ? { bottom: bottom_padding } : undefined}
+              refreshControl={
+                <RefreshControl
+                  refreshing={false}
+                  onRefresh={Replies.refresh}
+                />
+              }
+            >
+              {
+                Replies.replies.map((reply) => {
+                  return <ReplyCell key={reply.id} reply={reply} />
+                })
+              }
+            </ScrollView>
+          )
         }}
-        refreshControl={
-          <RefreshControl
-            refreshing={false}
-            onRefresh={Replies.refresh}
-          />
-        }
-      >
-        {
-          Replies.replies.map((reply) => {
-            return <ReplyCell key={reply.id} reply={reply} />
-          })
-        }
-      </ScrollView>
+      </SafeAreaInsetsContext.Consumer>
     )
   }
   
