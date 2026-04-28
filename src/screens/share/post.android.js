@@ -1,19 +1,20 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
 import { View, Text } from 'react-native'
-import { TextInput } from 'react-native';
 import { KeyboardAvoidingView, KeyboardStickyView } from "react-native-keyboard-controller";
 import Share from '../../stores/Share'
 import App from '../../stores/App'
 import Auth from '../../stores/Auth';
 import AssetToolbar from '../../components/keyboard/asset_toolbar'
 import PostToolbar from '../../components/keyboard/post_toolbar'
+import HighlightingText from '../../components/text/highlighting_text'
 
 @observer
 export default class SharePostScreen extends React.Component {
 
 	render() {
 		const { selected_user } = Auth
+		const selection_flat = `${Share.text_selection.start} ${Share.text_selection.end}`
 		return (
 			Share.is_logged_in() && selected_user?.posting != null ?
 			<>
@@ -32,12 +33,17 @@ export default class SharePostScreen extends React.Component {
 								</Text>
 							</View>
 					}
-					<TextInput
+					<HighlightingText
 						placeholderTextColor="lightgrey"
 						style={{
+							minHeight: 300,
 							fontSize: 18,
+							justifyContent: 'flex-start',
+							alignItems: 'flex-start',
 							marginTop: 0,
+							flex: 1,
 							padding: 8,
+							textAlignVertical: 'top',
 							color: App.theme_text_color()
 						}}
 						editable={!selected_user?.posting.is_sending_post}
@@ -51,8 +57,8 @@ export default class SharePostScreen extends React.Component {
 						enablesReturnKeyAutomatically={true}
 						underlineColorAndroid={'transparent'}
 						value={Share.share_text}
-						selection={Share.text_selection}
-						onChangeText={(text) => !selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null}
+						selection={selection_flat}
+						onChangeText={({ nativeEvent: { text } }) => !selected_user?.posting.is_sending_post ? Share.set_post_text(text) : null}
 						onSelectionChange={({ nativeEvent: { selection } }) => {
 							Share.set_text_selection(selection)
 						}}
