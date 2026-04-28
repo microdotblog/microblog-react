@@ -1,5 +1,7 @@
 import {
+  normalise_accent_color,
   normalise_theme,
+  resolve_app_accent_color,
   resolve_app_theme,
   should_follow_system_theme,
 } from './theme'
@@ -38,5 +40,25 @@ describe('theme resolution', () => {
       system_theme: 'dark',
       auto_android_theme: false,
     })).toBe('dark')
+  })
+
+  test('normalises accent colours to hex strings', () => {
+    expect(normalise_accent_color('#3366AA')).toBe('#3366aa')
+    expect(normalise_accent_color('orange')).toBe('#f80')
+    expect(normalise_accent_color(null)).toBe('#f80')
+  })
+
+  test('uses Android system accent only when auto theme is enabled', () => {
+    expect(resolve_app_accent_color({
+      platform_os: 'android',
+      auto_android_theme: true,
+      system_accent_color: '#3366AA',
+    })).toBe('#3366aa')
+
+    expect(resolve_app_accent_color({
+      platform_os: 'android',
+      auto_android_theme: false,
+      system_accent_color: '#3366AA',
+    })).toBe('#f80')
   })
 })

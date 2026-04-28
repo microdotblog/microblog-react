@@ -104,7 +104,7 @@ export default class AssetToolbar extends React.Component{
                             borderRadius: 5,
                             zIndex: 1
                           }}>
-                          <ActivityIndicator animating={true} color="#f80"/>
+                          <ActivityIndicator animating={true} color={App.theme_accent_color()}/>
                         </View>
                         <View
                           style={{

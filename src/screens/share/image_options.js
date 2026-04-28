@@ -141,7 +141,7 @@ export default class ShareImageOptionsScreen extends React.Component{
           {
             asset.is_uploading ?
               <>
-                <ActivityIndicator color="#f80" size={"large"} style={{ position: 'absolute' }} />
+                <ActivityIndicator color={App.theme_accent_color()} size={"large"} style={{ position: 'absolute' }} />
                 <View
                   style={{
                     width: `${ asset.progress }%`,
@@ -174,7 +174,7 @@ export default class ShareImageOptionsScreen extends React.Component{
             { this.state.isLoadingAlt ?
               <>
                 <Text numberOfLines={1} style={{ color: App.theme_text_color() }}>🤖</Text>
-                <ActivityIndicator color="#f80" size={"small"} style={{ paddingLeft: 5 }} />
+                <ActivityIndicator color={App.theme_accent_color()} size={"small"} style={{ paddingLeft: 5 }} />
               </>
             :
               <>

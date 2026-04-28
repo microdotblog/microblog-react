@@ -37,7 +37,7 @@ export default class RefreshActivity extends React.Component{
       { marginRight: Platform.OS === "android" ? 8 : 0 }
 
     return(
-      <ActivityIndicator style={style} color="#f80" animating={is_loading}  />
+      <ActivityIndicator style={style} color={App.theme_accent_color()} animating={is_loading}  />
     )
   }
   

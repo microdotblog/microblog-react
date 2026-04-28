@@ -74,7 +74,7 @@ export default class UploadInfoSheet extends React.Component {
 								style={{
 									height: 100,
 									borderWidth: 1,
-									borderColor: '#f80',
+									borderColor: App.theme_accent_color(),
 									backgroundColor: App.theme_input_contrast_background_color(),
 									padding: 5,
 									marginBottom: 25,

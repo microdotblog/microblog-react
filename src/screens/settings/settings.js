@@ -33,7 +33,7 @@ export default class SettingsScreen extends React.Component {
 
   _set_auto_android_theme = async (enabled) => {
     await Settings.set_auto_android_theme(enabled)
-    App.sync_current_theme(Platform.OS === "android")
+    await App.sync_current_theme(Platform.OS === "android")
   }
 
   _render_appearance_settings = () => {
@@ -266,7 +266,7 @@ export default class SettingsScreen extends React.Component {
                   {user.toggling_push && (
                     <ActivityIndicator
                       animating={true}
-                      color={"#f80"}
+                      color={App.theme_accent_color()}
                       style={{ marginRight: 10 }}
                     />
                   )}
