@@ -15,7 +15,8 @@ import Settings from "./Settings"
 import Services from './Services';
 import Contact from './models/posting/Contact'
 import Push from './Push'
-import { normalise_theme, should_remount_webview_on_android_resume } from '../utils/webview_recovery'
+import { should_remount_webview_on_android_resume } from '../utils/webview_recovery'
+import { normalise_theme, resolve_app_theme } from '../utils/theme'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -108,9 +109,9 @@ export default App = types.model('App', {
       self.app_state = AppState.currentState || 'active'
       Push.set_auth_ready(false)
       
+      yield Settings.hydrate()
       yield App.set_current_initial_theme()
       yield App.set_current_initial_font_scale()
-      Settings.hydrate()
       App.set_up_url_listener()
       App.setup_keyboard_listeners()
       
@@ -633,7 +634,7 @@ export default App = types.model('App', {
     }),
 
     set_current_initial_theme: flow(function*() {
-      const color_scheme = normalise_theme(Appearance.getColorScheme())
+      const color_scheme = App.resolved_theme()
       console.log("App:set_current_theme", color_scheme)
       self.theme = color_scheme
       App.set_up_appearance_listener()
@@ -641,7 +642,7 @@ export default App = types.model('App', {
 
     handle_app_state_change: flow(function*(nextAppState) {
       console.log("App:handle_app_state_change", self.previous_app_state, "->", nextAppState)
-      const should_force_web_view_remount = should_remount_webview_on_android_resume({
+      const should_force_web_view_remount = App.should_follow_system_theme() && should_remount_webview_on_android_resume({
         next_app_state: nextAppState,
         platform_os: Platform.OS,
         previous_app_state: self.previous_app_state,
@@ -653,7 +654,7 @@ export default App = types.model('App', {
       self.app_state = nextAppState
 
       if (nextAppState === "active") {
-        const color_scheme = normalise_theme(Appearance.getColorScheme())
+        const color_scheme = App.resolved_theme()
         if (self.theme !== color_scheme || should_force_web_view_remount) {
           App.change_current_theme(color_scheme, should_force_web_view_remount)
         }
@@ -663,6 +664,10 @@ export default App = types.model('App', {
 
     handle_appearance_change: flow(function*(colorScheme) {
       if (AppState.currentState === "background" || AppState.currentState === "inactive") {
+        return
+      }
+
+      if (!App.should_follow_system_theme()) {
         return
       }
 
@@ -703,6 +708,11 @@ export default App = types.model('App', {
       if (should_force_web_view_remount) {
         App.bump_web_view_epoch()
       }
+    }),
+
+    sync_current_theme: flow(function*(should_force_web_view_remount = false) {
+      console.log("App:sync_current_theme", should_force_web_view_remount)
+      App.change_current_theme(App.resolved_theme(), should_force_web_view_remount)
     }),
   
     set_current_initial_font_scale: flow(function*() {
@@ -1019,6 +1029,16 @@ export default App = types.model('App', {
 
   }))
   .views(self => ({
+    should_follow_system_theme() {
+      return Platform.OS !== "android" || Settings.auto_android_theme
+    },
+    resolved_theme() {
+      return resolve_app_theme({
+        platform_os: Platform.OS,
+        system_theme: Appearance.getColorScheme(),
+        auto_android_theme: Settings.auto_android_theme,
+      })
+    },
     is_dark_mode() {
       return self.theme === "dark"
     },
