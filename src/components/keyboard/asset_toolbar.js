@@ -8,6 +8,29 @@ import MBImage from '../common/MBImage'
 
 @observer
 export default class AssetToolbar extends React.Component{
+
+  state = {
+    failed_preview_uris: {}
+  }
+
+  image_uri_for_asset(uri, remote_url) {
+    if (uri && !this.state.failed_preview_uris[uri]) {
+      return uri
+    }
+    return remote_url ? remote_url : uri
+  }
+
+  handle_image_error(uri, remote_url) {
+    if (!uri || !remote_url || this.state.failed_preview_uris[uri]) {
+      return
+    }
+    this.setState({
+      failed_preview_uris: {
+        ...this.state.failed_preview_uris,
+        [uri]: true
+      }
+    })
+  }
   
   render() {
     const { posting } = this.props.posting != null ? this.props : Auth.selected_user
@@ -17,6 +40,7 @@ export default class AssetToolbar extends React.Component{
           horizontal
           style={{
             flexDirection: 'row',
+            marginTop: 4,
             padding: 8
           }}
           contentContainerStyle={{
@@ -24,77 +48,83 @@ export default class AssetToolbar extends React.Component{
           }}
         >
           {
-            posting.post_assets.map((asset, index) => (
-              <TouchableOpacity
-                onPress={() => {
-                  if (asset.is_uploading) {
-                    return; // Prevent navigation during upload
-                  }
-                  App.is_share_extension ? Share.trigger_image_options(asset) : posting.asset_option_screen(asset, index)
-                }}
-                onLongPress={() => {
-                  if (asset.is_uploading) {
-                    // Cancel and remove uploading asset
-                    asset.cancel_upload();
-                    posting.remove_asset(index);
-                  } else if (asset.remote_url != null && !asset.is_video) {
-                    // Inline completed asset
-                    posting.inline_asset(asset);
-                  }
-                }}
-                key={`${asset.uri}-${index}`}
-                style={{
-                  marginRight: 4,
-                  position: 'relative',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: 50,
-                  height: 50
-                }}>
-                {
-                  asset.is_video ?
-                  <>
-                    <MBImage source={{ uri: asset.remote_poster_url ? asset.remote_poster_url : asset.uri }} contentFit="cover" style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
-                  </>
-                  :
-                  <MBImage source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} contentFit="cover" style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
-                }
-                {
-                  asset.is_uploading ?
+            posting.post_assets.map((asset, index) => {
+              const asset_uri = asset.uri
+              const asset_remote_url = asset.remote_url
+              const image_uri = this.image_uri_for_asset(asset_uri, asset_remote_url)
+              const video_poster_uri = asset.remote_poster_url ? asset.remote_poster_url : asset.uri
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    if (asset.is_uploading) {
+                      return; // Prevent navigation during upload
+                    }
+                    App.is_share_extension ? Share.trigger_image_options(asset) : posting.asset_option_screen(asset, index)
+                  }}
+                  onLongPress={() => {
+                    if (asset.is_uploading) {
+                      // Cancel and remove uploading asset
+                      asset.cancel_upload();
+                      posting.remove_asset(index);
+                    } else if (asset.remote_url != null && !asset.is_video) {
+                      // Inline completed asset
+                      posting.inline_asset(asset);
+                    }
+                  }}
+                  key={`${asset.uri}-${index}`}
+                  style={{
+                    marginRight: 4,
+                    position: 'relative',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: 50,
+                    height: 50
+                  }}>
+                  {
+                    asset.is_video ?
                     <>
-                      <View 
-                        style={{ 
-                          position: 'absolute',
-                          left: 0,
-                          right: 0,
-                          top: 0, 
-                          bottom: 0, 
-                          backgroundColor: 'rgba(0,0,0,.6)',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          borderRadius: 5,
-                          zIndex: 1
-                        }}>
-                        <ActivityIndicator animating={true} color="#f80"/>
-                      </View>
-                      <View
-                        style={{
-                          width: `${ asset.progress }%`,
-                          height: 5,
-                          backgroundColor: App.theme_accent_color(),
-                          position: 'absolute',
-                          left: 0,
-                          bottom: 0,
-                          borderBottomLeftRadius: 5,
-                          borderBottomRightRadius: asset.progress === 100 ? 5 : 0,
-                          zIndex: 2
-                        }}
-                      />
+                      <MBImage source={{ uri: video_poster_uri }} contentFit="cover" style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
                     </>
-                  : null
-                }
-              </TouchableOpacity>
-            ))
+                    :
+                    <MBImage source={{ uri: image_uri }} contentFit="cover" onError={() => this.handle_image_error(asset_uri, asset_remote_url)} style={{ width: 50, height: 50, borderRadius: 5, backgroundColor: '#E5E7EB' }} />
+                  }
+                  {
+                    asset.is_uploading ?
+                      <>
+                        <View
+                          style={{
+                            position: 'absolute',
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            bottom: 0,
+                            backgroundColor: 'rgba(0,0,0,.6)',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderRadius: 5,
+                            zIndex: 1
+                          }}>
+                          <ActivityIndicator animating={true} color={App.theme_accent_color()}/>
+                        </View>
+                        <View
+                          style={{
+                            width: `${ asset.progress }%`,
+                            height: 5,
+                            backgroundColor: App.theme_accent_color(),
+                            position: 'absolute',
+                            left: 0,
+                            bottom: 0,
+                            borderBottomLeftRadius: 5,
+                            borderBottomRightRadius: asset.progress === 100 ? 5 : 0,
+                            zIndex: 2
+                          }}
+                        />
+                      </>
+                    : null
+                  }
+                </TouchableOpacity>
+              )
+            })
           }
         </ScrollView>
       )

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { observer } from "mobx-react";
-import { Dimensions, View, Platform } from "react-native";
+import { ActivityIndicator, Animated, Dimensions, View, Platform } from "react-native";
 import App from "../../stores/App";
 import { MenuView } from "@react-native-menu/menu";
 import { SvgXml } from "react-native-svg";
@@ -9,9 +9,57 @@ import MBImage from "../common/MBImage";
 
 @observer
 export default class TempUploadCell extends React.Component {
+  constructor(props) {
+    super(props)
+    this.processingOpacity = new Animated.Value(0)
+    this.wasProcessing = false
+  }
+
+  componentDidMount() {
+    this.update_processing_animation(this.is_processing(this.props.upload))
+  }
+
+  componentDidUpdate() {
+    const is_processing = this.is_processing(this.props.upload)
+    this.update_processing_animation(is_processing)
+  }
+
+  progress_for(upload) {
+    const progress = Number(upload.progress)
+    if (!Number.isFinite(progress)) {
+      return 0
+    }
+    return Math.max(0, Math.min(100, progress))
+  }
+
+  is_processing(upload) {
+    return upload?.is_uploading && this.progress_for(upload) >= 100
+  }
+
+  update_processing_animation(is_processing) {
+    if (is_processing && !this.wasProcessing) {
+      this.processingOpacity.setValue(0)
+      Animated.timing(this.processingOpacity, {
+        toValue: 1,
+        duration: 250,
+        useNativeDriver: true,
+      }).start()
+    }
+    else if (!is_processing && this.wasProcessing) {
+      this.processingOpacity.setValue(0)
+    }
+    this.wasProcessing = is_processing
+  }
+
   render() {
     const { upload } = this.props;
     const dimension = Dimensions.get("screen")?.width / 4 - 10;
+    const preview_uri = upload.cached_uri || upload.uri
+    const destructive_icon_color = App.theme_warning_text_color()
+    const progress = this.progress_for(upload)
+    const progress_width = `${Math.max(progress, progress > 0 ? 4 : 8)}%`
+    const is_processing = this.is_processing(upload)
+    const progress_label = is_processing ? "Processing" : progress > 1 ? `${progress}%` : "Uploading"
     const actions = [
       {
         title: "Cancel upload",
@@ -19,6 +67,7 @@ export default class TempUploadCell extends React.Component {
         image: Platform.select({
           ios: "trash",
         }),
+        imageColor: destructive_icon_color,
         attributes: {
           destructive: true,
         },
@@ -79,9 +128,12 @@ export default class TempUploadCell extends React.Component {
             </View>
           ) : (
             <MBImage
-              key={upload.uri}
-              source={upload.uri}
+              key={preview_uri}
+              source={{ uri: preview_uri }}
               contentFit="cover"
+              transition={120}
+              cachePolicy="memory-disk"
+              recyclingKey={preview_uri}
               style={{
                 width: dimension,
                 height: dimension,
@@ -93,19 +145,57 @@ export default class TempUploadCell extends React.Component {
           )}
 
           {upload.is_uploading && (
-            <View
-              style={{
-                width: `${upload.progress}%`,
-                height: 5,
-                backgroundColor: App.theme_accent_color(),
-                position: "absolute",
-                left: 0,
-                bottom: 0,
-                borderBottomLeftRadius: 2,
-                borderBottomRightRadius: upload.progress === 100 ? 2 : 0,
-                zIndex: 2,
-              }}
-            />
+            <>
+              <View
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  backgroundColor: "rgba(0,0,0,.45)",
+                  borderRadius: 5,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 1,
+                }}
+              >
+                <ActivityIndicator animating={true} color="#fff" size="small" />
+                <Animated.Text
+                  style={{
+                    color: "#fff",
+                    fontSize: 12,
+                    fontWeight: "600",
+                    marginTop: 6,
+                    opacity: is_processing ? this.processingOpacity : 1,
+                  }}
+                >
+                  {progress_label}
+                </Animated.Text>
+              </View>
+              <View
+                style={{
+                  height: 5,
+                  backgroundColor: "rgba(255,255,255,.35)",
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  borderBottomLeftRadius: 5,
+                  borderBottomRightRadius: 5,
+                  overflow: "hidden",
+                  zIndex: 2,
+                }}
+              >
+                <View
+                  style={{
+                    width: progress_width,
+                    height: 5,
+                    backgroundColor: App.theme_accent_color(),
+                  }}
+                />
+              </View>
+            </>
           )}
         </View>
       </MenuView>

@@ -10,7 +10,7 @@ import MBImage from "../common/MBImage";
 @observer
 export default class UserMutingSettings extends React.Component {
   render() {
-    const { user, index } = this.props;
+    const { user, index, show_user_identity } = this.props
     return (
       <TouchableOpacity
         onPress={() => App.navigate_to_screen("muting", user)}
@@ -25,13 +25,15 @@ export default class UserMutingSettings extends React.Component {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <MBImage
-            source={`${user.avatar}?v=${App.now()}`}
-            contentFit="contain"
-            style={{ width: 24, height: 24, borderRadius: 50, marginRight: 8 }}
-          />
+          {show_user_identity && (
+            <MBImage
+              source={`${user.avatar}?v=${App.now()}`}
+              contentFit="contain"
+              style={{ width: 24, height: 24, borderRadius: 50, marginRight: 8 }}
+            />
+          )}
           <Text style={{ fontSize: 16, color: App.theme_text_color() }}>
-            @{user.username}
+            {show_user_identity ? `@${user.username}` : "Manage muted users and keywords"}
           </Text>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>

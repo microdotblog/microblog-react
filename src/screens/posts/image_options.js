@@ -6,8 +6,8 @@ import Auth from '../../stores/Auth';
 import App from '../../stores/App'
 import Clipboard from '@react-native-clipboard/clipboard';
 import Video from 'react-native-video';
-import MicroPubApi from '../../api/MicroPubApi';
-import MBImage from '../../components/common/MBImage';
+import MicroPubApi from '../../api/MicroPubApi'
+import MBImage from '../../components/common/MBImage'
 
 @observer
 export default class ImageOptionsScreen extends React.Component{
@@ -41,9 +41,21 @@ export default class ImageOptionsScreen extends React.Component{
     });
   }
 
+  _current_asset = () => {
+    const { asset_uri } = this.props.route.params || {}
+    const posting = Auth.selected_user.posting
+    if (asset_uri) {
+      return posting.post_assets.find(file => file.uri === asset_uri)
+    }
+    return null
+  }
+
   _check_uploads_for_text(results) {
-    const { asset } = this.props.route.params;
-    let found = false;
+    const asset = this._current_asset()
+    if (!asset) {
+      return false
+    }
+    let found = false
   
     if (results.items != null) {
       for (let item of results.items) {
@@ -79,7 +91,10 @@ export default class ImageOptionsScreen extends React.Component{
   
   render() {
     const { posting } = Auth.selected_user
-    const { asset } = this.props.route.params
+    const asset = this._current_asset()
+    if (!asset) {
+      return null
+    }
         
     const max_media_height = 250; // cap media height
     const window_width = Dimensions.get('window').width;
@@ -95,6 +110,7 @@ export default class ImageOptionsScreen extends React.Component{
         media_width = max_media_height * aspect_ratio;
       }
     }
+    const image_uri = asset.uri ? asset.uri : asset.remote_url
 
     return(
       <KeyboardAvoidingView behavior={"padding"} style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
@@ -120,12 +136,12 @@ export default class ImageOptionsScreen extends React.Component{
                 repeat
               />
               :
-              <MBImage source={{ uri: asset.remote_url ? asset.remote_url : asset.uri }} contentFit="contain" style={{ width: media_width, height: media_height }} />
+              <MBImage source={{ uri: image_uri }} contentFit="contain" style={{ width: media_width, height: media_height }} />
             }
             {
               asset.is_uploading ?
                 <>
-                  <ActivityIndicator color="#f80" size={"large"} style={{ position: 'absolute' }} />
+                  <ActivityIndicator color={App.theme_accent_color()} size={"large"} style={{ position: 'absolute' }} />
                 </>
               : null
             }
@@ -153,7 +169,7 @@ export default class ImageOptionsScreen extends React.Component{
               { this.state.isLoadingAlt ? 
                 <>
                   <Text numberOfLines={1} style={{ color: App.theme_text_color() }}>🤖</Text>
-                  <ActivityIndicator color="#f80" size={"small"} style={{ paddingLeft: 5 }} />
+                  <ActivityIndicator color={App.theme_accent_color()} size={"small"} style={{ paddingLeft: 5 }} />
                 </>
               :
                 <>

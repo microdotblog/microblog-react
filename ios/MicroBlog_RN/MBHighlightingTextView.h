@@ -13,12 +13,14 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MBHighlightingTextView : UITextView
 
 @property (copy, nonatomic) RCTBubblingEventBlock onChangeText;
-@property (copy, nonatomic) RCTBubblingEventBlock onSelectionChange;
+@property (copy, nonatomic) RCTDirectEventBlock onSelectionChange;
 @property (strong, nonatomic) UIView* reactAccessoryView;
 @property (assign, nonatomic) CGFloat bottom_overlay_height;
+@property (copy, nonatomic, nullable) NSString* colorScheme;
 
 - (void) callTextChanged:(NSString *)text;
 - (void) callSelectionChanged:(UITextRange *)range;
+- (void) applyTheme;
 - (void) refreshInsets;
 
 @end

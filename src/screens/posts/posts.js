@@ -9,6 +9,8 @@ import { SheetProvider } from "react-native-actions-sheet";
 import SearchIcon from '../../assets/icons/nav/discover.png';
 import SearchBar from '../../components/search_bar';
 import { SFSymbol } from "react-native-sfsymbols";
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
+import { tabBarScrollContentBottomPadding } from '../../utils/ui'
 @observer
 export default class PostsScreen extends React.Component{
 
@@ -20,17 +22,19 @@ export default class PostsScreen extends React.Component{
       post_search_text: App.post_search_query,
     };
     this.posts_search_timeout = null;
+    this.requested_posts_key = null
   }
   
   componentDidMount() {
-    const { selected_service } = Auth.selected_user.posting;
-    const { config } = selected_service;
-
-    selected_service.update_posts_for_active_destination();
+    this._refresh_posts_if_needed()
 
     this.focusListener = this.props.navigation.addListener('focus', () => {
-      selected_service.check_for_posts_for_destination(config.posts_destination(), this.state.is_showing_drafts_posts);
+      this._refresh_posts()
     });
+  }
+
+  componentDidUpdate() {
+    this._refresh_posts_if_needed()
   }
 
   componentWillUnmount() {
@@ -90,6 +94,41 @@ export default class PostsScreen extends React.Component{
     App.set_post_search_text(text);
     this._schedule_posts_search(text);
   }
+
+  _current_posts_context = () => {
+    const selected_service = Auth.selected_user.posting?.selected_service
+    const destination = selected_service?.config?.posts_destination()
+    return { selected_service, destination }
+  }
+
+  _posts_request_key = (selected_service, destination, show_drafts) => {
+    return `${selected_service?.id || ""}:${destination?.uid || ""}:${show_drafts ? "drafts" : "posts"}`
+  }
+
+  _refresh_posts_if_needed = () => {
+    const { selected_service, destination } = this._current_posts_context()
+    if (!selected_service || !destination) {
+      return
+    }
+
+    const request_key = this._posts_request_key(selected_service, destination, this.state.is_showing_drafts_posts)
+    if (request_key === this.requested_posts_key) {
+      return
+    }
+
+    this.requested_posts_key = request_key
+    selected_service.check_for_posts_for_destination(destination, this.state.is_showing_drafts_posts)
+  }
+
+  _refresh_posts = () => {
+    const { selected_service, destination } = this._current_posts_context()
+    if (!selected_service || !destination) {
+      return
+    }
+
+    this.requested_posts_key = this._posts_request_key(selected_service, destination, this.state.is_showing_drafts_posts)
+    selected_service.check_for_posts_for_destination(destination, this.state.is_showing_drafts_posts)
+  }
   
   _return_header = () => {
     const { config } = Auth.selected_user.posting.selected_service
@@ -130,7 +169,11 @@ export default class PostsScreen extends React.Component{
               this.setState({ is_showing_drafts_posts: new_is_drafts });
               const { selected_service } = Auth.selected_user.posting;
               const { config } = selected_service;
-              selected_service.check_for_posts_for_destination(config.posts_destination(), new_is_drafts);
+              const destination = config.posts_destination()
+              if (destination) {
+                this.requested_posts_key = this._posts_request_key(selected_service, destination, new_is_drafts)
+                selected_service.check_for_posts_for_destination(destination, new_is_drafts);
+              }
             }}
           >
             <Text style={{color: App.theme_button_text_color()}}>
@@ -190,39 +233,53 @@ export default class PostsScreen extends React.Component{
   _return_posts_list = () => {
     const { selected_service } = Auth.selected_user.posting;
     const { config } = selected_service;
+    const destination = config.posts_destination()
+    const posts = config.posts_for_destination(this.state.is_showing_drafts_posts)?.slice() || []
+    const list_key = `${selected_service.id}-${destination?.uid || "posts"}-${this.state.is_showing_drafts_posts ? "drafts" : "posts"}`
     
     setTimeout(() => {
       // check if we need drafts button, but if set, never unset
-      if (!this.state.is_showing_drafts_button) {
-        const any_drafts = this._has_any_drafts(config.posts_for_destination(this.state.is_showing_drafts_posts));
+      if (!this.state.is_showing_drafts_button && posts.length) {
+        const any_drafts = this._has_any_drafts(posts);
         this.setState({ is_showing_drafts_button: any_drafts });
       }
     }, 500);
     
     return(
-      <FlatList
-        data={config.posts_for_destination(this.state.is_showing_drafts_posts)}
-        extraData={config.posts_for_destination(this.state.is_showing_drafts_posts)?.length && !selected_service.is_loading_posts}
-        keyExtractor={this._key_extractor}
-        renderItem={this.render_post_item}
-        style={{
-          backgroundColor: App.theme_background_color_secondary(),
-          width: "100%",
-          flex: 1
+      <SafeAreaInsetsContext.Consumer>
+        {insets => {
+          const bottom_padding = tabBarScrollContentBottomPadding(insets?.bottom, 10)
+
+          return (
+            <FlatList
+              key={list_key}
+              data={posts}
+              extraData={`${list_key}-${posts.length}-${selected_service.is_loading_posts}`}
+              keyExtractor={this._key_extractor}
+              renderItem={this.render_post_item}
+              style={{
+                backgroundColor: App.theme_background_color_secondary(),
+                width: "100%",
+                flex: 1
+              }}
+              contentContainerStyle={{ paddingBottom: bottom_padding }}
+              scrollIndicatorInsets={Platform.OS === 'ios' ? { bottom: bottom_padding } : undefined}
+              ItemSeparatorComponent={
+                <View style={{
+                  height: StyleSheet.hairlineWidth,
+                  backgroundColor: App.theme_alt_background_div_color()
+                }} />
+              }
+              refreshControl={
+                <RefreshControl
+                  refreshing={selected_service.is_loading_posts}
+                  onRefresh={this._refresh_posts}
+                />
+              }
+            />
+          )
         }}
-        ItemSeparatorComponent={
-          <View style={{
-            height: StyleSheet.hairlineWidth,
-            backgroundColor: App.theme_alt_background_div_color()
-          }} />
-        }
-        refreshControl={
-          <RefreshControl
-            refreshing={false}
-            onRefresh={() => selected_service.check_for_posts_for_destination(config.posts_destination(), this.state.is_showing_drafts_posts)}
-          />
-        }
-      />
+      </SafeAreaInsetsContext.Consumer>
     )
   }
   

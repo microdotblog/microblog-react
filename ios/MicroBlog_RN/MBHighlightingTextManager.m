@@ -18,7 +18,12 @@
 RCT_EXPORT_MODULE(MBHighlightingTextView)
 
 RCT_EXPORT_VIEW_PROPERTY(onChangeText, RCTBubblingEventBlock)
-RCT_EXPORT_VIEW_PROPERTY(onSelectionChange, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onSelectionChange, RCTDirectEventBlock)
+
+RCT_CUSTOM_VIEW_PROPERTY(colorScheme, NSString, MBHighlightingTextView)
+{
+  view.colorScheme = json ? [RCTConvert NSString:json] : nil;
+}
 
 RCT_CUSTOM_VIEW_PROPERTY(inputAccessoryViewID, NSString, MBHighlightingTextView)
 {
@@ -149,19 +154,13 @@ RCT_CUSTOM_VIEW_PROPERTY(autoFocus, BOOL, MBHighlightingTextView)
   self.textView.translatesAutoresizingMaskIntoConstraints = NO;
   self.textView.delegate = self;
   
-  // background color
-  BOOL darkmode = UITraitCollection.currentTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark;
-  if (darkmode) {
-    self.textView.backgroundColor = [UIColor colorWithRed:0.122 green:0.161 blue:0.216 alpha:1.0];
-  }
-  else {
-    self.textView.backgroundColor = [UIColor whiteColor];
-  }
+  [self.textView applyTheme];
     
   // default text
   NSString* s = @"";
   NSDictionary* attr_info = @{
-    NSFontAttributeName: [UIFont systemFontOfSize:[[self class] preferredPostingFontSize]]
+    NSFontAttributeName: [UIFont systemFontOfSize:[[self class] preferredPostingFontSize]],
+    NSForegroundColorAttributeName: self.textView.textColor
   };
   NSAttributedString* attr_s = [[NSAttributedString alloc] initWithString:s attributes:attr_info];
   self.textView.attributedText = attr_s;

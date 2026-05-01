@@ -15,14 +15,10 @@ const BackButtonContent = observer(() => {
   
   if (isLiquidGlass()) {
     button_style = {
-      marginRight: 0 - STANDARD_SLOP,
-      marginLeft: 16 - STANDARD_SLOP,
-      marginTop: 2 - STANDARD_SLOP,
-      marginBottom: 0 - STANDARD_SLOP,
-      padding: STANDARD_SLOP,
-      minWidth: 44,
-      minHeight: 44,
+      width: 28,
+      height: 28,
       flexDirection: 'row',
+      justifyContent: 'center',
       alignItems: 'center'
     }
   }

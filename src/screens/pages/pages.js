@@ -10,12 +10,48 @@ import SearchIcon from '../../assets/icons/nav/discover.png';
 import SearchBar from '../../components/search_bar';
 import { SFSymbol } from "react-native-sfsymbols";
 import { SvgXml } from 'react-native-svg';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
+import { tabBarScrollContentBottomPadding } from '../../utils/ui'
 
 @observer
 export default class PagesScreen extends React.Component{
+
+  constructor(props) {
+    super(props)
+    this.requested_pages_key = null
+  }
   
   componentDidMount(){
-    Auth.selected_user.posting?.selected_service?.update_pages_for_active_destination()
+    this._refresh_pages_if_needed()
+  }
+
+  componentDidUpdate() {
+    this._refresh_pages_if_needed()
+  }
+
+  _current_pages_context = () => {
+    const selected_service = Auth.selected_user.posting?.selected_service
+    const destination = selected_service?.config?.pages_destination()
+    return { selected_service, destination }
+  }
+
+  _pages_request_key = (selected_service, destination) => {
+    return `${selected_service?.id || ""}:${destination?.uid || ""}`
+  }
+
+  _refresh_pages_if_needed = () => {
+    const { selected_service, destination } = this._current_pages_context()
+    if (!selected_service || !destination) {
+      return
+    }
+
+    const request_key = this._pages_request_key(selected_service, destination)
+    if (request_key === this.requested_pages_key) {
+      return
+    }
+
+    this.requested_pages_key = request_key
+    selected_service.check_for_pages_for_destination(destination)
   }
   
   _return_header = () => {
@@ -87,35 +123,49 @@ export default class PagesScreen extends React.Component{
   _return_pages_list = () => {
     const { selected_service } = Auth.selected_user.posting
     const { config } = selected_service
+    const destination = config.pages_destination()
+    const pages = config.pages_for_destination()?.slice() || []
+    const list_key = `${selected_service.id}-${destination?.uid || "pages"}`
     return(
-      <FlatList
-        data={config.pages_for_destination()}
-        extraData={config.pages_for_destination()?.length && !selected_service.is_loading_pages}
-        keyExtractor={this._key_extractor}
-        renderItem={this.render_page_item}
-        style={{
-          backgroundColor: App.theme_background_color_secondary(),
-          width: "100%",
-          flex: 1
+      <SafeAreaInsetsContext.Consumer>
+        {insets => {
+          const bottom_padding = tabBarScrollContentBottomPadding(insets?.bottom, 10)
+
+          return (
+            <FlatList
+              key={list_key}
+              data={pages}
+              extraData={`${list_key}-${pages.length}-${selected_service.is_loading_pages}`}
+              keyExtractor={this._key_extractor}
+              renderItem={this.render_page_item}
+              style={{
+                backgroundColor: App.theme_background_color_secondary(),
+                width: "100%",
+                flex: 1
+              }}
+              contentContainerStyle={{ paddingBottom: bottom_padding }}
+              scrollIndicatorInsets={Platform.OS === 'ios' ? { bottom: bottom_padding } : undefined}
+              // ListEmptyComponent={
+              //   <View style={{ flex: 1, padding: 12, justifyContent: 'center', alignItems: 'center' }} >
+              //     <Text style={{ color: App.theme_text_color() }}>No pages...</Text>
+              //   </View>
+              // }
+              ItemSeparatorComponent={
+                <View style={{
+                  height: StyleSheet.hairlineWidth,
+                  backgroundColor: App.theme_alt_background_div_color()
+                }} />
+              }
+              refreshControl={
+                <RefreshControl
+                  refreshing={selected_service.is_loading_pages}
+                  onRefresh={() => destination && selected_service.check_for_pages_for_destination(destination)}
+                />
+              }
+            />
+          )
         }}
-        // ListEmptyComponent={
-        //   <View style={{ flex: 1, padding: 12, justifyContent: 'center', alignItems: 'center' }} >
-        //     <Text style={{ color: App.theme_text_color() }}>No pages...</Text>
-        //   </View>
-        // }
-        ItemSeparatorComponent={
-          <View style={{
-            height: StyleSheet.hairlineWidth,
-            backgroundColor: App.theme_alt_background_div_color()
-          }} />
-        }
-        refreshControl={
-          <RefreshControl
-            refreshing={false}
-            onRefresh={() => selected_service.check_for_pages_for_destination(config.pages_destination())}
-          />
-        }
-      />
+      </SafeAreaInsetsContext.Consumer>
     )
   }
   

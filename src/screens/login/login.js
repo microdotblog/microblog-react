@@ -1,12 +1,58 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TextInput, Button, ActivityIndicator, Platform, Keyboard, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, ActivityIndicator, Platform, Keyboard, TouchableOpacity, Alert } from 'react-native';
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
+import { appleAuth, AppleButton } from '@invertase/react-native-apple-authentication';
 import Login from './../../stores/Login';
 import App from '../../stores/App'
 
 @observer
 export default class LoginScreen extends React.Component{
+  apple_credential_revoked_unsubscribe = null
+
+  componentDidMount() {
+    if(Platform.OS === "ios" && appleAuth.isSupported){
+      this.apple_credential_revoked_unsubscribe = appleAuth.onCredentialRevoked(async () => {
+        console.warn("Apple credentials revoked")
+      })
+    }
+  }
+
+  componentWillUnmount() {
+    if(this.apple_credential_revoked_unsubscribe != null){
+      this.apple_credential_revoked_unsubscribe()
+      this.apple_credential_revoked_unsubscribe = null
+    }
+  }
+
+  on_apple_button_press = async () => {
+    try{
+      const apple_auth_request_response = await appleAuth.performRequest({
+        requestedOperation: appleAuth.Operation.LOGIN,
+        requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL]
+      })
+
+      const credential_state = await appleAuth.getCredentialStateForUser(apple_auth_request_response.user)
+      if(credential_state === appleAuth.State.AUTHORIZED){
+        const full_name = [
+          apple_auth_request_response.fullName?.givenName,
+          apple_auth_request_response.fullName?.familyName
+        ].filter(name => name != null && name.length > 0).join(" ")
+
+        await Login.login_with_apple_credentials({
+          user_id: apple_auth_request_response.user,
+          identity_token: apple_auth_request_response.identityToken,
+          email: apple_auth_request_response.email,
+          full_name
+        })
+      }
+    }
+    catch(error){
+      if(error?.code !== appleAuth.Error.CANCELED){
+        Alert.alert("Ooops", "An error occured whilst trying to sign you in with Apple. Please try again.")
+      }
+    }
+  }
   
   render() {
     return(
@@ -30,7 +76,7 @@ export default class LoginScreen extends React.Component{
             style={{ 
               backgroundColor: App.theme_input_contrast_background_color(), 
               fontSize: 17,
-              borderColor: `${!Login.show_error ? "#f80" : "#ea053b"}`, 
+              borderColor: !Login.show_error ? App.theme_accent_color() : "#ea053b",
               borderWidth: 1,
               height: 50,
               width: "100%",
@@ -45,10 +91,30 @@ export default class LoginScreen extends React.Component{
           />
           <Button
             title="Continue"
-            color="#f80"
+            color={App.theme_accent_color()}
             onPress={() => {Login.trigger_login(); Keyboard.dismiss()}}
             disabled={!Login.can_submit()}
           />
+          {
+            Platform.OS === "ios" && appleAuth.isSupported &&
+            <View style={{
+              marginTop: 22,
+              marginBottom: 12,
+              alignItems: "center"
+            }}>
+              <Text style={{
+                fontWeight: "500",
+                color: App.theme_text_color(),
+                marginBottom: 10
+              }}>Or sign in with Apple:</Text>
+              <AppleButton
+                buttonStyle={App.is_dark_mode() ? AppleButton.Style.WHITE : AppleButton.Style.BLACK}
+                buttonType={AppleButton.Type.SIGN_IN}
+                style={{ width: 220, height: 44 }}
+                onPress={() => { if(!Login.is_loading){ this.on_apple_button_press() } }}
+              />
+            </View>
+          }
           {
             Login.is_loading &&
             <ActivityIndicator 

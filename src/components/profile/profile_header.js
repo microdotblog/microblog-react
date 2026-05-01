@@ -94,7 +94,7 @@ export default class ProfileHeader extends React.Component{
             {
               profile.author.url != null ?
               <TouchableOpacity style={{ marginTop: 2 }} onPress={() => App.open_url(profile.author.url)}>
-                <Text style={{ color: "#f80", fontWeight: '600' }}>{profile.author.url.replace("https://", "").replace("http://", "")}</Text>
+                <Text style={{ color: App.theme_accent_color(), fontWeight: '600' }}>{profile.author.url.replace("https://", "").replace("http://", "")}</Text>
               </TouchableOpacity>
               : null
             }
@@ -146,7 +146,7 @@ export default class ProfileHeader extends React.Component{
               paddingHorizontal: 5
             }}
           >
-            <Text style={{ fontWeight: '400', color: '#f80' }}>{more_expanded ? "Show less" : "Show more"}</Text>
+            <Text style={{ fontWeight: '400', color: App.theme_accent_color() }}>{more_expanded ? "Show less" : "Show more"}</Text>
           </TouchableOpacity>
           :
           null
@@ -170,7 +170,7 @@ export default class ProfileHeader extends React.Component{
             !profile._microblog.is_you ?
             <TouchableOpacity onPress={this._toggle_follow} style={{marginRight: 2, paddingTop: 8, paddingBottom: 8, paddingLeft: 10, paddingRight: 10, borderRadius: 20, backgroundColor: App.theme_profile_button_background_color()}}>
               { this.state.is_toggling_follow ? 
-                <ActivityIndicator color="#f80" />
+                <ActivityIndicator color={App.theme_accent_color()} />
                 :
                 <Text style={{ fontWeight: '500', color: App.theme_profile_button_text_color() }}>{profile._microblog.is_following ? 'Unfollow' : 'Follow'}</Text>
               }
@@ -187,7 +187,7 @@ export default class ProfileHeader extends React.Component{
     if(loading){
       return(
         <View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-          <ActivityIndicator color="#f80" />
+          <ActivityIndicator color={App.theme_accent_color()} />
         </View>
       )
     }

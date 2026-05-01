@@ -5,11 +5,12 @@ import MicroBlogApi, { LOGIN_ERROR, LOGIN_TOKEN_INVALID, LOGIN_INCORRECT } from 
 import Tokens from "./Tokens";
 import User from './models/User';
 import string_checker from '../utils/string_checker'
+import { share_type_for_mime_type } from '../utils/share_intents'
 import { Platform, Keyboard } from 'react-native'
 import App from "./App"
 import Auth from './Auth';
 
-export default Share = types.model('Share', {
+const Share = types.model('Share', {
 	is_loading: types.optional(types.boolean, true),
 	share_type: types.optional(types.string, "text"),
 	share_data: types.optional(types.string, ""),
@@ -31,14 +32,15 @@ export default Share = types.model('Share', {
 	toolbar_select_user_open: types.optional(types.boolean, false),
 	error_message: types.maybeNull(types.string),
 	image_options_open: types.optional(types.boolean, false),
+	image_options_asset_uri: types.maybeNull(types.string),
 	temp_direct_shared_data: types.optional(types.string, ""),
 })
 	.actions(self => ({
 
-		hydrate: flow(function* (shared_data = null) {
+		hydrate: flow(function* (shared_data = null, color_scheme = null) {
 			console.log('Share:hydrate', self)
 			yield self.trigger_loading()
-			yield App.prep_and_hydrate_share_extension()
+			yield App.prep_and_hydrate_share_extension(color_scheme)
 			const store = yield AsyncStorage.getItem('Share')
 			if (store) {
 				applySnapshot(self, JSON.parse(store))
@@ -46,9 +48,11 @@ export default Share = types.model('Share', {
 				self.share_type = "text"
 				self.share_data = ""
 				self.share_text = ""
+				self.share_url = ""
 				self.share_image_data = null
 				self.error_message = null
 				self.image_options_open = false
+				self.image_options_asset_uri = null
 				self.temp_direct_shared_data = ""
 			}
 			if (Platform.OS === "ios") {
@@ -67,7 +71,7 @@ export default Share = types.model('Share', {
 			yield self.set_data(shared_data)
 			self.trigger_loading(false)
 		}),
-		
+
 		hydrate_android_share: flow(function* (shared_data) {
 			console.log('Share:hydrate_android_share', shared_data)
 			Share.hydrate(shared_data)
@@ -96,7 +100,7 @@ export default Share = types.model('Share', {
 			// }
 			if (direct_data != null) {
 				console.log('Share:set_data:direct_data', direct_data)
-				if (direct_data.data.includes("#:~:text=")) {
+				if (typeof direct_data.data === "string" && direct_data.data.includes("#:~:text=")) {
 					// Messy...
 					mime_type = "application/json"
 					data = JSON.stringify({
@@ -106,27 +110,34 @@ export default Share = types.model('Share', {
 					})
 				}
 				else {
-					data = direct_data.data.split("#:~:text=")[0]
+					data = typeof direct_data.data === "string" ? direct_data.data.split("#:~:text=")[0] : direct_data.data
 					mime_type = direct_data.mimeType
 				}
 			}
 			else {
 				const share_data = yield ShareMenuReactView.data()
 				console.log('Share:set_data', share_data)
-				data_array = share_data.data
+				const data_array = share_data.data
 				data = data_array[ 0 ].data
 				mime_type = data_array[ 0 ].mimeType
 			}
-			self.share_data = data
-			console.log('Share:set_data:data', data, mime_type)
-			if (mime_type === "image/jpeg" || mime_type === "image/png") {
-				self.share_type = "image"
+			const normalized_data = typeof data === "string" ? data : ""
+			self.share_data = normalized_data
+			console.log('Share:set_data:data', normalized_data, mime_type)
+			const share_type = share_type_for_mime_type(mime_type)
+			if (share_type == null) {
+				self.share_type = "unsupported"
+				self.share_text = ""
+				self.share_url = ""
+				self.share_image_data = null
+				self.error_message = "Micro.blog can only share text, links, and photos."
+				self.is_loading = false
+				return
 			}
-			else if(mime_type === "application/json"){
-				self.share_type = "json"
-			}
+
+			self.share_type = share_type
 			if (self.share_type === "text") {
-				self.share_text = string_checker._validate_url(data) ? data : `> ${ data }`
+				self.share_text = string_checker._validate_url(normalized_data) ? normalized_data : `> ${ normalized_data }`
 				if (Platform.OS === "ios") {
 					self.users.forEach(user => {
 						user.posting.set_post_text(self.share_text)
@@ -140,7 +151,7 @@ export default Share = types.model('Share', {
 			}
 			else if (self.share_type === "image") {
 				const image_data = {
-					uri: data,
+					uri: normalized_data,
 					type: mime_type,
 					mime: mime_type
 				}
@@ -158,13 +169,13 @@ export default Share = types.model('Share', {
 			}
 			else if (self.share_type === "json"){
 				// Because we're dealing with JSON, we need to check a few things and add the correct share_text
-				const parsed_data = JSON.parse(data)
-				
+				const parsed_data = JSON.parse(normalized_data)
+
 				let share_text = ""
 				if (parsed_data.title && parsed_data.url) {
 					share_text += `[${parsed_data.title}](${parsed_data.url})`
 					self.share_url = parsed_data.url
-				} 
+				}
 				else if (parsed_data.url) {
 					share_text += `[](${parsed_data.url})`
 					self.share_url = parsed_data.url
@@ -172,7 +183,7 @@ export default Share = types.model('Share', {
 				if (parsed_data.text) {
 					share_text += `\n\n> ${parsed_data.text}\n\n`
 				}
-				
+
 				self.share_text = share_text
 				if (Platform.OS === "ios") {
 					self.users.forEach(user => {
@@ -190,7 +201,7 @@ export default Share = types.model('Share', {
 				self.is_loading = false
 			}
 		}),
-		
+
 		login_account: flow(function* (account_with_token = null) {
 			console.log("Share:login_account")
 			if (account_with_token) {
@@ -229,7 +240,7 @@ export default Share = types.model('Share', {
 					Auth.selected_user?.fetch_data()
 				})
 			}
-			
+
 			if (self.toolbar_select_user_open) {
 				self.toolbar_select_user_open = false
 			}
@@ -332,19 +343,21 @@ export default Share = types.model('Share', {
 		clear_error_message: flow(function* () {
 			self.error_message = null
 		}),
-		
+
 		trigger_image_options: flow(function* (asset) {
 			console.log('Share:trigger_image_options', asset)
 			if (asset.is_uploading) {
 				console.log('Share:trigger_image_options:blocked - upload in progress')
 				return false
 			}
+			self.image_options_asset_uri = asset.uri
 			self.image_options_open = true
 		}),
-		
+
 		close_image_options: flow(function* () {
 			console.log('Share:close_image_options')
 			self.image_options_open = false
+			self.image_options_asset_uri = null
 		}),
 
 	}))
@@ -363,8 +376,8 @@ export default Share = types.model('Share', {
 		sorted_users() {
 			if (Platform.OS === "ios") {
 				return self.users.slice().sort((a, b) => {
-					const a_is_selected = Share.selected_user?.username === a.username
-					const b_is_selected = Share.selected_user?.username === b.username
+					const a_is_selected = self.selected_user?.username === a.username
+					const b_is_selected = self.selected_user?.username === b.username
 					return b_is_selected - a_is_selected
 				})
 			}
@@ -375,6 +388,18 @@ export default Share = types.model('Share', {
 					return b_is_selected - a_is_selected
 				})
 			}
+		},
+		image_options_asset() {
+			const assets = self.selected_user?.posting?.post_assets
+			if (!assets?.length) {
+				return null
+			}
+			if (self.image_options_asset_uri) {
+				return assets.find(asset => asset.uri === self.image_options_asset_uri) || assets[0]
+			}
+			return assets[0]
 		}
 	}))
 	.create()
+
+export default Share

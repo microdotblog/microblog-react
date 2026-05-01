@@ -7,6 +7,7 @@ import App from '../../stores/App';
 import PostToolbar from '../../components/keyboard/post_toolbar';
 import AssetToolbar from '../../components/keyboard/asset_toolbar';
 import UsernameToolbar from '../../components/keyboard/username_toolbar';
+import HighlightingText from '../../components/text/highlighting_text';
 import LoadingComponent from '../../components/generic/loading';
 
 @observer
@@ -52,12 +53,17 @@ export default class PostingScreen extends React.Component{
             />
             : null
           }
-          <TextInput
+          <HighlightingText
             placeholderTextColor="lightgrey"
             style={{
+              minHeight: 300,
               fontSize: 18,
+              justifyContent: 'flex-start',
+              alignItems: 'flex-start',
               marginTop: 3,
+              flex: 1,
               padding: 8,
+              textAlignVertical: 'top',
               color: App.theme_text_color(),
               paddingBottom: posting.post_assets?.length > 0 ? 90 : 50
             }}
@@ -72,7 +78,8 @@ export default class PostingScreen extends React.Component{
             enablesReturnKeyAutomatically={true}
             underlineColorAndroid={'transparent'}
             value={posting.post_text}
-            onChangeText={(text) => !posting.is_sending_post ? posting.set_post_text_from_typing(text) : null}
+            selection={posting.text_selection_flat}
+            onChangeText={({ nativeEvent: { text } }) => !posting.is_sending_post ? posting.set_post_text_from_typing(text) : null}
             onSelectionChange={({ nativeEvent: { selection } }) => {
               posting.set_text_selection(selection)
             }}

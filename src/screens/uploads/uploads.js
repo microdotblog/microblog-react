@@ -12,6 +12,8 @@ import SearchBar from '../../components/search_bar';
 import { SFSymbol } from "react-native-sfsymbols";
 import { SvgXml } from 'react-native-svg';
 import DeviceInfo from 'react-native-device-info';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
+import { tabBarScrollContentBottomPadding } from '../../utils/ui'
 
 @observer
 export default class UploadsScreen extends React.Component{
@@ -20,13 +22,43 @@ export default class UploadsScreen extends React.Component{
     super(props)
 
     this.flatListRef = React.createRef();
+    this.requested_uploads_key = null
     this.state = {
       num_columns: DeviceInfo.isTablet() ? 4 : 3
     }
   }
 
   componentDidMount() {
-    Auth.selected_user.posting?.selected_service?.update_uploads_for_active_destination()
+    this._refresh_uploads_if_needed()
+  }
+
+  componentDidUpdate() {
+    this._refresh_uploads_if_needed()
+  }
+
+  _current_uploads_context = () => {
+    const selected_service = Auth.selected_user.posting?.selected_service
+    const destination = selected_service?.config?.uploads_destination()
+    return { selected_service, destination }
+  }
+
+  _uploads_request_key = (selected_service, destination) => {
+    return `${selected_service?.id || ""}:${destination?.uid || ""}`
+  }
+
+  _refresh_uploads_if_needed = () => {
+    const { selected_service, destination } = this._current_uploads_context()
+    if (!selected_service || !destination) {
+      return
+    }
+
+    const request_key = this._uploads_request_key(selected_service, destination)
+    if (request_key === this.requested_uploads_key) {
+      return
+    }
+
+    this.requested_uploads_key = request_key
+    selected_service.check_for_uploads_for_destination(destination)
   }
   
   _scroll_to_top = () => {
@@ -114,29 +146,43 @@ export default class UploadsScreen extends React.Component{
   _return_uploads_list = () => {
     const { selected_service } = Auth.selected_user.posting
     const { config } = selected_service
+    const destination = config.uploads_destination()
+    const uploads = config.uploads_for_destination()?.slice() || []
+    const list_key = `${selected_service.id}-${destination?.uid || "uploads"}-${this.state.num_columns}`
     return(
-      <FlatList
-        ref={this.flatListRef}
-        data={config.uploads_for_destination()}
-        extraData={config.uploads_for_destination()?.length && !selected_service.is_loading_uploads}
-        keyExtractor={this._key_extractor}
-        renderItem={this.render_upload_item}
-        style={{
-          backgroundColor: App.theme_background_color_secondary(),
-          width: "100%"
+      <SafeAreaInsetsContext.Consumer>
+        {insets => {
+          const bottom_padding = tabBarScrollContentBottomPadding(insets?.bottom, 10)
+
+          return (
+            <FlatList
+              key={list_key}
+              ref={this.flatListRef}
+              data={uploads}
+              extraData={`${list_key}-${uploads.length}-${selected_service.is_loading_uploads}`}
+              keyExtractor={this._key_extractor}
+              renderItem={this.render_upload_item}
+              style={{
+                backgroundColor: App.theme_background_color_secondary(),
+                width: "100%",
+                flex: 1
+              }}
+              contentContainerStyle={{ paddingBottom: bottom_padding }}
+              scrollIndicatorInsets={Platform.OS === 'ios' ? { bottom: bottom_padding } : undefined}
+              numColumns={this.state.num_columns}
+              initialNumToRender={12}
+              maxToRenderPerBatch={6}
+              windowSize={5}
+              refreshControl={
+                <RefreshControl
+                  refreshing={selected_service.is_loading_uploads}
+                  onRefresh={() => destination && selected_service.check_for_uploads_for_destination(destination)}
+                />
+              }
+            />
+          )
         }}
-        numColumns={this.state.num_columns}
-        removeClippedSubviews={true}
-        initialNumToRender={12}
-        maxToRenderPerBatch={6}
-        windowSize={5}
-        refreshControl={
-          <RefreshControl
-            refreshing={false}
-            onRefresh={() => selected_service.check_for_uploads_for_destination(config.posts_destination())}
-          />
-        }
-      />
+      </SafeAreaInsetsContext.Consumer>
     )
   }
 
@@ -151,22 +197,26 @@ export default class UploadsScreen extends React.Component{
   _return_temp_uploads_list = () => {
     const { selected_service } = Auth.selected_user.posting
     const { config } = selected_service
-    const dimension = (Dimensions.get("screen")?.width / 4) + 5
-    if (config.temp_uploads_for_destination()?.length) {
+    const temp_uploads = config.temp_uploads_for_destination()?.slice() || []
+    const cell_dimension = Dimensions.get("screen")?.width / 4 - 10
+    const row_height = cell_dimension + 22
+    if (temp_uploads.length) {
       return (
         <FlatList
-          data={config.temp_uploads_for_destination()}
-          extraData={config.temp_uploads_for_destination()?.length && !selected_service.is_loading_uploads}
+          data={temp_uploads}
+          extraData={`${temp_uploads.length}-${selected_service.is_loading_uploads}`}
           keyExtractor={this._temp_key_extractor}
           renderItem={this.render_temporary_upload_item}
           style={{
             width: "100%",
-            minHeight: dimension,
+            height: row_height,
+            maxHeight: row_height,
+            flexGrow: 0,
             borderBottomColor: App.theme_border_color(),
             borderBottomWidth: 2,
-            paddingBottom: 10,
             marginBottom: 10
           }}
+          contentContainerStyle={{ paddingBottom: 10 }}
           horizontal={true}
         />
       )

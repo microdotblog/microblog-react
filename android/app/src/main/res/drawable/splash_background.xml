@@ -3,10 +3,10 @@
 
     <item android:drawable="@color/splashBackground"/>
 
-    <item>
-        <bitmap
-            android:gravity="center"
-            android:src="@drawable/shell_launch_background_image" />
-    </item>
+    <item
+        android:width="120dp"
+        android:height="120dp"
+        android:gravity="center"
+        android:drawable="@mipmap/ic_launcher_adaptive_fore" />
 
 </layer-list>

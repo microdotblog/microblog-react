@@ -1,4 +1,4 @@
-import { types, flow } from "mobx-state-tree"
+import { types, flow, isAlive } from "mobx-state-tree"
 import { Alert } from "react-native"
 import Post from "./Post"
 import Page from "./Page"
@@ -6,10 +6,20 @@ import Upload from "./Upload"
 import TempUpload from "./TempUpload"
 import Auth from "../../Auth"
 import App from "../../App"
-import MicroPubApi, { POST_ERROR } from "../../../api/MicroPubApi"
 import { upload_large_media_task, create_cancel_source } from "./uploadLargeMediaTask"
 
-export default Destination = types.model('Destination', {
+const upload_from_temp_upload = temp_upload => ({
+	url: temp_upload.url,
+	published: "",
+	poster: temp_upload.poster || "",
+	preview_uri: temp_upload.cached_uri || temp_upload.uri,
+	alt: "",
+	is_ai: false,
+	sizes: {},
+	cdn: {}
+})
+
+const Destination = types.model('Destination', {
 	uid: types.identifier,
 	name: types.maybeNull(types.string),
 	"microblog-audio": types.optional(types.boolean, false),
@@ -133,6 +143,8 @@ export default Destination = types.model('Destination', {
 			const url = entry.url || ""
 			const published = entry.published || ""
 			const poster = entry.poster || ""
+			const existing_upload = self.uploads.find(upload => upload.url === url)
+			const preview_uri = entry.preview_uri || existing_upload?.preview_uri
 			const alt = entry.alt || ""
 			const is_ai = entry["microblog-ai"]
 			const sizes = entry.sizes || {}
@@ -141,6 +153,7 @@ export default Destination = types.model('Destination', {
 				url: url,
 				published: published,
 				poster: poster,
+				preview_uri: preview_uri,
 				alt: alt,
 				is_ai: is_ai,
 				sizes: sizes,
@@ -183,51 +196,71 @@ export default Destination = types.model('Destination', {
 				media,
 				service_object,
 				cancel_source,
-				is_cancelled: () => temp_upload.cancelled,
-				on_progress: progress => temp_upload.update_progress(progress),
-				on_local_uri: uri => temp_upload.set_cached_uri(uri)
+				is_cancelled: () => !isAlive(temp_upload) || temp_upload.cancelled,
+				on_progress: progress => {
+					if (isAlive(temp_upload)) {
+						temp_upload.update_progress(progress)
+					}
+				},
+				on_local_uri: uri => {
+					if (isAlive(temp_upload)) {
+						temp_upload.set_cached_uri(uri)
+					}
+				}
 			})
 
+			if (!isAlive(self) || !isAlive(temp_upload)) {
+				return
+			}
 			temp_upload.url = result.url
 			if (result.poster) {
 				temp_upload.poster = result.poster
 			}
 			temp_upload.did_upload = true
-
-			const upload_entry = {
-				url: temp_upload.url,
-				poster: temp_upload.poster
-			}
+			const uploaded_url = temp_upload.url
+			const upload_entry = upload_from_temp_upload(temp_upload)
 			self.uploads.unshift(upload_entry)
 
-			yield service.check_for_uploads_for_destination(self)
+			yield service.check_for_uploads_for_destination(self, false)
 
-			const asset = self.uploads.find(a => a.url === temp_upload.url)
+			if (!isAlive(self)) {
+				return
+			}
+			if (!self.uploads.find(a => a.url === uploaded_url)) {
+				self.uploads.unshift(upload_entry)
+			}
+			const asset = self.uploads.find(a => a.url === uploaded_url)
 			if (App.post_modal_is_open && asset) {
 				Auth.selected_user.posting?.add_to_post_text(asset.best_post_markup())
 			}
 
-			const temp_index = self.temp_uploads.indexOf(temp_upload)
-			if (temp_index >= 0) {
-				self.temp_uploads.splice(temp_index, 1)
+			if (isAlive(temp_upload)) {
+				const temp_index = self.temp_uploads.indexOf(temp_upload)
+				if (temp_index >= 0) {
+					self.temp_uploads.splice(temp_index, 1)
+				}
 			}
 		}
 		catch (error) {
-			const was_cancelled = temp_upload.cancelled
+			const was_cancelled = !isAlive(temp_upload) || temp_upload.cancelled
 			console.log("Destination:upload_large_media:error", error)
 			if (!was_cancelled) {
 				Alert.alert("Upload Failed", error?.message || "Could not upload video.")
 			}
-			temp_upload.did_upload = false
-			yield temp_upload.update_progress(0)
-			const temp_index = self.temp_uploads.indexOf(temp_upload)
-			if (temp_index >= 0) {
-				self.temp_uploads.splice(temp_index, 1)
+			if (isAlive(temp_upload)) {
+				temp_upload.did_upload = false
+				yield temp_upload.update_progress(0)
+				const temp_index = self.temp_uploads.indexOf(temp_upload)
+				if (temp_index >= 0) {
+					self.temp_uploads.splice(temp_index, 1)
+				}
 			}
 		}
 		finally {
-			temp_upload.is_uploading = false
-			temp_upload.cancel_source = null
+			if (isAlive(temp_upload)) {
+				temp_upload.is_uploading = false
+				temp_upload.cancel_source = null
+			}
 		}
 	}),
 
@@ -236,26 +269,32 @@ export default Destination = types.model('Destination', {
 		const temp_upload = TempUpload.create(media)
 		self.temp_uploads.push(temp_upload)
 		const result = yield temp_upload.upload(service.service_object(), self)
-		if (result) {
+		if (result && isAlive(self) && isAlive(temp_upload)) {
 			console.log("Destination:upload_media:success", result)
-			const upload = {
-				url: temp_upload.url,
-				poster: temp_upload.poster,
-			}
+			const uploaded_url = temp_upload.url
+			const upload = upload_from_temp_upload(temp_upload)
 			self.uploads.unshift(upload)
 			self.temp_uploads.remove(temp_upload)
+			yield service.check_for_uploads_for_destination(self, false)
+			if (!isAlive(self)) {
+				return
+			}
+			if (!self.uploads.find(a => a.url === uploaded_url)) {
+				self.uploads.unshift(upload)
+			}
 			// Because we're uploading from within the post editor, we also
 			// want to automatically set the upload within the post.
 			if(App.post_modal_is_open){
-				const asset = self.uploads.find(a => a.url === upload.url)
+				const asset = self.uploads.find(a => a.url === uploaded_url)
 				if(asset){
 					Auth.selected_user.posting?.add_to_post_text(asset.best_post_markup())
 					// TODO: Should we bring this back?
 					// Navigation.pop(UPLOADS_MODAL_SCREEN)
 				}
 			}
-			//service.check_for_uploads_for_destination(self)
 		}
 	})
 
 }))
+
+export default Destination

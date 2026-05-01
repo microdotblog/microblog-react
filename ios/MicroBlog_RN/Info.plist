@@ -56,6 +56,8 @@
 	<string>The location may be used when posting photos.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Micro.blog can upload photos to your microblog.</string>
+	<key>RCTNewArchEnabled</key>
+	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
@@ -78,8 +80,6 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<true/>
-	<key>UIDesignRequiresCompatibility</key>
 	<true/>
 </dict>
 </plist>
