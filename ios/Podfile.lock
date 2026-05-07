@@ -1,7 +1,7 @@
 PODS:
-  - EXConstants (55.0.15):
+  - EXConstants (55.0.16):
     - ExpoModulesCore
-  - Expo (55.0.17):
+  - Expo (55.0.23):
     - ExpoModulesCore
     - hermes-engine
     - RCTRequired
@@ -26,26 +26,26 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - ExpoAsset (55.0.16):
+  - ExpoAsset (55.0.17):
     - ExpoModulesCore
-  - ExpoDomWebView (55.0.5):
+  - ExpoDomWebView (55.0.6):
     - ExpoModulesCore
-  - ExpoFileSystem (55.0.17):
+  - ExpoFileSystem (55.0.19):
     - ExpoModulesCore
-  - ExpoFont (55.0.6):
+  - ExpoFont (55.0.7):
     - ExpoModulesCore
-  - ExpoImage (55.0.9):
+  - ExpoImage (55.0.10):
     - ExpoModulesCore
     - libavif/libdav1d
     - SDWebImage (~> 5.21.0)
     - SDWebImageAVIFCoder (~> 0.11.0)
     - SDWebImageSVGCoder (~> 1.7.0)
     - SDWebImageWebPCoder (~> 0.14.6)
-  - ExpoKeepAwake (55.0.6):
+  - ExpoKeepAwake (55.0.8):
     - ExpoModulesCore
-  - ExpoLogBox (55.0.11):
+  - ExpoLogBox (55.0.12):
     - React-Core
-  - ExpoModulesCore (55.0.23):
+  - ExpoModulesCore (55.0.25):
     - ExpoModulesJSI
     - hermes-engine
     - RCTRequired
@@ -70,21 +70,21 @@ PODS:
     - ReactNativeDependencies
     - RNWorklets
     - Yoga
-  - ExpoModulesJSI (55.0.23):
+  - ExpoModulesJSI (55.0.25):
     - hermes-engine
     - React-Core
     - React-runtimescheduler
     - ReactCommon
   - ExpoSecureStore (55.0.13):
     - ExpoModulesCore
-  - ExpoWebBrowser (55.0.14):
+  - ExpoWebBrowser (55.0.15):
     - ExpoModulesCore
   - FBLazyVector (0.83.6)
   - hermes-engine (0.14.1):
     - hermes-engine/Pre-built (= 0.14.1)
   - hermes-engine/Pre-built (0.14.1)
-  - libavif/core (0.11.1)
-  - libavif/libdav1d (0.11.1):
+  - libavif/core (1.0.0)
+  - libavif/libdav1d (1.0.0):
     - libavif/core
     - libdav1d (>= 0.6.0)
   - libdav1d (1.2.0)
@@ -1705,7 +1705,7 @@ PODS:
     - ReactNativeDependencies
     - Toast (~> 4)
     - Yoga
-  - react-native-video (6.18.0):
+  - react-native-video (6.19.2):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -1717,7 +1717,7 @@ PODS:
     - React-graphics
     - React-ImageManager
     - React-jsi
-    - react-native-video/Video (= 6.18.0)
+    - react-native-video/Video (= 6.19.2)
     - React-NativeModulesApple
     - React-RCTFabric
     - React-renderercss
@@ -1728,7 +1728,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - react-native-video/Fabric (6.18.0):
+  - react-native-video/Fabric (6.19.2):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -1750,7 +1750,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - react-native-video/Video (6.18.0):
+  - react-native-video/Video (6.19.2):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -2492,9 +2492,9 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - SDWebImage (5.21.2):
-    - SDWebImage/Core (= 5.21.2)
-  - SDWebImage/Core (5.21.2)
+  - SDWebImage (5.21.7):
+    - SDWebImage/Core (= 5.21.7)
+  - SDWebImage/Core (5.21.7)
   - SDWebImageAVIFCoder (0.11.1):
     - libavif/core (>= 0.11.0)
     - SDWebImage (~> 5.10)
@@ -2854,22 +2854,22 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  EXConstants: 5caf448ff399f60be9d1053e77aed32e39411900
-  Expo: bfedba58da14bf45546ae57e6a5bd5152a1546b4
-  ExpoAsset: f56ed740b6a127da2bfd90832cf688ae309d4410
-  ExpoDomWebView: 2b2fbd9a07de8790569257cbf9dfdaa31cf95c70
-  ExpoFileSystem: a0e4a5a09c9c4f84338289b273a172609452dec9
-  ExpoFont: cdd7a1d574a376fa003c713eff49e0a4df8672c7
-  ExpoImage: bd9e9c5bc4eff7a6883339be305f8b0bb5a0cf1c
-  ExpoKeepAwake: a1baf9810a2dee1905aa9bdd336852598f7220e9
-  ExpoLogBox: 617da77cbc083627692b2ea050a3666808aef2cd
-  ExpoModulesCore: 121f306333afed9321507d99a9804fe5e795c03a
-  ExpoModulesJSI: 24121c9a2f32d5f6b6ca2f7ff54925be716d5841
+  EXConstants: dadbeba983acc30f855a919658a2b34fbd86615d
+  Expo: 51ac8f3473586b2634d9dfe52324793b086acb5a
+  ExpoAsset: 7721c5c4ae2a7c3c8147a046727ac6c020b05648
+  ExpoDomWebView: b2e9d601f9cb77d3c97da73234e175b64be91928
+  ExpoFileSystem: 0b73b097e67c83622640168f620defc65a1a6f70
+  ExpoFont: a95606f106a6394df8edf6d0d87aab9020af5ad4
+  ExpoImage: 74d26278507b0b0d85b1e50562412172603f59eb
+  ExpoKeepAwake: d0eb7a0719500d2a43fbf29b6f79e84d70c75ebf
+  ExpoLogBox: a678d36477ab9544fe63e0b5328a0716539b6774
+  ExpoModulesCore: 5e1ad569ce7cf8d35c0737585f34cc299fc3f0ca
+  ExpoModulesJSI: 964334271fc77832736f66ee1785761cdc778dbe
   ExpoSecureStore: 38954f6bcef1287aa04c06fba3b86e8af3291ccd
-  ExpoWebBrowser: f88a3ba50a025b673236a46d2654a49b985953d6
+  ExpoWebBrowser: 231c91ddd1e445d81d4a4cac364360354200c32f
   FBLazyVector: 427fa1856a481856091061293ce865a75aa4f20f
-  hermes-engine: 005e88ab86167d754a6dd6ccfef17c56bc4682bf
-  libavif: 84bbb62fb232c3018d6f1bab79beea87e35de7b7
+  hermes-engine: 9b3360823aedb9b1973bed6c5584c6aea21dd460
+  libavif: 5f8e715bea24debec477006f21ef9e95432e254d
   libdav1d: 23581a4d8ec811ff171ed5e2e05cd27bad64c39f
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
   RCTDeprecation: 9502b5eb8e3c9eb75ff5a333b2c591bab9d91e28
@@ -2880,7 +2880,7 @@ SPEC CHECKSUMS:
   React: 9b033c7a99e1c8eec40960b6b2e6844e011e8bd1
   React-callinvoker: f64c8d57f45173835b6b9891cda27f1625551972
   React-Core: 341863a2597c4a2320f916b4232d280cb8a28e4b
-  React-Core-prebuilt: 09c1c72e1af4819464f8c12c8663e6c9482777df
+  React-Core-prebuilt: 967d10eba328b6dd67e2516ad70a2e9121634702
   React-CoreModules: 9370769c9b2b1732c58960687f4d50d9d3510efc
   React-cxxreact: 41ae74bd9eab80af9c5da6a9b4934eb97e2c7569
   React-debug: eb0f19ff879ad3870dc760b6c21ad56cbb3e4b98
@@ -2918,7 +2918,7 @@ SPEC CHECKSUMS:
   react-native-sensitive-info: 31674faa5e17977b394fb67986c35ef94f8ffe81
   react-native-sfsymbols: 3309f24c98d32705568c84b714268f3ec62017c7
   react-native-simple-toast: ff99357a514443f8140527b0698bced724cf99a9
-  react-native-video: f5982e21efab0dc356d92541a8a9e19581307f58
+  react-native-video: 293a1dfb84d6b79b5bf9dd33925931008e225d5a
   react-native-webview: 3e303e80cadb5f17118c8c1502aa398e9287e415
   React-NativeModulesApple: 9068613f7650828eed29ead6fc0d0a1620117e6a
   React-networking: 233dd85e1b890ca191f64f0896153165571b3039
@@ -2953,7 +2953,7 @@ SPEC CHECKSUMS:
   ReactAppDependencyProvider: 3ec8fc5d32ad422f5b805523a5a5ea5556d8b3a2
   ReactCodegen: 169fa6c4ad3c3065f98fa2364bf95e9a21c3afec
   ReactCommon: ba28cd4e7d9e24014d2772a80e32da020c732b00
-  ReactNativeDependencies: 1b6406c8f01077c05d4896bf0ca80ec47ad45836
+  ReactNativeDependencies: 55dacc81de97d3d7160d2c04cfa1e8d192494631
   RNAppleAuthentication: a89c9804592b38ed4ab11f0aee68d05ba12ad432
   RNCAsyncStorage: 3a4f5e2777dae1688b781a487923a08569e27fe4
   RNCClipboard: 88d7eeb555d1183915f0885bdbc5c97eb6f7f3ba
@@ -2966,7 +2966,7 @@ SPEC CHECKSUMS:
   RNShareMenu: e1cdfa3b9af89416afc75a80377cfd0de4f30ded
   RNSVG: 0bd149b873018bc6e0e3321e2f6435bdba294460
   RNWorklets: 5eddf924d11308d62920405addeddc3dfe1daaaa
-  SDWebImage: 9f177d83116802728e122410fb25ad88f5c7608a
+  SDWebImage: e9fc87c1aab89a8ab1bbd74eba378c6f53be8abf
   SDWebImageAVIFCoder: afe194a084e851f70228e4be35ef651df0fc5c57
   SDWebImageSVGCoder: 15a300a97ec1c8ac958f009c02220ac0402e936c
   SDWebImageWebPCoder: e38c0a70396191361d60c092933e22c20d5b1380
@@ -2975,4 +2975,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: b7b0b21e39ec98e457fc86268586d1a897a022df
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
