@@ -1,4 +1,6 @@
-const DEFAULT_THEME = 'light'
+import { DEFAULT_THEME, normalise_theme } from './theme'
+
+export { normalise_theme }
 
 const decode_query_value = (value = '') => {
   return decodeURIComponent(`${value}`.replace(/\+/g, ' '))
@@ -54,10 +56,6 @@ const serialise_query_params = (params = []) => {
   return params
     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(`${value}`)}`)
     .join('&')
-}
-
-export const normalise_theme = (theme = null) => {
-  return theme === 'dark' ? 'dark' : DEFAULT_THEME
 }
 
 export const get_base_webview_path = (url_or_endpoint = '') => {

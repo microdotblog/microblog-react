@@ -9,7 +9,7 @@ import { pick, types as pickerTypes } from '@react-native-documents/picker'
 import { launchImageLibrary } from 'react-native-image-picker'
 import App from '../../App'
 
-export default Service = types.model('Service', {
+const Service = types.model('Service', {
   id: types.identifier,
   name: types.maybeNull(types.string),
   url: types.maybeNull(types.string),
@@ -287,16 +287,20 @@ export default Service = types.model('Service', {
     }
   }),
   
-  check_for_uploads_for_destination: flow(function* (destination) { 
+  check_for_uploads_for_destination: flow(function* (destination, show_loading = true) {
     if(destination){
-      self.is_loading_uploads = true
+      if (show_loading) {
+        self.is_loading_uploads = true
+      }
       console.log("Endpoint:check_for_uploads_for_destination", destination.uid)
       const data = yield MicroPubApi.get_uploads(self.service_object(), destination.uid)
       console.log("Endpoint:check_for_uploads_for_destination:posts", data?.items?.length)
       if(data?.items != null && data.items?.length > 0){
         destination.set_uploads(data.items)
       }
-      self.is_loading_uploads = false
+      if (show_loading) {
+        self.is_loading_uploads = false
+      }
     }
   }),
 
@@ -431,6 +435,8 @@ export default Service = types.model('Service', {
   }),
   
 }))
+
+export default Service
 .views(self => ({
   
   credentials() {

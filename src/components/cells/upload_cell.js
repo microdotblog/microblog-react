@@ -15,6 +15,8 @@ export default class UploadCell extends React.Component {
     super(props);
     this.state = {
       did_load: false,
+      use_original_url: false,
+      use_preview_url: false,
       num_columns: DeviceInfo.isTablet() ? 4 : 3,
     };
   }
@@ -23,12 +25,23 @@ export default class UploadCell extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.upload?.url !== this.props.upload?.url) {
-      this.setState({ did_load: false });
+    const did_change_upload = prevProps.upload?.url !== this.props.upload?.url
+    const did_change_remote_url = this.remote_url_for(prevProps.upload) !== this.remote_url_for(this.props.upload)
+    const did_change_preview_url = this.preview_url_for(prevProps.upload) !== this.preview_url_for(this.props.upload)
+    if (did_change_upload || did_change_remote_url || did_change_preview_url) {
+      this.setState({ did_load: false, use_original_url: false, use_preview_url: false })
     }
   }
 
   componentWillUnmount() {
+  }
+
+  remote_url_for(upload) {
+    return upload?.cdn?.medium || upload?.cdn?.large || upload?.url
+  }
+
+  preview_url_for(upload) {
+    return upload?.preview_uri || null
   }
 
   render_cell(upload) {
@@ -91,10 +104,11 @@ export default class UploadCell extends React.Component {
         </View>
       );
     } else {
-      let best_url = upload.url;
-      if (upload.cdn && upload.cdn.small) {
-        best_url = upload.cdn.small;
-      }
+      const remote_url = this.remote_url_for(upload)
+      const preview_url = this.preview_url_for(upload)
+      let image_url = this.state.use_original_url ? upload.url : remote_url
+      image_url = this.state.use_preview_url && preview_url ? preview_url : image_url
+      const placeholder_source = preview_url && image_url !== preview_url ? { uri: preview_url } : undefined
 
       return (
         <Animated.View
@@ -105,8 +119,13 @@ export default class UploadCell extends React.Component {
           }}
         >
           <MBImage
-            key={upload.url}
-            source={best_url}
+            key={image_url}
+            source={{ uri: image_url }}
+            placeholder={placeholder_source}
+            placeholderContentFit="cover"
+            transition={120}
+            cachePolicy="memory-disk"
+            recyclingKey={image_url}
             contentFit="cover"
             style={{
               width: dimension,
@@ -117,6 +136,15 @@ export default class UploadCell extends React.Component {
             }}
             onLoad={() => {
               this.setState({ did_load: true });
+            }}
+            onError={() => {
+              if (!this.state.use_original_url && image_url !== upload.url) {
+                this.setState({ did_load: false, use_original_url: true })
+                return
+              }
+              if (preview_url && image_url !== preview_url) {
+                this.setState({ did_load: false, use_preview_url: true })
+              }
             }}
           />
         </Animated.View>
@@ -138,6 +166,9 @@ export default class UploadCell extends React.Component {
 
   render() {
     const { upload } = this.props;
+    const icon_color = App.theme_text_color()
+    const destructive_icon_color = App.theme_warning_text_color()
+
     if (this.props.add_to_editor) {
       return (
         <Pressable
@@ -194,6 +225,7 @@ export default class UploadCell extends React.Component {
               image: Platform.select({
                 ios: "link",
               }),
+              imageColor: icon_color,
             },
             {
               title: "Copy HTML",
@@ -201,6 +233,7 @@ export default class UploadCell extends React.Component {
               image: Platform.select({
                 ios: "curlybraces",
               }),
+              imageColor: icon_color,
             },
             ...(upload.is_audio()
               ? [
@@ -210,6 +243,7 @@ export default class UploadCell extends React.Component {
                     image: Platform.select({
                       ios: "curlybraces",
                     }),
+                    imageColor: icon_color,
                   },
                 ]
               : []),
@@ -221,6 +255,7 @@ export default class UploadCell extends React.Component {
                     image: Platform.select({
                       ios: "textformat",
                     }),
+                    imageColor: icon_color,
                   },
                 ]
               : []),
@@ -230,6 +265,7 @@ export default class UploadCell extends React.Component {
               image: Platform.select({
                 ios: "photo.on.rectangle",
               }),
+              imageColor: icon_color,
             },
             {
               title: "Get Info",
@@ -237,6 +273,7 @@ export default class UploadCell extends React.Component {
               image: Platform.select({
                 ios: "info.circle",
               }),
+              imageColor: icon_color,
             },
             {
               title: "Open in Browser",
@@ -244,6 +281,7 @@ export default class UploadCell extends React.Component {
               image: Platform.select({
                 ios: "safari",
               }),
+              imageColor: icon_color,
             },
             {
               title: "Delete...",
@@ -251,6 +289,7 @@ export default class UploadCell extends React.Component {
               image: Platform.select({
                 ios: "trash",
               }),
+              imageColor: destructive_icon_color,
               attributes: {
                 destructive: true,
               },

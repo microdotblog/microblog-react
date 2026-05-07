@@ -8,6 +8,7 @@ import NewPostButton from '../../components/header/new_post';
 import BackButton from '../../components/header/back';
 import { getSharedScreens } from './SharedStack'
 import App from '../../stores/App'
+import { headerLeftElement, headerRightElement } from '../../utils/navigation'
 
 const MentionsStack = createNativeStackNavigator();
 
@@ -28,13 +29,13 @@ export default class Mentions extends React.Component{
           name="Mentions"
           component={MentionsScreen}
           options={({ route }) => ({
-            headerLeft: () => <ProfileImage routeKey={route.name} />,
-            headerRight: () => <NewPostButton />
+            ...headerLeftElement(() => <ProfileImage routeKey={route.name} />),
+            ...headerRightElement(() => <NewPostButton />)
           })}
         />
         <MentionsStack.Group
           screenOptions={({ }) => ({
-            headerLeft: () => <BackButton />,
+            ...headerLeftElement(() => <BackButton />),
             headerBackTitleVisible: false
           })}
         >

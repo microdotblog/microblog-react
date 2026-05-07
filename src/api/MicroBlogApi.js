@@ -16,6 +16,7 @@ export const REPORTING_ERROR = 8;
 export const MUTING_ERROR = 9;
 export const DELETE_ERROR = 10;
 export const DUPLICATE_REPLY = 11;
+export const APPLE_USERNAME_REQUIRED = 12;
 export let CURRENT_REPLY_ID = 0;
 
 axios.defaults.baseURL = API_URL;
@@ -71,6 +72,41 @@ class MicroBlogApi {
         console.log(error)
         return LOGIN_ERROR
       });
+    return login
+  }
+
+  async login_with_apple({ user_id, identity_token, email = "", full_name = "", username = null }) {
+    const form = new FormData()
+    form.append("user_id", user_id)
+    form.append("identity_token", identity_token)
+    if (email != null) {
+      form.append("email", email)
+    }
+    if (full_name != null) {
+      form.append("full_name", full_name)
+    }
+    if (username != null) {
+      form.append("username", username)
+    }
+    form.append("app_name", APP_NAME)
+
+    const login = axios
+      .post('/account/apple', form)
+      .then(response => {
+        if (response.data.error) {
+          return response.data
+        }
+        else if (response.data.username != null && response.data.username.length === 0) {
+          return APPLE_USERNAME_REQUIRED
+        }
+        else {
+          return response.data
+        }
+      })
+      .catch(error => {
+        console.log(error)
+        return LOGIN_ERROR
+      })
     return login
   }
   

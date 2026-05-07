@@ -31,6 +31,77 @@ export default class SettingsScreen extends React.Component {
     });
   }
 
+  _set_auto_android_theme = async (enabled) => {
+    await Settings.set_auto_android_theme(enabled)
+    await App.sync_current_theme()
+  }
+
+  _render_appearance_settings = () => {
+    if (Platform.OS !== "android") {
+      return null
+    }
+
+    return (
+      <View>
+        <Text
+          style={{
+            fontWeight: "500",
+            marginBottom: 10,
+            marginTop: 15,
+            marginLeft: 10,
+            color: App.theme_text_color(),
+          }}
+        >
+          Appearance
+        </Text>
+        <View
+          style={{
+            paddingHorizontal: 12,
+            backgroundColor: App.theme_settings_group_background_color(),
+            borderRadius: 8,
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingVertical: 10,
+            }}
+          >
+            <Text style={{ fontSize: 16, color: App.theme_text_color() }}>
+              Use Material You accent colour
+            </Text>
+            <Switch
+              value={Settings.auto_android_theme}
+              onValueChange={this._set_auto_android_theme}
+              trackColor={{
+                false: App.theme_switch_track_color(),
+                true: App.theme_accent_color()
+              }}
+              thumbColor={
+                Settings.auto_android_theme
+                  ? "#ffffff"
+                  : App.theme === "dark" ? "#f4f3f4" : "#f4f3f4"
+              }
+            />
+          </View>
+          <Text
+            style={{
+              color: App.theme === "dark" ? App.theme_placeholder_alt_text_color() : "#4B5563",
+              fontSize: 13,
+              lineHeight: 18,
+              paddingBottom: 12,
+            }}
+          >
+            Light and dark mode always follow Android. Turn this on to use your system accent colour for the interface.
+          </Text>
+        </View>
+      </View>
+    )
+  }
+
   _render_browser_settings = () => {
     return (
       <View>
@@ -123,6 +194,8 @@ export default class SettingsScreen extends React.Component {
   };
 
   _render_push_settings = () => {
+    const show_user_identity = Auth.users.length > 1
+
     return (
       <View style={{ marginTop: 15 }}>
         <Text
@@ -183,25 +256,27 @@ export default class SettingsScreen extends React.Component {
                 }}
               >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <MBImage
-                    source={`${user.avatar}?v=${App.now()}`}
-                    contentFit="contain"
-                    style={{
-                      width: 24,
-                      height: 24,
-                      borderRadius: 50,
-                      marginRight: 8,
-                    }}
-                  />
+                  {show_user_identity && (
+                    <MBImage
+                      source={`${user.avatar}?v=${App.now()}`}
+                      contentFit="contain"
+                      style={{
+                        width: 24,
+                        height: 24,
+                        borderRadius: 50,
+                        marginRight: 8,
+                      }}
+                    />
+                  )}
                   <Text style={{ fontSize: 16, color: App.theme_text_color() }}>
-                    @{user.username}
+                    {show_user_identity ? `@${user.username}` : "Enable push notifications"}
                   </Text>
                 </View>
                 <View style={{ flexDirection: "row" }}>
                   {user.toggling_push && (
                     <ActivityIndicator
                       animating={true}
-                      color={"#f80"}
+                      color={App.theme_accent_color()}
                       style={{ marginRight: 10 }}
                     />
                   )}
@@ -230,6 +305,8 @@ export default class SettingsScreen extends React.Component {
   };
 
   _render_posting_settings = () => {
+    const show_user_identity = Auth.users.length > 1
+
     return (
       <View style={{ marginTop: 15 }}>
         <Text
@@ -266,6 +343,7 @@ export default class SettingsScreen extends React.Component {
                 componentId={this.props.componentId}
                 user={user}
                 index={index}
+                show_user_identity={show_user_identity}
                 key={`user-${user.username}-${index}`}
               />
             );
@@ -276,6 +354,8 @@ export default class SettingsScreen extends React.Component {
   };
 
   _render_muting_settings = () => {
+    const show_user_identity = Auth.users.length > 1
+
     return (
       <View style={{ marginTop: 15 }}>
         <Text
@@ -301,6 +381,7 @@ export default class SettingsScreen extends React.Component {
               key={`user-${user.username}-${index}`}
               user={user}
               index={index}
+              show_user_identity={show_user_identity}
             />
           ))}
         </View>
@@ -317,6 +398,7 @@ export default class SettingsScreen extends React.Component {
           backgroundColor: App.theme_background_color(),
         }}
       >
+        {this._render_appearance_settings()}
         {this._render_browser_settings()}
         {this._render_posting_settings()}
         {this._render_muting_settings()}

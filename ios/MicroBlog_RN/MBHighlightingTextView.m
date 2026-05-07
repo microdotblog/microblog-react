@@ -20,6 +20,16 @@
 
 @implementation MBHighlightingTextView
 
+- (void) setColorScheme:(NSString *)colorScheme
+{
+  if ((_colorScheme == nil && colorScheme == nil) || [_colorScheme isEqualToString:colorScheme]) {
+    return;
+  }
+
+  _colorScheme = [colorScheme copy];
+  [self applyTheme];
+}
+
 - (void) dealloc
 {
   if (self.did_setup_keyboard_notifications) {
@@ -91,6 +101,16 @@
   [super didMoveToWindow];
 
   [self setupKeyboardNotificationsIfNeeded];
+  [self applyTheme];
+}
+
+- (void) traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+{
+  [super traitCollectionDidChange:previousTraitCollection];
+
+  if (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle) {
+    [self applyTheme];
+  }
 }
 
 - (void) layoutSubviews
@@ -120,6 +140,70 @@
       }
     });
   }
+}
+
+- (BOOL) hasExplicitColorScheme
+{
+  return [self.colorScheme isEqualToString:@"dark"] || [self.colorScheme isEqualToString:@"light"];
+}
+
+- (UIUserInterfaceStyle) resolvedInterfaceStyle
+{
+  if ([self.colorScheme isEqualToString:@"dark"]) {
+    return UIUserInterfaceStyleDark;
+  }
+
+  if ([self.colorScheme isEqualToString:@"light"]) {
+    return UIUserInterfaceStyleLight;
+  }
+
+  UIUserInterfaceStyle style = self.traitCollection.userInterfaceStyle;
+  if (style == UIUserInterfaceStyleUnspecified) {
+    style = UIScreen.mainScreen.traitCollection.userInterfaceStyle;
+  }
+
+  return style == UIUserInterfaceStyleDark ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+}
+
+- (UIColor *) themeBackgroundColor
+{
+  if ([self resolvedInterfaceStyle] == UIUserInterfaceStyleDark) {
+    return [UIColor colorWithRed:31.0 / 255.0 green:41.0 / 255.0 blue:55.0 / 255.0 alpha:1.0];
+  }
+
+  return [UIColor whiteColor];
+}
+
+- (UIColor *) themeTextColor
+{
+  if ([self resolvedInterfaceStyle] == UIUserInterfaceStyleDark) {
+    return [UIColor whiteColor];
+  }
+
+  return [UIColor blackColor];
+}
+
+- (void) applyTheme
+{
+  UIUserInterfaceStyle style = [self resolvedInterfaceStyle];
+  UIColor* text_color = [self themeTextColor];
+
+  self.overrideUserInterfaceStyle = [self hasExplicitColorScheme] ? style : UIUserInterfaceStyleUnspecified;
+  self.backgroundColor = [self themeBackgroundColor];
+  self.textColor = text_color;
+  self.keyboardAppearance = style == UIUserInterfaceStyleDark ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+
+  NSMutableDictionary* typing_attributes = [self.typingAttributes mutableCopy] ?: [NSMutableDictionary dictionary];
+  typing_attributes[NSForegroundColorAttributeName] = text_color;
+  if (self.font != nil) {
+    typing_attributes[NSFontAttributeName] = self.font;
+  }
+  self.typingAttributes = typing_attributes;
+
+  if (self.textStorage.length > 0) {
+    [self.layoutManager invalidateDisplayForCharacterRange:NSMakeRange(0, self.textStorage.length)];
+  }
+  [self setNeedsDisplay];
 }
 
 #pragma mark -

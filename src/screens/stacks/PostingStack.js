@@ -13,6 +13,7 @@ import NewUploadButton from '../../components/header/new_upload';
 import RefreshActivity from '../../components/header/refresh_activity';
 import BackButton from '../../components/header/back';
 import App from '../../stores/App'
+import { headerLeftElement, headerRightElement } from '../../utils/navigation'
 
 const PostingStack = createNativeStackNavigator();
 
@@ -37,8 +38,8 @@ export default class Posting extends React.Component{
           component={PostingScreen}
           options={{
             headerTitle: "New Post",
-            headerLeft: () => <CloseModalButton />,
-            headerRight: () => <PostButton />
+            ...headerLeftElement(() => <CloseModalButton />),
+            ...headerRightElement(() => <PostButton />)
           }}
         />
         <PostingStack.Screen
@@ -46,7 +47,7 @@ export default class Posting extends React.Component{
           component={PostingOptionsScreen}
           options={{
             headerTitle: "Posting Options",
-            headerLeft: () => <BackButton />
+            ...headerLeftElement(() => <BackButton />)
           }}
         />
         <PostingStack.Screen
@@ -54,8 +55,8 @@ export default class Posting extends React.Component{
           component={ImageOptionsScreen}
           options={({ route, navigation }) => ({
             headerTitle: "Image Options",
-            headerLeft: () => <BackButton />,
-            headerRight: () => <RemoveImageButton navigation={navigation} asset={route.params?.asset} index={route.params?.index} />
+            ...headerLeftElement(() => <BackButton />),
+            ...headerRightElement(() => <RemoveImageButton navigation={navigation} asset_uri={route.params?.asset_uri} index={route.params?.index} />)
           })}
         />
         <PostingStack.Screen
@@ -63,15 +64,15 @@ export default class Posting extends React.Component{
           component={UploadsScreen}
           options={{
             headerTitle: "Uploads",
-            headerLeft: () => <BackButton />,
-            headerRight: () => {
+            ...headerLeftElement(() => <BackButton />),
+            ...headerRightElement(() => {
               return (
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
                   <RefreshActivity type="uploads" />
                   <NewUploadButton />
                 </View>
               )
-            }
+            })
           }}
         />
       </PostingStack.Navigator>

@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react'
 import * as React from 'react'
-import { Image, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SFSymbol } from 'react-native-sfsymbols'
 import PhotoLibrary from '../../assets/icons/toolbar/photo_library.png'
 import SettingsIcon from '../../assets/icons/toolbar/settings.png'
@@ -14,17 +14,49 @@ import MBImage from '../common/MBImage'
 @observer
 export default class PostToolbar extends React.Component{
 
+	_toolbar_background_color() {
+		return App.is_dark_mode() ? 'rgba(55, 65, 81, 0.92)' : 'rgba(255, 255, 255, 0.9)'
+	}
+
+	_toolbar_border_color() {
+		return App.is_dark_mode() ? 'rgba(255, 255, 255, 0.12)' : 'rgba(31, 41, 55, 0.12)'
+	}
+
+	_toolbar_shadow_style() {
+		if (Platform.OS === 'ios') {
+			return {
+				shadowColor: '#000',
+				shadowOffset: { width: 0, height: 4 },
+				shadowOpacity: App.is_dark_mode() ? 0.24 : 0.1,
+				shadowRadius: 14
+			}
+		}
+
+		return {
+			elevation: 3
+		}
+	}
+
+	_toolbar_container_style() {
+		return {
+			backgroundColor: this._toolbar_background_color(),
+			borderColor: this._toolbar_border_color(),
+			borderRadius: 22,
+			borderWidth: StyleSheet.hairlineWidth
+		}
+	}
+
 	_render_users_select() {
 		const { users } = Platform.OS === "ios" ? Share : Auth
 		if (App.is_share_extension && users?.length > 1 && Share.toolbar_select_user_open) {
 			return (
-				<View style={{ backgroundColor: App.theme_section_background_color(), padding: 5 }}>
+				<View style={[this._toolbar_container_style(), { paddingVertical: 3, paddingHorizontal: 5, marginBottom: 5 }]}>
 					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} style={{ overflow: 'hidden', maxWidth: "100%" }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}>
 						{
 							Share.sorted_users().map((user, index) => {
 								const is_selected_user = Share.selected_user?.username == user.username
 								return (
-									<TouchableOpacity key={index} onPress={() => Share.select_user(user)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 5, borderRadius: 5, backgroundColor: is_selected_user ? App.theme_selected_button_color() : App.theme_section_background_color(), marginRight: 5 }}>
+									<TouchableOpacity key={index} onPress={() => Share.select_user(user)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 4, paddingHorizontal: 10, borderRadius: 18, backgroundColor: is_selected_user ? App.theme_selected_button_color() : 'transparent', marginRight: 4 }}>
 										<MBImage source={{ uri: user.avatar }} contentFit="cover" style={{ width: 20, height: 20, borderRadius: 10, marginRight: 5 }} />
 										<Text style={{ color: App.theme_text_color(), fontWeight: is_selected_user ? 600 : 300 }}>{user.username}</Text>
 									</TouchableOpacity>
@@ -42,13 +74,13 @@ export default class PostToolbar extends React.Component{
 		const { posting } = this.props.posting != null ? this.props : Auth.selected_user
 		if (posting?.selected_service?.config?.active_destination() != null && posting?.selected_service?.config?.destination?.length > 1 && App.toolbar_select_destination_open) {
 			return (
-				<View style={{ backgroundColor: App.theme_section_background_color(), padding: 5 }}>
+				<View style={[this._toolbar_container_style(), { padding: 5, marginBottom: 6 }]}>
 					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} style={{ overflow: 'hidden', maxWidth: "100%" }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}>
 						{
 							posting.selected_service?.config?.sorted_destinations().map((destination, index) => {
 								const is_selected_destination = posting.selected_service?.config?.active_destination()?.uid == destination.uid
 								return (
-									<TouchableOpacity key={index} onPress={() => { posting.selected_service?.config?.set_default_destination(destination); posting.reset_post_syndicates(); App.toggle_select_destination() }} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 5, borderRadius: 5, backgroundColor: is_selected_destination ? App.theme_selected_button_color() : App.theme_section_background_color(), marginRight: 5 }}>
+									<TouchableOpacity key={index} onPress={() => { posting.selected_service?.config?.set_default_destination(destination); posting.reset_post_syndicates(); App.toggle_select_destination() }} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 6, paddingHorizontal: 10, borderRadius: 18, backgroundColor: is_selected_destination ? App.theme_selected_button_color() : 'transparent', marginRight: 4 }}>
 										<Text style={{ color: App.theme_text_color(), fontWeight: is_selected_destination ? 600 : 300 }}>{destination.name}</Text>
 									</TouchableOpacity>
 								)
@@ -62,10 +94,10 @@ export default class PostToolbar extends React.Component{
 	}
 	
 	_render_categories() {
-	  const { posting } = this.props.posting != null ? this.props : Auth.selected_user
+		const { posting } = this.props.posting != null ? this.props : Auth.selected_user
 		if(App.is_share_extension && posting.selected_service.config?.active_destination()?.categories.length && App.toolbar_categories_open){
 		  return(
-				<View style={{ backgroundColor: App.theme_section_background_color(), padding: 5 }}>
+				<View style={[this._toolbar_container_style(), { padding: 5, marginBottom: 6 }]}>
 					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} style={{ overflow: 'hidden', maxWidth: "100%" }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}>
 					{
   					posting.selected_service.config.active_destination().categories.map((category) => {
@@ -100,7 +132,11 @@ export default class PostToolbar extends React.Component{
 		return (
 			<View
 				style={{
-					width: '100%'
+					width: '100%',
+					backgroundColor: App.theme_background_color(),
+					paddingTop: 4,
+					paddingHorizontal: 6,
+					paddingBottom: Platform.OS === 'ios' ? 6 : 4
 				}}
 			>
 				{this._render_destinations()}
@@ -108,15 +144,22 @@ export default class PostToolbar extends React.Component{
 				{this._render_categories()}
 				<View
 					style={{
-						width: '100%',
-						backgroundColor: App.theme_section_background_color(),
-						padding: 5,
-						minHeight: 40,
+						position: 'relative',
 						flexDirection: 'row',
 						alignItems: 'center'
 					}}
 				>
-					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} style={{ overflow: 'hidden', maxWidth: App.is_share_extension ? "85%" : "90%" }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}>
+					<View
+						style={[this._toolbar_container_style(), this._toolbar_shadow_style(), {
+							flex: 1,
+							paddingVertical: 4,
+							paddingHorizontal: 6,
+							minHeight: 42,
+							flexDirection: 'row',
+							alignItems: 'center'
+						}]}
+					>
+					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} style={{ overflow: 'hidden', maxWidth: "100%" }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}>
 						{
 							App.is_share_extension && Share.selected_user != null &&
 							<TouchableOpacity onPress={Share.toggle_select_user} style={{marginRight: 4}}>
@@ -253,72 +296,73 @@ export default class PostToolbar extends React.Component{
 						}
 						{
 							!this.props.is_post_edit && posting.selected_service?.config?.active_destination() != null && (posting.selected_service?.config?.destination?.length > 1 || (!posting.selected_service?.is_microblog && !App.is_share_extension)) ?
-							<TouchableOpacity style={{marginLeft: 8, marginRight: 8}} onPress={() => {!posting.selected_service?.is_microblog ? App.navigate_to_screen("post_service", App.is_share_extension ? Share.selected_user : Auth.selected_user) : App.toggle_select_destination()}}>
-								<Text style={{ fontSize: 16, fontWeight: '500', textAlign: 'center', color: App.theme_text_color() }}>
+							<TouchableOpacity style={{marginLeft: 6, marginRight: 4}} onPress={() => {!posting.selected_service?.is_microblog ? App.navigate_to_screen("post_service", App.is_share_extension ? Share.selected_user : Auth.selected_user) : App.toggle_select_destination()}}>
+								<Text style={{ fontSize: 15, fontWeight: '500', textAlign: 'center', color: App.theme_text_color() }}>
 									{posting.selected_service.config.active_destination().name}
 								</Text>
 							</TouchableOpacity>
 							: 
 							!this.props.is_post_edit && posting.selected_service?.config?.active_destination() == null && !posting.selected_service?.is_microblog && !App.is_share_extension ?
-							<TouchableOpacity style={{marginLeft: 8, marginRight: 8}} onPress={() => {!posting.selected_service?.is_microblog ? App.navigate_to_screen("post_service", App.is_share_extension ? Share.selected_user : Auth.selected_user) : App.toggle_select_destination()}}>
-								<Text style={{ fontSize: 16, fontWeight: '500', textAlign: 'center', color: App.theme_text_color() }}>
+							<TouchableOpacity style={{marginLeft: 6, marginRight: 4}} onPress={() => {!posting.selected_service?.is_microblog ? App.navigate_to_screen("post_service", App.is_share_extension ? Share.selected_user : Auth.selected_user) : App.toggle_select_destination()}}>
+								<Text style={{ fontSize: 15, fontWeight: '500', textAlign: 'center', color: App.theme_text_color() }}>
 									{posting.selected_service?.name}
 								</Text>
 							</TouchableOpacity>
 							: null
 						}
 					</ScrollView>
-					<View
-						style={{
-							position: 'absolute',
-							right: App.is_share_extension ? 2 : 8,
-							bottom: App.is_share_extension ? -4 : 9,
-							flexDirection: 'row',
-							alignItems: 'center',
-							backgroundColor: App.theme_section_background_color(),
-						}}
-					>
-						{
-							!App.is_share_extension && !this.props.hide_settings &&
+					</View>
+					{
+						!App.is_share_extension && !this.props.hide_settings &&
+							<View
+								style={[this._toolbar_container_style(), this._toolbar_shadow_style(), {
+									width: 42,
+									minHeight: 42,
+									marginLeft: 5,
+									alignItems: 'center',
+									justifyContent: 'center'
+								}]}
+						>
 							<TouchableOpacity
 								onPress={() => App.navigate_to_screen(this.props.is_post_edit ? "PostEditOptions" : "PostingOptions")}
 								accessibilityRole="button"
 								accessibilityLabel="Post options"
 							>
-							{
-								Platform.OS === 'ios' ?
-									<SFSymbol
-										name={'gearshape'}
-										color={App.theme_text_color()}
-										style={{ height: 22, width: 22 }}
-										multicolor={true}
-									/>
-								: 						
-								<Image source={SettingsIcon} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
-							}
+								{
+									Platform.OS === 'ios' ?
+										<SFSymbol
+											name={'gearshape'}
+											color={App.theme_text_color()}
+											style={{ height: 22, width: 22 }}
+											multicolor={true}
+										/>
+									: 						
+									<Image source={SettingsIcon} style={{width: 24, height: 24, tintColor: App.theme_text_color()}} />
+								}
 							</TouchableOpacity>
-						}
-						{
-							!posting.post_title && !this.props.hide_count && ((!App.toolbar_select_destination_open && !App.is_share_extension ) || App.is_share_extension) &&
-							<Text
-								style={{
-									fontWeight: '400',
-									paddingVertical: 2,
-									paddingHorizontal: 6,
-									color: App.theme_text_color(),
-									position: 'absolute',
-									top: posting.post_chars_offset(this.props.is_post_edit),
-									right: -5,
-									backgroundColor: App.theme_chars_background_color(),
-									borderRadius: 6,
-									overflow: 'hidden',
-									zIndex: 5
-								}}
-							><Text style={{ color: posting.post_text_length() > posting.max_post_length() ? '#a94442' : App.theme_text_color() }}>{posting.post_text_length()}</Text>/{posting.max_post_length()}</Text>
-						}
+						</View>
+					}
+					{
+						!posting.post_title && !this.props.hide_count && ((!App.toolbar_select_destination_open && !App.is_share_extension ) || App.is_share_extension) &&
+						<Text
+							style={{
+								fontWeight: '400',
+								paddingVertical: 2,
+								paddingHorizontal: 6,
+								color: App.theme_text_color(),
+								position: 'absolute',
+								top: posting.post_chars_offset(this.props.is_post_edit),
+								right: 0,
+								backgroundColor: App.theme_chars_background_color(),
+								borderRadius: 6,
+								overflow: 'hidden',
+								textAlign: 'right',
+								zIndex: 5
+							}}
+						><Text style={{ color: posting.post_text_length() > posting.max_post_length() ? '#a94442' : App.theme_text_color() }}>{posting.post_text_length()}</Text>/{posting.max_post_length()}</Text>
+					}
 					</View>
 				</View>
-			</View>
     )
   }
   

@@ -11,6 +11,8 @@ import { MenuView } from '@react-native-menu/menu';
 export default class TagsButton extends React.Component {
   
   _outer_container = (children) => {
+    const icon_color = App.theme_text_color()
+
     return(
       Auth.selected_user?.bookmark_tags?.length > 0 && Auth.selected_user?.bookmark_recent_tags?.length > 0 ?
       <MenuView
@@ -49,6 +51,7 @@ export default class TagsButton extends React.Component {
             image: Platform.select({
               ios: 'tag'
             }),
+            imageColor: icon_color,
             titleColor: App.theme_text_color()
           },
         ]}

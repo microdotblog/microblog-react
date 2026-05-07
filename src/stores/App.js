@@ -1,5 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
-import { Linking, Appearance, AppState, Platform, Dimensions, Alert, Keyboard } from 'react-native'
+import { Linking, Appearance, AppState, Platform, Dimensions, Alert, Keyboard, NativeModules } from 'react-native'
 import MicroBlogApi, { API_ERROR } from '../api/MicroBlogApi';
 import Toast from 'react-native-simple-toast';
 import * as WebBrowser from 'expo-web-browser';
@@ -15,7 +15,14 @@ import Settings from "./Settings"
 import Services from './Services';
 import Contact from './models/posting/Contact'
 import Push from './Push'
-import { normalise_theme, should_remount_webview_on_android_resume } from '../utils/webview_recovery'
+import { should_remount_webview_on_android_resume } from '../utils/webview_recovery'
+import {
+  DEFAULT_ACCENT_COLOR,
+  normalise_accent_color,
+  normalise_theme,
+  resolve_app_accent_color,
+  resolve_app_theme,
+} from '../utils/theme'
 
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
@@ -29,6 +36,7 @@ export default App = types.model('App', {
   current_image_url: types.maybeNull(types.string),
   is_scrolling: types.optional(types.boolean, false),
   theme: types.optional(types.string, 'light'),
+  accent_color: types.optional(types.string, DEFAULT_ACCENT_COLOR),
   is_switching_theme: types.optional(types.boolean, false),
   post_modal_is_open: types.optional(types.boolean, false),
   font_scale: types.optional(types.number, 1),
@@ -108,9 +116,10 @@ export default App = types.model('App', {
       self.app_state = AppState.currentState || 'active'
       Push.set_auth_ready(false)
       
+      yield Settings.hydrate()
       yield App.set_current_initial_theme()
+      yield App.sync_current_accent_color()
       yield App.set_current_initial_font_scale()
-      Settings.hydrate()
       App.set_up_url_listener()
       App.setup_keyboard_listeners()
       
@@ -134,10 +143,15 @@ export default App = types.model('App', {
       }
     }),
 
-    prep_and_hydrate_share_extension: flow(function*() {
+    prep_and_hydrate_share_extension: flow(function*(color_scheme = null) {
       console.log("App:prep_and_hydrate_share_extension")
       self.is_share_extension = true
       yield App.set_current_initial_theme()
+      yield App.sync_current_accent_color()
+      if (color_scheme != null) {
+        yield App.change_current_theme(color_scheme)
+        yield App.sync_current_accent_color()
+      }
     }),
 
     dehydrate_share_extension: flow(function*() {
@@ -557,7 +571,7 @@ export default App = types.model('App', {
           if (supported) {
             if (!open_external && !Settings.open_links_in_external_browser) {
               WebBrowser.openBrowserAsync(url, { 
-                controlsColor: '#f80',
+                controlsColor: App.theme_accent_color(),
                 dismissButtonStyle: 'close',
                 readerMode: Settings.open_links_with_reader_mode
               })
@@ -630,7 +644,7 @@ export default App = types.model('App', {
     }),
 
     set_current_initial_theme: flow(function*() {
-      const color_scheme = normalise_theme(Appearance.getColorScheme())
+      const color_scheme = App.resolved_theme()
       console.log("App:set_current_theme", color_scheme)
       self.theme = color_scheme
       App.set_up_appearance_listener()
@@ -638,7 +652,7 @@ export default App = types.model('App', {
 
     handle_app_state_change: flow(function*(nextAppState) {
       console.log("App:handle_app_state_change", self.previous_app_state, "->", nextAppState)
-      const should_force_web_view_remount = should_remount_webview_on_android_resume({
+      const should_force_web_view_remount = App.should_follow_system_theme() && should_remount_webview_on_android_resume({
         next_app_state: nextAppState,
         platform_os: Platform.OS,
         previous_app_state: self.previous_app_state,
@@ -650,10 +664,11 @@ export default App = types.model('App', {
       self.app_state = nextAppState
 
       if (nextAppState === "active") {
-        const color_scheme = normalise_theme(Appearance.getColorScheme())
+        const color_scheme = App.resolved_theme()
         if (self.theme !== color_scheme || should_force_web_view_remount) {
-          App.change_current_theme(color_scheme, should_force_web_view_remount)
+          yield App.change_current_theme(color_scheme, should_force_web_view_remount)
         }
+        yield App.sync_current_accent_color()
         Push.replay_pending_notification()
       }
     }),
@@ -663,8 +678,13 @@ export default App = types.model('App', {
         return
       }
 
+      if (!App.should_follow_system_theme()) {
+        return
+      }
+
       console.log("App:set_up_appearance_listener:change", colorScheme)
-      App.change_current_theme(colorScheme)
+      yield App.change_current_theme(colorScheme)
+      yield App.sync_current_accent_color()
     }),
 
     set_up_appearance_listener: flow(function*() {
@@ -699,6 +719,29 @@ export default App = types.model('App', {
 
       if (should_force_web_view_remount) {
         App.bump_web_view_epoch()
+      }
+    }),
+
+    sync_current_theme: flow(function*(should_force_web_view_remount = false) {
+      console.log("App:sync_current_theme", should_force_web_view_remount)
+      yield App.change_current_theme(App.resolved_theme(), should_force_web_view_remount)
+      yield App.sync_current_accent_color()
+    }),
+
+    sync_current_accent_color: flow(function*() {
+      console.log("App:sync_current_accent_color")
+      if (Platform.OS !== "android" || !Settings.auto_android_theme) {
+        self.accent_color = DEFAULT_ACCENT_COLOR
+        return
+      }
+
+      try {
+        const accent_color = yield NativeModules.MBAndroidTheme?.getAccentColor(self.theme)
+        self.accent_color = normalise_accent_color(accent_color)
+      }
+      catch(error) {
+        console.log("App:sync_current_accent_color:error", error)
+        self.accent_color = DEFAULT_ACCENT_COLOR
       }
     }),
   
@@ -1016,11 +1059,23 @@ export default App = types.model('App', {
 
   }))
   .views(self => ({
+    should_follow_system_theme() {
+      return true
+    },
+    resolved_theme() {
+      return resolve_app_theme({
+        system_theme: Appearance.getColorScheme(),
+      })
+    },
     is_dark_mode() {
       return self.theme === "dark"
     },
     theme_accent_color() {
-      return "#f80"
+      return resolve_app_accent_color({
+        platform_os: Platform.OS,
+        auto_android_theme: Settings.auto_android_theme,
+        system_accent_color: self.accent_color,
+      })
     },
     theme_warning_text_color() {
       return "red"

@@ -9,7 +9,7 @@ import MBImage from "../common/MBImage";
 @observer
 export default class UserPostingSettings extends React.Component {
   render() {
-    const { user, index } = this.props;
+    const { user, index, show_user_identity } = this.props
     return (
       <View
         style={{
@@ -27,23 +27,37 @@ export default class UserPostingSettings extends React.Component {
             alignItems: "center",
           }}
         >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <MBImage
-              source={`${user.avatar}?v=${App.now()}`}
-              contentFit="contain"
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: 50,
-                marginRight: 8,
-              }}
-            />
-          </View>
+          {show_user_identity && (
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <MBImage
+                source={`${user.avatar}?v=${App.now()}`}
+                contentFit="contain"
+                style={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: 50,
+                  marginRight: 8,
+                }}
+              />
+            </View>
+          )}
           <TouchableOpacity
             onPress={() => App.navigate_to_screen("post_service", user)}
-            style={{ flexDirection: "row", alignItems: "center" }}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              flex: show_user_identity ? 0 : 1,
+              justifyContent: show_user_identity ? "flex-start" : "space-between",
+            }}
           >
-            <Text style={{ color: App.theme_text_color(), marginRight: 5 }}>
+            <Text
+              numberOfLines={1}
+              style={{
+                color: App.theme_text_color(),
+                marginRight: 5,
+                flex: show_user_identity ? 0 : 1,
+              }}
+            >
               {user.posting?.selected_service?.description()}
             </Text>
             <SvgXml

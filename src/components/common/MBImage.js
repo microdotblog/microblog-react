@@ -25,6 +25,8 @@ const MBImage = React.forwardRef(({ contentFit, ...props }, ref) => {
 			transition,
 			cachePolicy,
 			placeholder,
+			placeholderContentFit,
+			recyclingKey,
 			...restProps
 		} = props
 

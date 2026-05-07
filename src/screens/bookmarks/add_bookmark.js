@@ -56,7 +56,7 @@ export default class AddBookmarkScreen extends React.Component{
             style={{ 
               backgroundColor: App.theme_input_contrast_background_color(), 
               fontSize: 17,
-              borderColor: '#f80', 
+              borderColor: App.theme_accent_color(),
               borderWidth: 1,
               height: 50,
               width: "100%",
@@ -69,7 +69,7 @@ export default class AddBookmarkScreen extends React.Component{
           />
           <Button
             title="Save Bookmark"
-					  color="#f80"
+					  color={App.theme_accent_color()}
 					  onPress={this._add_bookmark}
             disabled={posting.is_adding_bookmark}
           />

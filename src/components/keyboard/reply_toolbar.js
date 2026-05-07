@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, Platform, ScrollView, TextInput, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, ScrollView, TextInput, ActivityIndicator, StyleSheet } from 'react-native';
 import App from '../../stores/App';
 import { SFSymbol } from 'react-native-sfsymbols'
 import { SvgXml } from 'react-native-svg'
@@ -72,13 +72,48 @@ export default class ReplyToolbar extends React.Component{
     App.clear_found_users()
   }
 
+  toolbar_background_color() {
+    return App.is_dark_mode() ? 'rgba(55, 65, 81, 0.92)' : 'rgba(255, 255, 255, 0.9)'
+  }
+
+  toolbar_border_color() {
+    return App.is_dark_mode() ? 'rgba(255, 255, 255, 0.12)' : 'rgba(31, 41, 55, 0.12)'
+  }
+
+  toolbar_shadow_style() {
+    if (Platform.OS === 'ios') {
+      return {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: App.is_dark_mode() ? 0.24 : 0.1,
+        shadowRadius: 14
+      }
+    }
+
+    return {
+      elevation: 3
+    }
+  }
+
+  toolbar_container_style() {
+    return {
+      backgroundColor: this.toolbar_background_color(),
+      borderColor: this.toolbar_border_color(),
+      borderRadius: 22,
+      borderWidth: StyleSheet.hairlineWidth
+    }
+  }
+
 	render() {
     const use_absolute = this.props.use_absolute !== false
     return(
       <View
         style={[{
           width: '100%',
-          backgroundColor: App.theme_section_background_color(),
+          backgroundColor: App.theme_background_color(),
+          paddingTop: 4,
+          paddingHorizontal: 6,
+          paddingBottom: Platform.OS === 'ios' ? 6 : 4,
           ...Platform.select({
             android: use_absolute ? {
               position: 'absolute',
@@ -246,15 +281,16 @@ export default class ReplyToolbar extends React.Component{
           </View>
         )}
         <View
-					style={{
-						width: '100%',
-						backgroundColor: App.theme_section_background_color(),
-						padding: 5,
-						minHeight: 40,
-						flexDirection: 'row',
-						alignItems: 'center'
-					}}
-				>
+          style={[this.toolbar_container_style(), this.toolbar_shadow_style(), {
+            alignSelf: 'stretch',
+            paddingVertical: 3,
+            paddingHorizontal: 12,
+            minHeight: 42,
+            flexDirection: 'row',
+            alignItems: 'center',
+            position: 'relative'
+          }]}
+        >
           <TouchableOpacity style={{minWidth: 35}} onPress={() => this.props.reply?.handle_text_action("**")}> 
             { Platform.OS === 'ios' ?
               <SFSymbol name={'bold'} color={App.theme_text_color()} style={{ height: 20, width: 20 }} />

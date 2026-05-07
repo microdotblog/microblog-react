@@ -55,5 +55,7 @@
 			<false/>
 		</dict>
 	</dict>
+	<key>RCTNewArchEnabled</key>
+	<true/>
 </dict>
 </plist>

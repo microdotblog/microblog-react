@@ -18,10 +18,11 @@ const UploadVariants = types.model('UploadVariants', {
 	small: types.maybe(types.string)
 })
 
-export default Upload = types.model('Upload', {
+const Upload = types.model('Upload', {
 	url: types.identifier,
 	published: types.maybe(types.string),
 	poster: types.maybe(types.string),
+	preview_uri: types.maybe(types.string),
 	alt: types.maybe(types.string),
 	width: types.maybe(types.number),
 	height: types.maybe(types.number),
@@ -148,3 +149,5 @@ export default Upload = types.model('Upload', {
 			}
 		}
 	}))
+
+export default Upload

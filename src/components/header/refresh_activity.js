@@ -4,6 +4,7 @@ import { ActivityIndicator, Platform } from 'react-native';
 import Replies from './../../stores/Replies';
 import Auth from './../../stores/Auth';
 import App from './../../stores/App';
+import { isLiquidGlass } from './../../utils/ui';
 
 @observer
 export default class RefreshActivity extends React.Component{
@@ -26,8 +27,17 @@ export default class RefreshActivity extends React.Component{
       default:
       is_loading = Replies.is_loading
     }
+    if (isLiquidGlass() && !is_loading) {
+      return null
+    }
+
+    const style = isLiquidGlass() ?
+      { width: 28, height: 28, alignItems: 'center', justifyContent: 'center' }
+      :
+      { marginRight: Platform.OS === "android" ? 8 : 0 }
+
     return(
-      <ActivityIndicator style={{ marginRight: Platform.OS === "android" ? 8 : 0 }} color="#f80" animating={is_loading}  />
+      <ActivityIndicator style={style} color={App.theme_accent_color()} animating={is_loading}  />
     )
   }
   

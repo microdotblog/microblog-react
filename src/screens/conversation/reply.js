@@ -80,7 +80,7 @@ export default class ReplyScreen extends React.Component{
                 zIndex: 10
               }} 
             >
-              <ActivityIndicator color="#f80" size={'large'} />
+              <ActivityIndicator color={App.theme_accent_color()} size={'large'} />
             </View>
             : null
           }

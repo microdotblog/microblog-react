@@ -13,6 +13,7 @@ export default class NewUploadButton extends React.Component {
 	render() {
 		if (Auth.selected_user != null && Auth.selected_user.posting?.posting_enabled()) {
 			const { config } = Auth.selected_user.posting.selected_service
+			const icon_color = App.theme_text_color()
 			return (
 				<MenuView
 					onPressAction={({ nativeEvent }) => {
@@ -31,14 +32,16 @@ export default class NewUploadButton extends React.Component {
 							id: "upload_media",
 							image: Platform.select({
 								ios: 'photo'
-							})
+							}),
+							imageColor: icon_color
 						},
 						{
 							title: "Files",
 							id: "upload_file",
 							image: Platform.select({
 								ios: 'folder'
-							})
+							}),
+							imageColor: icon_color
 						}
 					]}
 				>
