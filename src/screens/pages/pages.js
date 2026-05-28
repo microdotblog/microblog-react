@@ -18,15 +18,24 @@ export default class PagesScreen extends React.Component{
 
   constructor(props) {
     super(props)
+    this.state = {
+      is_user_refreshing_pages: false
+    }
     this.requested_pages_key = null
+    this.is_mounted = false
   }
   
   componentDidMount(){
+    this.is_mounted = true
     this._refresh_pages_if_needed()
   }
 
   componentDidUpdate() {
     this._refresh_pages_if_needed()
+  }
+
+  componentWillUnmount() {
+    this.is_mounted = false
   }
 
   _current_pages_context = () => {
@@ -52,6 +61,23 @@ export default class PagesScreen extends React.Component{
 
     this.requested_pages_key = request_key
     selected_service.check_for_pages_for_destination(destination)
+  }
+
+  _refresh_pages_from_pull = () => {
+    const { selected_service, destination } = this._current_pages_context()
+    if (!selected_service || !destination || this.state.is_user_refreshing_pages) {
+      return
+    }
+
+    this.setState({ is_user_refreshing_pages: true })
+    this.requested_pages_key = this._pages_request_key(selected_service, destination)
+    Promise.resolve(selected_service.check_for_pages_for_destination(destination))
+      .catch((error) => console.log("PagesScreen:refresh:error", error))
+      .finally(() => {
+        if (this.is_mounted) {
+          this.setState({ is_user_refreshing_pages: false })
+        }
+      })
   }
   
   _return_header = () => {
@@ -158,8 +184,8 @@ export default class PagesScreen extends React.Component{
               }
               refreshControl={
                 <RefreshControl
-                  refreshing={selected_service.is_loading_pages}
-                  onRefresh={() => destination && selected_service.check_for_pages_for_destination(destination)}
+                  refreshing={this.state.is_user_refreshing_pages}
+                  onRefresh={this._refresh_pages_from_pull}
                 />
               }
             />
