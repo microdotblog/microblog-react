@@ -37,7 +37,8 @@ export default class PostingScreen extends React.Component{
                 fontSize: 18,
                 justifyContent: 'flex-start',
   						  alignItems: 'flex-start',
-                padding: 8,
+                minHeight: 56,
+                padding: 13,
                 marginBottom: 4,
                 fontWeight: '700',
                 borderColor: App.theme_border_color(),
@@ -69,7 +70,7 @@ export default class PostingScreen extends React.Component{
               marginTop: 0,
               paddingBottom: posting.post_assets?.length > 0 ? 260 : 50,
               flex: 1,
-              padding: 8,
+              padding: 13,
               color: App.theme_text_color()
             }}
             editable={!posting.is_sending_post}
