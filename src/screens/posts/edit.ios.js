@@ -72,7 +72,7 @@ export default class PostEditScreen extends React.Component{
             scrollEnabled={true}
             returnKeyType={'default'}
             keyboardType={'default'}
-            autoFocus={false}
+            autoFocus={true}
             autoCorrect={true}
             clearButtonMode={'while-editing'}
             enablesReturnKeyAutomatically={true}
