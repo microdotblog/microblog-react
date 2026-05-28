@@ -98,7 +98,11 @@ const editorHtml = String.raw`<!doctype html>
     }
 
     .editor_marker {
-      display: inline;
+      display: inline-block;
+      width: 0;
+      min-width: 0;
+      height: 1em;
+      overflow: hidden;
       line-height: inherit;
       color: transparent;
       caret-color: var(--editor-caret);
@@ -212,6 +216,10 @@ const editorHtml = String.raw`<!doctype html>
           node.nodeType === Node.ELEMENT_NODE &&
           node.matches &&
           node.matches(editorMarkerSelector);
+      }
+
+      function hasTrailingMarker(root) {
+        return isEditorMarker(root && root.lastChild);
       }
 
       function childIndex(node) {
@@ -355,6 +363,13 @@ const editorHtml = String.raw`<!doctype html>
         var current = 0;
         var result = null;
 
+        if (target > 0 && hasTrailingMarker(root) && target >= editorPlainText(root).length) {
+          return {
+            node: root,
+            offset: root.childNodes.length
+          };
+        }
+
         function use(node, innerOffset) {
           result = {
             node: node,
@@ -482,7 +497,7 @@ const editorHtml = String.raw`<!doctype html>
 
       function preserveTrailingNewline(html) {
         if (html.endsWith("\n")) {
-          return html + '<span class="editor_marker" data-editor-marker="caret" contenteditable="false" aria-hidden="true">&nbsp;</span>';
+          return html.slice(0, -1) + '<br><span class="editor_marker" data-editor-marker="caret" aria-hidden="true">\u200b</span>';
         }
 
         return html;
@@ -577,6 +592,13 @@ const editorHtml = String.raw`<!doctype html>
         }, {
           force: true
         });
+        if (insertedText.indexOf("\n") > -1) {
+          setTimeout(function () {
+            setSelectionRange(nextPosition, nextPosition);
+            scrollSelectionIntoView();
+            sendSelectionNow();
+          }, 0);
+        }
         sendChangeNow();
         sendSelectionNow();
       }
@@ -675,13 +697,17 @@ const editorHtml = String.raw`<!doctype html>
           return;
         }
 
+        var root = editor();
         var data = event.data || "";
+        var shouldForce = hasTrailingMarker(root);
         var shouldApply = !data || markdownCharacters.some(function (character) {
           return data.indexOf(character) > -1;
         });
 
-        if (shouldApply) {
-          applyStyles();
+        if (shouldApply || shouldForce) {
+          applyStyles(null, {
+            force: shouldForce
+          });
         }
 
         scheduleChange();
@@ -699,6 +725,12 @@ const editorHtml = String.raw`<!doctype html>
           if (event.inputType === "insertParagraph" || event.inputType === "insertLineBreak") {
             event.preventDefault();
             replaceSelectionWithText("\n");
+            return;
+          }
+
+          if (event.inputType === "insertText" && event.data && hasTrailingMarker(root)) {
+            event.preventDefault();
+            replaceSelectionWithText(event.data);
           }
         });
 
