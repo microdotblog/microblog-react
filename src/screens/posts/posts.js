@@ -20,12 +20,15 @@ export default class PostsScreen extends React.Component{
       is_showing_drafts_button: false,
       is_showing_drafts_posts: false,
       post_search_text: App.post_search_query,
+      is_user_refreshing_posts: false
     };
     this.posts_search_timeout = null;
     this.requested_posts_key = null
+    this.is_mounted = false
   }
   
   componentDidMount() {
+    this.is_mounted = true
     this._refresh_posts_if_needed()
 
     this.focusListener = this.props.navigation.addListener('focus', () => {
@@ -38,6 +41,7 @@ export default class PostsScreen extends React.Component{
   }
 
   componentWillUnmount() {
+    this.is_mounted = false
     this._clear_posts_search_timeout();
     if (this.focusListener) {
       this.focusListener();
@@ -128,6 +132,23 @@ export default class PostsScreen extends React.Component{
 
     this.requested_posts_key = this._posts_request_key(selected_service, destination, this.state.is_showing_drafts_posts)
     selected_service.check_for_posts_for_destination(destination, this.state.is_showing_drafts_posts)
+  }
+
+  _refresh_posts_from_pull = () => {
+    const { selected_service, destination } = this._current_posts_context()
+    if (!selected_service || !destination || this.state.is_user_refreshing_posts) {
+      return
+    }
+
+    this.setState({ is_user_refreshing_posts: true })
+    this.requested_posts_key = this._posts_request_key(selected_service, destination, this.state.is_showing_drafts_posts)
+    Promise.resolve(selected_service.check_for_posts_for_destination(destination, this.state.is_showing_drafts_posts))
+      .catch((error) => console.log("PostsScreen:refresh:error", error))
+      .finally(() => {
+        if (this.is_mounted) {
+          this.setState({ is_user_refreshing_posts: false })
+        }
+      })
   }
   
   _return_header = () => {
@@ -272,8 +293,8 @@ export default class PostsScreen extends React.Component{
               }
               refreshControl={
                 <RefreshControl
-                  refreshing={selected_service.is_loading_posts}
-                  onRefresh={this._refresh_posts}
+                  refreshing={this.state.is_user_refreshing_posts}
+                  onRefresh={this._refresh_posts_from_pull}
                 />
               }
             />
