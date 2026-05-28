@@ -58,14 +58,15 @@ const editorHtml = String.raw`<!doctype html>
       width: 100%;
       height: 100%;
       position: relative;
+      overflow: hidden;
       background: var(--editor-background);
     }
 
     .editor {
       box-sizing: border-box;
       width: 100%;
-      height: 100%;
-      min-height: 100%;
+      height: max(44px, calc(100% - var(--editor-bottom-overlay)));
+      min-height: 0;
       overflow-y: auto;
       white-space: pre-wrap;
       word-break: break-word;
@@ -74,7 +75,7 @@ const editorHtml = String.raw`<!doctype html>
       margin: 0;
       padding-top: var(--editor-padding-top);
       padding-right: var(--editor-padding-right);
-      padding-bottom: calc(var(--editor-padding-bottom) + var(--editor-bottom-overlay));
+      padding-bottom: var(--editor-padding-bottom);
       padding-left: var(--editor-padding-left);
       background: var(--editor-background);
       color: var(--editor-text);
@@ -192,7 +193,6 @@ const editorHtml = String.raw`<!doctype html>
       var selectionTimer = null;
       var lastText = "";
       var didApplyInitialValue = false;
-      var bottomOverlayHeight = 0;
       var editorMarkerSelector = '[data-editor-marker="caret"]';
       var markdownCharacters = [' ', '*', '_', '[', ']', '(', ')', '<', '>', '"', '\`', '#', '-', '@'];
 
@@ -476,7 +476,7 @@ const editorHtml = String.raw`<!doctype html>
 
         var rootRect = root.getBoundingClientRect();
         var visibleTop = rootRect.top;
-        var visibleBottom = rootRect.bottom - bottomOverlayHeight;
+        var visibleBottom = rootRect.bottom;
         var scrollPadding = 12;
 
         if (rect.bottom + scrollPadding > visibleBottom) {
@@ -655,7 +655,7 @@ const editorHtml = String.raw`<!doctype html>
         root.style.setProperty("--editor-padding-right", Number(config.paddingRight || 0) + "px");
         root.style.setProperty("--editor-padding-bottom", Number(config.paddingBottom || 0) + "px");
         root.style.setProperty("--editor-padding-left", Number(config.paddingLeft || 0) + "px");
-        bottomOverlayHeight = Number(config.bottomOverlayHeight || 0);
+        var bottomOverlayHeight = Number(config.bottomOverlayHeight || 0);
         root.style.setProperty("--editor-bottom-overlay", bottomOverlayHeight + "px");
 
         setEditable(config.editable !== false);
