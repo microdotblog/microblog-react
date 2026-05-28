@@ -29,7 +29,8 @@ export default class PageEditScreen extends React.Component{
               fontSize: 18,
               justifyContent: 'flex-start',
               alignItems: 'flex-start',
-              padding: 8,
+              minHeight: 56,
+              padding: 13,
               marginBottom: 4,
               fontWeight: '700',
               borderColor: App.theme_border_color(),
@@ -59,7 +60,7 @@ export default class PageEditScreen extends React.Component{
               marginTop: 0,
               paddingBottom: posting.post_text_length() > posting.max_post_length() ? 150 : 0,
               flex: 1,
-              padding: 8,
+              padding: 13,
               color: App.theme_text_color()
             }}
             editable={!posting.is_sending_post}

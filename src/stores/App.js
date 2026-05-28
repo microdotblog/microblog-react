@@ -393,6 +393,7 @@ export default App = types.model('App', {
           case "Pages":
             return self.navigation_ref.navigate(`${self.current_tab_key}-Pages`)
           case "Posting":
+            Auth.selected_user?.posting.clear_post()
             if (action_data != null && !from_listener) {
               // Action data is usually markdown text from a highlight,
               // unless it's from the url listener.
