@@ -33,6 +33,14 @@ const Login = types.model('Login', {
       self.reset_errors()
     }
   }),
+
+  reset_apple_credentials() {
+    self.apple_user_id = null
+    self.apple_identity_token = null
+    self.apple_email = null
+    self.apple_full_name = null
+    self.apple_username = ""
+  },
   
   trigger_login_from_url: flow(function* (url) {
     console.log("LOGIN:trigger_login_from_url", url)
@@ -110,6 +118,7 @@ const Login = types.model('Login', {
 
   login_with_apple_credentials: flow(function* ({ user_id, identity_token, email = "", full_name = "" }) {
     console.log("LOGIN:login_with_apple_credentials", user_id)
+    self.reset_apple_credentials()
     self.is_loading = true
     self.message = null
     if(self.show_error){
@@ -141,7 +150,7 @@ const Login = types.model('Login', {
 
   register_apple_username: flow(function* () {
     console.log("LOGIN:register_apple_username", self.apple_username)
-    if(!self.can_submit_apple_username()){
+    if(self.is_loading || !self.can_submit_apple_username()){
       return false
     }
 
@@ -239,7 +248,8 @@ const Login = types.model('Login', {
   },
 
   can_submit_apple_username(){
-    return self.apple_user_id != null &&
+    return !self.is_loading &&
+      self.apple_user_id != null &&
       self.apple_identity_token != null &&
       self.apple_username != null &&
       self.apple_username.length > 0
