@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react"
 import { View, Text, Animated, Platform } from "react-native"
 import App from "../../stores/App"
@@ -9,24 +9,26 @@ const LoadingBanner = observer(({ visible, loading_text = "Loading posts...", to
   const sweepAnim = useRef(new Animated.Value(0)).current
   const [wasVisible, setWasVisible] = useState(false)
   const hasProgress = progress !== undefined && progress !== null && typeof progress === 'number' && !isNaN(progress)
+  const progressValue = hasProgress ? Math.max(0, Math.min(1, progress)) : 0
+  const progressPercent = Math.round(progressValue * 100)
 
-  const slideIn = () => {
+  const slideIn = useCallback(() => {
     Animated.spring(slideAnim, {
       toValue: 0,
       useNativeDriver: true,
       tension: 120,
       friction: 8,
     }).start()
-  }
+  }, [slideAnim])
 
-  const slideOut = () => {
+  const slideOut = useCallback(() => {
     Animated.spring(slideAnim, {
       toValue: -100,
       useNativeDriver: true,
       tension: 120,
       friction: 8,
     }).start()
-  }
+  }, [slideAnim])
 
   useEffect(() => {
     if (visible && !wasVisible) {
@@ -37,13 +39,11 @@ const LoadingBanner = observer(({ visible, loading_text = "Loading posts...", to
       slideOut()
       setWasVisible(false)
     }
-  }, [visible, wasVisible])
+  }, [visible, wasVisible, slideIn, slideOut])
 
   useEffect(() => {
     if (hasProgress && visible) {
-      const progressValue = Math.max(0, Math.min(1, progress));
-      const currentValue = progressAnim._value || 0;
-      const duration = progressValue === 1 ? 400 : 200;
+      const duration = progressValue === 1 ? 400 : 200
       Animated.timing(progressAnim, {
         toValue: progressValue,
         duration: duration,
@@ -76,7 +76,7 @@ const LoadingBanner = observer(({ visible, loading_text = "Loading posts...", to
         sweepAnim.setValue(0)
       }
     }
-  }, [visible, progress])
+  }, [visible, hasProgress, progressAnim, progressValue, sweepAnim])
 
   if (!visible && !wasVisible) {
     return null
@@ -109,6 +109,11 @@ const LoadingBanner = observer(({ visible, loading_text = "Loading posts...", to
         borderColor: App.theme_border_color(),
         transform: [{ translateY: slideAnim }],
       }}
+      accessible={true}
+      accessibilityRole={hasProgress ? "progressbar" : "text"}
+      accessibilityLabel={loading_text}
+      accessibilityLiveRegion="polite"
+      accessibilityValue={hasProgress ? { min: 0, max: 100, now: progressPercent } : undefined}
     >
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <Text style={{ fontSize: 15, fontWeight: "500", color: App.theme_text_color() }}>

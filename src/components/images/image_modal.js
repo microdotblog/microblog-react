@@ -90,7 +90,10 @@ const ImageModalContent = gestureHandlerRootHOC(observer(({ image_url }) => {
 	}))
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View
+			style={{ flex: 1 }}
+			accessibilityViewIsModal={true}
+		>
 			<Animated.View
 				style={[
 					{
@@ -112,6 +115,8 @@ const ImageModalContent = gestureHandlerRootHOC(observer(({ image_url }) => {
 						resizeMode="contain"
 						isDoubleTapEnabled={true}
 						scale={scale}
+						accessibilityRole="image"
+						accessibilityLabel="Image preview"
 						onLoadStart={() => {
 							set_is_loading_image(true)
 							set_did_fail_image(false)
@@ -167,7 +172,11 @@ const ImageModalContent = gestureHandlerRootHOC(observer(({ image_url }) => {
 				</Animated.View>
 			</GestureDetector>
 			<Animated.View style={[{ position: 'absolute', left: 15, top: insets.top + 15 }, close_button_style]}>
-				<TouchableOpacity onPress={App.reset_image_modal}>
+				<TouchableOpacity
+					onPress={App.reset_image_modal}
+					accessibilityRole="button"
+					accessibilityLabel="Close image"
+				>
 					{
 						Platform.OS === 'ios' ?
 							<SFSymbol

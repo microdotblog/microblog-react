@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import Discover from '../../stores/Discover'
-import { TouchableOpacity, View, Text, Platform, Image, TextInput, Keyboard } from 'react-native';
+import { TouchableOpacity, View, Text, Platform, Image, Keyboard } from 'react-native';
 import App from '../../stores/App'
 import SearchIcon from '../../assets/icons/nav/discover.png';
 import SearchBar from '../../components/search_bar';
 import { SFSymbol } from "react-native-sfsymbols";
-import { SvgXml } from 'react-native-svg';
 
 @observer
 export default class TagmojiBar extends React.Component{
@@ -54,6 +53,9 @@ export default class TagmojiBar extends React.Component{
                   borderRadius: 5
                 }}
                 onPress={() => App.open_sheet("tagmoji_menu")}
+                accessibilityRole="button"
+                accessibilityLabel={`Choose Discover topic, current topic ${Discover.random_tagmoji}`}
+                accessibilityHint="Shows community post topics"
               >
                 <Text>{Discover.random_tagmoji}</Text>
               </TouchableOpacity>
@@ -71,6 +73,8 @@ export default class TagmojiBar extends React.Component{
                   marginRight: 4
                 }}
                 onPress={Discover.toggle_search_bar}
+                accessibilityRole="button"
+                accessibilityLabel="Search Discover"
               >
               {
                 Platform.OS === "ios" ?
@@ -87,7 +91,7 @@ export default class TagmojiBar extends React.Component{
           </View>
         )
       }
+    }
     return null
   }
- } 
 }

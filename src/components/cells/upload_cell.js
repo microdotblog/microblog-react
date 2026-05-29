@@ -44,6 +44,38 @@ export default class UploadCell extends React.Component {
     return upload?.preview_uri || null
   }
 
+  upload_type_label(upload) {
+    if (upload.is_audio()) {
+      return "Audio upload"
+    }
+    if (upload.is_video()) {
+      return "Video upload"
+    }
+    return "Image upload"
+  }
+
+  upload_detail_label(upload) {
+    const alt_text = upload.alt?.trim()
+    if (alt_text && alt_text.length > 0) {
+      return alt_text
+    }
+
+    try {
+      const url_path = (upload.url || "").split("?")[0]
+      const filename = url_path.split("/").pop() || ""
+      return decodeURIComponent(filename)
+    }
+    catch {
+      return ""
+    }
+  }
+
+  upload_accessibility_label(upload) {
+    const detail = this.upload_detail_label(upload)
+    const type = this.upload_type_label(upload)
+    return detail.length > 0 ? `${type}, ${detail}` : type
+  }
+
   render_cell(upload) {
     const has_poster = upload.poster && upload.poster.length > 0;
     const dimension =
@@ -168,6 +200,7 @@ export default class UploadCell extends React.Component {
     const { upload } = this.props;
     const icon_color = App.theme_text_color()
     const destructive_icon_color = App.theme_warning_text_color()
+    const upload_label = this.upload_accessibility_label(upload)
 
     if (this.props.add_to_editor) {
       return (
@@ -181,6 +214,9 @@ export default class UploadCell extends React.Component {
             padding: 5,
             backgroundColor: App.theme_background_color_secondary(),
           }}
+          accessibilityRole="button"
+          accessibilityLabel={`${upload_label}, add to post`}
+          accessibilityHint="Adds this upload to the current post"
         >
           {this.render_cell(upload)}
         </Pressable>
@@ -192,6 +228,9 @@ export default class UploadCell extends React.Component {
             padding: 5,
             backgroundColor: App.theme_background_color_secondary(),
           }}
+          accessibilityRole="button"
+          accessibilityLabel={`${upload_label}, actions available`}
+          accessibilityHint="Shows upload actions"
           onPressAction={async ({ nativeEvent }) => {
             const event_id = nativeEvent.event;
             if (event_id === "copy_link") {

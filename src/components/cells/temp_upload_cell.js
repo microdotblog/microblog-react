@@ -36,6 +36,39 @@ export default class TempUploadCell extends React.Component {
     return upload?.is_uploading && this.progress_for(upload) >= 100
   }
 
+  upload_type_label(upload) {
+    if (upload.is_audio()) {
+      return "Audio upload"
+    }
+    if (upload.is_video()) {
+      return "Video upload"
+    }
+    return "Image upload"
+  }
+
+  upload_detail_label(upload) {
+    const name = upload.name || upload.fileName
+    if (name && name.length > 0) {
+      return name
+    }
+
+    try {
+      const uri_path = (upload.uri || "").split("?")[0]
+      const filename = uri_path.split("/").pop() || ""
+      return decodeURIComponent(filename)
+    }
+    catch {
+      return ""
+    }
+  }
+
+  upload_accessibility_label(upload, progress_label) {
+    const detail = this.upload_detail_label(upload)
+    const type = this.upload_type_label(upload)
+    const base_label = detail.length > 0 ? `${type}, ${detail}` : type
+    return upload.is_uploading ? `${base_label}, ${progress_label}` : `${base_label}, upload actions`
+  }
+
   update_processing_animation(is_processing) {
     if (is_processing && !this.wasProcessing) {
       this.processingOpacity.setValue(0)
@@ -60,6 +93,11 @@ export default class TempUploadCell extends React.Component {
     const progress_width = `${Math.max(progress, progress > 0 ? 4 : 8)}%`
     const is_processing = this.is_processing(upload)
     const progress_label = is_processing ? "Processing" : progress > 1 ? `${progress}%` : "Uploading"
+    const accessibility_value = upload.is_uploading ? {
+      min: 0,
+      max: 100,
+      now: Math.round(progress)
+    } : undefined
     const actions = [
       {
         title: "Cancel upload",
@@ -86,6 +124,10 @@ export default class TempUploadCell extends React.Component {
           }
         }}
         actions={actions}
+        accessibilityRole="button"
+        accessibilityLabel={this.upload_accessibility_label(upload, progress_label)}
+        accessibilityHint="Shows upload actions"
+        accessibilityValue={accessibility_value}
       >
         <View
           style={{
