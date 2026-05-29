@@ -284,7 +284,8 @@ export default class HighlightingText extends React.Component {
           originWhitelist={['*']}
           javaScriptEnabled={true}
           domStorageEnabled={false}
-          scrollEnabled={this.props.scrollEnabled !== false}
+          scrollEnabled={Platform.OS === 'ios' ? false : this.props.scrollEnabled !== false}
+          bounces={false}
           hideKeyboardAccessoryView={true}
           keyboardDisplayRequiresUserAction={false}
           setSupportMultipleWindows={false}

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { TextInput } from 'react-native';
+import { TextInput, View } from 'react-native';
 import { KeyboardStickyView } from "react-native-keyboard-controller";
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
@@ -21,7 +21,7 @@ export default class PostEditScreen extends React.Component{
   render() {
     const { posting } = Auth.selected_user
     return(
-      <>
+      <View style={{ flex: 1 }}>
           {
             posting.should_show_title() ?
             <TextInput
@@ -54,40 +54,42 @@ export default class PostEditScreen extends React.Component{
             />
             : null
           }
-          <HighlightingText
-            placeholderTextColor="lightgrey"
-            style={{
-              minHeight: 300,
-              fontSize: 18,
-              justifyContent: 'flex-start',
-              alignItems: 'flex-start',
-              marginTop: 0,
-              paddingBottom: posting.post_text_length() > posting.max_post_length() ? 50 : 0,
-              flex: 1,
-              padding: 13,
-              color: App.theme_text_color()
-            }}
-            editable={!posting.is_sending_post}
-            multiline={true}
-            scrollEnabled={true}
-            returnKeyType={'default'}
-            keyboardType={'default'}
-            autoFocus={true}
-            autoCorrect={true}
-            clearButtonMode={'while-editing'}
-            enablesReturnKeyAutomatically={true}
-            underlineColorAndroid={'transparent'}
-            value={posting.post_text}
-            bottomOverlayHeight={this.state.toolbar_height}
-            selection={posting.text_selection_flat}
-            onChangeText={({ nativeEvent: { text } }) => {
-              !posting.is_sending_post ? posting.set_post_text_from_typing(text) : null
-            }}
-            onSelectionChange={({ nativeEvent: { selection } }) => {
-              posting.set_text_selection(selection)
-            }}
-          />
-          <LoadingComponent should_show={posting.is_sending_post && (posting.post_text != "")} />
+          <View style={{ flex: 1, overflow: 'hidden' }}>
+            <HighlightingText
+              placeholderTextColor="lightgrey"
+              style={{
+                minHeight: 300,
+                fontSize: 18,
+                justifyContent: 'flex-start',
+                alignItems: 'flex-start',
+                marginTop: 0,
+                paddingBottom: posting.post_text_length() > posting.max_post_length() ? 50 : 0,
+                flex: 1,
+                padding: 13,
+                color: App.theme_text_color()
+              }}
+              editable={!posting.is_sending_post}
+              multiline={true}
+              scrollEnabled={true}
+              returnKeyType={'default'}
+              keyboardType={'default'}
+              autoFocus={true}
+              autoCorrect={true}
+              clearButtonMode={'while-editing'}
+              enablesReturnKeyAutomatically={true}
+              underlineColorAndroid={'transparent'}
+              value={posting.post_text}
+              bottomOverlayHeight={this.state.toolbar_height}
+              selection={posting.text_selection_flat}
+              onChangeText={({ nativeEvent: { text } }) => {
+                !posting.is_sending_post ? posting.set_post_text_from_typing(text) : null
+              }}
+              onSelectionChange={({ nativeEvent: { selection } }) => {
+                posting.set_text_selection(selection)
+              }}
+            />
+            <LoadingComponent should_show={posting.is_sending_post && (posting.post_text != "")} />
+          </View>
         <KeyboardStickyView onLayout={({ nativeEvent }) => {
           const toolbar_height = nativeEvent.layout.height
           if (toolbar_height !== this.state.toolbar_height) {
@@ -96,7 +98,7 @@ export default class PostEditScreen extends React.Component{
         }}>
           <PostToolbar componentId={this.props.componentId} is_post_edit />
         </KeyboardStickyView>
-      </>
+      </View>
     )
   }
   

@@ -38,6 +38,7 @@ const editorHtml = String.raw`<!doctype html>
       background: var(--editor-background);
       color: var(--editor-text);
       color-scheme: light dark;
+      overscroll-behavior: none;
       -webkit-text-size-adjust: 100%;
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
@@ -68,6 +69,7 @@ const editorHtml = String.raw`<!doctype html>
       height: max(44px, calc(100% - var(--editor-bottom-overlay)));
       min-height: 0;
       overflow-y: auto;
+      overscroll-behavior-y: contain;
       white-space: pre-wrap;
       word-break: break-word;
       outline: none;
@@ -485,6 +487,20 @@ const editorHtml = String.raw`<!doctype html>
         else if (rect.top - scrollPadding < visibleTop) {
           root.scrollTop -= visibleTop - rect.top + scrollPadding;
         }
+
+        clampEditorScroll();
+      }
+
+      function clampEditorScroll() {
+        var root = editor();
+        var maxScroll = Math.max(0, root.scrollHeight - root.clientHeight);
+
+        if (root.scrollTop < 0) {
+          root.scrollTop = 0;
+        }
+        else if (root.scrollTop > maxScroll) {
+          root.scrollTop = maxScroll;
+        }
       }
 
       function escapeHtml(text) {
@@ -735,6 +751,7 @@ const editorHtml = String.raw`<!doctype html>
         });
 
         root.addEventListener("input", handleInput);
+        root.addEventListener("scroll", clampEditorScroll);
 
         root.addEventListener("compositionstart", function () {
           isComposing = true;
