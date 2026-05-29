@@ -28,6 +28,8 @@ export default class TagFilterHeader extends React.Component{
                 height: 26
               }}
               onPress={() => Auth.selected_user?.set_selected_tag(null)}
+              accessibilityRole="button"
+              accessibilityLabel={`Clear ${Auth.selected_user?.selected_tag} tag filter`}
             >
             {
               Platform.OS === "ios" ?

@@ -11,7 +11,6 @@ import com.facebook.react.common.ReleaseLevel
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint
 
 import blog.micro.android.theme.MBAndroidThemePackage
-import blog.micro.android.text.MBHighlightingTextPackage
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ExpoReactHostFactory
 
@@ -24,7 +23,6 @@ class MainApplication : Application(), ReactApplication {
         PackageList(this).packages.apply {
           // Packages that cannot be autolinked yet can be added manually here, for example:
           add(MBAndroidThemePackage())
-          add(MBHighlightingTextPackage())
         }
     )
   }

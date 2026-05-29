@@ -69,6 +69,7 @@ export default class UploadsScreen extends React.Component{
   
   _return_header = () => {
     const { config } = Auth.selected_user.posting.selected_service
+    const destination_name = config.posts_destination()?.name ?? "current destination"
     return(
       !App.uploads_search_is_open ?
       <View
@@ -82,9 +83,15 @@ export default class UploadsScreen extends React.Component{
           height: 50,
           backgroundColor: App.theme_input_background_color(),
         }}>
-        <TouchableOpacity onPress={() => !this.props.did_open_from_editor ? App.open_sheet("posts_destination_menu", { type: "uploads" }) : null}>
+        <TouchableOpacity
+          onPress={() => !this.props.did_open_from_editor ? App.open_sheet("posts_destination_menu", { type: "uploads" }) : null}
+          disabled={!!this.props.did_open_from_editor}
+          accessibilityRole="button"
+          accessibilityLabel={`Choose uploads destination, ${destination_name}`}
+          accessibilityState={{ disabled: !!this.props.did_open_from_editor }}
+        >
           <Text style={{color: App.theme_text_color(), fontWeight: "500", fontSize: 16}}>
-            {config.posts_destination()?.name}
+            {destination_name}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -100,6 +107,8 @@ export default class UploadsScreen extends React.Component{
             marginLeft: 5,
           }}
           onPress={App.toggle_uploads_search_is_open}
+          accessibilityRole="button"
+          accessibilityLabel="Search uploads"
         >
         {
           Platform.OS === "ios" ?

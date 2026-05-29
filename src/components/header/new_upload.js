@@ -44,6 +44,9 @@ export default class NewUploadButton extends React.Component {
 							imageColor: icon_color
 						}
 					]}
+					accessibilityRole="button"
+					accessibilityLabel="Upload"
+					accessibilityHint="Shows photo library and files options"
 				>
 					{
 						Platform.OS === 'ios' ? 

@@ -55,12 +55,17 @@ export default class TagsButton extends React.Component {
             titleColor: App.theme_text_color()
           },
         ]}
+        accessibilityRole="button"
+        accessibilityLabel="Filter bookmarks by tag"
+        accessibilityHint="Shows recent and all bookmark tags"
       >
         {children}
       </MenuView>
       :
       <TouchableOpacity
         onPress={() => App.open_sheet("tags")}
+        accessibilityRole="button"
+        accessibilityLabel="Filter bookmarks by tag"
       >
         {children}
       </TouchableOpacity>

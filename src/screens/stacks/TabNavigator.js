@@ -19,7 +19,7 @@ const TAB_ICONS = {
   TimelineStack: {
     ios: {
       default: 'bubble.left.and.bubble.right',
-      selected: 'bubble.left.and.bubble.right.fill'
+      selected: 'bubble.left.and.bubble.right'
     },
     image: TimelineIcon
   },
@@ -33,7 +33,7 @@ const TAB_ICONS = {
   BookmarksStack: {
     ios: {
       default: 'star',
-      selected: 'star.fill'
+      selected: 'star'
     },
     image: BookmarksIcon
   },
