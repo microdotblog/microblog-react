@@ -82,6 +82,7 @@ export default class PagesScreen extends React.Component{
   
   _return_header = () => {
     const { config } = Auth.selected_user.posting.selected_service
+    const destination_name = config.posts_destination()?.name ?? "current destination"
     return(
       !App.page_search_is_open ?
       <View
@@ -95,9 +96,13 @@ export default class PagesScreen extends React.Component{
           height: 50,
           backgroundColor: App.theme_input_background_color(),
         }}>
-        <TouchableOpacity onPress={() => App.open_sheet("posts_destination_menu", { type: "pages" })}>
+        <TouchableOpacity
+          onPress={() => App.open_sheet("posts_destination_menu", { type: "pages" })}
+          accessibilityRole="button"
+          accessibilityLabel={`Choose pages destination, ${destination_name}`}
+        >
           <Text style={{color: App.theme_text_color(), fontWeight: "500", fontSize: 16}}>
-            {config.posts_destination()?.name}
+            {destination_name}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -113,6 +118,8 @@ export default class PagesScreen extends React.Component{
             marginLeft: 5,
           }}
           onPress={App.toggle_page_search_is_open}
+          accessibilityRole="button"
+          accessibilityLabel="Search pages"
         >
         {
           Platform.OS === "ios" ?
@@ -128,7 +135,7 @@ export default class PagesScreen extends React.Component{
       </View>
       :
       <SearchBar
-        placeholder="Search posts"
+        placeholder="Search pages"
         onSubmitEditing={() => {Keyboard.dismiss()}}
         onChangeText={(text) => App.set_pages_query(text, config.posts_destination())}
         value={App.page_search_query}

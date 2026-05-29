@@ -25,17 +25,18 @@ export default class SearchBar extends React.Component {
 					flexDirection: "row",
 					alignItems: "center"
 				}}>
-				<TextInput
-					placeholderTextColor="lightgrey"
-					placeholder={placeholder}
-					returnKeyType={'search'}
-					blurOnSubmit={true}
-					autoFocus={true}
-					autoCorrect={true}
-					autoCapitalize="none"
-					clearButtonMode={'while-editing'}
-					enablesReturnKeyAutomatically={true}
-					underlineColorAndroid={'transparent'}
+					<TextInput
+						accessibilityLabel={placeholder}
+						placeholderTextColor="lightgrey"
+						placeholder={placeholder}
+						returnKeyType={'search'}
+						blurOnSubmit={true}
+						autoFocus={true}
+						autoCorrect={true}
+						autoCapitalize="none"
+						clearButtonMode={'while-editing'}
+						enablesReturnKeyAutomatically={true}
+						underlineColorAndroid={'transparent'}
 					style={{ 
 						flex: 1,
 						backgroundColor: App.theme_button_background_color(), 
@@ -60,6 +61,8 @@ export default class SearchBar extends React.Component {
 						marginRight: 8,
 					}}
 					onPress={onCancel}
+					accessibilityRole="button"
+					accessibilityLabel="Cancel search"
 				>
 					<Text
 						style={{

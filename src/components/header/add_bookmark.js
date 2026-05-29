@@ -17,8 +17,10 @@ export default class AddBookmarkButton extends React.Component{
             height: 22,
             justifyContent: 'center',
             alignItems: 'center'
-           }}
+          }}
           onPress={() => App.navigate_to_screen("add_bookmark")}
+          accessibilityRole="button"
+          accessibilityLabel="Add bookmark"
         >
           {
             Platform.OS === 'ios' ? 

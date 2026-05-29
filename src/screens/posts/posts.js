@@ -153,6 +153,7 @@ export default class PostsScreen extends React.Component{
   
   _return_header = () => {
     const { config } = Auth.selected_user.posting.selected_service
+    const destination_name = config.posts_destination()?.name ?? "current destination"
     return(
       !App.post_search_is_open ?
       <View
@@ -166,9 +167,13 @@ export default class PostsScreen extends React.Component{
           height: 50,
           backgroundColor: App.theme_input_background_color(),
         }}>
-        <TouchableOpacity onPress={() => App.open_sheet("posts_destination_menu", { type: "posts" })}>
+        <TouchableOpacity
+          onPress={() => App.open_sheet("posts_destination_menu", { type: "posts" })}
+          accessibilityRole="button"
+          accessibilityLabel={`Choose posts destination, ${destination_name}`}
+        >
           <Text style={{color: App.theme_text_color(), fontWeight: "500", fontSize: 16}}>
-            {config.posts_destination()?.name}
+            {destination_name}
           </Text>
         </TouchableOpacity>
         <View style={{ flex: 1 }} />
@@ -196,6 +201,9 @@ export default class PostsScreen extends React.Component{
                 selected_service.check_for_posts_for_destination(destination, new_is_drafts);
               }
             }}
+            accessibilityRole="button"
+            accessibilityLabel="Show drafts"
+            accessibilityState={{ selected: this.state.is_showing_drafts_posts }}
           >
             <Text style={{color: App.theme_button_text_color()}}>
               Drafts
@@ -215,6 +223,8 @@ export default class PostsScreen extends React.Component{
             marginLeft: 5,
           }}
           onPress={this._open_search}
+          accessibilityRole="button"
+          accessibilityLabel="Search posts"
         >
         {
           Platform.OS === "ios" ?
