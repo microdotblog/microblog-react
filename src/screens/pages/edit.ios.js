@@ -1,27 +1,22 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { TextInput } from 'react-native';
+import { TextInput, View } from 'react-native';
 import { KeyboardStickyView } from "react-native-keyboard-controller";
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
+import EditorKeyboardAvoidingView from '../../components/keyboard/editor_keyboard_avoiding_view'
 import PostToolbar from '../../components/keyboard/post_toolbar'
 import HighlightingText from '../../components/text/highlighting_text';
 import LoadingComponent from '../../components/generic/loading';
 
 @observer
 export default class PageEditScreen extends React.Component{
-
-  constructor(props) {
-    super(props)
-    this.state = {
-      toolbar_height: 0,
-    }
-  }
   
   render() {
     const { posting } = Auth.selected_user
     return(
-      <>
+      <View style={{ flex: 1 }}>
+        <EditorKeyboardAvoidingView style={{ flex: 1 }}>
           <TextInput
             placeholder="Title"
             placeholderTextColor={App.theme_placeholder_text_color()}
@@ -74,7 +69,6 @@ export default class PageEditScreen extends React.Component{
             enablesReturnKeyAutomatically={true}
             underlineColorAndroid={'transparent'}
             value={posting.post_text}
-            bottomOverlayHeight={this.state.toolbar_height}
             selection={posting.text_selection_flat}
             onChangeText={({ nativeEvent: { text } }) => {
               !posting.is_sending_post ? posting.set_post_text_from_typing(text) : null
@@ -84,15 +78,11 @@ export default class PageEditScreen extends React.Component{
             }}
           />
           <LoadingComponent should_show={posting.is_sending_post && posting.post_text != ""} />
-        <KeyboardStickyView onLayout={({ nativeEvent }) => {
-          const toolbar_height = nativeEvent.layout.height
-          if (toolbar_height !== this.state.toolbar_height) {
-            this.setState({ toolbar_height })
-          }
-        }}>
+        </EditorKeyboardAvoidingView>
+        <KeyboardStickyView>
           <PostToolbar componentId={this.props.componentId} is_post_edit hide_count hide_settings />
         </KeyboardStickyView>
-      </>
+      </View>
     )
   }
   

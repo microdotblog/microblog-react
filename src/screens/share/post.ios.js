@@ -5,18 +5,12 @@ import { KeyboardStickyView } from "react-native-keyboard-controller"
 import Share from '../../stores/Share'
 import App from '../../stores/App'
 import AssetToolbar from '../../components/keyboard/asset_toolbar'
+import EditorKeyboardAvoidingView from '../../components/keyboard/editor_keyboard_avoiding_view'
 import PostToolbar from '../../components/keyboard/post_toolbar'
 import HighlightingText from '../../components/text/highlighting_text'
 
 @observer
 export default class SharePostScreen extends React.Component {
-
-	constructor (props) {
-		super(props)
-		this.state = {
-			toolbar_height: 0,
-		}
-	}
 
 	render() {
 		const { selected_user } = Share
@@ -25,7 +19,7 @@ export default class SharePostScreen extends React.Component {
 		return (
 			Share.is_logged_in() && posting != null ?
 				<>
-					<View style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
+					<EditorKeyboardAvoidingView style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
 						{
 							Share.error_message != null &&
 							<View style={{ backgroundColor: App.theme_error_background_color(), padding: 10 }}>
@@ -64,7 +58,6 @@ export default class SharePostScreen extends React.Component {
 								enablesReturnKeyAutomatically={true}
 								underlineColorAndroid={'transparent'}
 								value={Share.share_text}
-								bottomOverlayHeight={this.state.toolbar_height}
 								selection={selection_flat}
 								onChangeText={({ nativeEvent: { text } }) => !posting.is_sending_post ? Share.set_post_text(text) : null}
 								onSelectionChange={({ nativeEvent: { selection } }) => {
@@ -72,13 +65,8 @@ export default class SharePostScreen extends React.Component {
 								}}
 							/>
 						</View>
-					</View>
-					<KeyboardStickyView onLayout={({ nativeEvent }) => {
-						const toolbar_height = nativeEvent.layout.height
-						if (toolbar_height !== this.state.toolbar_height) {
-							this.setState({ toolbar_height })
-						}
-					}}>
+					</EditorKeyboardAvoidingView>
+					<KeyboardStickyView>
 						<View style={{ position: 'relative' }}>
 							{
 								!posting.post_title &&
