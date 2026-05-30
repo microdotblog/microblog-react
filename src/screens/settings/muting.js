@@ -113,7 +113,6 @@ export default class MutingScreen extends React.Component {
           justifyContent: "space-between", 
           alignItems: "center", 
           marginBottom: 10,
-          paddingHorizontal: 10,
         }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text style={{ fontWeight: "700", color: App.theme_text_color() }}>{title}</Text>
@@ -158,7 +157,7 @@ export default class MutingScreen extends React.Component {
         </View>
         {
           is_active &&
-          <View style={{ flexDirection: "column", marginBottom: 10, paddingHorizontal: 10 }}>
+          <View style={{ flexDirection: "column", marginBottom: 10 }}>
             <TextInput
               ref={ref => this.state.input_ref = ref}
               style={{
