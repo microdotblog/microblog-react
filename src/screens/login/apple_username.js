@@ -7,6 +7,10 @@ import App from '../../stores/App'
 
 @observer
 export default class AppleUsernameScreen extends React.Component{
+  componentWillUnmount() {
+    Login.reset_apple_credentials()
+  }
+
   render() {
     return(
       <KeyboardAvoidingView behavior={ Platform.OS === "ios" ? "padding" : "height" } style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 15, backgroundColor: App.theme_background_color() }}>

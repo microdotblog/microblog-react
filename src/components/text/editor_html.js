@@ -31,16 +31,20 @@ const editorHtml = String.raw`<!doctype html>
     html,
     body {
       width: 100%;
-      height: 100%;
+      min-height: 100%;
       margin: 0;
       padding: 0;
-      overflow: hidden;
       background: var(--editor-background);
       color: var(--editor-text);
       color-scheme: light dark;
-      overscroll-behavior: none;
       -webkit-text-size-adjust: 100%;
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     body.dark {
@@ -57,19 +61,16 @@ const editorHtml = String.raw`<!doctype html>
     .editor_shell {
       box-sizing: border-box;
       width: 100%;
-      height: 100%;
+      min-height: 100vh;
       position: relative;
-      overflow: hidden;
       background: var(--editor-background);
     }
 
     .editor {
       box-sizing: border-box;
       width: 100%;
-      height: max(44px, calc(100% - var(--editor-bottom-overlay)));
-      min-height: 0;
-      overflow-y: auto;
-      overscroll-behavior-y: contain;
+      min-height: max(44px, 100vh);
+      overflow: visible;
       white-space: pre-wrap;
       word-break: break-word;
       outline: none;
@@ -77,7 +78,7 @@ const editorHtml = String.raw`<!doctype html>
       margin: 0;
       padding-top: var(--editor-padding-top);
       padding-right: var(--editor-padding-right);
-      padding-bottom: var(--editor-padding-bottom);
+      padding-bottom: calc(var(--editor-padding-bottom) + var(--editor-bottom-overlay));
       padding-left: var(--editor-padding-left);
       background: var(--editor-background);
       color: var(--editor-text);
@@ -85,7 +86,6 @@ const editorHtml = String.raw`<!doctype html>
       font-size: var(--editor-font-size);
       line-height: 1.35;
       font-weight: 400;
-      -webkit-overflow-scrolling: touch;
       -webkit-user-select: text;
       user-select: text;
     }
@@ -174,7 +174,7 @@ const editorHtml = String.raw`<!doctype html>
     }
 
     .editor_bottom_scrim {
-      position: absolute;
+      position: fixed;
       left: 0;
       right: 0;
       bottom: 0;
@@ -476,31 +476,17 @@ const editorHtml = String.raw`<!doctype html>
           setSelectionRange(savedSelection.start, savedSelection.end);
         }
 
-        var rootRect = root.getBoundingClientRect();
-        var visibleTop = rootRect.top;
-        var visibleBottom = rootRect.bottom;
+        var visibleTop = 0;
+        var visibleBottom = window.innerHeight;
         var scrollPadding = 12;
 
         if (rect.bottom + scrollPadding > visibleBottom) {
-          root.scrollTop += rect.bottom + scrollPadding - visibleBottom;
+          window.scrollBy(0, rect.bottom + scrollPadding - visibleBottom);
         }
         else if (rect.top - scrollPadding < visibleTop) {
-          root.scrollTop -= visibleTop - rect.top + scrollPadding;
+          window.scrollBy(0, rect.top - scrollPadding - visibleTop);
         }
 
-        clampEditorScroll();
-      }
-
-      function clampEditorScroll() {
-        var root = editor();
-        var maxScroll = Math.max(0, root.scrollHeight - root.clientHeight);
-
-        if (root.scrollTop < 0) {
-          root.scrollTop = 0;
-        }
-        else if (root.scrollTop > maxScroll) {
-          root.scrollTop = maxScroll;
-        }
       }
 
       function escapeHtml(text) {
@@ -751,8 +737,6 @@ const editorHtml = String.raw`<!doctype html>
         });
 
         root.addEventListener("input", handleInput);
-        root.addEventListener("scroll", clampEditorScroll);
-
         root.addEventListener("compositionstart", function () {
           isComposing = true;
           isIgnoringInput = true;

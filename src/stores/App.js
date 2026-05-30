@@ -981,6 +981,7 @@ export default App = types.model('App', {
     trigger_logout_for_user: flow(function*(user) {
       console.log("App:trigger_logout_for_user")
       Alert.alert(`Please sign in again`, `Your token for, @${user.username}, is no longer valid.`)
+      Login.reset_apple_credentials()
       yield Auth.logout_user(user)
       App.navigate_to_screen("Login")
     }),

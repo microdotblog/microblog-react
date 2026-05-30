@@ -3,6 +3,7 @@ import { observer } from "mobx-react";
 import { View, Text, TouchableOpacity, Image, Platform } from "react-native";
 import Auth from "./../../stores/Auth";
 import App from "./../../stores/App";
+import Login from "./../../stores/Login"
 import { SFSymbol } from "react-native-sfsymbols";
 import MBImage from "../common/MBImage";
 // IMAGES
@@ -134,6 +135,7 @@ export default class AccountSwitcher extends React.Component {
     return (
       <TouchableOpacity
         onPress={() => {
+          Login.reset_apple_credentials()
           App.close_sheet("main_sheet");
           App.navigation().navigate("Login");
         }}
@@ -197,7 +199,10 @@ export default class AccountSwitcher extends React.Component {
         : "Sign Out";
     return (
       <TouchableOpacity
-        onPress={() => Auth.logout_user()}
+        onPress={() => {
+          Login.reset_apple_credentials()
+          Auth.logout_user()
+        }}
         accessibilityRole="button"
         accessibilityLabel={sign_out_wording}
         style={{

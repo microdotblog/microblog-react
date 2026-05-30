@@ -4,6 +4,7 @@ import { TextInput, View } from 'react-native';
 import { KeyboardStickyView } from "react-native-keyboard-controller";
 import Auth from '../../stores/Auth';
 import App from '../../stores/App';
+import EditorKeyboardAvoidingView from '../../components/keyboard/editor_keyboard_avoiding_view';
 import PostToolbar from '../../components/keyboard/post_toolbar';
 import AssetToolbar from '../../components/keyboard/asset_toolbar';
 import UsernameToolbar from '../../components/keyboard/username_toolbar';
@@ -12,14 +13,7 @@ import LoadingComponent from '../../components/generic/loading';
 
 @observer
 export default class PostingScreen extends React.Component{
-  
-  constructor(props) {
-		super(props)
-    this.state = {
-      toolbar_height: 0,
-    }
-  }
-  
+
   componentDidMount() {
     Auth.selected_user?.prep_posting()
   }
@@ -28,6 +22,7 @@ export default class PostingScreen extends React.Component{
     const { posting } = Auth.selected_user
     return(
       <View style={{ flex: 1 }}>
+        <EditorKeyboardAvoidingView style={{ flex: 1 }}>
           {
             posting.should_show_title() ?
             <TextInput
@@ -60,48 +55,41 @@ export default class PostingScreen extends React.Component{
             />
             : null
           }
-          <View style={{ flex: 1, overflow: 'hidden' }}>
-            <HighlightingText
-              placeholderTextColor="lightgrey"
-              style={{
-                minHeight: 300,
-                fontSize: 18,
-                justifyContent: 'flex-start',
-                alignItems: 'flex-start',
-                marginTop: 0,
-                paddingBottom: posting.post_assets?.length > 0 ? 260 : 50,
-                flex: 1,
-                padding: 13,
-                color: App.theme_text_color()
-              }}
-              editable={!posting.is_sending_post}
-              multiline={true}
-              scrollEnabled={true}
-              returnKeyType={'default'}
-              keyboardType={'default'}
-              autoFocus={true}
-              autoCorrect={true}
-              clearButtonMode={'while-editing'}
-              enablesReturnKeyAutomatically={true}
-              underlineColorAndroid={'transparent'}
-              value={posting.post_text}
-              bottomOverlayHeight={this.state.toolbar_height}
-              selection={posting.text_selection_flat}
-              onChangeText={({ nativeEvent: { text } }) => {
-                !posting.is_sending_post ? posting.set_post_text_from_typing(text) : null
-              }}
-              onSelectionChange={({ nativeEvent: { selection } }) => {
-                posting.set_text_selection(selection)
-              }}
-            />
-            <LoadingComponent should_show={posting.is_sending_post && posting.post_text != ""} />
-          </View>
-        <KeyboardStickyView onLayout={({ nativeEvent }) => {
-          const toolbar_height = nativeEvent.layout.height
-          if (toolbar_height !== this.state.toolbar_height) {
-            this.setState({ toolbar_height })
-          }
-        }}>
+          <HighlightingText
+            placeholderTextColor="lightgrey"
+            style={{
+              minHeight: 300,
+              fontSize: 18,
+              justifyContent: 'flex-start',
+              alignItems: 'flex-start',
+              marginTop: 0,
+              paddingBottom: posting.post_assets?.length > 0 ? 260 : 50,
+              flex: 1,
+              padding: 13,
+              color: App.theme_text_color()
+            }}
+            editable={!posting.is_sending_post}
+            multiline={true}
+            scrollEnabled={true}
+            returnKeyType={'default'}
+            keyboardType={'default'}
+            autoFocus={true}
+            autoCorrect={true}
+            clearButtonMode={'while-editing'}
+            enablesReturnKeyAutomatically={true}
+            underlineColorAndroid={'transparent'}
+            value={posting.post_text}
+            selection={posting.text_selection_flat}
+            onChangeText={({ nativeEvent: { text } }) => {
+              !posting.is_sending_post ? posting.set_post_text_from_typing(text) : null
+            }}
+            onSelectionChange={({ nativeEvent: { selection } }) => {
+              posting.set_text_selection(selection)
+            }}
+          />
+          <LoadingComponent should_show={posting.is_sending_post && posting.post_text != ""} />
+        </EditorKeyboardAvoidingView>
+        <KeyboardStickyView>
           <AssetToolbar componentId={this.props.componentId} />
           <UsernameToolbar componentId={this.props.componentId} object={posting} />
           <PostToolbar componentId={this.props.componentId} />

@@ -48,7 +48,6 @@ export default class SettingsScreen extends React.Component {
             fontWeight: "500",
             marginBottom: 10,
             marginTop: 15,
-            marginLeft: 10,
             color: App.theme_text_color(),
           }}
         >
@@ -110,7 +109,6 @@ export default class SettingsScreen extends React.Component {
             fontWeight: "500",
             marginBottom: 10,
             marginTop: 15,
-            marginLeft: 10,
             color: App.theme_text_color(),
           }}
         >
@@ -203,7 +201,6 @@ export default class SettingsScreen extends React.Component {
             fontWeight: "500",
             marginBottom: 10,
             marginTop: 15,
-            marginLeft: 10,
             color: App.theme_text_color(),
           }}
         >
@@ -216,7 +213,6 @@ export default class SettingsScreen extends React.Component {
               borderRadius: 8,
               paddingHorizontal: 12,
               paddingVertical: 10,
-              marginHorizontal: 10,
               marginBottom: 15,
               borderLeftWidth: 3,
               borderLeftColor: App.theme_accent_color(),
@@ -314,7 +310,6 @@ export default class SettingsScreen extends React.Component {
             fontWeight: "500",
             marginBottom: 10,
             marginTop: 15,
-            marginLeft: 10,
             color: App.theme_text_color(),
           }}
         >
@@ -324,7 +319,6 @@ export default class SettingsScreen extends React.Component {
           style={{
             fontWeight: "300",
             marginBottom: 10,
-            marginLeft: 10,
             color: App.theme_text_color(),
           }}
         >
@@ -363,7 +357,6 @@ export default class SettingsScreen extends React.Component {
             fontWeight: "500",
             marginBottom: 10,
             marginTop: 15,
-            marginLeft: 10,
             color: App.theme_text_color(),
           }}
         >

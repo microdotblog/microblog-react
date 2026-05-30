@@ -27,6 +27,7 @@ export default class LoginScreen extends React.Component{
 
   on_apple_button_press = async () => {
     try{
+      Login.reset_apple_credentials()
       const apple_auth_request_response = await appleAuth.performRequest({
         requestedOperation: appleAuth.Operation.LOGIN,
         requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL]
