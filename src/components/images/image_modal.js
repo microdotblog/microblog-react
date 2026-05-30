@@ -16,6 +16,7 @@ const SCALE_DISMISS_THRESHOLD = 1.02
 const ImageModalContent = gestureHandlerRootHOC(observer(({ image_url }) => {
 	const { height } = useWindowDimensions()
 	const insets = useSafeAreaInsets()
+	const close_button_top = Platform.OS === 'ios' ? Math.max(12, insets.top - 18) : insets.top + 15
 	const scale = useSharedValue(1)
 	const translate_y = useSharedValue(0)
 	const [is_loading_image, set_is_loading_image] = React.useState(true)
@@ -171,7 +172,7 @@ const ImageModalContent = gestureHandlerRootHOC(observer(({ image_url }) => {
 					}
 				</Animated.View>
 			</GestureDetector>
-			<Animated.View style={[{ position: 'absolute', left: 15, top: insets.top + 15 }, close_button_style]}>
+			<Animated.View style={[{ position: 'absolute', left: 15, top: close_button_top }, close_button_style]}>
 				<TouchableOpacity
 					onPress={App.reset_image_modal}
 					accessibilityRole="button"
