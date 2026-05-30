@@ -10,7 +10,6 @@ export default class HighlightingText extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      keyboard_overlap_height: 0,
       keyboard_scroll_request: 0
     }
     this.container = React.createRef()
@@ -19,7 +18,7 @@ export default class HighlightingText extends React.Component {
     this.last_webview_text = this.normalizedValue(props)
     this.last_webview_selection = this.serializedSelection(props.selection)
     this.last_config = null
-    this.keyboard_end_coordinates = null
+    this.keyboard_is_visible = false
     this.keyboard_show_listener = null
     this.keyboard_hide_listener = null
   }
@@ -87,7 +86,7 @@ export default class HighlightingText extends React.Component {
       paddingRight: style.paddingRight != null ? style.paddingRight : padding,
       paddingBottom: style.paddingBottom != null ? style.paddingBottom : padding,
       paddingLeft: style.paddingLeft != null ? style.paddingLeft : padding,
-      bottomOverlayHeight: (this.props.bottomOverlayHeight || 0) + this.state.keyboard_overlap_height
+      bottomOverlayHeight: this.props.bottomOverlayHeight || 0
     }
   }
 
@@ -153,48 +152,27 @@ export default class HighlightingText extends React.Component {
     this.webview.current?.injectJavaScript(`${script}\ntrue;`)
   }
 
-  setKeyboardOverlapHeight(height, scrollSelectionIntoView = false) {
-    const next_height = Math.max(0, Math.round(height || 0))
-
+  requestScrollSelectionIntoView() {
     this.setState((state) => {
-      if (state.keyboard_overlap_height === next_height && !scrollSelectionIntoView) {
-        return null
-      }
-
       return {
-        keyboard_overlap_height: next_height,
-        keyboard_scroll_request: scrollSelectionIntoView ? state.keyboard_scroll_request + 1 : state.keyboard_scroll_request
+        keyboard_scroll_request: state.keyboard_scroll_request + 1
       }
     })
   }
 
-  updateKeyboardOverlap(scrollSelectionIntoView = false) {
-    const coordinates = this.keyboard_end_coordinates
-    if (!coordinates || coordinates.screenY == null) {
-      this.setKeyboardOverlapHeight(0, scrollSelectionIntoView)
-      return
-    }
-
-    this.container.current?.measureInWindow((x, y, width, height) => {
-      const component_bottom = y + height
-      const keyboard_top = coordinates.screenY
-      const overlap = Math.min(height, Math.max(0, component_bottom - keyboard_top))
-      this.setKeyboardOverlapHeight(overlap, scrollSelectionIntoView && overlap > 0)
-    })
-  }
-
-  handleKeyboardChange = (event) => {
-    this.keyboard_end_coordinates = event.endCoordinates
-    this.updateKeyboardOverlap(true)
+  handleKeyboardChange = () => {
+    this.keyboard_is_visible = true
+    this.requestScrollSelectionIntoView()
   }
 
   handleKeyboardHide = () => {
-    this.keyboard_end_coordinates = null
-    this.setKeyboardOverlapHeight(0)
+    this.keyboard_is_visible = false
   }
 
   handleLayout = () => {
-    this.updateKeyboardOverlap()
+    if (this.keyboard_is_visible) {
+      this.requestScrollSelectionIntoView()
+    }
   }
 
   syncEditor(options = {}) {
@@ -284,8 +262,7 @@ export default class HighlightingText extends React.Component {
           originWhitelist={['*']}
           javaScriptEnabled={true}
           domStorageEnabled={false}
-          scrollEnabled={Platform.OS === 'ios' ? false : this.props.scrollEnabled !== false}
-          bounces={false}
+          scrollEnabled={this.props.scrollEnabled !== false}
           hideKeyboardAccessoryView={true}
           keyboardDisplayRequiresUserAction={false}
           setSupportMultipleWindows={false}
