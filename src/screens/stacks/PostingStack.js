@@ -13,7 +13,7 @@ import NewUploadButton from '../../components/header/new_upload';
 import RefreshActivity from '../../components/header/refresh_activity';
 import BackButton from '../../components/header/back';
 import App from '../../stores/App'
-import { headerLeftElement, headerRightElement } from '../../utils/navigation'
+import { headerItemGroupStyle, headerLeftElement, headerRightElement } from '../../utils/navigation'
 
 const PostingStack = createNativeStackNavigator();
 
@@ -67,7 +67,7 @@ export default class Posting extends React.Component{
             ...headerLeftElement(() => <BackButton />),
             ...headerRightElement(() => {
               return (
-                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
+                <View style={headerItemGroupStyle(10)}>
                   <RefreshActivity type="uploads" />
                   <NewUploadButton />
                 </View>
