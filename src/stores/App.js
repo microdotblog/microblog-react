@@ -1159,7 +1159,7 @@ export default App = types.model('App', {
       return self.theme === "dark" ? "rgba(28,32,40,0.8)" : "rgba(255,255,255,0.8)"
     },
     theme_settings_group_background_color() {
-      return self.theme === "dark" ? "#1a232e" : "#e8eaed"
+      return self.theme === "dark" ? "#1a232e" : "#F3F4F6"
     },
     theme_autocomplete_background_color() {
       return self.theme === "dark" ? "#1c2028" : "#f4f6f8"

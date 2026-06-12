@@ -209,7 +209,7 @@ export default class SettingsScreen extends React.Component {
         {!this.state.push_permissions && (
           <View
             style={{
-              backgroundColor: App.theme === "dark" ? "#374151" : "#e8eaed",
+              backgroundColor: App.theme === "dark" ? "#374151" : App.theme_settings_group_background_color(),
               borderRadius: 8,
               paddingHorizontal: 12,
               paddingVertical: 10,
