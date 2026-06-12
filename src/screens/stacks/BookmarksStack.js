@@ -11,7 +11,7 @@ import { getSharedScreens } from './SharedStack'
 import TagsButton from '../../components/header/tags_button';
 import BackButton from '../../components/header/back';
 import App from '../../stores/App'
-import { headerLeftElement, headerRightElement } from '../../utils/navigation'
+import { headerItemGroupStyle, headerLeftElement, headerRightElement } from '../../utils/navigation'
 
 const BookmarksStack = createNativeStackNavigator();
 
@@ -34,7 +34,7 @@ export default class Bookmarks extends React.Component{
           options={({ route }) => ({
             ...headerLeftElement(() => <ProfileImage routeKey={route.name} />),
             ...headerRightElement(() => (
-              <View style={{ justifyContent: 'center', alignItems: 'center', gap: 15, flexDirection: 'row' }}>
+              <View style={headerItemGroupStyle(15)}>
                 <TagsButton />
                 <AddBookmarkButton />
               </View>

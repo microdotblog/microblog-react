@@ -16,7 +16,7 @@ import CollectionsScreen from '../uploads/collections'
 import NewPostButton from '../../components/header/new_post';
 import NewCollectionButton from '../../components/header/new_collection';
 import App from '../../stores/App'
-import { headerRightElement } from '../../utils/navigation'
+import { headerItemGroupStyle, headerRightElement } from '../../utils/navigation'
 
 export const getSharedScreens = (Stack, tab_name) => {
 	return [
@@ -63,7 +63,7 @@ export const getSharedScreens = (Stack, tab_name) => {
 				headerTitle: `Uploads`,
 				...headerRightElement(() => {
 					return (
-						<View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
+						<View style={headerItemGroupStyle(10)}>
 							<RefreshActivity type="uploads" />
 							<NewUploadButton />
 						</View>

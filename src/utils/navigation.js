@@ -31,3 +31,13 @@ export function headerRightElement(renderElement, options = {}) {
     headerRight: renderElement
   }
 }
+
+export function headerItemGroupStyle(gap = 10) {
+  return {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap,
+    paddingHorizontal: isLiquidGlass() ? 8 : 0
+  }
+}
