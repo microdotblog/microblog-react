@@ -13,7 +13,21 @@ import {
 	determine_pending_notification_action
 } from '../utils/push_notifications'
 
-export default Push = types.model('Push', {
+function check_push_permissions() {
+	if (Platform.OS === 'ios') {
+		return new Promise((resolve) => {
+			PushNotificationIOS.checkPermissions((permissions) => {
+				resolve(!!permissions?.alert)
+			})
+		})
+	}
+
+	return PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS)
+		.then((hasPermission) => hasPermission)
+		.catch(() => false)
+}
+
+const Push = types.model('Push', {
 	token: types.optional(types.string, ""),
 	notifications: types.optional(types.array(Notification), []),
 	notificiations_open: types.optional(types.boolean, false),
@@ -42,7 +56,7 @@ export default Push = types.model('Push', {
 				return true
 			}
 		}
-		else if(self.token == "" && Auth.is_logged_in() && self.has_push_permissions){
+		else if(self.token == "" && Auth.is_logged_in() && (yield self.has_push_permissions())){
 			Push.request_permissions()
 		}
 		return false
@@ -245,9 +259,10 @@ export default Push = types.model('Push', {
 			yield PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS)
 		}
 		
-		if(self.has_push_permissions() && user_token){
+		if(user_token && (yield self.has_push_permissions())){
 			return yield self.register_token(user_token)
 		}
+		return false
 	}),
 	
 	set_devices_for_user: flow(function* (username, devices) {
@@ -267,19 +282,13 @@ export default Push = types.model('Push', {
 	},
 	
 	has_push_permissions(callback) {
-		if (Platform.OS === 'ios') {
-			PushNotificationIOS.checkPermissions((permissions) => {
-				callback(permissions.alert)
+		const permissions_promise = check_push_permissions()
+		if (typeof callback === 'function') {
+			permissions_promise.then((has_permissions) => {
+				callback(has_permissions)
 			})
-		} else {
-			PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS)
-				.then((hasPermission) => {
-					callback(hasPermission)
-				})
-				.catch(() => {
-					callback(false)
-				})
 		}
+		return permissions_promise
 	},
 	
 	is_registered_device_for_user(username) {
@@ -305,3 +314,5 @@ export default Push = types.model('Push', {
 	
 }))
 .create({})
+
+export default Push
