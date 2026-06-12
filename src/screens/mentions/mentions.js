@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import Auth from './../../stores/Auth';
+import App from './../../stores/App';
 import GenericScreenComponent from '../../components/generic/generic_screen'
 
 @observer

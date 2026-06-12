@@ -70,6 +70,7 @@ const WebViewModule = observer((props) => {
     document.getElementsByTagName('head')[0].appendChild(meta)
     ${web_view_css_properties_javascript}
   ` : should_inject_web_view_padding ? web_view_css_properties_javascript : null
+  const should_use_native_pull_to_refresh = Platform.OS === 'ios' && props.profile == null
 
   useFocusEffect(
     React.useCallback(() => {
@@ -142,7 +143,7 @@ const WebViewModule = observer((props) => {
         ref={webViewRef}
         source={{ uri: source_uri }}
         containerStyle={{ flex: 1, width: '100%', height: '100%' }}
-        pullToRefreshEnabled={Platform.OS === 'ios' && props.profile == null && state.is_pull_to_refresh_enabled}
+        pullToRefreshEnabled={should_use_native_pull_to_refresh}
         decelerationRate={0.998}
         startInLoadingState={true}
         renderLoading={() => (
@@ -231,9 +232,16 @@ const WebViewModule = observer((props) => {
           return false
         }}
         onScroll={(e) => {
-          if (e.nativeEvent.contentOffset != null && e.nativeEvent.contentOffset.y != null) {
+          if (!should_use_native_pull_to_refresh && e.nativeEvent.contentOffset != null && e.nativeEvent.contentOffset.y != null) {
             const y = e.nativeEvent.contentOffset.y
-            setState(prevState => ({ ...prevState, is_pull_to_refresh_enabled: y <= 0.15 }))
+            const is_pull_to_refresh_enabled = y <= 0.15
+            setState(prevState => {
+              if (prevState.is_pull_to_refresh_enabled === is_pull_to_refresh_enabled) {
+                return prevState
+              }
+
+              return { ...prevState, is_pull_to_refresh_enabled }
+            })
           }
           App.set_is_scrolling()
         }}
@@ -261,7 +269,6 @@ const WebViewModule = observer((props) => {
 
   const [profileHeaderHeight, setProfileHeaderHeight] = React.useState(0)
   const is_conversation = props.endpoint.includes("conversation")
-  const should_use_native_pull_to_refresh = Platform.OS === 'ios' && props.profile == null
   const loading_banner = !is_conversation ? (
     <LoadingBanner
       visible={state.is_loading}
