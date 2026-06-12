@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import Auth from './../../stores/Auth';
+import App from './../../stores/App';
 import TagmojiBar from '../../components/discover/tagmoji_bar'
 import Discover from '../../stores/Discover'
 import GenericScreenComponent from '../../components/generic/generic_screen';
