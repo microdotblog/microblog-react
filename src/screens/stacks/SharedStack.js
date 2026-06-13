@@ -17,6 +17,7 @@ import NewPostButton from '../../components/header/new_post';
 import NewCollectionButton from '../../components/header/new_collection';
 import App from '../../stores/App'
 import { headerItemGroupStyle, headerRightElement } from '../../utils/navigation'
+import { isLiquidGlass } from '../../utils/ui'
 
 export const getSharedScreens = (Stack, tab_name) => {
 	return [
@@ -35,7 +36,30 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={ConversationScreen}
 			options={({ route }) => ({
 				headerTitle: `Conversation`,
-				...headerRightElement(() => <ReplyButton conversation_id={route.params?.conversation_id} />)
+				...(isLiquidGlass() ?
+					{
+						unstable_headerRightItems: () => [
+							{
+								type: 'button',
+								label: 'Reply',
+								icon: {
+									type: 'sfSymbol',
+									name: 'arrowshape.turn.up.left.fill'
+								},
+								identifier: 'conversation-reply',
+								tintColor: App.theme_text_color(),
+								width: 28,
+								onPress: () => {
+									if (route.params?.conversation_id != null) {
+										App.open_sheet("reply_sheet", { conversation_id: route.params.conversation_id })
+									}
+								}
+							}
+						]
+					}
+					:
+					headerRightElement(() => <ReplyButton conversation_id={route.params?.conversation_id} />)
+				)
 			})}
 			listeners={() => ({
 				focus: () => {
