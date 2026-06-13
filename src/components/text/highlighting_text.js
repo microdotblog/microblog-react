@@ -3,13 +3,20 @@ import { observer } from 'mobx-react'
 import { Keyboard, Platform, StyleSheet, View } from 'react-native'
 import { WebView } from 'react-native-webview'
 import App from '../../stores/App'
+import { EditorKeyboardFrameContext } from '../keyboard/editor_keyboard_avoiding_view'
 import editorHtml from './editor_html'
+
+const DEBUG_EDITOR_LAYOUT = true
 
 @observer
 export default class HighlightingText extends React.Component {
+  static contextType = EditorKeyboardFrameContext
+
   constructor(props) {
     super(props)
     this.state = {
+      container_height: 0,
+      measured_editor_height: 0,
       keyboard_scroll_request: 0
     }
     this.container = React.createRef()
@@ -32,6 +39,8 @@ export default class HighlightingText extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    this.measureEditorHeight()
+
     if (!this.is_ready) {
       return
     }
@@ -86,8 +95,14 @@ export default class HighlightingText extends React.Component {
       paddingRight: style.paddingRight != null ? style.paddingRight : padding,
       paddingBottom: style.paddingBottom != null ? style.paddingBottom : padding,
       paddingLeft: style.paddingLeft != null ? style.paddingLeft : padding,
-      bottomOverlayHeight: this.props.bottomOverlayHeight || 0
+      bottomOverlayHeight: this.props.bottomOverlayHeight || 0,
+      viewportHeight: this.editorHeight(),
+      debugEditorLayout: DEBUG_EDITOR_LAYOUT
     }
+  }
+
+  editorHeight() {
+    return this.state.measured_editor_height || this.state.container_height
   }
 
   webviewStyle() {
@@ -106,6 +121,23 @@ export default class HighlightingText extends React.Component {
     delete style.textAlignVertical
     delete style.justifyContent
     delete style.alignItems
+
+    if (this.context?.keyboard_height > 0) {
+      delete style.minHeight
+    }
+
+    const editor_height = this.editorHeight()
+    if (editor_height > 0) {
+      style.height = editor_height
+      style.flex = 0
+      delete style.minHeight
+    }
+
+    if (DEBUG_EDITOR_LAYOUT) {
+      style.borderColor = '#43a047'
+      style.borderWidth = 4
+      style.backgroundColor = '#fff59d'
+    }
 
     return style
   }
@@ -162,6 +194,7 @@ export default class HighlightingText extends React.Component {
 
   handleKeyboardChange = () => {
     this.keyboard_is_visible = true
+    this.measureEditorHeight()
     this.requestScrollSelectionIntoView()
   }
 
@@ -169,10 +202,58 @@ export default class HighlightingText extends React.Component {
     this.keyboard_is_visible = false
   }
 
-  handleLayout = () => {
+  handleLayout = (event) => {
+    const height = event?.nativeEvent?.layout?.height || 0
+    if (height > 0 && height !== this.state.container_height) {
+      this.setState({
+        container_height: height
+      }, this.measureEditorHeight)
+    }
+    else {
+      this.measureEditorHeight()
+    }
+
     if (this.keyboard_is_visible) {
       this.requestScrollSelectionIntoView()
     }
+  }
+
+  measureEditorHeight = () => {
+    if (this.context?.window_bottom <= 0) {
+      return
+    }
+
+    this.container.current?.measureInWindow((x, y) => {
+      const height = Math.max(0, this.context.window_bottom - y)
+      if (height > 0 && height !== this.state.measured_editor_height) {
+        this.setState({
+          measured_editor_height: height
+        })
+      }
+    })
+  }
+
+  measuredWebViewStyle() {
+    const editor_height = this.editorHeight()
+
+    if (editor_height <= 0) {
+      return null
+    }
+
+    const style = {
+      height: editor_height,
+      flex: 0
+    }
+
+    if (DEBUG_EDITOR_LAYOUT) {
+      return {
+        ...style,
+        borderColor: '#e53935',
+        borderWidth: 4
+      }
+    }
+
+    return style
   }
 
   syncEditor(options = {}) {
@@ -271,8 +352,16 @@ export default class HighlightingText extends React.Component {
           onMessage={this.handleMessage}
           onShouldStartLoadWithRequest={this.shouldStartLoad}
           automaticallyAdjustContentInsets={false}
+          automaticallyAdjustsScrollIndicatorInsets={false}
+          bounces={false}
+          contentInset={{
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0
+          }}
           contentInsetAdjustmentBehavior="never"
-          style={[styles.webview, { backgroundColor: config.backgroundColor }]}
+          style={[styles.webview, this.measuredWebViewStyle(), { backgroundColor: config.backgroundColor }]}
           containerStyle={{ backgroundColor: config.backgroundColor }}
           overScrollMode={Platform.OS === 'android' ? 'never' : undefined}
         />
