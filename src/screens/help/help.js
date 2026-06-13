@@ -9,7 +9,10 @@ export default class HelpScreen extends React.Component{
   
   render() {
     return(
-			<ScrollView style={{ flex: 1, padding: 15, backgroundColor: App.theme_background_color() }}>
+			<ScrollView
+				style={{ flex: 1, backgroundColor: App.theme_background_color() }}
+				contentContainerStyle={{ flexGrow: 1, padding: 15 }}
+			>
 				<View style={{ width: '100%' }}>
 					<Text style={{ fontWeight: "500", marginBottom: 15, color: App.theme_text_color() }}>Need help with your blog or another issue on Micro.blog? Email us:</Text>
 					<View style={{ alignItems: 'center' }}>
@@ -64,8 +67,8 @@ export default class HelpScreen extends React.Component{
 						</TouchableOpacity>
 					</View>
 				</View>
-				<View style={{ marginTop: 15, paddingTop: 15, borderColor: App.theme_border_color(), borderTopWidth: 1 }}>
-					<Text style={{color: App.theme_text_color()}}>Version { getVersion() } (build { getBuildNumber() })</Text>
+				<View style={{ marginTop: 'auto', paddingTop: 30, alignItems: 'center' }}>
+					<Text style={{ color: App.theme === "dark" ? App.theme_placeholder_alt_text_color() : "#4B5563" }}>Version { getVersion() } (build { getBuildNumber() })</Text>
 				</View>
       </ScrollView>
     )
