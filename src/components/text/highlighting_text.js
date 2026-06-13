@@ -26,6 +26,7 @@ export default class HighlightingText extends React.Component {
     this.keyboard_is_visible = false
     this.keyboard_show_listener = null
     this.keyboard_hide_listener = null
+    this.pending_focus_options = null
   }
 
   componentDidMount() {
@@ -183,6 +184,25 @@ export default class HighlightingText extends React.Component {
     })
   }
 
+  focus(options = {}) {
+    const focus_options = {
+      cursorToEnd: options.cursorToEnd !== false,
+      scrollSelectionIntoView: options.scrollSelectionIntoView !== false
+    }
+
+    if (!this.is_ready) {
+      this.pending_focus_options = focus_options
+      return
+    }
+
+    this.pending_focus_options = null
+    this.syncEditor({
+      focus: true,
+      cursorToEnd: focus_options.cursorToEnd,
+      scrollSelectionIntoView: focus_options.scrollSelectionIntoView
+    })
+  }
+
   handleKeyboardChange = () => {
     this.keyboard_is_visible = true
     this.measureEditorHeight()
@@ -244,7 +264,7 @@ export default class HighlightingText extends React.Component {
     const payload = {
       ...config,
       focus: options.focus || (options.initial && this.props.autoFocus),
-      cursorToEnd: !!(options.initial && this.props.autoFocus),
+      cursorToEnd: !!(options.cursorToEnd || (options.initial && this.props.autoFocus)),
       scrollSelectionIntoView: !!options.scrollSelectionIntoView
     }
 
@@ -279,6 +299,9 @@ export default class HighlightingText extends React.Component {
         include_selection: true,
         initial: true
       })
+      if (this.pending_focus_options) {
+        this.focus(this.pending_focus_options)
+      }
       return
     }
 

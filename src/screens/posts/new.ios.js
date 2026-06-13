@@ -18,6 +18,7 @@ export default class PostingScreen extends React.Component{
     this.state = {
       editor_is_visible: false
     }
+    this.text_editor_ref = React.createRef()
     this.show_editor_timeout = null
   }
 
@@ -26,6 +27,10 @@ export default class PostingScreen extends React.Component{
     this.show_editor_timeout = setTimeout(() => {
       this.setState({
         editor_is_visible: true
+      }, () => {
+        requestAnimationFrame(() => {
+          this.text_editor_ref.current?.focus({ cursorToEnd: true })
+        })
       })
     }, 1000)
   }
@@ -80,6 +85,7 @@ export default class PostingScreen extends React.Component{
             : null
           }
           <HighlightingText
+            ref={this.text_editor_ref}
             placeholderTextColor="lightgrey"
             style={{
               minHeight: 300,
@@ -97,7 +103,6 @@ export default class PostingScreen extends React.Component{
             scrollEnabled={true}
             returnKeyType={'default'}
             keyboardType={'default'}
-            autoFocus={true}
             autoCorrect={true}
             clearButtonMode={'while-editing'}
             enablesReturnKeyAutomatically={true}
