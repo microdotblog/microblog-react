@@ -38,6 +38,7 @@ import Share from '../stores/Share'
 import ShareMenu from 'react-native-share-menu'
 import ShareScreen from './share'
 import PublishingProgress from '../components/generic/publishing_progress'
+import ImageModalModule from '../components/images/image_modal'
 import { headerLeftElement, headerRightElement } from '../utils/navigation'
 
 const Stack = createNativeStackNavigator();
@@ -281,6 +282,7 @@ export default class MainApp extends React.Component {
                   </Stack.Group>
                 </Stack.Navigator>
               </NavigationContainer>
+              <ImageModalModule />
               <Animated.View
                 pointerEvents={'none'}
                 style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: '#000', zIndex: 10, opacity: this.overlay_opacity }}

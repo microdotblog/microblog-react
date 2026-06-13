@@ -2,7 +2,6 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View } from 'react-native';
 import LoginMessage from '../info/login_message';
-import ImageModalModule from '../images/image_modal';
 import WebViewModule from '../web/webview_module';
 import App from '../../stores/App';
 
@@ -21,7 +20,6 @@ export default class GenericScreenComponent extends React.Component{
           :
           !this.props.is_search && !this.props.is_filtered && !App.is_changing_font_scale && !App.is_loading_bookmarks && <LoginMessage title={this.props.title} />
         }
-        <ImageModalModule />
       </View>
     )
   }
