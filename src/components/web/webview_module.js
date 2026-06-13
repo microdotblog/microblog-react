@@ -75,12 +75,11 @@ const WebViewModule = observer((props) => {
   useFocusEffect(
     React.useCallback(() => {
       App.set_current_web_view_ref(webViewRef.current)
+      return () => App.clear_current_web_view_ref(webViewRef.current)
     }, [])
   )
 
   React.useEffect(() => {
-    App.set_current_web_view_ref(webViewRef.current)
-
     if (!Auth.did_load_one_or_more_webviews) {
       hasSetDidLoadRef.current = false
     }
@@ -243,7 +242,6 @@ const WebViewModule = observer((props) => {
               return { ...prevState, is_pull_to_refresh_enabled }
             })
           }
-          App.set_is_scrolling()
         }}
         onMessage={(event) => {
           App.handle_web_view_message(event.nativeEvent.data)
