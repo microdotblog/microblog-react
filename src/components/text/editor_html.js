@@ -26,14 +26,17 @@ const editorHtml = String.raw`<!doctype html>
       --editor-padding-bottom: 8px;
       --editor-padding-left: 8px;
       --editor-bottom-overlay: 0px;
+      --editor-viewport-height: 100vh;
     }
 
     html,
     body {
       width: 100%;
-      min-height: 100%;
+      height: 100%;
       margin: 0;
       padding: 0;
+      overflow: hidden;
+      overscroll-behavior: none;
       background: var(--editor-background);
       color: var(--editor-text);
       color-scheme: light dark;
@@ -43,8 +46,7 @@ const editorHtml = String.raw`<!doctype html>
 
     body {
       overflow-x: hidden;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
+      overflow-y: hidden;
     }
 
     body.dark {
@@ -61,7 +63,9 @@ const editorHtml = String.raw`<!doctype html>
     .editor_shell {
       box-sizing: border-box;
       width: 100%;
-      min-height: 100vh;
+      height: var(--editor-viewport-height);
+      overflow: hidden;
+      overscroll-behavior: none;
       position: relative;
       background: var(--editor-background);
     }
@@ -69,8 +73,12 @@ const editorHtml = String.raw`<!doctype html>
     .editor {
       box-sizing: border-box;
       width: 100%;
-      min-height: max(44px, 100vh);
-      overflow: visible;
+      height: var(--editor-viewport-height);
+      min-height: 44px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
       white-space: pre-wrap;
       word-break: break-word;
       outline: none;
@@ -183,6 +191,22 @@ const editorHtml = String.raw`<!doctype html>
       pointer-events: none;
       z-index: 10;
     }
+
+    body.debug_layout {
+      background: #90caf9;
+    }
+
+    body.debug_layout .editor_shell {
+      background: #90caf9;
+      outline: 4px solid #1e88e5;
+      outline-offset: -4px;
+    }
+
+    body.debug_layout .editor {
+      background: #c8e6c9;
+      outline: 4px solid #00897b;
+      outline-offset: -8px;
+    }
   </style>
 </head>
 <body><div class="editor_shell"><div contenteditable="true" class="editor" id="editor" spellcheck="true" autocapitalize="sentences"></div><div class="editor_bottom_scrim" aria-hidden="true"></div></div>
@@ -193,6 +217,8 @@ const editorHtml = String.raw`<!doctype html>
       var isComposing = false;
       var changeTimer = null;
       var selectionTimer = null;
+      var viewportHeight = null;
+      var touchStartY = 0;
       var lastText = "";
       var didApplyInitialValue = false;
       var editorMarkerSelector = '[data-editor-marker="caret"]';
@@ -449,6 +475,58 @@ const editorHtml = String.raw`<!doctype html>
         setSelectionRange(length, length);
       }
 
+      function maxEditorScroll() {
+        var root = editor();
+        return Math.max(0, root.scrollHeight - root.clientHeight);
+      }
+
+      function clampScrollOffsets() {
+        var root = editor();
+        var maxScroll = maxEditorScroll();
+
+        if (window.scrollX !== 0 || window.scrollY !== 0) {
+          window.scrollTo(0, 0);
+        }
+
+        if (document.documentElement.scrollTop !== 0) {
+          document.documentElement.scrollTop = 0;
+        }
+
+        if (document.body.scrollTop !== 0) {
+          document.body.scrollTop = 0;
+        }
+
+        if (root.scrollTop < 0) {
+          root.scrollTop = 0;
+        }
+        else if (root.scrollTop > maxScroll) {
+          root.scrollTop = maxScroll;
+        }
+      }
+
+      function scheduleClampScrollOffsets() {
+        requestAnimationFrame(clampScrollOffsets);
+      }
+
+      function shouldBlockEditorPan(deltaY) {
+        var root = editor();
+        var maxScroll = maxEditorScroll();
+
+        if (maxScroll <= 0) {
+          return true;
+        }
+
+        if (deltaY > 0 && root.scrollTop <= 0) {
+          return true;
+        }
+
+        if (deltaY < 0 && root.scrollTop >= maxScroll) {
+          return true;
+        }
+
+        return false;
+      }
+
       function scrollSelectionIntoView() {
         var root = editor();
         var selection = window.getSelection();
@@ -476,17 +554,19 @@ const editorHtml = String.raw`<!doctype html>
           setSelectionRange(savedSelection.start, savedSelection.end);
         }
 
-        var visibleTop = 0;
-        var visibleBottom = window.innerHeight;
+        var editorRect = root.getBoundingClientRect();
+        var visibleTop = editorRect.top;
+        var visibleBottom = editorRect.bottom;
         var scrollPadding = 12;
 
         if (rect.bottom + scrollPadding > visibleBottom) {
-          window.scrollBy(0, rect.bottom + scrollPadding - visibleBottom);
+          root.scrollTop += rect.bottom + scrollPadding - visibleBottom;
         }
         else if (rect.top - scrollPadding < visibleTop) {
-          window.scrollBy(0, rect.top - scrollPadding - visibleTop);
+          root.scrollTop += rect.top - scrollPadding - visibleTop;
         }
 
+        clampScrollOffsets();
       }
 
       function escapeHtml(text) {
@@ -552,6 +632,7 @@ const editorHtml = String.raw`<!doctype html>
         isApplyingStyles = true;
         root.innerHTML = highlightHtml(text);
         setSelectionRange(saved.start, saved.end);
+        scheduleClampScrollOffsets();
         isApplyingStyles = false;
       }
 
@@ -603,6 +684,7 @@ const editorHtml = String.raw`<!doctype html>
         }
         sendChangeNow();
         sendSelectionNow();
+        scheduleClampScrollOffsets();
       }
 
       function setText(text, cursorToEnd) {
@@ -623,6 +705,7 @@ const editorHtml = String.raw`<!doctype html>
         }
 
         lastText = nextText;
+        scheduleClampScrollOffsets();
       }
 
       function setEditable(editable) {
@@ -638,6 +721,7 @@ const editorHtml = String.raw`<!doctype html>
         var body = document.body;
 
         body.classList.toggle("dark", config.colorScheme === "dark");
+        body.classList.toggle("debug_layout", !!config.debugEditorLayout);
 
         if (config.backgroundColor) {
           root.style.setProperty("--editor-background", config.backgroundColor);
@@ -659,6 +743,9 @@ const editorHtml = String.raw`<!doctype html>
         root.style.setProperty("--editor-padding-left", Number(config.paddingLeft || 0) + "px");
         var bottomOverlayHeight = Number(config.bottomOverlayHeight || 0);
         root.style.setProperty("--editor-bottom-overlay", bottomOverlayHeight + "px");
+        viewportHeight = Number(config.viewportHeight || 0) || null;
+        root.style.setProperty("--editor-viewport-height", (viewportHeight || window.innerHeight) + "px");
+        scheduleClampScrollOffsets();
 
         setEditable(config.editable !== false);
       }
@@ -714,6 +801,7 @@ const editorHtml = String.raw`<!doctype html>
 
         scheduleChange();
         scheduleSelection();
+        scheduleClampScrollOffsets();
       }
 
       function setup() {
@@ -737,6 +825,32 @@ const editorHtml = String.raw`<!doctype html>
         });
 
         root.addEventListener("input", handleInput);
+        root.addEventListener("scroll", clampScrollOffsets);
+        window.addEventListener("scroll", clampScrollOffsets);
+        document.addEventListener("scroll", clampScrollOffsets);
+
+        root.addEventListener("touchstart", function (event) {
+          if (event.touches.length > 0) {
+            touchStartY = event.touches[0].clientY;
+          }
+        }, {
+          passive: true
+        });
+
+        root.addEventListener("touchmove", function (event) {
+          if (event.touches.length === 0) {
+            return;
+          }
+
+          var deltaY = event.touches[0].clientY - touchStartY;
+          if (shouldBlockEditorPan(deltaY)) {
+            event.preventDefault();
+            clampScrollOffsets();
+          }
+        }, {
+          passive: false
+        });
+
         root.addEventListener("compositionstart", function () {
           isComposing = true;
           isIgnoringInput = true;
