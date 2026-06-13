@@ -192,21 +192,6 @@ const editorHtml = String.raw`<!doctype html>
       z-index: 10;
     }
 
-    body.debug_layout {
-      background: #90caf9;
-    }
-
-    body.debug_layout .editor_shell {
-      background: #90caf9;
-      outline: 4px solid #1e88e5;
-      outline-offset: -4px;
-    }
-
-    body.debug_layout .editor {
-      background: #c8e6c9;
-      outline: 4px solid #00897b;
-      outline-offset: -8px;
-    }
   </style>
 </head>
 <body><div class="editor_shell"><div contenteditable="true" class="editor" id="editor" spellcheck="true" autocapitalize="sentences"></div><div class="editor_bottom_scrim" aria-hidden="true"></div></div>
@@ -721,7 +706,6 @@ const editorHtml = String.raw`<!doctype html>
         var body = document.body;
 
         body.classList.toggle("dark", config.colorScheme === "dark");
-        body.classList.toggle("debug_layout", !!config.debugEditorLayout);
 
         if (config.backgroundColor) {
           root.style.setProperty("--editor-background", config.backgroundColor);

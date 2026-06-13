@@ -1,9 +1,7 @@
 import * as React from 'react'
-import { Dimensions, Keyboard, View } from 'react-native'
+import { LayoutAnimation, View } from 'react-native'
 import { runOnJS } from 'react-native-reanimated'
-import { useKeyboardHandler, useKeyboardState } from 'react-native-keyboard-controller'
-
-const DEBUG_EDITOR_LAYOUT = true
+import { useKeyboardHandler } from 'react-native-keyboard-controller'
 
 export const EditorKeyboardFrameContext = React.createContext({
   height: 0,
@@ -22,8 +20,6 @@ class EditorKeyboardAvoidingContent extends React.Component {
       window_y: 0
     }
     this.container = React.createRef()
-    this.keyboard_show_listener = null
-    this.keyboard_hide_listener = null
   }
 
   componentDidUpdate(prevProps) {
@@ -33,34 +29,7 @@ class EditorKeyboardAvoidingContent extends React.Component {
   }
 
   componentDidMount() {
-    this.keyboard_show_listener = Keyboard.addListener('keyboardWillChangeFrame', this.handleKeyboardChange)
-    this.keyboard_hide_listener = Keyboard.addListener('keyboardWillHide', this.handleKeyboardHide)
     this.updateKeyboardHeight(this.props.keyboard_height)
-  }
-
-  componentWillUnmount() {
-    this.keyboard_show_listener?.remove()
-    this.keyboard_hide_listener?.remove()
-  }
-
-  keyboardHeight(event) {
-    const screen_y = event?.endCoordinates?.screenY
-    if (screen_y != null) {
-      const window_height = Dimensions.get('window').height
-      return Math.max(0, window_height - screen_y)
-    }
-
-    return Math.max(0, event?.endCoordinates?.height || 0)
-  }
-
-  handleKeyboardChange = (event) => {
-    Keyboard.scheduleLayoutAnimation?.(event)
-    this.updateKeyboardHeight(this.keyboardHeight(event))
-  }
-
-  handleKeyboardHide = (event) => {
-    Keyboard.scheduleLayoutAnimation?.(event)
-    this.updateKeyboardHeight(0)
   }
 
   updateKeyboardHeight(keyboard_height) {
@@ -111,11 +80,6 @@ class EditorKeyboardAvoidingContent extends React.Component {
 
     const { children, style, ...props } = view_props
     const should_avoid_keyboard = this.state.keyboard_height > 0 && this.state.content_height > 0
-    const debug_style = DEBUG_EDITOR_LAYOUT ? {
-      borderColor: '#8e24aa',
-      borderWidth: 4,
-      backgroundColor: 'rgba(142, 36, 170, 0.12)'
-    } : null
     const keyboard_style = should_avoid_keyboard ?
       {
         height: this.state.visible_height,
@@ -134,7 +98,6 @@ class EditorKeyboardAvoidingContent extends React.Component {
         onLayout={this.handleLayout}
         style={[
           style,
-          debug_style,
           keyboard_style
         ]}
       >
@@ -152,36 +115,47 @@ class EditorKeyboardAvoidingContent extends React.Component {
 }
 
 export default function EditorKeyboardAvoidingView(props) {
-  const keyboard_state_height = useKeyboardState((state) => {
-    return state.height
-  })
   const [keyboard_event_height, setKeyboardEventHeight] = React.useState(0)
+
+  const applyKeyboardHeight = React.useCallback((height, duration, should_animate) => {
+    const next_height = Math.abs(height || 0)
+
+    if (should_animate) {
+      const animation_duration = duration > 0 && duration < 10 ? duration * 1000 : duration
+      LayoutAnimation.configureNext({
+        duration: animation_duration || 250,
+        update: {
+          type: LayoutAnimation.Types.keyboard
+        }
+      })
+    }
+
+    setKeyboardEventHeight(next_height)
+  }, [])
 
   useKeyboardHandler({
     onStart: (event) => {
       'worklet'
-      runOnJS(setKeyboardEventHeight)(Math.abs(event.height || 0))
+      runOnJS(applyKeyboardHeight)(event.height, event.duration, true)
     },
     onMove: (event) => {
       'worklet'
-      runOnJS(setKeyboardEventHeight)(Math.abs(event.height || 0))
+      runOnJS(applyKeyboardHeight)(event.height, event.duration, false)
     },
     onInteractive: (event) => {
       'worklet'
-      runOnJS(setKeyboardEventHeight)(Math.abs(event.height || 0))
+      runOnJS(applyKeyboardHeight)(event.height, event.duration, false)
     },
     onEnd: (event) => {
       'worklet'
-      runOnJS(setKeyboardEventHeight)(Math.abs(event.height || 0))
+      runOnJS(applyKeyboardHeight)(event.height, event.duration, false)
     }
   }, [])
-
-  const keyboard_height = Math.max(keyboard_state_height || 0, keyboard_event_height || 0)
 
   return (
     <EditorKeyboardAvoidingContent
       {...props}
-      keyboard_height={keyboard_height}
+      keyboard_height={keyboard_event_height}
     />
   )
 }

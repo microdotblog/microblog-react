@@ -6,8 +6,6 @@ import App from '../../stores/App'
 import { EditorKeyboardFrameContext } from '../keyboard/editor_keyboard_avoiding_view'
 import editorHtml from './editor_html'
 
-const DEBUG_EDITOR_LAYOUT = true
-
 @observer
 export default class HighlightingText extends React.Component {
   static contextType = EditorKeyboardFrameContext
@@ -96,8 +94,7 @@ export default class HighlightingText extends React.Component {
       paddingBottom: style.paddingBottom != null ? style.paddingBottom : padding,
       paddingLeft: style.paddingLeft != null ? style.paddingLeft : padding,
       bottomOverlayHeight: this.props.bottomOverlayHeight || 0,
-      viewportHeight: this.editorHeight(),
-      debugEditorLayout: DEBUG_EDITOR_LAYOUT
+      viewportHeight: this.editorHeight()
     }
   }
 
@@ -131,12 +128,6 @@ export default class HighlightingText extends React.Component {
       style.height = editor_height
       style.flex = 0
       delete style.minHeight
-    }
-
-    if (DEBUG_EDITOR_LAYOUT) {
-      style.borderColor = '#43a047'
-      style.borderWidth = 4
-      style.backgroundColor = '#fff59d'
     }
 
     return style
@@ -245,14 +236,6 @@ export default class HighlightingText extends React.Component {
       flex: 0
     }
 
-    if (DEBUG_EDITOR_LAYOUT) {
-      return {
-        ...style,
-        borderColor: '#e53935',
-        borderWidth: 4
-      }
-    }
-
     return style
   }
 
@@ -352,14 +335,7 @@ export default class HighlightingText extends React.Component {
           onMessage={this.handleMessage}
           onShouldStartLoadWithRequest={this.shouldStartLoad}
           automaticallyAdjustContentInsets={false}
-          automaticallyAdjustsScrollIndicatorInsets={false}
           bounces={false}
-          contentInset={{
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0
-          }}
           contentInsetAdjustmentBehavior="never"
           style={[styles.webview, this.measuredWebViewStyle(), { backgroundColor: config.backgroundColor }]}
           containerStyle={{ backgroundColor: config.backgroundColor }}
