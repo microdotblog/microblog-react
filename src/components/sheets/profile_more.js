@@ -57,7 +57,7 @@ export default class ProfileMoreMenu extends React.Component{
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                alignSelf: 'flex-start',
+                alignSelf: 'center',
                 borderColor: App.theme_section_background_color(),
                 borderWidth: 1
               }}
@@ -67,7 +67,7 @@ export default class ProfileMoreMenu extends React.Component{
                 is_loading ?
                   <ActivityIndicator size="small" color="#1F2937" />
                   :
-                  <Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_button_text_color() }}>
+                  <Text style={{ color: App.theme_button_text_color() }}>
                     {is_muted ? `Unmute @${username}` : `Mute @${username}`}
                   </Text>
               }
@@ -90,7 +90,7 @@ export default class ProfileMoreMenu extends React.Component{
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                alignSelf: 'flex-start',
+                alignSelf: 'center',
                 opacity: is_loading ? 0.7 : 1
               }}
               disabled={is_loading}
@@ -99,7 +99,7 @@ export default class ProfileMoreMenu extends React.Component{
                 is_loading ?
                   <ActivityIndicator size="small" color="#fff" />
                   :
-                  <Text style={{ fontSize: 16, fontWeight: '500', color: "#fff" }}>
+                  <Text style={{ color: "#fff" }}>
                     {is_blocked ? `Unblock @${username}` : `Block @${username}`}
                   </Text>
               }
@@ -123,14 +123,14 @@ export default class ProfileMoreMenu extends React.Component{
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                alignSelf: 'flex-start'
+                alignSelf: 'center'
               }}
             >
               {
                 Reporting.is_sending_report ?
                   <ActivityIndicator size="small" color="#fff" />
                   :
-                  <Text style={{ fontSize: 16, fontWeight: '500', color: 'white' }}>Report @{username}</Text>
+                  <Text style={{ color: 'white' }}>Report @{username}</Text>
               }
             </TouchableOpacity>
           </View>
