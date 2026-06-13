@@ -12,10 +12,76 @@ import UploadsScreen from '../uploads/uploads'
 import NewUploadButton from '../../components/header/new_upload';
 import RefreshActivity from '../../components/header/refresh_activity';
 import BackButton from '../../components/header/back';
+import Auth from '../../stores/Auth'
 import App from '../../stores/App'
 import { headerItemGroupStyle, headerLeftElement, headerRightElement } from '../../utils/navigation'
+import { isLiquidGlass } from '../../utils/ui'
 
 const PostingStack = createNativeStackNavigator();
+
+function uploadMenuHeaderItem() {
+  if (Auth.selected_user == null || !Auth.selected_user.posting?.posting_enabled()) {
+    return null
+  }
+
+  const { config } = Auth.selected_user.posting.selected_service
+
+  return {
+    type: 'menu',
+    label: 'Upload',
+    icon: {
+      type: 'sfSymbol',
+      name: 'icloud.and.arrow.up'
+    },
+    identifier: 'new-upload',
+    tintColor: App.theme_text_color(),
+    width: 28,
+    menu: {
+      items: [
+        {
+          type: 'action',
+          label: 'Photo library',
+          icon: {
+            type: 'sfSymbol',
+            name: 'photo'
+          },
+          onPress: () => {
+            Auth.selected_user.posting.selected_service?.pick_image(config?.temporary_destination())
+          }
+        },
+        {
+          type: 'action',
+          label: 'Files',
+          icon: {
+            type: 'sfSymbol',
+            name: 'folder'
+          },
+          onPress: () => {
+            Auth.selected_user.posting.selected_service?.pick_file(config?.temporary_destination())
+          }
+        }
+      ]
+    }
+  }
+}
+
+function uploadsHeaderItems() {
+  const items = []
+  if (Auth.selected_user?.posting?.selected_service?.is_loading_uploads) {
+    items.push({
+      type: 'custom',
+      element: <RefreshActivity type="uploads" />,
+      hidesSharedBackground: true
+    })
+  }
+
+  const upload_item = uploadMenuHeaderItem()
+  if (upload_item != null) {
+    items.push(upload_item)
+  }
+
+  return items
+}
 
 @observer
 export default class Posting extends React.Component{
@@ -65,14 +131,20 @@ export default class Posting extends React.Component{
           options={{
             headerTitle: "Uploads",
             ...headerLeftElement(() => <BackButton />),
-            ...headerRightElement(() => {
-              return (
-                <View style={headerItemGroupStyle(10)}>
-                  <RefreshActivity type="uploads" />
-                  <NewUploadButton />
-                </View>
-              )
-            })
+            ...(isLiquidGlass() ?
+              {
+                unstable_headerRightItems: uploadsHeaderItems
+              }
+              :
+              headerRightElement(() => {
+                return (
+                  <View style={headerItemGroupStyle(10)}>
+                    <RefreshActivity type="uploads" />
+                    <NewUploadButton />
+                  </View>
+                )
+              })
+            )
           }}
         />
       </PostingStack.Navigator>

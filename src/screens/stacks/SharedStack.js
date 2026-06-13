@@ -15,9 +15,116 @@ import MutingScreen from '../settings/muting';
 import CollectionsScreen from '../uploads/collections'
 import NewPostButton from '../../components/header/new_post';
 import NewCollectionButton from '../../components/header/new_collection';
+import Auth from '../../stores/Auth'
 import App from '../../stores/App'
 import { headerItemGroupStyle, headerRightElement } from '../../utils/navigation'
 import { isLiquidGlass } from '../../utils/ui'
+
+function newPostHeaderItem() {
+	return {
+		type: 'button',
+		label: 'New Post',
+		icon: {
+			type: 'sfSymbol',
+			name: 'square.and.pencil'
+		},
+		identifier: 'new-post',
+		tintColor: App.theme_text_color(),
+		width: 28,
+		onPress: () => App.navigate_to_screen("Posting")
+	}
+}
+
+function refreshIsLoading(type) {
+	const selected_service = Auth.selected_user?.posting?.selected_service
+	switch (type) {
+		case "posts":
+			return !!(selected_service?.is_loading_posts || App.is_searching_posts)
+		case "pages":
+			return !!(selected_service?.is_loading_pages || App.is_searching_pages)
+		case "uploads":
+			return !!selected_service?.is_loading_uploads
+		default:
+			return false
+	}
+}
+
+function refreshHeaderItems(type) {
+	if (!isLiquidGlass()) {
+		return headerRightElement(
+			() => <RefreshActivity type={type} />,
+			{ hidesSharedBackground: true }
+		)
+	}
+
+	return {
+		unstable_headerRightItems: () => []
+	}
+}
+
+function uploadMenuHeaderItem() {
+	if (Auth.selected_user == null || !Auth.selected_user.posting?.posting_enabled()) {
+		return null
+	}
+
+	const { config } = Auth.selected_user.posting.selected_service
+
+	return {
+		type: 'menu',
+		label: 'Upload',
+		icon: {
+			type: 'sfSymbol',
+			name: 'icloud.and.arrow.up'
+		},
+		identifier: 'new-upload',
+		tintColor: App.theme_text_color(),
+		width: 28,
+		menu: {
+			items: [
+				{
+					type: 'action',
+					label: 'Photo library',
+					icon: {
+						type: 'sfSymbol',
+						name: 'photo'
+					},
+					onPress: () => {
+						Auth.selected_user.posting.selected_service?.pick_image(config?.temporary_destination())
+					}
+				},
+				{
+					type: 'action',
+					label: 'Files',
+					icon: {
+						type: 'sfSymbol',
+						name: 'folder'
+					},
+					onPress: () => {
+						Auth.selected_user.posting.selected_service?.pick_file(config?.temporary_destination())
+					}
+				}
+			]
+		}
+	}
+}
+
+function uploadsHeaderItems() {
+	const items = []
+	if (refreshIsLoading("uploads")) {
+		items.push({
+			type: 'custom',
+			element: <RefreshActivity type="uploads" />,
+			hidesSharedBackground: true
+		})
+	}
+
+	const upload_item = uploadMenuHeaderItem()
+	if (upload_item != null) {
+		items.push(upload_item)
+	}
+
+	return items
+}
 
 export const getSharedScreens = (Stack, tab_name) => {
 	return [
@@ -27,7 +134,13 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={ProfileScreen}
 			options={({ route }) => ({
 				headerTitle: `@${route.params?.username}`,
-				...headerRightElement(() => <NewPostButton />)
+				...(isLiquidGlass() ?
+					{
+						unstable_headerRightItems: () => [newPostHeaderItem()]
+					}
+					:
+					headerRightElement(() => <NewPostButton />)
+				)
 			})}
 		/>,
 		<Stack.Screen
@@ -76,7 +189,13 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={FollowingScreen}
 			options={({ route }) => ({
 				headerTitle: `Following`,
-				...headerRightElement(() => <NewPostButton />)
+				...(isLiquidGlass() ?
+					{
+						unstable_headerRightItems: () => [newPostHeaderItem()]
+					}
+					:
+					headerRightElement(() => <NewPostButton />)
+				)
 			})}
 		/>,
 		<Stack.Screen
@@ -85,14 +204,20 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={UploadsScreen}
 			options={({ route }) => ({
 				headerTitle: `Uploads`,
-				...headerRightElement(() => {
-					return (
-						<View style={headerItemGroupStyle(10)}>
-							<RefreshActivity type="uploads" />
-							<NewUploadButton />
-						</View>
-					)
-				})
+				...(isLiquidGlass() ?
+					{
+						unstable_headerRightItems: uploadsHeaderItems
+					}
+					:
+					headerRightElement(() => {
+						return (
+							<View style={headerItemGroupStyle(10)}>
+								<RefreshActivity type="uploads" />
+								<NewUploadButton />
+							</View>
+						)
+					})
+				)
 			})}
 		/>,
 		<Stack.Screen
@@ -101,10 +226,7 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={RepliesScreen}
 			options={({ route }) => ({
 				headerTitle: "Replies",
-				...headerRightElement(
-					() => <RefreshActivity type="replies" />,
-					{ hidesSharedBackground: true }
-				)
+				...refreshHeaderItems("replies")
 			})}
 		/>,
 		<Stack.Screen
@@ -113,10 +235,7 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={PagesScreen}
 			options={({ route }) => ({
 				headerTitle: "Pages",
-				...headerRightElement(
-					() => <RefreshActivity type="pages" />,
-					{ hidesSharedBackground: true }
-				)
+				...refreshHeaderItems("pages")
 			})}
 		/>,
 		<Stack.Screen
@@ -125,10 +244,7 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={PostsScreen}
 			options={({ route }) => ({
 				headerTitle: "Posts",
-				...headerRightElement(
-					() => <RefreshActivity type="posts" />,
-					{ hidesSharedBackground: true }
-				)
+				...refreshHeaderItems("posts")
 			})}
 		/>,
 		<Stack.Screen
@@ -146,10 +262,7 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={MutingScreen}
 			options={({ route }) => ({
 				headerTitle: "Muting",
-				...headerRightElement(
-					() => <RefreshActivity type="muting" />,
-					{ hidesSharedBackground: true }
-				)
+				...refreshHeaderItems("muting")
 			})}
 		/>,
 	]
