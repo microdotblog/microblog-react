@@ -1,16 +1,14 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard, Dimensions, Image, Platform } from 'react-native';
+import { View, Text, FlatList, RefreshControl, TouchableOpacity, Keyboard, Dimensions, Image, Platform } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
-import { SheetProvider } from "react-native-actions-sheet";
 import UploadCell from '../../components/cells/upload_cell'
 import TempUploadCell from '../../components/cells/temp_upload_cell'
 import SearchIcon from '../../assets/icons/nav/discover.png';
 import SearchBar from '../../components/search_bar';
 import { SFSymbol } from "react-native-sfsymbols";
-import { SvgXml } from 'react-native-svg';
 import DeviceInfo from 'react-native-device-info';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import { tabBarScrollContentBottomPadding } from '../../utils/ui'
@@ -237,20 +235,18 @@ export default class UploadsScreen extends React.Component{
   
   render() {
     return (
-      <SheetProvider>
-        <View style={{ flex: 1, alignItems: 'center', backgroundColor: App.theme_background_color_secondary() }}>
-          {
-            Auth.is_logged_in() && !Auth.is_selecting_user ?
-              <>
-                {this._return_header()}
-                {this._return_temp_uploads_list()}
-                {this._return_uploads_list()}
-              </>
-            :
-            <LoginMessage title="Uploads" />
-          }
-        </View>
-      </SheetProvider>
+      <View style={{ flex: 1, alignItems: 'center', backgroundColor: App.theme_background_color_secondary() }}>
+        {
+          Auth.is_logged_in() && !Auth.is_selecting_user ?
+            <>
+              {this._return_header()}
+              {this._return_temp_uploads_list()}
+              {this._return_uploads_list()}
+            </>
+          :
+          <LoginMessage title="Uploads" />
+        }
+      </View>
     )
   }
   

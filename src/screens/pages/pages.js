@@ -1,15 +1,13 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, FlatList, RefreshControl, TouchableOpacity, TextInput, Keyboard, Image, Platform, StyleSheet } from 'react-native';
+import { View, Text, FlatList, RefreshControl, TouchableOpacity, Keyboard, Image, Platform, StyleSheet } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
 import PageCell from '../../components/cells/page_cell';
-import { SheetProvider } from "react-native-actions-sheet";
 import SearchIcon from '../../assets/icons/nav/discover.png';
 import SearchBar from '../../components/search_bar';
 import { SFSymbol } from "react-native-sfsymbols";
-import { SvgXml } from 'react-native-svg';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import { tabBarScrollContentBottomPadding } from '../../utils/ui'
 
@@ -204,19 +202,17 @@ export default class PagesScreen extends React.Component{
   
   render() {
     return (
-      <SheetProvider>
-        <View style={{ flex: 1, justifyContent: 'flex-start' }}>
-          {
-            Auth.is_logged_in() && !Auth.is_selecting_user ?
-              <>
-              {this._return_header()}
-              {this._return_pages_list()}
-              </>
-            :
-            <LoginMessage title="Pages" />
-          }
-        </View>
-      </SheetProvider>
+      <View style={{ flex: 1, justifyContent: 'flex-start' }}>
+        {
+          Auth.is_logged_in() && !Auth.is_selecting_user ?
+            <>
+            {this._return_header()}
+            {this._return_pages_list()}
+            </>
+          :
+          <LoginMessage title="Pages" />
+        }
+      </View>
     )
   }
   
