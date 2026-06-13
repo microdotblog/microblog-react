@@ -2,7 +2,7 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import { Pressable, TouchableOpacity, Platform } from 'react-native'
 import App from './../../stores/App'
-import { isLiquidGlass, STANDARD_SLOP } from './../../utils/ui'
+import { HEADER_BUTTON_HIT_SLOP, isLiquidGlass } from './../../utils/ui'
 import { SFSymbol } from 'react-native-sfsymbols'
 import { SvgXml } from 'react-native-svg'
 
@@ -10,7 +10,6 @@ import { SvgXml } from 'react-native-svg'
 export default class CloseModalButton extends React.Component {
 
   render() {
-    const hit_slop = { top: STANDARD_SLOP, bottom: STANDARD_SLOP, left: STANDARD_SLOP, right: STANDARD_SLOP }
     let button_style = {
       marginLeft: -15,
       paddingHorizontal: 12,
@@ -58,7 +57,7 @@ export default class CloseModalButton extends React.Component {
         <Pressable
           onPress={handle_press}
           style={button_style}
-          hitSlop={hit_slop}
+          hitSlop={HEADER_BUTTON_HIT_SLOP}
           accessibilityRole="button"
           accessibilityLabel="Close"
         >
@@ -71,7 +70,7 @@ export default class CloseModalButton extends React.Component {
       <TouchableOpacity
         onPress={handle_press}
         style={button_style}
-        hitSlop={hit_slop}
+        hitSlop={HEADER_BUTTON_HIT_SLOP}
         accessibilityRole="button"
         accessibilityLabel="Close"
       >

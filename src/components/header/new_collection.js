@@ -4,7 +4,7 @@ import { TouchableOpacity, Platform } from 'react-native';
 import App from '../../stores/App'
 import { SFSymbol } from "react-native-sfsymbols";
 import { SvgXml } from 'react-native-svg';
-import { isLiquidGlass } from './../../utils/ui';
+import { HEADER_BUTTON_HIT_SLOP, isLiquidGlass } from './../../utils/ui';
 
 @observer
 export default class NewCollectionButton extends React.Component{
@@ -27,6 +27,7 @@ export default class NewCollectionButton extends React.Component{
 		return (
 			<TouchableOpacity 
 				style={button_style}
+				hitSlop={HEADER_BUTTON_HIT_SLOP}
 				onPress={() => {
 					App.navigate_to_screen("AddCollection");
 				}}

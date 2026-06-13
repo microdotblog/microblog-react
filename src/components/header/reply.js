@@ -2,7 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { TouchableOpacity, Platform } from 'react-native';
 import App from './../../stores/App';
-import { isLiquidGlass } from './../../utils/ui';
+import { HEADER_BUTTON_HIT_SLOP, isLiquidGlass } from './../../utils/ui';
 import { SFSymbol } from 'react-native-sfsymbols';
 import { SvgXml } from 'react-native-svg';
 
@@ -29,6 +29,7 @@ export default class ReplyButton extends React.Component {
 					}
 				}}
         style={button_style}
+        hitSlop={HEADER_BUTTON_HIT_SLOP}
 			>
         {
           Platform.OS === 'ios' ?

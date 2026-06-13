@@ -1,6 +1,12 @@
 import { DynamicColorIOS, Platform } from 'react-native'
 
-export const STANDARD_SLOP = 10
+export const STANDARD_SLOP = 16
+export const HEADER_BUTTON_HIT_SLOP = {
+  top: STANDARD_SLOP,
+  bottom: STANDARD_SLOP,
+  left: STANDARD_SLOP,
+  right: STANDARD_SLOP
+}
 export const LIQUID_GLASS_WEBVIEW_TAB_BAR_PADDING = 56
 export const ANDROID_TAB_BAR_PADDING = 96
 

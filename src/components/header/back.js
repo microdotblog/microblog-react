@@ -2,7 +2,7 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import { Platform, Pressable } from 'react-native'
 import App from './../../stores/App'
-import { isLiquidGlass, STANDARD_SLOP } from './../../utils/ui'
+import { HEADER_BUTTON_HIT_SLOP, isLiquidGlass } from './../../utils/ui'
 import { SFSymbol } from 'react-native-sfsymbols'
 import { SvgXml } from 'react-native-svg'
 import { HeaderBackButton } from '@react-navigation/elements'
@@ -10,7 +10,6 @@ import { useNavigation } from '@react-navigation/native'
 
 const BackButtonContent = observer(() => {
   const navigation = useNavigation()
-  const hit_slop = { top: STANDARD_SLOP, bottom: STANDARD_SLOP, left: STANDARD_SLOP, right: STANDARD_SLOP }
   let button_style = {}
   
   if (isLiquidGlass()) {
@@ -68,7 +67,7 @@ const BackButtonContent = observer(() => {
       <Pressable
         onPress={handle_press}
         style={button_style}
-        hitSlop={hit_slop}
+        hitSlop={HEADER_BUTTON_HIT_SLOP}
         accessibilityRole="button"
         accessibilityLabel="Back"
       >
