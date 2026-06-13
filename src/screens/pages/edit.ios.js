@@ -11,12 +11,39 @@ import LoadingComponent from '../../components/generic/loading';
 
 @observer
 export default class PageEditScreen extends React.Component{
+  constructor(props) {
+    super(props)
+    this.state = {
+      editor_is_visible: false
+    }
+    this.show_editor_timeout = null
+  }
+
+  componentDidMount() {
+    this.show_editor_timeout = setTimeout(() => {
+      this.setState({
+        editor_is_visible: true
+      })
+    }, 1000)
+  }
+
+  componentWillUnmount() {
+    if (this.show_editor_timeout) {
+      clearTimeout(this.show_editor_timeout)
+    }
+  }
   
   render() {
     const { posting } = Auth.selected_user
     return(
       <View style={{ flex: 1 }}>
-        <EditorKeyboardAvoidingView style={{ flex: 1 }}>
+        <EditorKeyboardAvoidingView
+          pointerEvents={this.state.editor_is_visible ? 'auto' : 'none'}
+          style={[
+            { flex: 1 },
+            !this.state.editor_is_visible ? { opacity: 0 } : null
+          ]}
+        >
           <TextInput
             placeholder="Title"
             placeholderTextColor={App.theme_placeholder_text_color()}
