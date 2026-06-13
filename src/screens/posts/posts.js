@@ -5,7 +5,6 @@ import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
 import PostCell from '../../components/cells/post_cell';
-import { SheetProvider } from "react-native-actions-sheet";
 import SearchIcon from '../../assets/icons/nav/discover.png';
 import SearchBar from '../../components/search_bar';
 import { SFSymbol } from "react-native-sfsymbols";
@@ -316,19 +315,17 @@ export default class PostsScreen extends React.Component{
   
   render() {
     return (
-      <SheetProvider>
-        <View style={{ flex: 1, justifyContent: 'flex-start' }}>
-          {
-            Auth.is_logged_in() && !Auth.is_selecting_user ?
-              <>
-              {this._return_header()}
-              {this._return_posts_list()}
-              </>
-            :
-            <LoginMessage title="Posts" />
-          }
-        </View>
-      </SheetProvider>
+      <View style={{ flex: 1, justifyContent: 'flex-start' }}>
+        {
+          Auth.is_logged_in() && !Auth.is_selecting_user ?
+            <>
+            {this._return_header()}
+            {this._return_posts_list()}
+            </>
+          :
+          <LoginMessage title="Posts" />
+        }
+      </View>
     )
   }
   

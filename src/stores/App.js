@@ -243,13 +243,13 @@ export default App = types.model('App', {
     close_sheet: flow(function*(sheet_name = null) {
       console.log("App:close_sheet", sheet_name)
       if (sheet_name != null) {
-        SheetManager.hide(sheet_name)
+        yield SheetManager.hide(sheet_name)
       }
     }),
   
     close_all_sheets: flow(function*() {
       console.log("App:close_all_sheets")
-      SheetManager.hideAll()
+      yield SheetManager.hideAll()
     }),
 
     set_current_tab_key: flow(function*(tab_key) {
@@ -439,7 +439,7 @@ export default App = types.model('App', {
 
     navigate_to_screen_from_menu: flow(function*(screen) {
       console.log("App:navigate_to_screen_from_menu", screen)
-      App.close_sheet("main_sheet")
+      yield App.close_sheet("main_sheet")
       switch (screen) {
         case "Help":
           return self.navigate_to_screen("Help")
