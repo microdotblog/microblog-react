@@ -599,6 +599,13 @@ export default App = types.model('App', {
       CURRENT_WEB_VIEW_REF = current_ref
     }),
 
+    clear_current_web_view_ref: flow(function*(current_ref = null) {
+      console.log("App:clear_current_web_view_ref")
+      if (current_ref == null || CURRENT_WEB_VIEW_REF === current_ref) {
+        CURRENT_WEB_VIEW_REF = null
+      }
+    }),
+
     handle_web_view_message: flow(function*(message) {
       console.log("App:handle_web_view_message", message)
       if (message === "bookmark_added") {

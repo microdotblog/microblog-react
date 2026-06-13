@@ -88,6 +88,7 @@ const LoadingBanner = observer(({ visible, loading_text = "Loading posts...", to
 
   return (
     <Animated.View
+      pointerEvents="none"
       style={{
         position: "absolute",
         top: top,
