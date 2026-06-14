@@ -64,7 +64,7 @@ export default class TagsButton extends React.Component {
       </MenuView>
       :
       <TouchableOpacity
-        onPress={() => App.open_sheet("tags")}
+        onPress={() => App.open_sheet("tags_menu")}
         hitSlop={HEADER_BUTTON_HIT_SLOP}
         accessibilityRole="button"
         accessibilityLabel="Filter bookmarks by tag"
