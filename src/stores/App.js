@@ -243,13 +243,13 @@ export default App = types.model('App', {
     close_sheet: flow(function*(sheet_name = null) {
       console.log("App:close_sheet", sheet_name)
       if (sheet_name != null) {
-        SheetManager.hide(sheet_name)
+        yield SheetManager.hide(sheet_name)
       }
     }),
   
     close_all_sheets: flow(function*() {
       console.log("App:close_all_sheets")
-      SheetManager.hideAll()
+      yield SheetManager.hideAll()
     }),
 
     set_current_tab_key: flow(function*(tab_key) {
@@ -439,7 +439,7 @@ export default App = types.model('App', {
 
     navigate_to_screen_from_menu: flow(function*(screen) {
       console.log("App:navigate_to_screen_from_menu", screen)
-      App.close_sheet("main_sheet")
+      yield App.close_sheet("main_sheet")
       switch (screen) {
         case "Help":
           return self.navigate_to_screen("Help")
@@ -597,6 +597,13 @@ export default App = types.model('App', {
     set_current_web_view_ref: flow(function*(current_ref) {
       console.log("App:set_current_web_view_ref")
       CURRENT_WEB_VIEW_REF = current_ref
+    }),
+
+    clear_current_web_view_ref: flow(function*(current_ref = null) {
+      console.log("App:clear_current_web_view_ref")
+      if (current_ref == null || CURRENT_WEB_VIEW_REF === current_ref) {
+        CURRENT_WEB_VIEW_REF = null
+      }
     }),
 
     handle_web_view_message: flow(function*(message) {
@@ -1159,7 +1166,7 @@ export default App = types.model('App', {
       return self.theme === "dark" ? "rgba(28,32,40,0.8)" : "rgba(255,255,255,0.8)"
     },
     theme_settings_group_background_color() {
-      return self.theme === "dark" ? "#1a232e" : "#e8eaed"
+      return self.theme === "dark" ? "#1a232e" : "#F3F4F6"
     },
     theme_autocomplete_background_color() {
       return self.theme === "dark" ? "#1c2028" : "#f4f6f8"

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
 import { RefreshControl, Platform, View } from "react-native"
-import { useFocusEffect } from '@react-navigation/native'
+import { useIsFocused } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Auth from '../../stores/Auth'
 import App from '../../stores/App'
@@ -20,6 +20,7 @@ import { tabBarBottomInset } from '../../utils/ui'
 
 const WebViewModule = observer((props) => {
   const insets = useSafeAreaInsets()
+  const isFocused = useIsFocused()
   const webViewRef = React.useRef(null)
   const hasSetDidLoadRef = React.useRef(false)
   const hasAttemptedRecoveryRef = React.useRef(false)
@@ -32,9 +33,7 @@ const WebViewModule = observer((props) => {
   })
 
   const web_url = "https://micro.blog"
-  const web_view_key = Platform.OS === 'android'
-    ? `${props.endpoint}:${App.web_view_epoch}`
-    : props.endpoint
+  const web_view_key = `${props.endpoint}:${App.web_view_epoch}`
   const source_uri = build_webview_source_uri({
     did_load_one_or_more_webviews: Auth.did_load_one_or_more_webviews,
     endpoint: props.endpoint,
@@ -70,16 +69,19 @@ const WebViewModule = observer((props) => {
     document.getElementsByTagName('head')[0].appendChild(meta)
     ${web_view_css_properties_javascript}
   ` : should_inject_web_view_padding ? web_view_css_properties_javascript : null
-
-  useFocusEffect(
-    React.useCallback(() => {
-      App.set_current_web_view_ref(webViewRef.current)
-    }, [])
-  )
+  const should_use_native_pull_to_refresh = Platform.OS === 'ios' && props.profile == null
 
   React.useEffect(() => {
-    App.set_current_web_view_ref(webViewRef.current)
+    if (!isFocused) {
+      return
+    }
 
+    const current_ref = webViewRef.current
+    App.set_current_web_view_ref(current_ref)
+    return () => App.clear_current_web_view_ref(current_ref)
+  }, [isFocused, web_view_key])
+
+  React.useEffect(() => {
     if (!Auth.did_load_one_or_more_webviews) {
       hasSetDidLoadRef.current = false
     }
@@ -142,7 +144,7 @@ const WebViewModule = observer((props) => {
         ref={webViewRef}
         source={{ uri: source_uri }}
         containerStyle={{ flex: 1, width: '100%', height: '100%' }}
-        pullToRefreshEnabled={Platform.OS === 'ios' && props.profile == null && state.is_pull_to_refresh_enabled}
+        pullToRefreshEnabled={should_use_native_pull_to_refresh}
         decelerationRate={0.998}
         startInLoadingState={true}
         renderLoading={() => (
@@ -231,11 +233,19 @@ const WebViewModule = observer((props) => {
           return false
         }}
         onScroll={(e) => {
-          if (e.nativeEvent.contentOffset != null && e.nativeEvent.contentOffset.y != null) {
-            const y = e.nativeEvent.contentOffset.y
-            setState(prevState => ({ ...prevState, is_pull_to_refresh_enabled: y <= 0.15 }))
-          }
           App.set_is_scrolling()
+
+          if (!should_use_native_pull_to_refresh && e.nativeEvent.contentOffset != null && e.nativeEvent.contentOffset.y != null) {
+            const y = e.nativeEvent.contentOffset.y
+            const is_pull_to_refresh_enabled = y <= 0.15
+            setState(prevState => {
+              if (prevState.is_pull_to_refresh_enabled === is_pull_to_refresh_enabled) {
+                return prevState
+              }
+
+              return { ...prevState, is_pull_to_refresh_enabled }
+            })
+          }
         }}
         onMessage={(event) => {
           App.handle_web_view_message(event.nativeEvent.data)
@@ -261,7 +271,6 @@ const WebViewModule = observer((props) => {
 
   const [profileHeaderHeight, setProfileHeaderHeight] = React.useState(0)
   const is_conversation = props.endpoint.includes("conversation")
-  const should_use_native_pull_to_refresh = Platform.OS === 'ios' && props.profile == null
   const loading_banner = !is_conversation ? (
     <LoadingBanner
       visible={state.is_loading}

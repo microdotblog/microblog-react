@@ -11,12 +11,44 @@ import LoadingComponent from '../../components/generic/loading';
 
 @observer
 export default class PostEditScreen extends React.Component{
+  constructor(props) {
+    super(props)
+    this.state = {
+      editor_is_visible: false
+    }
+    this.text_editor_ref = React.createRef()
+    this.show_editor_timeout = null
+  }
+
+  componentDidMount() {
+    this.show_editor_timeout = setTimeout(() => {
+      this.setState({
+        editor_is_visible: true
+      }, () => {
+        requestAnimationFrame(() => {
+          this.text_editor_ref.current?.focus({ cursorToEnd: true })
+        })
+      })
+    }, 1000)
+  }
+
+  componentWillUnmount() {
+    if (this.show_editor_timeout) {
+      clearTimeout(this.show_editor_timeout)
+    }
+  }
   
   render() {
     const { posting } = Auth.selected_user
     return(
       <View style={{ flex: 1 }}>
-        <EditorKeyboardAvoidingView style={{ flex: 1 }}>
+        <EditorKeyboardAvoidingView
+          pointerEvents={this.state.editor_is_visible ? 'auto' : 'none'}
+          style={[
+            { flex: 1 },
+            !this.state.editor_is_visible ? { opacity: 0 } : null
+          ]}
+        >
           {
             posting.should_show_title() ?
             <TextInput
@@ -50,6 +82,7 @@ export default class PostEditScreen extends React.Component{
             : null
           }
           <HighlightingText
+            ref={this.text_editor_ref}
             placeholderTextColor="lightgrey"
             style={{
               minHeight: 300,
@@ -67,7 +100,6 @@ export default class PostEditScreen extends React.Component{
             scrollEnabled={true}
             returnKeyType={'default'}
             keyboardType={'default'}
-            autoFocus={true}
             autoCorrect={true}
             clearButtonMode={'while-editing'}
             enablesReturnKeyAutomatically={true}

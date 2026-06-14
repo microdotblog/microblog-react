@@ -3,13 +3,18 @@ import { observer } from 'mobx-react'
 import { Keyboard, Platform, StyleSheet, View } from 'react-native'
 import { WebView } from 'react-native-webview'
 import App from '../../stores/App'
+import { EditorKeyboardFrameContext } from '../keyboard/editor_keyboard_avoiding_view'
 import editorHtml from './editor_html'
 
 @observer
 export default class HighlightingText extends React.Component {
+  static contextType = EditorKeyboardFrameContext
+
   constructor(props) {
     super(props)
     this.state = {
+      container_height: 0,
+      measured_editor_height: 0,
       keyboard_scroll_request: 0
     }
     this.container = React.createRef()
@@ -21,6 +26,7 @@ export default class HighlightingText extends React.Component {
     this.keyboard_is_visible = false
     this.keyboard_show_listener = null
     this.keyboard_hide_listener = null
+    this.pending_focus_options = null
   }
 
   componentDidMount() {
@@ -32,6 +38,8 @@ export default class HighlightingText extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    this.measureEditorHeight()
+
     if (!this.is_ready) {
       return
     }
@@ -86,8 +94,13 @@ export default class HighlightingText extends React.Component {
       paddingRight: style.paddingRight != null ? style.paddingRight : padding,
       paddingBottom: style.paddingBottom != null ? style.paddingBottom : padding,
       paddingLeft: style.paddingLeft != null ? style.paddingLeft : padding,
-      bottomOverlayHeight: this.props.bottomOverlayHeight || 0
+      bottomOverlayHeight: this.props.bottomOverlayHeight || 0,
+      viewportHeight: this.editorHeight()
     }
+  }
+
+  editorHeight() {
+    return this.state.measured_editor_height || this.state.container_height
   }
 
   webviewStyle() {
@@ -106,6 +119,17 @@ export default class HighlightingText extends React.Component {
     delete style.textAlignVertical
     delete style.justifyContent
     delete style.alignItems
+
+    if (this.context?.keyboard_height > 0) {
+      delete style.minHeight
+    }
+
+    const editor_height = this.editorHeight()
+    if (editor_height > 0) {
+      style.height = editor_height
+      style.flex = 0
+      delete style.minHeight
+    }
 
     return style
   }
@@ -160,8 +184,28 @@ export default class HighlightingText extends React.Component {
     })
   }
 
+  focus(options = {}) {
+    const focus_options = {
+      cursorToEnd: options.cursorToEnd !== false,
+      scrollSelectionIntoView: options.scrollSelectionIntoView !== false
+    }
+
+    if (!this.is_ready) {
+      this.pending_focus_options = focus_options
+      return
+    }
+
+    this.pending_focus_options = null
+    this.syncEditor({
+      focus: true,
+      cursorToEnd: focus_options.cursorToEnd,
+      scrollSelectionIntoView: focus_options.scrollSelectionIntoView
+    })
+  }
+
   handleKeyboardChange = () => {
     this.keyboard_is_visible = true
+    this.measureEditorHeight()
     this.requestScrollSelectionIntoView()
   }
 
@@ -169,10 +213,50 @@ export default class HighlightingText extends React.Component {
     this.keyboard_is_visible = false
   }
 
-  handleLayout = () => {
+  handleLayout = (event) => {
+    const height = event?.nativeEvent?.layout?.height || 0
+    if (height > 0 && height !== this.state.container_height) {
+      this.setState({
+        container_height: height
+      }, this.measureEditorHeight)
+    }
+    else {
+      this.measureEditorHeight()
+    }
+
     if (this.keyboard_is_visible) {
       this.requestScrollSelectionIntoView()
     }
+  }
+
+  measureEditorHeight = () => {
+    if (this.context?.window_bottom <= 0) {
+      return
+    }
+
+    this.container.current?.measureInWindow((x, y) => {
+      const height = Math.max(0, this.context.window_bottom - y)
+      if (height > 0 && height !== this.state.measured_editor_height) {
+        this.setState({
+          measured_editor_height: height
+        })
+      }
+    })
+  }
+
+  measuredWebViewStyle() {
+    const editor_height = this.editorHeight()
+
+    if (editor_height <= 0) {
+      return null
+    }
+
+    const style = {
+      height: editor_height,
+      flex: 0
+    }
+
+    return style
   }
 
   syncEditor(options = {}) {
@@ -180,7 +264,7 @@ export default class HighlightingText extends React.Component {
     const payload = {
       ...config,
       focus: options.focus || (options.initial && this.props.autoFocus),
-      cursorToEnd: !!(options.initial && this.props.autoFocus),
+      cursorToEnd: !!(options.cursorToEnd || (options.initial && this.props.autoFocus)),
       scrollSelectionIntoView: !!options.scrollSelectionIntoView
     }
 
@@ -215,6 +299,9 @@ export default class HighlightingText extends React.Component {
         include_selection: true,
         initial: true
       })
+      if (this.pending_focus_options) {
+        this.focus(this.pending_focus_options)
+      }
       return
     }
 
@@ -271,8 +358,9 @@ export default class HighlightingText extends React.Component {
           onMessage={this.handleMessage}
           onShouldStartLoadWithRequest={this.shouldStartLoad}
           automaticallyAdjustContentInsets={false}
+          bounces={false}
           contentInsetAdjustmentBehavior="never"
-          style={[styles.webview, { backgroundColor: config.backgroundColor }]}
+          style={[styles.webview, this.measuredWebViewStyle(), { backgroundColor: config.backgroundColor }]}
           containerStyle={{ backgroundColor: config.backgroundColor }}
           overScrollMode={Platform.OS === 'android' ? 'never' : undefined}
         />

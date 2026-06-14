@@ -1,6 +1,7 @@
 import Login from '../../src/stores/Login'
 import MicroBlogApi, { APPLE_USERNAME_REQUIRED } from '../../src/api/MicroBlogApi'
 import App from '../../src/stores/App'
+import Auth from '../../src/stores/Auth'
 import { Alert } from 'react-native'
 
 jest.mock('../../src/api/MicroBlogApi', () => ({
@@ -27,7 +28,8 @@ jest.mock('../../src/stores/App', () => ({
   navigation: jest.fn(() => ({
     goBack: mockGoBack
   })),
-  open_sheet: jest.fn()
+  open_sheet: jest.fn(),
+  bump_web_view_epoch: jest.fn()
 }))
 
 describe('Login Apple sign in', () => {
@@ -35,6 +37,12 @@ describe('Login Apple sign in', () => {
     Login.reset()
     MicroBlogApi.login_with_apple.mockReset()
     App.navigate_to_screen.mockReset()
+    App.bump_web_view_epoch.mockReset()
+    App.close_sheet.mockReset()
+    mockGoBack.mockReset()
+    Auth.handle_new_login.mockReset()
+    App.bump_web_view_epoch.mockResolvedValue(true)
+    App.close_sheet.mockResolvedValue(true)
     jest.spyOn(Alert, 'alert').mockImplementation(() => {})
   })
 
@@ -141,5 +149,26 @@ describe('Login Apple sign in', () => {
       'That username is not available.'
     )
     expect(Login.is_loading).toBe(false)
+  })
+
+  test('bumps web view epoch after successful Apple sign in', async () => {
+    MicroBlogApi.login_with_apple.mockResolvedValue({
+      username: 'vincent',
+      token: 'app-token'
+    })
+    Auth.handle_new_login.mockResolvedValue(true)
+
+    await Login.login_with_apple_credentials({
+      user_id: 'apple-user-id',
+      identity_token: 'apple-identity-token'
+    })
+
+    expect(Auth.handle_new_login).toHaveBeenCalledWith({
+      username: 'vincent',
+      token: 'app-token'
+    })
+    expect(App.bump_web_view_epoch).toHaveBeenCalledTimes(1)
+    expect(App.close_sheet).toHaveBeenCalledWith('main_sheet')
+    expect(mockGoBack).toHaveBeenCalled()
   })
 })

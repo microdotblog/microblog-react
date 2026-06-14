@@ -1,22 +1,33 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { TouchableOpacity, Platform } from 'react-native';
-import Auth from './../../stores/Auth';
 import App from '../../stores/App'
 import { SFSymbol } from "react-native-sfsymbols";
 import { SvgXml } from 'react-native-svg';
+import { HEADER_BUTTON_HIT_SLOP, isLiquidGlass } from './../../utils/ui';
 
 @observer
 export default class NewCollectionButton extends React.Component{
   
 	render() {
+		const button_style = isLiquidGlass() ?
+			{
+				width: 28,
+				height: 28,
+				justifyContent: 'center',
+				alignItems: 'center'
+			}
+			:
+			{
+				height: 22,
+				justifyContent: 'center',
+				alignItems: 'center'
+			}
+
 		return (
 			<TouchableOpacity 
-				style={{ 
-					height: 22,
-					justifyContent: 'center',
-					alignItems: 'center'
-				}}
+				style={button_style}
+				hitSlop={HEADER_BUTTON_HIT_SLOP}
 				onPress={() => {
 					App.navigate_to_screen("AddCollection");
 				}}

@@ -16,24 +16,69 @@ const SCALE_DISMISS_THRESHOLD = 1.02
 const ImageModalContent = gestureHandlerRootHOC(observer(({ image_url }) => {
 	const { height } = useWindowDimensions()
 	const insets = useSafeAreaInsets()
-	const close_button_top = Platform.OS === 'ios' ? Math.max(12, insets.top - 18) : insets.top + 15
+	const close_button_top = insets.top + (Platform.OS === 'ios' ? 14 : 15)
 	const scale = useSharedValue(1)
 	const translate_y = useSharedValue(0)
 	const [is_loading_image, set_is_loading_image] = React.useState(true)
 	const [did_fail_image, set_did_fail_image] = React.useState(false)
+	const image_load_token = React.useRef(0)
+	const image_load_timeout = React.useRef(null)
+	const image_did_finish_loading = React.useRef(false)
 
 	const close_modal = React.useCallback(() => {
 		App.reset_image_modal()
 	}, [])
 
+	const finish_loading_image = React.useCallback((load_token = image_load_token.current) => {
+		if (image_load_token.current === load_token) {
+			image_did_finish_loading.current = true
+			if (image_load_timeout.current) {
+				clearTimeout(image_load_timeout.current)
+				image_load_timeout.current = null
+			}
+			set_is_loading_image(false)
+		}
+	}, [])
+
 	React.useEffect(() => {
-		if (App.image_modal_is_open) {
+		const load_token = image_load_token.current + 1
+		image_load_token.current = load_token
+
+		if (image_load_timeout.current) {
+			clearTimeout(image_load_timeout.current)
+			image_load_timeout.current = null
+		}
+
+		if (App.image_modal_is_open && image_url) {
 			scale.value = 1
 			translate_y.value = 0
+			image_did_finish_loading.current = false
 			set_is_loading_image(true)
 			set_did_fail_image(false)
+
+			Image.getSize(
+				image_url,
+				() => {
+					if (image_load_token.current === load_token) {
+						set_did_fail_image(false)
+						finish_loading_image(load_token)
+					}
+				},
+				() => {}
+			)
+
+			image_load_timeout.current = setTimeout(() => {
+				finish_loading_image(load_token)
+			}, 5000)
 		}
-	}, [image_url, scale, translate_y])
+
+		return () => {
+			if (image_load_timeout.current) {
+				clearTimeout(image_load_timeout.current)
+				image_load_timeout.current = null
+			}
+		}
+	}, [image_url, scale, translate_y, finish_loading_image])
 
 	const dismiss_gesture = Gesture.Pan()
 		.minPointers(1)
@@ -119,16 +164,20 @@ const ImageModalContent = gestureHandlerRootHOC(observer(({ image_url }) => {
 						accessibilityRole="image"
 						accessibilityLabel="Image preview"
 						onLoadStart={() => {
-							set_is_loading_image(true)
+							if (!image_did_finish_loading.current) {
+								set_is_loading_image(true)
+							}
 							set_did_fail_image(false)
 						}}
 						onLoad={() => {
 							set_did_fail_image(false)
+							finish_loading_image()
 						}}
 						onLoadEnd={() => {
-							set_is_loading_image(false)
+							finish_loading_image()
 						}}
 						onError={() => {
+							image_did_finish_loading.current = true
 							set_did_fail_image(true)
 							set_is_loading_image(false)
 						}}

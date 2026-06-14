@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { TouchableOpacity, View, Image } from 'react-native';
 import Auth from './../../stores/Auth';
 import App from '../../stores/App';
-import { isLiquidGlass } from './../../utils/ui';
+import { HEADER_BUTTON_HIT_SLOP, isLiquidGlass } from './../../utils/ui';
 
 @observer
 export default class ProfileImage extends React.Component{
@@ -29,6 +29,7 @@ export default class ProfileImage extends React.Component{
       return(
         <TouchableOpacity 
           style={button_style}
+          hitSlop={HEADER_BUTTON_HIT_SLOP}
           onPress={() => { App.open_sheet("main_sheet"); Auth.selected_user.check_token_validity()} }
           onLongPress={() => App.navigate_to_screen("user", Auth.selected_user.username)}
           accessibilityRole="button"

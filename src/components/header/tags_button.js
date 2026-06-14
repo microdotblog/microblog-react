@@ -6,6 +6,7 @@ import App from './../../stores/App';
 import { SFSymbol } from 'react-native-sfsymbols';
 import { SvgXml } from 'react-native-svg';
 import { MenuView } from '@react-native-menu/menu';
+import { HEADER_BUTTON_HIT_SLOP } from './../../utils/ui';
 
 @observer
 export default class TagsButton extends React.Component {
@@ -63,7 +64,8 @@ export default class TagsButton extends React.Component {
       </MenuView>
       :
       <TouchableOpacity
-        onPress={() => App.open_sheet("tags")}
+        onPress={() => App.open_sheet("tags_menu")}
+        hitSlop={HEADER_BUTTON_HIT_SLOP}
         accessibilityRole="button"
         accessibilityLabel="Filter bookmarks by tag"
       >

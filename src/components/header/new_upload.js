@@ -6,6 +6,7 @@ import App from '../../stores/App'
 import { SFSymbol } from "react-native-sfsymbols"
 import { MenuView } from '@react-native-menu/menu';
 import AddIcon from './../../assets/icons/add.png'
+import { isLiquidGlass } from './../../utils/ui'
 
 @observer
 export default class NewUploadButton extends React.Component {
@@ -14,8 +15,19 @@ export default class NewUploadButton extends React.Component {
 		if (Auth.selected_user != null && Auth.selected_user.posting?.posting_enabled()) {
 			const { config } = Auth.selected_user.posting.selected_service
 			const icon_color = App.theme_text_color()
+			const button_style = isLiquidGlass() ?
+				{
+					width: 28,
+					height: 28,
+					alignItems: 'center',
+					justifyContent: 'center'
+				}
+				:
+				undefined
+
 			return (
 				<MenuView
+					style={button_style}
 					onPressAction={({ nativeEvent }) => {
 						const event_id = nativeEvent.event
 						if (event_id === 'upload_media') {

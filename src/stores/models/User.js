@@ -245,7 +245,7 @@ export default User = types
       );
       if (data !== API_ERROR) {
         App.set_is_loading_bookmarks(true);
-        App.close_sheet("add_tags_sheet");
+        yield App.close_sheet("add_tags_sheet");
       }
       self.fetch_recent_tags();
       setTimeout(() => {
