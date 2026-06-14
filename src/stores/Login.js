@@ -49,8 +49,8 @@ const Login = types.model('Login', {
       console.log("LOGIN:trigger_login_from_url:token", token)
       self.did_trigger_login_from_url = true
       self.input_value = token
-      self.trigger_login()
-      App.close_sheet("login-message-sheet")
+      yield self.trigger_login()
+      yield App.close_sheet("login-message-sheet")
     }
   }),
   
@@ -198,7 +198,8 @@ const Login = types.model('Login', {
     const result = yield Auth.handle_new_login(login)
     if(result){
       // THIS IS ALWAYS TRUE FOR NOW 😇
-      App.close_sheet("main_sheet")
+      yield App.bump_web_view_epoch()
+      yield App.close_sheet("main_sheet")
       if(reset_navigation && App.navigation().reset != null){
         App.navigation().reset({
           index: 0,
