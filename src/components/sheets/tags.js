@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { ScrollView, TouchableOpacity, Text, Platform, TextInput, Keyboard, View } from 'react-native';
-import ActionSheet, { SheetManager } from "react-native-actions-sheet";
+import ActionSheet from "react-native-actions-sheet";
 import App from '../../stores/App'
 import Auth from '../../stores/Auth'
 import { SvgXml } from 'react-native-svg';
@@ -9,6 +9,11 @@ import { SFSymbol } from "react-native-sfsymbols";
 
 @observer
 export default class TagsMenu extends React.Component{
+
+  select_tag = async (tag) => {
+    await App.close_sheet(this.props.sheetId)
+    Auth.selected_user?.set_selected_tag(tag)
+  }
   
   _render_tags = () => {
     return Auth.selected_user?.filtered_tags().map((tag) => {
@@ -16,8 +21,7 @@ export default class TagsMenu extends React.Component{
         <TouchableOpacity
           key={`tag-${tag}`}
           onPress={() => {
-            Auth.selected_user.set_selected_tag(tag)
-            SheetManager.hide(this.props.sheetId);
+            this.select_tag(tag)
           }}
           style={{
             flexDirection: "row",
@@ -71,9 +75,11 @@ export default class TagsMenu extends React.Component{
         id={this.props.sheetId}
         snapPoints={[40,95]}
         initialSnapIndex={[1]}
-        overdrawEnabled={true}
+        overdrawEnabled={false}
         useBottomSafeAreaPadding={true}
         gestureEnabled={true}
+        statusBarTranslucent={false}
+        drawUnderStatusBar={false}
         containerStyle={{
           backgroundColor: App.theme_background_color_secondary()
         }}
