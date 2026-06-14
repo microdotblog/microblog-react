@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
 import { RefreshControl, Platform, View } from "react-native"
-import { useFocusEffect } from '@react-navigation/native'
+import { useIsFocused } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Auth from '../../stores/Auth'
 import App from '../../stores/App'
@@ -20,6 +20,7 @@ import { tabBarBottomInset } from '../../utils/ui'
 
 const WebViewModule = observer((props) => {
   const insets = useSafeAreaInsets()
+  const isFocused = useIsFocused()
   const webViewRef = React.useRef(null)
   const hasSetDidLoadRef = React.useRef(false)
   const hasAttemptedRecoveryRef = React.useRef(false)
@@ -70,12 +71,15 @@ const WebViewModule = observer((props) => {
   ` : should_inject_web_view_padding ? web_view_css_properties_javascript : null
   const should_use_native_pull_to_refresh = Platform.OS === 'ios' && props.profile == null
 
-  useFocusEffect(
-    React.useCallback(() => {
-      App.set_current_web_view_ref(webViewRef.current)
-      return () => App.clear_current_web_view_ref(webViewRef.current)
-    }, [])
-  )
+  React.useEffect(() => {
+    if (!isFocused) {
+      return
+    }
+
+    const current_ref = webViewRef.current
+    App.set_current_web_view_ref(current_ref)
+    return () => App.clear_current_web_view_ref(current_ref)
+  }, [isFocused, web_view_key])
 
   React.useEffect(() => {
     if (!Auth.did_load_one_or_more_webviews) {
