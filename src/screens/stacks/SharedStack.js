@@ -21,6 +21,10 @@ import { headerItemGroupStyle, headerRightElement } from '../../utils/navigation
 import { isLiquidGlass } from '../../utils/ui'
 
 function newPostHeaderItem() {
+	if (Auth.selected_user == null || !Auth.selected_user.posting?.posting_enabled()) {
+		return null
+	}
+
 	return {
 		type: 'button',
 		label: 'New Post',
@@ -33,6 +37,10 @@ function newPostHeaderItem() {
 		width: 28,
 		onPress: () => App.navigate_to_screen("Posting")
 	}
+}
+
+function newPostHeaderItems() {
+	return [newPostHeaderItem()].filter(Boolean)
 }
 
 function refreshIsLoading(type) {
@@ -134,11 +142,11 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={ProfileScreen}
 			options={({ route }) => ({
 				headerTitle: `@${route.params?.username}`,
-				...(isLiquidGlass() ?
-					{
-						unstable_headerRightItems: () => [newPostHeaderItem()]
-					}
-					:
+					...(isLiquidGlass() ?
+						{
+							unstable_headerRightItems: newPostHeaderItems
+						}
+						:
 					headerRightElement(() => <NewPostButton />)
 				)
 			})}
@@ -189,11 +197,11 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={FollowingScreen}
 			options={({ route }) => ({
 				headerTitle: `Following`,
-				...(isLiquidGlass() ?
-					{
-						unstable_headerRightItems: () => [newPostHeaderItem()]
-					}
-					:
+					...(isLiquidGlass() ?
+						{
+							unstable_headerRightItems: newPostHeaderItems
+						}
+						:
 					headerRightElement(() => <NewPostButton />)
 				)
 			})}
