@@ -229,6 +229,8 @@ const WebViewModule = observer((props) => {
           return false
         }}
         onScroll={(e) => {
+          App.set_is_scrolling()
+
           if (!should_use_native_pull_to_refresh && e.nativeEvent.contentOffset != null && e.nativeEvent.contentOffset.y != null) {
             const y = e.nativeEvent.contentOffset.y
             const is_pull_to_refresh_enabled = y <= 0.15
