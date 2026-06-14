@@ -24,6 +24,9 @@ export default class RefreshActivity extends React.Component{
       case "highlights":
         is_loading = App.is_loading_highlights
         break;
+      case "muting":
+        is_loading = this.props.user?.muting?.is_loading || this.props.user?.muting?.is_sending_mute || this.props.user?.muting?.is_sending_unmute
+        break;
       default:
       is_loading = Replies.is_loading
     }

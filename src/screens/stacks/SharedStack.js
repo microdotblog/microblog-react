@@ -17,6 +17,7 @@ import NewPostButton from '../../components/header/new_post';
 import NewCollectionButton from '../../components/header/new_collection';
 import Auth from '../../stores/Auth'
 import App from '../../stores/App'
+import Replies from '../../stores/Replies'
 import { headerItemGroupStyle, headerRightElement } from '../../utils/navigation'
 import { isLiquidGlass } from '../../utils/ui'
 
@@ -43,7 +44,7 @@ function newPostHeaderItems() {
 	return [newPostHeaderItem()].filter(Boolean)
 }
 
-function refreshIsLoading(type) {
+function refreshIsLoading(type, user = null) {
 	const selected_service = Auth.selected_user?.posting?.selected_service
 	switch (type) {
 		case "posts":
@@ -52,21 +53,35 @@ function refreshIsLoading(type) {
 			return !!(selected_service?.is_loading_pages || App.is_searching_pages)
 		case "uploads":
 			return !!selected_service?.is_loading_uploads
+		case "muting":
+			return !!(user?.muting?.is_loading || user?.muting?.is_sending_mute || user?.muting?.is_sending_unmute)
 		default:
-			return false
+			return !!Replies.is_loading
 	}
 }
 
-function refreshHeaderItems(type) {
+function refreshHeaderItems(type, user = null) {
 	if (!isLiquidGlass()) {
 		return headerRightElement(
-			() => <RefreshActivity type={type} />,
+			() => <RefreshActivity type={type} user={user} />,
 			{ hidesSharedBackground: true }
 		)
 	}
 
 	return {
-		unstable_headerRightItems: () => []
+		unstable_headerRightItems: () => {
+			if (!refreshIsLoading(type, user)) {
+				return []
+			}
+
+			return [
+				{
+					type: 'custom',
+					element: <RefreshActivity type={type} user={user} />,
+					hidesSharedBackground: true
+				}
+			]
+		}
 	}
 }
 
@@ -142,11 +157,11 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={ProfileScreen}
 			options={({ route }) => ({
 				headerTitle: `@${route.params?.username}`,
-					...(isLiquidGlass() ?
-						{
-							unstable_headerRightItems: newPostHeaderItems
-						}
-						:
+				...(isLiquidGlass() ?
+					{
+						unstable_headerRightItems: newPostHeaderItems
+					}
+					:
 					headerRightElement(() => <NewPostButton />)
 				)
 			})}
@@ -270,7 +285,7 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={MutingScreen}
 			options={({ route }) => ({
 				headerTitle: "Muting",
-				...refreshHeaderItems("muting")
+				...refreshHeaderItems("muting", route.params?.user)
 			})}
 		/>,
 	]
