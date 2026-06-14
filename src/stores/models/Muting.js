@@ -11,10 +11,11 @@ const MutedItem = types.model("MutedItem", {
 	is_hiding_other_replies: types.optional(types.boolean, false)
 })
 
-export default Muting = types.model('Muting', {
+const Muting = types.model('Muting', {
 	username: types.identifier,
 	is_sending_mute: types.optional(types.boolean, false),
 	is_sending_unmute: types.optional(types.boolean, false),
+	is_loading: types.optional(types.boolean, false),
 	muted_items: types.optional(types.array(MutedItem), [])
 })
 .actions(self => ({
@@ -25,13 +26,15 @@ export default Muting = types.model('Muting', {
 
 	hydrate: flow(function* () {
 		console.log("Muting:hydrate")
-		self.muted_items = [];
-		const muted_items = yield MicroBlogApi.get_muted_users(self.token());
+		self.is_loading = true
+		self.muted_items = []
+		const muted_items = yield MicroBlogApi.get_muted_users(self.token())
 		if (muted_items && muted_items !== API_ERROR) {
-			self.muted_items = muted_items;
+			self.muted_items = muted_items
 		}
-		self.is_sending_mute = false;
-		self.is_sending_unmute = false;
+		self.is_loading = false
+		self.is_sending_mute = false
+		self.is_sending_unmute = false
 	}),
 
 	mute_user: flow(function* (username, should_block = false) { 
@@ -111,3 +114,5 @@ export default Muting = types.model('Muting', {
 	}
 		
 }))
+
+export default Muting
