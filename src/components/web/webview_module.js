@@ -32,9 +32,7 @@ const WebViewModule = observer((props) => {
   })
 
   const web_url = "https://micro.blog"
-  const web_view_key = Platform.OS === 'android'
-    ? `${props.endpoint}:${App.web_view_epoch}`
-    : props.endpoint
+  const web_view_key = `${props.endpoint}:${App.web_view_epoch}`
   const source_uri = build_webview_source_uri({
     did_load_one_or_more_webviews: Auth.did_load_one_or_more_webviews,
     endpoint: props.endpoint,
