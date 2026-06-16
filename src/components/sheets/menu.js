@@ -1,7 +1,7 @@
 import ActionSheet from "react-native-actions-sheet";
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native'
 import Auth from './../../stores/Auth';
 import AccountSwitcher from '../menu/account_switcher'
 import MenuNavigation from '../menu/nav'
@@ -38,7 +38,7 @@ export default class SheetMenu extends React.Component{
               <AccountSwitcher />
               :
               <TouchableOpacity
-                onPress={App.navigate_to_screen("Login")}
+                onPress={() => App.navigate_to_screen("Login")}
                 style={{
                   padding: 8,
                   paddingHorizontal: 16,
