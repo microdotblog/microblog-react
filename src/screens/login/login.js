@@ -58,7 +58,7 @@ export default class LoginScreen extends React.Component{
   render() {
     return(
       <KeyboardAvoidingView behavior={ Platform.OS === "ios" ? "padding" : "height" } style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 15, backgroundColor: App.theme_background_color() }}>
-        <View style={{ width: "100%" }}>
+        <View style={{ width: "100%", transform: [{ translateY: -36 }] }}>
           <Text style={{fontWeight: "700", color: App.theme_text_color()}}>Enter your email address to sign in to Micro.blog:</Text>
           <TextInput
             placeholderTextColor="lightgrey"
