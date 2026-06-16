@@ -27,6 +27,16 @@ import {
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
 let PUBLISHING_PROGRESS_TIMEOUT = null
+let RESET_TO_TABS_RETRY_TIMEOUT = null
+let SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = false
+
+function clear_reset_to_tabs_retry() {
+  SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = false
+  if (RESET_TO_TABS_RETRY_TIMEOUT != null) {
+    clearTimeout(RESET_TO_TABS_RETRY_TIMEOUT)
+    RESET_TO_TABS_RETRY_TIMEOUT = null
+  }
+}
 
 export default App = types.model('App', {
   is_loading: types.optional(types.boolean, false),
@@ -94,6 +104,9 @@ export default App = types.model('App', {
         self.navigation_ref = navigation
         self.navigation_ready = typeof navigation.isReady === 'function' ? navigation.isReady() : false
         Push.replay_pending_notification()
+        if (SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY) {
+          App.reset_to_tabs()
+        }
       }
       else{
         self.navigation_ref = null
@@ -106,6 +119,9 @@ export default App = types.model('App', {
       self.navigation_ready = ready
       if (ready) {
         Push.replay_pending_notification()
+        if (SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY) {
+          App.reset_to_tabs()
+        }
       }
     }),
 
@@ -444,31 +460,36 @@ export default App = types.model('App', {
       }
 
       if (self.navigation_ref?.resetRoot != null) {
+        clear_reset_to_tabs_retry()
         self.navigation_ref.resetRoot(reset_state)
         return true
       }
 
       if (self.navigation_ref?.reset != null) {
+        clear_reset_to_tabs_retry()
         self.navigation_ref.reset(reset_state)
         return true
       }
 
       if (self.navigation_ref?.dispatch != null) {
+        clear_reset_to_tabs_retry()
         self.navigation_ref.dispatch(CommonActions.reset(reset_state))
         return true
       }
 
       if (self.navigation_ref?.navigate != null) {
+        clear_reset_to_tabs_retry()
         self.navigation_ref.navigate("Tabs")
         return true
       }
 
-      const retry_delays = [100, 300, 700]
-      retry_delays.forEach((delay) => {
-        setTimeout(() => {
+      SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = true
+      if (RESET_TO_TABS_RETRY_TIMEOUT == null) {
+        RESET_TO_TABS_RETRY_TIMEOUT = setTimeout(() => {
+          RESET_TO_TABS_RETRY_TIMEOUT = null
           App.reset_to_tabs()
-        }, delay)
-      })
+        }, 100)
+      }
       return false
     }),
 
@@ -488,6 +509,8 @@ export default App = types.model('App', {
           return self.navigate_to_screen("Pages")
         case "Uploads":
           return self.navigate_to_screen("uploads")
+        case "Login":
+          return self.navigate_to_screen("Login")
         case "PostService":
           return self.navigate_to_screen("post_service", Auth.selected_user)
       }
