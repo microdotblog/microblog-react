@@ -27,16 +27,7 @@ import {
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
 let PUBLISHING_PROGRESS_TIMEOUT = null
-let RESET_TO_TABS_RETRY_TIMEOUT = null
 let SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = false
-
-function clear_reset_to_tabs_retry() {
-  SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = false
-  if (RESET_TO_TABS_RETRY_TIMEOUT != null) {
-    clearTimeout(RESET_TO_TABS_RETRY_TIMEOUT)
-    RESET_TO_TABS_RETRY_TIMEOUT = null
-  }
-}
 
 export default App = types.model('App', {
   is_loading: types.optional(types.boolean, false),
@@ -104,7 +95,7 @@ export default App = types.model('App', {
         self.navigation_ref = navigation
         self.navigation_ready = typeof navigation.isReady === 'function' ? navigation.isReady() : false
         Push.replay_pending_notification()
-        if (SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY) {
+        if (SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY && self.navigation_ready) {
           App.reset_to_tabs()
         }
       }
@@ -458,38 +449,38 @@ export default App = types.model('App', {
         index: 0,
         routes: [{ name: "Tabs" }]
       }
+      const navigation_is_ready = self.navigation_ref != null && self.navigation_ready && (typeof self.navigation_ref.isReady !== 'function' || self.navigation_ref.isReady())
+
+      if (!navigation_is_ready) {
+        SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = true
+        return false
+      }
 
       if (self.navigation_ref?.resetRoot != null) {
-        clear_reset_to_tabs_retry()
+        SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = false
         self.navigation_ref.resetRoot(reset_state)
         return true
       }
 
       if (self.navigation_ref?.reset != null) {
-        clear_reset_to_tabs_retry()
+        SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = false
         self.navigation_ref.reset(reset_state)
         return true
       }
 
       if (self.navigation_ref?.dispatch != null) {
-        clear_reset_to_tabs_retry()
+        SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = false
         self.navigation_ref.dispatch(CommonActions.reset(reset_state))
         return true
       }
 
       if (self.navigation_ref?.navigate != null) {
-        clear_reset_to_tabs_retry()
+        SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = false
         self.navigation_ref.navigate("Tabs")
         return true
       }
 
       SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = true
-      if (RESET_TO_TABS_RETRY_TIMEOUT == null) {
-        RESET_TO_TABS_RETRY_TIMEOUT = setTimeout(() => {
-          RESET_TO_TABS_RETRY_TIMEOUT = null
-          App.reset_to_tabs()
-        }, 100)
-      }
       return false
     }),
 
