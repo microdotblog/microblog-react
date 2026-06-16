@@ -27,6 +27,7 @@ import {
 let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
 let PUBLISHING_PROGRESS_TIMEOUT = null
+let SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = false
 
 export default App = types.model('App', {
   is_loading: types.optional(types.boolean, false),
@@ -94,6 +95,9 @@ export default App = types.model('App', {
         self.navigation_ref = navigation
         self.navigation_ready = typeof navigation.isReady === 'function' ? navigation.isReady() : false
         Push.replay_pending_notification()
+        if (SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY && self.navigation_ready) {
+          App.reset_to_tabs()
+        }
       }
       else{
         self.navigation_ref = null
@@ -106,6 +110,9 @@ export default App = types.model('App', {
       self.navigation_ready = ready
       if (ready) {
         Push.replay_pending_notification()
+        if (SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY) {
+          App.reset_to_tabs()
+        }
       }
     }),
 
@@ -437,6 +444,46 @@ export default App = types.model('App', {
       }
     }),
 
+    reset_to_tabs: flow(function*() {
+      const reset_state = {
+        index: 0,
+        routes: [{ name: "Tabs" }]
+      }
+      const navigation_is_ready = self.navigation_ref != null && self.navigation_ready && (typeof self.navigation_ref.isReady !== 'function' || self.navigation_ref.isReady())
+
+      if (!navigation_is_ready) {
+        SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = true
+        return false
+      }
+
+      if (self.navigation_ref?.resetRoot != null) {
+        SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = false
+        self.navigation_ref.resetRoot(reset_state)
+        return true
+      }
+
+      if (self.navigation_ref?.reset != null) {
+        SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = false
+        self.navigation_ref.reset(reset_state)
+        return true
+      }
+
+      if (self.navigation_ref?.dispatch != null) {
+        SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = false
+        self.navigation_ref.dispatch(CommonActions.reset(reset_state))
+        return true
+      }
+
+      if (self.navigation_ref?.navigate != null) {
+        SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = false
+        self.navigation_ref.navigate("Tabs")
+        return true
+      }
+
+      SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = true
+      return false
+    }),
+
     navigate_to_screen_from_menu: flow(function*(screen) {
       console.log("App:navigate_to_screen_from_menu", screen)
       yield App.close_sheet("main_sheet")
@@ -453,6 +500,8 @@ export default App = types.model('App', {
           return self.navigate_to_screen("Pages")
         case "Uploads":
           return self.navigate_to_screen("uploads")
+        case "Login":
+          return self.navigate_to_screen("Login")
         case "PostService":
           return self.navigate_to_screen("post_service", Auth.selected_user)
       }

@@ -5,10 +5,12 @@ import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { appleAuth, AppleButton } from '@invertase/react-native-apple-authentication';
 import Login from './../../stores/Login';
 import App from '../../stores/App'
+import Auth from '../../stores/Auth'
 
 @observer
 export default class LoginScreen extends React.Component{
   apple_credential_revoked_unsubscribe = null
+  did_request_dismiss = false
 
   componentDidMount() {
     if(Platform.OS === "ios" && appleAuth.isSupported){
@@ -16,12 +18,34 @@ export default class LoginScreen extends React.Component{
         console.warn("Apple credentials revoked")
       })
     }
+    this.dismiss_if_login_finished()
+  }
+
+  componentDidUpdate() {
+    this.dismiss_if_login_finished()
   }
 
   componentWillUnmount() {
     if(this.apple_credential_revoked_unsubscribe != null){
       this.apple_credential_revoked_unsubscribe()
       this.apple_credential_revoked_unsubscribe = null
+    }
+  }
+
+  dismiss_if_login_finished() {
+    const should_dismiss = !!(
+      !this.did_request_dismiss &&
+      Login.did_trigger_login_from_url &&
+      !Login.is_loading &&
+      !Login.show_error &&
+      Auth.is_logged_in() &&
+      !Auth.is_selecting_user
+    )
+
+    if(should_dismiss){
+      this.did_request_dismiss = true
+      Login.reset()
+      App.reset_to_tabs()
     }
   }
 
@@ -56,9 +80,17 @@ export default class LoginScreen extends React.Component{
   }
   
   render() {
+    const should_disable_controls = !!(
+      Login.did_trigger_login_from_url &&
+      !Login.is_loading &&
+      !Login.show_error &&
+      Auth.is_logged_in() &&
+      !Auth.is_selecting_user
+    )
+
     return(
-      <KeyboardAvoidingView behavior={ Platform.OS === "ios" ? "padding" : "height" } style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 15, backgroundColor: App.theme_background_color() }}>
-        <View style={{ width: "100%" }}>
+      <KeyboardAvoidingView pointerEvents={should_disable_controls ? "none" : "auto"} behavior={ Platform.OS === "ios" ? "padding" : "height" } style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 15, backgroundColor: App.theme_background_color() }}>
+        <View style={{ width: "100%", transform: [{ translateY: -36 }] }}>
           <Text style={{fontWeight: "700", color: App.theme_text_color()}}>Enter your email address to sign in to Micro.blog:</Text>
           <TextInput
             placeholderTextColor="lightgrey"
