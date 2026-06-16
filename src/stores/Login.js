@@ -43,38 +43,51 @@ const Login = types.model('Login', {
   },
   
   trigger_login_from_url: flow(function* (url) {
-    console.log("LOGIN:trigger_login_from_url", url)
     const token = url.split('/signin/')[1]
+    console.log("LOGIN:trigger_login_from_url")
     if(token){
-      console.log("LOGIN:trigger_login_from_url:token", token)
       self.did_trigger_login_from_url = true
-      self.input_value = token
-      yield self.trigger_login()
-      yield App.close_sheet("login-message-sheet")
+      yield self.trigger_login(true, token)
+      App.close_sheet("login-message-sheet").catch(() => {})
     }
   }),
   
-  trigger_login: flow(function* () {
+  trigger_login: flow(function* (reset_navigation = false, token_from_url = null) {
     console.log("LOGIN:trigger_login", self)
     self.is_loading = true
     self.message = null
-    
-    if(self.show_error){
-      self.reset_errors()
-    }
-    
-    if(self.can_submit()){
-      if(self.is_valid_email_address()){
-        console.log("LOGIN:trigger_login:email_login")
-        yield self.login_with_email()
+
+    try{
+      if(self.show_error){
+        self.reset_errors()
       }
-      else if(self.is_valid_token()){
+
+      if(token_from_url != null){
         console.log("LOGIN:trigger_login:token_login")
-        yield self.login_with_token()
+        yield self.login_with_token(reset_navigation, token_from_url)
+      }
+      else if(self.can_submit()){
+        if(self.is_valid_email_address()){
+          console.log("LOGIN:trigger_login:email_login")
+          yield self.login_with_email()
+        }
+        else if(self.is_valid_token()){
+          console.log("LOGIN:trigger_login:token_login")
+          yield self.login_with_token(reset_navigation)
+        }
       }
     }
-    self.is_loading = false
-    
+    catch(error){
+      console.log("LOGIN:trigger_login:error", error)
+      if(!Auth.is_logged_in()){
+        self.show_error = true
+        self.error_message = "An error occured whilst trying to sign you in. Please try again."
+        Alert.alert("Ooops", self.error_message)
+      }
+    }
+    finally{
+      self.is_loading = false
+    }
   }),
   
   login_with_email: flow(function* () {
@@ -97,12 +110,12 @@ const Login = types.model('Login', {
     }
   }),
   
-  login_with_token: flow(function* () {
-    const login = yield MicroBlogApi.login_with_token(self.input_value)
+  login_with_token: flow(function* (reset_navigation = false, token = self.input_value) {
+    const login = yield MicroBlogApi.login_with_token(token)
     console.log("LOGIN:trigger_login:login_with_token:login", login)
     if(login !== LOGIN_ERROR && login !== LOGIN_TOKEN_INVALID){
       console.log("LOGIN:trigger_login:login_with_token:login:SUCCESS")
-      yield self.finish_login_with_data(login)
+      yield self.finish_login_with_data(login, reset_navigation)
     }
     else if(login === LOGIN_TOKEN_INVALID){
       self.show_error = true
@@ -199,15 +212,16 @@ const Login = types.model('Login', {
     if(result){
       // THIS IS ALWAYS TRUE FOR NOW 😇
       yield App.bump_web_view_epoch()
-      yield App.close_sheet("main_sheet")
-      if(reset_navigation && App.navigation().reset != null){
-        App.navigation().reset({
-          index: 0,
-          routes: [{ name: "Tabs" }]
-        })
+      App.close_sheet("main_sheet").catch(() => {})
+      const navigation = App.navigation()
+      if(reset_navigation){
+        yield App.reset_to_tabs()
+      }
+      else if(navigation?.canGoBack?.()){
+        navigation.goBack()
       }
       else{
-        App.navigation().goBack()
+        navigation?.navigate?.("Tabs")
       }
       self.reset()
     }

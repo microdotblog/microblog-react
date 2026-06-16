@@ -437,6 +437,41 @@ export default App = types.model('App', {
       }
     }),
 
+    reset_to_tabs: flow(function*() {
+      const reset_state = {
+        index: 0,
+        routes: [{ name: "Tabs" }]
+      }
+
+      if (self.navigation_ref?.resetRoot != null) {
+        self.navigation_ref.resetRoot(reset_state)
+        return true
+      }
+
+      if (self.navigation_ref?.reset != null) {
+        self.navigation_ref.reset(reset_state)
+        return true
+      }
+
+      if (self.navigation_ref?.dispatch != null) {
+        self.navigation_ref.dispatch(CommonActions.reset(reset_state))
+        return true
+      }
+
+      if (self.navigation_ref?.navigate != null) {
+        self.navigation_ref.navigate("Tabs")
+        return true
+      }
+
+      const retry_delays = [100, 300, 700]
+      retry_delays.forEach((delay) => {
+        setTimeout(() => {
+          App.reset_to_tabs()
+        }, delay)
+      })
+      return false
+    }),
+
     navigate_to_screen_from_menu: flow(function*(screen) {
       console.log("App:navigate_to_screen_from_menu", screen)
       yield App.close_sheet("main_sheet")
