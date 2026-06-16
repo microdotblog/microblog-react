@@ -29,6 +29,7 @@ import ReplyEditScreen from './replies/edit';
 import UpdateReplyButton from '../components/header/update_reply';
 import PageEditScreen from './pages/edit';
 import UpdatePageButton from '../components/header/update_page';
+import BackButton from '../components/header/back'
 import Posting from './stacks/PostingStack';
 import PostEditStack from './stacks/PostEditStack';
 
@@ -42,6 +43,8 @@ import ImageModalModule from '../components/images/image_modal'
 import { headerLeftElement, headerRightElement } from '../utils/navigation'
 
 const Stack = createNativeStackNavigator();
+
+const renderBackButton = () => <BackButton />
 
 @observer
 export default class MainApp extends React.Component {
@@ -158,7 +161,9 @@ export default class MainApp extends React.Component {
                     options={{
                       title: "Sign In",
                       headerShown: true,
-                      headerBackTitle: "Back"
+                      headerBackVisible: false,
+                      headerBackTitleVisible: false,
+                      ...headerLeftElement(renderBackButton)
                     }}
                   />
                   <Stack.Screen
