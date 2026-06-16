@@ -7,7 +7,8 @@ import { Alert } from 'react-native'
 jest.mock('../../src/api/MicroBlogApi', () => ({
   __esModule: true,
   default: {
-    login_with_apple: jest.fn()
+    login_with_apple: jest.fn(),
+    login_with_token: jest.fn()
   },
   APPLE_USERNAME_REQUIRED: 12,
   LOGIN_ERROR: 2,
@@ -17,16 +18,27 @@ jest.mock('../../src/api/MicroBlogApi', () => ({
 }))
 
 jest.mock('../../src/stores/Auth', () => ({
-  handle_new_login: jest.fn()
+  handle_new_login: jest.fn(),
+  is_logged_in: jest.fn(() => false),
+  is_selecting_user: true,
+  selected_user: null,
+  users: []
 }))
 
+const mockCanGoBack = jest.fn()
 const mockGoBack = jest.fn()
+const mockNavigate = jest.fn()
+const mockReset = jest.fn()
 
 jest.mock('../../src/stores/App', () => ({
   close_sheet: jest.fn(),
   navigate_to_screen: jest.fn(),
+  reset_to_tabs: jest.fn(),
   navigation: jest.fn(() => ({
-    goBack: mockGoBack
+    canGoBack: mockCanGoBack,
+    goBack: mockGoBack,
+    navigate: mockNavigate,
+    reset: mockReset
   })),
   open_sheet: jest.fn(),
   bump_web_view_epoch: jest.fn()
@@ -36,11 +48,23 @@ describe('Login Apple sign in', () => {
   beforeEach(() => {
     Login.reset()
     MicroBlogApi.login_with_apple.mockReset()
+    MicroBlogApi.login_with_token.mockReset()
     App.navigate_to_screen.mockReset()
+    App.reset_to_tabs.mockReset()
     App.bump_web_view_epoch.mockReset()
     App.close_sheet.mockReset()
+    mockCanGoBack.mockReset()
     mockGoBack.mockReset()
+    mockNavigate.mockReset()
+    mockReset.mockReset()
     Auth.handle_new_login.mockReset()
+    Auth.is_logged_in.mockReset()
+    Auth.is_logged_in.mockReturnValue(false)
+    Auth.is_selecting_user = true
+    Auth.selected_user = null
+    Auth.users = []
+    mockCanGoBack.mockReturnValue(true)
+    App.reset_to_tabs.mockResolvedValue(true)
     App.bump_web_view_epoch.mockResolvedValue(true)
     App.close_sheet.mockResolvedValue(true)
     jest.spyOn(Alert, 'alert').mockImplementation(() => {})
@@ -170,5 +194,49 @@ describe('Login Apple sign in', () => {
     expect(App.bump_web_view_epoch).toHaveBeenCalledTimes(1)
     expect(App.close_sheet).toHaveBeenCalledWith('main_sheet')
     expect(mockGoBack).toHaveBeenCalled()
+  })
+
+  test('resets to tabs after successful sign in from a microblog URL', async () => {
+    const signin_token = '12345678901234567890'
+    MicroBlogApi.login_with_token.mockResolvedValue({
+      username: 'vincent',
+      token: 'app-token'
+    })
+    Auth.handle_new_login.mockResolvedValue(true)
+
+    await Login.trigger_login_from_url(`microblog://signin/${signin_token}`)
+
+    expect(MicroBlogApi.login_with_token).toHaveBeenCalledWith(signin_token)
+    expect(Auth.handle_new_login).toHaveBeenCalledWith({
+      username: 'vincent',
+      token: 'app-token'
+    })
+    expect(App.close_sheet).toHaveBeenCalledWith('main_sheet')
+    expect(App.close_sheet).toHaveBeenCalledWith('login-message-sheet')
+    expect(App.reset_to_tabs).toHaveBeenCalledTimes(1)
+    expect(mockReset).not.toHaveBeenCalled()
+    expect(mockGoBack).not.toHaveBeenCalled()
+  })
+
+  test('does not copy a microblog URL sign in token into the visible input', async () => {
+    const signin_token = '12345678901234567890'
+    let resolve_login
+    MicroBlogApi.login_with_token.mockReturnValue(new Promise(resolve => {
+      resolve_login = resolve
+    }))
+    Auth.handle_new_login.mockResolvedValue(true)
+
+    const login_promise = Login.trigger_login_from_url(`microblog://signin/${signin_token}`)
+    await Promise.resolve()
+
+    expect(Login.is_loading).toBe(true)
+    expect(Login.input_value).toBe('')
+    expect(MicroBlogApi.login_with_token).toHaveBeenCalledWith(signin_token)
+
+    resolve_login({
+      username: 'vincent',
+      token: 'app-token'
+    })
+    await login_promise
   })
 })
