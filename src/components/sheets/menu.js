@@ -38,7 +38,7 @@ export default class SheetMenu extends React.Component{
               <AccountSwitcher />
               :
               <TouchableOpacity
-                onPress={() => App.navigate_to_screen("Login")}
+                onPress={() => App.navigate_to_screen_from_menu("Login")}
                 style={{
                   padding: 8,
                   paddingHorizontal: 16,
