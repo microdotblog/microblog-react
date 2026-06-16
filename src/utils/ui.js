@@ -7,6 +7,7 @@ export const HEADER_BUTTON_HIT_SLOP = {
   left: STANDARD_SLOP,
   right: STANDARD_SLOP
 }
+export const IOS_TAB_BAR_PADDING = 49
 export const LIQUID_GLASS_WEBVIEW_TAB_BAR_PADDING = 56
 export const ANDROID_TAB_BAR_PADDING = 96
 
@@ -29,7 +30,15 @@ export function tabBarBottomInset(bottom_safe_area_inset = 0, platform = Platfor
     return bottom_safe_area_inset + ANDROID_TAB_BAR_PADDING
   }
 
-  return liquidGlassWebViewBottomInset(bottom_safe_area_inset, platform)
+  if (platform.OS === 'ios') {
+    if (isLiquidGlass(platform)) {
+      return liquidGlassWebViewBottomInset(bottom_safe_area_inset, platform)
+    }
+
+    return bottom_safe_area_inset + IOS_TAB_BAR_PADDING
+  }
+
+  return 0
 }
 
 export function tabBarScrollContentBottomPadding(bottom_safe_area_inset = 0, base_padding = 0, platform = Platform) {
