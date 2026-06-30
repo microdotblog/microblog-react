@@ -34,11 +34,10 @@ class EditorKeyboardAvoidingContent extends React.Component {
 
   updateKeyboardHeight(keyboard_height) {
     const next_keyboard_height = Math.max(0, keyboard_height || 0)
-    const next_visible_height = this.visibleHeight(this.state.content_height, next_keyboard_height)
 
     this.setState({
       keyboard_height: next_keyboard_height,
-      visible_height: next_visible_height
+      visible_height: this.state.content_height
     }, this.measureInWindow)
   }
 
@@ -55,21 +54,13 @@ class EditorKeyboardAvoidingContent extends React.Component {
   handleLayout = (event) => {
     this.props.onLayout?.(event)
 
-    if (this.state.keyboard_height > 0) {
-      return
-    }
-
     const height = event?.nativeEvent?.layout?.height || 0
     if (height > 0 && height !== this.state.content_height) {
       this.setState({
         content_height: height,
-        visible_height: this.visibleHeight(height, this.state.keyboard_height)
+        visible_height: height
       }, this.measureInWindow)
     }
-  }
-
-  visibleHeight(content_height, keyboard_height) {
-    return Math.max(0, content_height - keyboard_height)
   }
 
   render() {
@@ -82,8 +73,7 @@ class EditorKeyboardAvoidingContent extends React.Component {
     const should_avoid_keyboard = this.state.keyboard_height > 0 && this.state.content_height > 0
     const keyboard_style = should_avoid_keyboard ?
       {
-        height: this.state.visible_height,
-        flex: 0,
+        flex: 1,
         marginBottom: this.state.keyboard_height
       }
       :
