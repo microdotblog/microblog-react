@@ -434,9 +434,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -473,9 +477,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -490,9 +498,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/Pods-MicroBlog_RN-MicroBlog_Share-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/Pods-MicroBlog_RN-MicroBlog_Share-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -592,7 +604,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = MicroBlog_Share/MicroBlog_Share.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 453;
+				CURRENT_PROJECT_VERSION = 454;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 3F9MDJ6K4E;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -640,7 +652,7 @@
 				CODE_SIGN_ENTITLEMENTS = MicroBlog_Share/MicroBlog_Share.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 453;
+				CURRENT_PROJECT_VERSION = 454;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 3F9MDJ6K4E;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -681,7 +693,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MicroBlog_RN/MicroBlog_RN.entitlements;
-				CURRENT_PROJECT_VERSION = 453;
+				CURRENT_PROJECT_VERSION = 454;
 				DEVELOPMENT_TEAM = 3F9MDJ6K4E;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MicroBlog_RN/Info.plist;
@@ -719,7 +731,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MicroBlog_RN/MicroBlog_RN.entitlements;
-				CURRENT_PROJECT_VERSION = 453;
+				CURRENT_PROJECT_VERSION = 454;
 				DEVELOPMENT_TEAM = 3F9MDJ6K4E;
 				INFOPLIST_FILE = MicroBlog_RN/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
@@ -814,10 +826,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_CPLUSPLUSFLAGS = "$(inherited)";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -886,10 +895,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_CPLUSPLUSFLAGS = "$(inherited)";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
