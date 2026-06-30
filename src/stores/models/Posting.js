@@ -200,7 +200,6 @@ export default Posting = types.model('Posting', {
         })
         self.post_syndicates = syndicate_targets
       }
-      self.is_sending_post = false
       if (!was_draft) {
         App.show_publishing_progress();
       }
@@ -516,6 +515,7 @@ export default Posting = types.model('Posting', {
     self.post_categories = []
     self.summary = null
     self.new_category_text = ""
+    self.is_sending_post = false
     self.is_editing_post = false
     self.post_url = null
     self.show_title = false
