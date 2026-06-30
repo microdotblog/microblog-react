@@ -1,0 +1,22 @@
+diff --git a/src/unstable/NativeBottomTabView.native.tsx b/src/unstable/NativeBottomTabView.native.tsx
+--- a/src/unstable/NativeBottomTabView.native.tsx
++++ b/src/unstable/NativeBottomTabView.native.tsx
+@@ -420,6 +420,7 @@ export function NativeBottomTabView({ state, navigation, descriptors }: Props) {
+               onDidDisappear={() => onTransitionEnd({ closing: true, route })}
+               key={route.key}
+               screenKey={route.key}
++              isFocused={isFocused}
+               preventNativeSelection={tabBarSelectionEnabled === false}
+               badgeValue={tabBarBadge?.toString()}
+               title={tabTitle}
+diff --git a/lib/module/unstable/NativeBottomTabView.native.js b/lib/module/unstable/NativeBottomTabView.native.js
+--- a/lib/module/unstable/NativeBottomTabView.native.js
++++ b/lib/module/unstable/NativeBottomTabView.native.js
+@@ -287,6 +287,7 @@ export function NativeBottomTabView({
+             route
+           }),
+           screenKey: route.key,
++          isFocused: isFocused,
+           preventNativeSelection: tabBarSelectionEnabled === false,
+           badgeValue: tabBarBadge?.toString(),
+           title: tabTitle,
