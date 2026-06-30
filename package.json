@@ -2,6 +2,7 @@
   "name": "microblog_rn",
   "version": "0.0.1",
   "private": true,
+  "packageManager": "bun@1.4.0",
   "main": "index.js",
   "scripts": {
     "android": "react-native run-android",
@@ -23,7 +24,7 @@
     "@react-native-cookies/cookies": "^6.2.1",
     "@react-native-documents/picker": "^10.1.7",
     "@react-native-menu/menu": "^2.0.0",
-    "@react-navigation/bottom-tabs": "^7.8.8",
+    "@react-navigation/bottom-tabs": "7.8.8",
     "@react-navigation/native": "^7.1.22",
     "@react-navigation/native-stack": "^7.8.2",
     "@xmldom/xmldom": "^0.9.8",
@@ -92,7 +93,8 @@
     "preset": "react-native"
   },
   "engines": {
-    "node": ">=20.19.4"
+    "node": ">=20.19.4",
+    "bun": ">=1.4.0"
   },
   "patchedDependencies": {
     "@react-native-cookies/cookies@6.2.1": "patches/@react-native-cookies+cookies+6.2.1.patch",

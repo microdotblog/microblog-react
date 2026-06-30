@@ -1,7 +1,7 @@
 PODS:
   - EXConstants (55.0.16):
     - ExpoModulesCore
-  - Expo (55.0.23):
+  - Expo (55.0.27):
     - ExpoModulesCore
     - hermes-engine
     - RCTRequired
@@ -30,11 +30,11 @@ PODS:
     - ExpoModulesCore
   - ExpoDomWebView (55.0.6):
     - ExpoModulesCore
-  - ExpoFileSystem (55.0.19):
+  - ExpoFileSystem (55.0.23):
     - ExpoModulesCore
-  - ExpoFont (55.0.7):
+  - ExpoFont (55.0.8):
     - ExpoModulesCore
-  - ExpoImage (55.0.10):
+  - ExpoImage (55.0.11):
     - ExpoModulesCore
     - libavif/libdav1d
     - SDWebImage (~> 5.21.0)
@@ -75,9 +75,9 @@ PODS:
     - React-Core
     - React-runtimescheduler
     - ReactCommon
-  - ExpoSecureStore (55.0.13):
+  - ExpoSecureStore (55.0.15):
     - ExpoModulesCore
-  - ExpoWebBrowser (55.0.15):
+  - ExpoWebBrowser (55.0.17):
     - ExpoModulesCore
   - FBLazyVector (0.83.6)
   - hermes-engine (0.14.1):
@@ -2855,18 +2855,18 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   EXConstants: dadbeba983acc30f855a919658a2b34fbd86615d
-  Expo: 51ac8f3473586b2634d9dfe52324793b086acb5a
+  Expo: b0f96de93d2e9ab7c6eabcf88597b13f6fe3f67e
   ExpoAsset: 7721c5c4ae2a7c3c8147a046727ac6c020b05648
   ExpoDomWebView: b2e9d601f9cb77d3c97da73234e175b64be91928
-  ExpoFileSystem: 0b73b097e67c83622640168f620defc65a1a6f70
-  ExpoFont: a95606f106a6394df8edf6d0d87aab9020af5ad4
-  ExpoImage: 74d26278507b0b0d85b1e50562412172603f59eb
+  ExpoFileSystem: 49ab894dee0818cb8b83d489fc51eafade73efb9
+  ExpoFont: a7e34a75bdfb703fa07a0e87807f836236608c76
+  ExpoImage: 5854bd51edd7c0a775755473598f9daeb3fde4e3
   ExpoKeepAwake: d0eb7a0719500d2a43fbf29b6f79e84d70c75ebf
   ExpoLogBox: a678d36477ab9544fe63e0b5328a0716539b6774
   ExpoModulesCore: 5e1ad569ce7cf8d35c0737585f34cc299fc3f0ca
   ExpoModulesJSI: 964334271fc77832736f66ee1785761cdc778dbe
-  ExpoSecureStore: 38954f6bcef1287aa04c06fba3b86e8af3291ccd
-  ExpoWebBrowser: 231c91ddd1e445d81d4a4cac364360354200c32f
+  ExpoSecureStore: f495a3e0ab65683be8427a96f694726a88048f46
+  ExpoWebBrowser: 3f57d6eec40cd76608ee9e660915bc474b7cfa6a
   FBLazyVector: 427fa1856a481856091061293ce865a75aa4f20f
   hermes-engine: 9b3360823aedb9b1973bed6c5584c6aea21dd460
   libavif: 5f8e715bea24debec477006f21ef9e95432e254d

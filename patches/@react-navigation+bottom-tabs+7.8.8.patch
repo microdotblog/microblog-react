@@ -1,7 +1,7 @@
 diff --git a/src/unstable/NativeBottomTabView.native.tsx b/src/unstable/NativeBottomTabView.native.tsx
 --- a/src/unstable/NativeBottomTabView.native.tsx
 +++ b/src/unstable/NativeBottomTabView.native.tsx
-@@ -15,8 +15,7 @@ import Color from 'color';
+@@ -16,8 +16,7 @@ import Color from 'color';
  import * as React from 'react';
  import { type ColorValue, Platform, PlatformColor } from 'react-native';
  import {
@@ -11,10 +11,10 @@ diff --git a/src/unstable/NativeBottomTabView.native.tsx b/src/unstable/NativeBo
    type BottomTabsScreenItemStateAppearance,
    type PlatformIcon,
  } from 'react-native-screens';
-@@ -31,6 +30,9 @@ import type {
+@@ -32,6 +31,9 @@ import type {
    NativeBottomTabNavigationProp,
  } from './types';
-+
+ 
 +const BottomTabs = Tabs.Host;
 +const BottomTabsScreen = Tabs.Screen;
 +
