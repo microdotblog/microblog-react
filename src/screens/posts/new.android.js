@@ -19,6 +19,7 @@ export default class PostingScreen extends React.Component{
   
   render() {
     const { posting } = Auth.selected_user
+    const is_editor_enabled = !posting.is_sending_post && !posting.is_closing_after_post
     return(
       <>
         <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={125} style={{ flex: 1 }}>
@@ -39,7 +40,7 @@ export default class PostingScreen extends React.Component{
                 borderBottomWidth: .5,
                 color: App.theme_text_color()
               }}
-              editable={!posting.is_sending_post}
+              editable={is_editor_enabled}
               multiline={false}
               scrollEnabled={false}
               returnKeyType={'default'}
@@ -50,7 +51,7 @@ export default class PostingScreen extends React.Component{
    					  enablesReturnKeyAutomatically={true}
    					  underlineColorAndroid={'transparent'}
               value={posting.post_title}
-              onChangeText={(text) => !posting.is_sending_post ? posting.set_post_title(text) : null}
+              onChangeText={(text) => is_editor_enabled ? posting.set_post_title(text) : null}
             />
             : null
           }
@@ -68,7 +69,7 @@ export default class PostingScreen extends React.Component{
               color: App.theme_text_color(),
               paddingBottom: posting.post_assets?.length > 0 ? 90 : 50
             }}
-            editable={!posting.is_sending_post}
+            editable={is_editor_enabled}
             multiline={true}
             scrollEnabled={true}
             returnKeyType={'default'}
@@ -80,7 +81,7 @@ export default class PostingScreen extends React.Component{
             underlineColorAndroid={'transparent'}
             value={posting.post_text}
             selection={posting.text_selection_flat}
-            onChangeText={({ nativeEvent: { text } }) => !posting.is_sending_post ? posting.set_post_text_from_typing(text) : null}
+            onChangeText={({ nativeEvent: { text } }) => is_editor_enabled ? posting.set_post_text_from_typing(text) : null}
             onSelectionChange={({ nativeEvent: { selection } }) => {
               posting.set_text_selection(selection)
             }}
