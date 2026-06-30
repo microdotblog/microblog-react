@@ -27,6 +27,7 @@ export default Posting = types.model('Posting', {
   post_syndicates: types.optional(types.array(types.string), []),
   post_status: types.optional(types.string, "published"),
   is_adding_bookmark: types.optional(types.boolean, false),
+  is_closing_after_post: types.optional(types.boolean, false),
   text_selection: types.optional(
     types.model('Selection', {
       start: types.optional(types.number, 0),
@@ -68,6 +69,7 @@ export default Posting = types.model('Posting', {
     }
     self.post_assets = []
     self.is_sending_post = false
+    self.is_closing_after_post = false
     self.is_adding_bookmark = false
     self.is_editing_post = false
     self.text_selection_flat = ""
@@ -111,6 +113,7 @@ export default Posting = types.model('Posting', {
   
   hydrate_post_with_markdown: flow(function* (markdown) {
     console.log("hydrate_post_with_markdown", markdown)
+    self.is_closing_after_post = false
     self.post_text = markdown
   }),
   
@@ -119,15 +122,18 @@ export default Posting = types.model('Posting', {
   }),
   
   set_post_text: flow(function* (value) {
+    self.is_closing_after_post = false
 		self.post_text = value
   }),
 
   set_post_text_from_typing: flow(function* (value) {
+    self.is_closing_after_post = false
     self.post_text = value
     App.check_usernames(self.post_text)
   }),
   
   set_post_text_from_action: flow(function* (value) {
+    self.is_closing_after_post = false
     self.post_text = decodeURI(value.replace("microblog://post?text=", "").replace(/%3A/g, ":"))
   }),
   
@@ -200,6 +206,8 @@ export default Posting = types.model('Posting', {
         })
         self.post_syndicates = syndicate_targets
       }
+      self.is_sending_post = false
+      self.is_closing_after_post = true
       if (!was_draft) {
         App.show_publishing_progress();
       }
@@ -285,6 +293,7 @@ export default Posting = types.model('Posting', {
       return
     }
     if (result.assets) {
+      self.is_closing_after_post = false
       result.assets.forEach((asset) => {
         let is_video = self.is_asset_video(asset.type)
         console.log("Posting:handle_asset_action:asset", asset, is_video)
@@ -390,6 +399,7 @@ export default Posting = types.model('Posting', {
   
   create_and_attach_asset: flow(function* (asset) {
     console.log("Posting:create_and_attach_asset", asset)
+    self.is_closing_after_post = false
     const existing_asset = self.post_assets.find(file => file.uri === asset.uri)
     if(existing_asset == null){
       const media_asset = MediaAsset.create(asset)
@@ -398,6 +408,7 @@ export default Posting = types.model('Posting', {
   }),
   
   attach_asset: flow(function* (asset) {
+    self.is_closing_after_post = false
     self.post_assets.push(asset)
     // Always upload immediately for better user feedback
     asset.upload(self.selected_service.service_object())
@@ -516,6 +527,7 @@ export default Posting = types.model('Posting', {
     self.summary = null
     self.new_category_text = ""
     self.is_sending_post = false
+    self.is_closing_after_post = false
     self.is_editing_post = false
     self.post_url = null
     self.show_title = false
