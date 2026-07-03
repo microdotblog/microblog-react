@@ -5,7 +5,6 @@ import { useIsFocused } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Auth from '../../stores/Auth'
 import App from '../../stores/App'
-import Reply from '../../stores/Reply'
 import { ScrollView } from 'react-native-gesture-handler'
 import WebView from 'react-native-webview'
 import WebErrorViewModule from './error_view'
@@ -71,7 +70,7 @@ const WebViewModule = observer((props) => {
     ${web_view_css_properties_javascript}
   ` : should_inject_web_view_padding ? web_view_css_properties_javascript : null
   const should_render_direct_webview = Platform.OS === 'ios' && props.profile == null
-  const should_use_native_pull_to_refresh = should_render_direct_webview && isFocused && !Reply.is_sheet_open
+  const should_use_native_pull_to_refresh = should_render_direct_webview
 
   React.useEffect(() => {
     if (!isFocused) {
@@ -110,11 +109,7 @@ const WebViewModule = observer((props) => {
     webViewRef.current?.reload()
   }
 
-  const trigger_android_webview_recovery = (url = '') => {
-    if (Platform.OS !== 'android') {
-      return false
-    }
-
+  const trigger_webview_recovery = (url = '') => {
     if (!should_attempt_webview_recovery({
       did_load_one_or_more_webviews: Auth.did_load_one_or_more_webviews,
       has_attempted_recovery: hasAttemptedRecoveryRef.current,
@@ -123,7 +118,7 @@ const WebViewModule = observer((props) => {
       return false
     }
 
-    console.log("WebViewModule:trigger_android_webview_recovery", url)
+    console.log("WebViewModule:trigger_webview_recovery", Platform.OS, url)
     hasSetDidLoadRef.current = false
     hasAttemptedRecoveryRef.current = true
     Auth.invalidate_webview_bootstrap()
@@ -137,7 +132,10 @@ const WebViewModule = observer((props) => {
     return true
   }
 
-  const onContentProcessDidTerminate = () => webViewRef.current?.reload()
+  const onContentProcessDidTerminate = () => {
+    console.log("WebViewModule:onContentProcessDidTerminate")
+    webViewRef.current?.reload()
+  }
 
   const _webview = () => {
     return (
@@ -253,17 +251,27 @@ const WebViewModule = observer((props) => {
           App.handle_web_view_message(event.nativeEvent.data)
         }}
         onError={(event) => {
-          trigger_android_webview_recovery(event?.nativeEvent?.url ?? source_uri)
+          console.log("WebViewModule:onError", event?.nativeEvent)
+          trigger_webview_recovery(event?.nativeEvent?.url ?? source_uri)
         }}
         onHttpError={(event) => {
-          trigger_android_webview_recovery(event?.nativeEvent?.url ?? source_uri)
+          console.log("WebViewModule:onHttpError", event?.nativeEvent)
+          trigger_webview_recovery(event?.nativeEvent?.url ?? source_uri)
         }}
         onRenderProcessGone={(event) => {
           console.log("WebViewModule:onRenderProcessGone", event?.nativeEvent)
-          trigger_android_webview_recovery(event?.nativeEvent?.url ?? source_uri)
+          trigger_webview_recovery(event?.nativeEvent?.url ?? source_uri)
         }}
         style={{ flex: 1, backgroundColor: App.theme_background_color(), opacity: state.opacity }}
-        renderError={(name, code, description) => <WebErrorViewModule error_name={description} />}
+        renderError={(name, code, description) => (
+          <WebErrorViewModule
+            error_name={description}
+            on_retry={() => {
+              hasAttemptedRecoveryRef.current = false
+              webViewRef.current?.reload()
+            }}
+          />
+        )}
         injectedJavaScript={web_view_injected_javascript}
         injectedJavaScriptBeforeContentLoaded={should_inject_web_view_padding ? web_view_css_properties_javascript : null}
         onContentProcessDidTerminate={onContentProcessDidTerminate}

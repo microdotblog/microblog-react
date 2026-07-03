@@ -28,6 +28,12 @@ let SCROLLING_TIMEOUT = null
 let CURRENT_WEB_VIEW_REF = null
 let PUBLISHING_PROGRESS_TIMEOUT = null
 let SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = false
+let WEBVIEW_HEALTH_PING_ID = null
+let WEBVIEW_HEALTH_PING_TIMEOUT = null
+
+const WEBVIEW_HEALTH_PING_PREFIX = '__webview_health_ping__'
+const WEBVIEW_HEALTH_PING_TIMEOUT_MS = 1500
+const WEBVIEW_HEALTH_PING_DELAY_MS = 400
 
 export default App = types.model('App', {
   is_loading: types.optional(types.boolean, false),
@@ -657,6 +663,16 @@ export default App = types.model('App', {
 
     handle_web_view_message: flow(function*(message) {
       console.log("App:handle_web_view_message", message)
+      if (`${message}`.startsWith(WEBVIEW_HEALTH_PING_PREFIX)) {
+        const ping_id = `${message}`.slice(WEBVIEW_HEALTH_PING_PREFIX.length)
+        if (ping_id === WEBVIEW_HEALTH_PING_ID) {
+          console.log("App:check_web_view_health_on_resume:pong", ping_id)
+          clearTimeout(WEBVIEW_HEALTH_PING_TIMEOUT)
+          WEBVIEW_HEALTH_PING_TIMEOUT = null
+          WEBVIEW_HEALTH_PING_ID = null
+        }
+        return
+      }
       if (message === "bookmark_added") {
         Toast.showWithGravity("Bookmark added!", Toast.SHORT, Toast.CENTER)
       }
@@ -700,6 +716,43 @@ export default App = types.model('App', {
       }
     }),
 
+    check_web_view_health_on_resume: flow(function*() {
+      if (Platform.OS !== 'ios' || !Auth.did_load_one_or_more_webviews || !CURRENT_WEB_VIEW_REF) {
+        return
+      }
+
+      const ping_id = `${Date.now()}`
+      WEBVIEW_HEALTH_PING_ID = ping_id
+      clearTimeout(WEBVIEW_HEALTH_PING_TIMEOUT)
+
+      try {
+        CURRENT_WEB_VIEW_REF.injectJavaScript(`
+          (function() {
+            try {
+              window.ReactNativeWebView.postMessage('${WEBVIEW_HEALTH_PING_PREFIX}${ping_id}')
+            } catch (error) {}
+          })()
+          true
+        `)
+      } catch (error) {
+        console.log("App:check_web_view_health_on_resume:inject_error", error)
+        WEBVIEW_HEALTH_PING_ID = null
+        App.bump_web_view_epoch()
+        return
+      }
+
+      WEBVIEW_HEALTH_PING_TIMEOUT = setTimeout(() => {
+        if (WEBVIEW_HEALTH_PING_ID !== ping_id) {
+          return
+        }
+
+        console.log("App:check_web_view_health_on_resume:timeout", ping_id)
+        WEBVIEW_HEALTH_PING_ID = null
+        WEBVIEW_HEALTH_PING_TIMEOUT = null
+        App.bump_web_view_epoch()
+      }, WEBVIEW_HEALTH_PING_TIMEOUT_MS)
+    }),
+
     set_current_initial_theme: flow(function*() {
       const color_scheme = App.resolved_theme()
       console.log("App:set_current_theme", color_scheme)
@@ -727,6 +780,9 @@ export default App = types.model('App', {
         }
         yield App.sync_current_accent_color()
         Push.replay_pending_notification()
+        if (Platform.OS === 'ios') {
+          setTimeout(() => App.check_web_view_health_on_resume(), WEBVIEW_HEALTH_PING_DELAY_MS)
+        }
       }
     }),
 
