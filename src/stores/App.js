@@ -716,6 +716,18 @@ export default App = types.model('App', {
       }
     }),
 
+    reload_current_web_view: flow(function*() {
+      if (!CURRENT_WEB_VIEW_REF) {
+        return
+      }
+
+      try {
+        CURRENT_WEB_VIEW_REF.reload()
+      } catch (error) {
+        console.log("App:reload_current_web_view:error", error)
+      }
+    }),
+
     check_web_view_health_on_resume: flow(function*() {
       if (Platform.OS !== 'ios' || !Auth.did_load_one_or_more_webviews || !CURRENT_WEB_VIEW_REF) {
         return

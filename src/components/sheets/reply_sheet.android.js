@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { View, TextInput, ActivityIndicator, TouchableOpacity, Text } from 'react-native'
+import { View, TextInput, ActivityIndicator, TouchableOpacity, Text, Platform } from 'react-native'
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import ActionSheet from 'react-native-actions-sheet'
 import Reply from '../../stores/Reply'
@@ -34,7 +34,12 @@ export default class ReplySheet extends React.Component {
         initialSnapIndex={[0]}
         backgroundInteractionEnabled={true}
         onOpen={() => Reply.set_sheet_open(true)}
-        onClose={() => Reply.set_sheet_open(false)}
+        onClose={() => {
+          Reply.set_sheet_open(false)
+          if (Platform.OS === 'ios') {
+            setTimeout(() => App.check_web_view_health_on_resume(), 400)
+          }
+        }}
         isModal={true}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 12, paddingBottom: 12, borderBottomWidth: 1, borderColor: App.theme_border_color(), backgroundColor: App.theme_modal_background_color() }}>
