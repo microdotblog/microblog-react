@@ -5,6 +5,7 @@ import { useIsFocused } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Auth from '../../stores/Auth'
 import App from '../../stores/App'
+import Reply from '../../stores/Reply'
 import { ScrollView } from 'react-native-gesture-handler'
 import WebView from 'react-native-webview'
 import WebErrorViewModule from './error_view'
@@ -69,7 +70,8 @@ const WebViewModule = observer((props) => {
     document.getElementsByTagName('head')[0].appendChild(meta)
     ${web_view_css_properties_javascript}
   ` : should_inject_web_view_padding ? web_view_css_properties_javascript : null
-  const should_use_native_pull_to_refresh = Platform.OS === 'ios' && props.profile == null
+  const should_render_direct_webview = Platform.OS === 'ios' && props.profile == null
+  const should_use_native_pull_to_refresh = should_render_direct_webview && isFocused && !Reply.is_sheet_open
 
   React.useEffect(() => {
     if (!isFocused) {
@@ -235,7 +237,7 @@ const WebViewModule = observer((props) => {
         onScroll={(e) => {
           App.set_is_scrolling()
 
-          if (!should_use_native_pull_to_refresh && e.nativeEvent.contentOffset != null && e.nativeEvent.contentOffset.y != null) {
+          if (!should_render_direct_webview && e.nativeEvent.contentOffset != null && e.nativeEvent.contentOffset.y != null) {
             const y = e.nativeEvent.contentOffset.y
             const is_pull_to_refresh_enabled = y <= 0.15
             setState(prevState => {
@@ -280,7 +282,7 @@ const WebViewModule = observer((props) => {
     />
   ) : null
 
-  if (should_use_native_pull_to_refresh) {
+  if (should_render_direct_webview) {
     return (
       <>
         {loading_banner}
