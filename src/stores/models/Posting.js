@@ -14,6 +14,8 @@ import md from 'markdown-it';
 const parser = md({ html: true });
 const { MBClipboardHelper } = NativeModules;
 
+const should_show_publishing_progress = post_status => post_status != "draft"
+
 export default Posting = types.model('Posting', {
   username: types.identifier,
   services: types.optional(types.array(Service), []),
@@ -187,7 +189,7 @@ export default Posting = types.model('Posting', {
       return false
     }
     self.is_sending_post = true
-    const was_draft = (self.post_status == "draft");
+    const should_show_progress = should_show_publishing_progress(self.post_status)
     const post_success = self.selected_service.type === "xmlrpc" ?
       yield XMLRPCApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
       : yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status, self.post_syndicates.length === self.selected_service.active_destination()?.syndicates?.length ? null : self.post_syndicates, self.summary)
@@ -208,7 +210,7 @@ export default Posting = types.model('Posting', {
       }
       self.is_sending_post = false
       self.is_closing_after_post = true
-      if (!was_draft) {
+      if (should_show_progress) {
         App.show_publishing_progress();
       }
       return true
@@ -509,11 +511,14 @@ export default Posting = types.model('Posting', {
       return false
     }
     self.is_sending_post = true
+    const should_show_progress = should_show_publishing_progress(self.post_status)
     const post_success = yield MicroPubApi.post_update(self.selected_service.service_object(), self.post_text, self.post_url, self.post_title, self.post_categories, self.post_status)
     self.is_sending_post = false
     if(post_success !== POST_ERROR){
       self.clear_post()
-      App.show_publishing_progress()
+      if (should_show_progress) {
+        App.show_publishing_progress()
+      }
       return true
     }
     return false
