@@ -1,5 +1,6 @@
 import App from '../../src/stores/App'
 import Push from '../../src/stores/Push'
+import { Linking } from 'react-native'
 import { CommonActions } from '@react-navigation/native'
 
 jest.mock('../../src/api/MicroBlogApi', () => ({
@@ -13,14 +14,17 @@ jest.mock('../../src/stores/Auth', () => ({
 }))
 
 jest.mock('../../src/stores/Login', () => ({}))
-jest.mock('../../src/stores/Reply', () => ({}))
+jest.mock('../../src/stores/Reply', () => ({
+  hydrate: jest.fn()
+}))
 jest.mock('../../src/stores/Discover', () => ({}))
 jest.mock('../../src/stores/Settings', () => ({}))
 jest.mock('../../src/stores/Services', () => ({}))
 
 jest.mock('../../src/stores/Push', () => ({
   replay_pending_notification: jest.fn(),
-  set_auth_ready: jest.fn()
+  set_auth_ready: jest.fn(),
+  check_and_remove_notifications_with_post_id: jest.fn()
 }))
 
 jest.mock('react-native-simple-toast', () => ({
@@ -59,11 +63,23 @@ jest.mock('@react-navigation/native', () => ({
 }))
 
 describe('App navigation reset', () => {
+  let current_time = 1000
+
   beforeEach(async () => {
+    current_time += 10000
+    jest.spyOn(Date, 'now').mockImplementation(() => current_time)
+    Linking.canOpenURL = jest.fn(() => Promise.resolve(true))
+    Linking.openURL = jest.fn(() => Promise.resolve())
     await App.set_navigation(null)
     await App.set_navigation_ready(false)
+    await App.set_current_tab_key('Timeline')
     Push.replay_pending_notification.mockReset()
+    Push.check_and_remove_notifications_with_post_id.mockReset()
     CommonActions.reset.mockClear()
+  })
+
+  afterEach(() => {
+    Date.now.mockRestore()
   })
 
   test('waits for navigation readiness before consuming a pending tab reset', async () => {
@@ -110,5 +126,37 @@ describe('App navigation reset', () => {
 
     await App.set_navigation_ready(true)
     expect(resetRoot).toHaveBeenCalledTimes(1)
+  })
+
+  test('lets direct webview post open URLs navigate to conversation', async () => {
+    const navigation = {
+      isReady: jest.fn(() => true),
+      navigate: jest.fn()
+    }
+
+    await App.set_navigation(navigation)
+    await App.set_navigation_ready(true)
+    await App.handle_url_from_webview('microblog://open/123')
+
+    expect(navigation.navigate).toHaveBeenCalledWith('Timeline-Conversation', { conversation_id: '123' })
+  })
+
+  test('suppresses a conversation URL immediately after a webview link', async () => {
+    const navigation = {
+      isReady: jest.fn(() => true),
+      navigate: jest.fn()
+    }
+
+    await App.set_navigation(navigation)
+    await App.set_navigation_ready(true)
+    await App.handle_url_from_webview('https://example.com/article')
+    await App.handle_url_from_webview('https://micro.blog/example/123')
+
+    expect(navigation.navigate).not.toHaveBeenCalled()
+
+    current_time += 1000
+    await App.handle_url_from_webview('microblog://open/456')
+
+    expect(navigation.navigate).toHaveBeenCalledWith('Timeline-Conversation', { conversation_id: '456' })
   })
 })
