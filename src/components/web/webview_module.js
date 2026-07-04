@@ -5,6 +5,7 @@ import { useIsFocused } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Auth from '../../stores/Auth'
 import App from '../../stores/App'
+import Reply from '../../stores/Reply'
 import { ScrollView } from 'react-native-gesture-handler'
 import WebView from 'react-native-webview'
 import WebErrorViewModule from './error_view'
@@ -70,7 +71,7 @@ const WebViewModule = observer((props) => {
     ${web_view_css_properties_javascript}
   ` : should_inject_web_view_padding ? web_view_css_properties_javascript : null
   const should_render_direct_webview = Platform.OS === 'ios' && props.profile == null
-  const should_use_native_pull_to_refresh = should_render_direct_webview
+  const should_use_native_pull_to_refresh = should_render_direct_webview && isFocused && !Reply.is_sheet_open
 
   React.useEffect(() => {
     if (!isFocused) {
