@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { RefreshControl, Platform, View } from "react-native"
+import { RefreshControl, Platform, View, InteractionManager } from "react-native"
 import { useIsFocused } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Auth from '../../stores/Auth'
@@ -19,12 +19,15 @@ import {
 } from '../../utils/webview_recovery'
 import { tabBarBottomInset } from '../../utils/ui'
 
+const FOCUS_SETTLE_TIMEOUT_MS = 120
+
 const WebViewModule = observer((props) => {
   const insets = useSafeAreaInsets()
   const isFocused = useIsFocused()
   const webViewRef = React.useRef(null)
   const hasSetDidLoadRef = React.useRef(false)
   const hasAttemptedRecoveryRef = React.useRef(false)
+  const [is_focus_settled, set_is_focus_settled] = React.useState(isFocused)
   const [state, setState] = React.useState({
     opacity: 0.0,
     is_pull_to_refresh_enabled: true,
@@ -122,7 +125,32 @@ const WebViewModule = observer((props) => {
     ${web_view_tap_guard_javascript}
   ` : web_view_tap_guard_javascript
   const should_render_direct_webview = Platform.OS === 'ios' && props.profile == null
-  const should_use_native_pull_to_refresh = should_render_direct_webview && isFocused && !Reply.is_sheet_open
+  const should_use_native_pull_to_refresh = should_render_direct_webview && isFocused && is_focus_settled && !Reply.is_sheet_open
+
+  React.useEffect(() => {
+    let did_cancel = false
+    let settle_timeout = null
+
+    set_is_focus_settled(false)
+
+    if (!isFocused) {
+      return () => {}
+    }
+
+    const interaction = InteractionManager.runAfterInteractions(() => {
+      settle_timeout = setTimeout(() => {
+        if (!did_cancel) {
+          set_is_focus_settled(true)
+        }
+      }, FOCUS_SETTLE_TIMEOUT_MS)
+    })
+
+    return () => {
+      did_cancel = true
+      clearTimeout(settle_timeout)
+      interaction?.cancel?.()
+    }
+  }, [isFocused])
 
   React.useEffect(() => {
     if (!isFocused) {
