@@ -1,0 +1,42 @@
+diff --git a/ios/RNSScreen.mm b/ios/RNSScreen.mm
+--- a/ios/RNSScreen.mm
++++ b/ios/RNSScreen.mm
+@@ -569,8 +569,9 @@
+   }
+ }
+ 
+ - (void)notifyDismissedWithCount:(int)dismissCount
+ {
++  self.userInteractionEnabled = NO;
+ #ifdef RCT_NEW_ARCH_ENABLED
+   // If screen is already unmounted then there will be no event emitter
+   if (_eventEmitter != nullptr) {
+@@ -591,7 +592,8 @@
+ }
+ 
+ - (void)notifyDismissCancelledWithDismissCount:(int)dismissCount
+ {
++  self.userInteractionEnabled = YES;
+ #ifdef RCT_NEW_ARCH_ENABLED
+   // If screen is already unmounted then there will be no event emitter
+   if (_eventEmitter != nullptr) {
+@@ -607,7 +609,8 @@
+ }
+ 
+ - (void)notifyWillAppear
+ {
++  self.userInteractionEnabled = YES;
+ #ifdef RCT_NEW_ARCH_ENABLED
+   // If screen is already unmounted then there will be no event emitter
+   if (_eventEmitter != nullptr) {
+@@ -1340,9 +1343,10 @@
+ - (BOOL)hasHeaderConfig
+ {
+   return _config != nil;
+ }
+ 
+ - (void)willBeUnmountedInUpcomingTransaction
+ {
+   _markedForUnmountInCurrentTransaction = YES;
++  self.userInteractionEnabled = NO;
+ }
