@@ -5,6 +5,7 @@ import { useIsFocused } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Auth from '../../stores/Auth'
 import App from '../../stores/App'
+import Reply from '../../stores/Reply'
 import { ScrollView } from 'react-native-gesture-handler'
 import WebView from 'react-native-webview'
 import WebErrorViewModule from './error_view'
@@ -62,15 +63,66 @@ const WebViewModule = observer((props) => {
     })()
     true
   `
+  const web_view_tap_guard_javascript = `
+    void function() {
+      if (window.__microblogTapGuardInstalled) {
+        return
+      }
+
+      window.__microblogTapGuardInstalled = true
+
+      const closest = (target, selector) => {
+        return target && target.closest ? target.closest(selector) : null
+      }
+
+      const open_photo = image => {
+        const src = image?.getAttribute('src')
+        if (!src) {
+          return
+        }
+
+        window.location.href = 'microblog://photo/' + encodeURI(src)
+      }
+
+      const should_ignore_post_touch = event => {
+        const target = event.target
+        return closest(target, 'a[href], button, input, label, select, textarea')
+      }
+
+      document.addEventListener('touchend', event => {
+        if (should_ignore_post_touch(event)) {
+          event.stopPropagation()
+          return
+        }
+
+        const photo = closest(event.target, '.post_text img')
+        if (photo) {
+          event.stopPropagation()
+          open_photo(photo)
+        }
+      }, true)
+
+      document.addEventListener('click', event => {
+        if (should_ignore_post_touch(event)) {
+          event.stopPropagation()
+        }
+      }, true)
+    }()
+    true
+  `
   const web_view_injected_javascript = Platform.OS === 'ios' ? `
     const meta = document.createElement('meta')
     meta.setAttribute('content', 'width=width, initial-scale=${App.web_font_scale()}')
     meta.setAttribute('name', 'viewport')
     document.getElementsByTagName('head')[0].appendChild(meta)
     ${web_view_css_properties_javascript}
-  ` : should_inject_web_view_padding ? web_view_css_properties_javascript : null
+    ${web_view_tap_guard_javascript}
+  ` : should_inject_web_view_padding ? `
+    ${web_view_css_properties_javascript}
+    ${web_view_tap_guard_javascript}
+  ` : web_view_tap_guard_javascript
   const should_render_direct_webview = Platform.OS === 'ios' && props.profile == null
-  const should_use_native_pull_to_refresh = should_render_direct_webview
+  const should_use_native_pull_to_refresh = should_render_direct_webview && isFocused && !Reply.is_sheet_open
 
   React.useEffect(() => {
     if (!isFocused) {
