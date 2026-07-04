@@ -1,4 +1,5 @@
 import { AppRegistry } from 'react-native';
+import './bootstrap/react_native_screens'
 import './bootstrap/push_notifications'
 import MainApp from './screens/App';
 import { name as appName } from './../app.json';
