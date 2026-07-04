@@ -30,10 +30,25 @@ let PUBLISHING_PROGRESS_TIMEOUT = null
 let SHOULD_RESET_TO_TABS_WHEN_NAVIGATION_READY = false
 let WEBVIEW_HEALTH_PING_ID = null
 let WEBVIEW_HEALTH_PING_TIMEOUT = null
+let WEBVIEW_CONVERSATION_CLICK_SUPPRESS_UNTIL = 0
 
 const WEBVIEW_HEALTH_PING_PREFIX = '__webview_health_ping__'
 const WEBVIEW_HEALTH_PING_TIMEOUT_MS = 1500
 const WEBVIEW_HEALTH_PING_DELAY_MS = 400
+const WEBVIEW_CONVERSATION_CLICK_SUPPRESSION_MS = 700
+
+const suppress_next_webview_conversation_click = () => {
+  WEBVIEW_CONVERSATION_CLICK_SUPPRESS_UNTIL = Date.now() + WEBVIEW_CONVERSATION_CLICK_SUPPRESSION_MS
+}
+
+const consume_suppressed_webview_conversation_click = () => {
+  if (Date.now() < WEBVIEW_CONVERSATION_CLICK_SUPPRESS_UNTIL) {
+    WEBVIEW_CONVERSATION_CLICK_SUPPRESS_UNTIL = 0
+    return true
+  }
+
+  return false
+}
 
 export default App = types.model('App', {
   is_loading: types.optional(types.boolean, false),
@@ -313,6 +328,15 @@ export default App = types.model('App', {
           console.log("App:handle_url:action", action, action_data)
 
           if (action != null && action_data != null) {
+            if (action === "open" && consume_suppressed_webview_conversation_click()) {
+              console.log("App:handle_url:suppressed_open_after_link", action_data)
+              return
+            }
+
+            if (action != "open") {
+              suppress_next_webview_conversation_click()
+            }
+
             if (action === "user" || action === "photo" || action === "open" || action === "reply") {
               self.navigate_to_screen(action, action_data)
             }
@@ -545,6 +569,21 @@ export default App = types.model('App', {
         return
       }
 
+      if (url.indexOf('microblog://') === 0) {
+        App.handle_url(url)
+        return
+      }
+
+      const open_url_from_webview = (webview_url) => {
+        suppress_next_webview_conversation_click()
+        App.open_url(webview_url)
+      }
+
+      const navigate_from_webview = (screen_name, action_data = null) => {
+        suppress_next_webview_conversation_click()
+        App.navigate_to_screen(screen_name, action_data)
+      }
+
       // This is going to be messy. Don't judge.
       if (url.indexOf('https://micro.blog/') > -1 || url.indexOf('http://micro.blog/') > -1) {
         const after_mb_link = url.replace('https://micro.blog/', '').replace('http://micro.blog/', '');
@@ -556,12 +595,13 @@ export default App = types.model('App', {
         }
       
         if (after_mb_link.includes("hybrid/discover")) {
+          suppress_next_webview_conversation_click()
           App.navigate_to_screen_from_menu("Discover")
           return
         }
       
         if (parts.length === 3 && parts[0] === 'discover' && parts[1] !== null && parts[2] === "grid") {
-          App.open_url(url)
+          open_url_from_webview(url)
         }
         else if (parts.length === 2) {
           // This is probably a convo
@@ -572,47 +612,52 @@ export default App = types.model('App', {
             if (parts[0] === 'discover' && parts[1] !== null) {
               if (parts[1].indexOf('search') > -1) {
                 // This going to be a user search, but for now we just link it
-                App.open_url(url)
+                open_url_from_webview(url)
               }
               else {
                 const topic = Discover.topic_by_slug(parts[1])
                 if (topic != null) {
-                  App.navigate_to_screen("discover/topic", topic)
+                  navigate_from_webview("discover/topic", topic)
                 }
                 else {
-                  App.open_url(url)
+                  open_url_from_webview(url)
                 }
               }
             }
             else {
-              App.open_url(url)
+              open_url_from_webview(url)
             }
 
           }
           else if (parts[0] === "books") {
-            App.open_url(url)
+            open_url_from_webview(url)
           }
           else if (parts[0] === "bookmarks") {
-            App.navigate_to_screen("bookmark", number[0])
+            navigate_from_webview("bookmark", number[0])
           }
           else {
+            if (consume_suppressed_webview_conversation_click()) {
+              console.log("App:handle_url_from_webview:suppressed_open_after_link", url)
+              return
+            }
+
             App.navigate_to_screen("open", number[0])
           }
         }
         else if (parts?.length >= 4) {
-          App.open_url(url)
+          open_url_from_webview(url)
         }
         else if (parts?.length === 1 && (parts[0] === "summer" || parts[0] === "about")) {
-          App.open_url(url)
+          open_url_from_webview(url)
         }
         else {
           const username = url.replace('https://micro.blog/', '').replace('http://micro.blog/', '')
-          App.navigate_to_screen("user", username)
+          navigate_from_webview("user", username)
         }
       }
       else {
         // It's just a normal URL
-        App.open_url(url)
+        open_url_from_webview(url)
       }
 
     }),
