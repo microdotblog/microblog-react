@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Platform } from 'react-native'
+import { View } from 'react-native'
 import { observer } from 'mobx-react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import PostingScreen from '../../screens/posts/new';
@@ -95,8 +95,7 @@ export default class Posting extends React.Component{
           headerShown: true,
           headerBackTitle: "Back",
           headerTintColor: App.theme_text_color(),
-          headerBackTitleVisible: false,
-          headerStatusBarHeight: Platform.OS === 'android' ? 0 : undefined
+          headerBackTitleVisible: false
 				}}
 			>
         <PostingStack.Screen

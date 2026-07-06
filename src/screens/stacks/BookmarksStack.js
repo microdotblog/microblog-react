@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BookmarksScreen from '../bookmarks/bookmarks';
 import ProfileImage from './../../components/header/profile_image';
@@ -24,8 +24,7 @@ export default class Bookmarks extends React.Component{
       <BookmarksStack.Navigator
         screenOptions={{
           headerTintColor: App.theme_text_color(),
-          headerBackVisible: false,
-          headerStatusBarHeight: Platform.OS === 'android' ? 0 : undefined
+          headerBackVisible: false
         }}
       >
         <BookmarksStack.Screen
