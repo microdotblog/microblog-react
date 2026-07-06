@@ -40,3 +40,9 @@ diff --git a/ios/RNSScreen.mm b/ios/RNSScreen.mm
    _markedForUnmountInCurrentTransaction = YES;
 +  self.userInteractionEnabled = NO;
  }
+diff --git a/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt b/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt
+--- a/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt
++++ b/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt
+@@ -35 +35 @@ open class CustomToolbar(
+-    private val shouldApplyTopInset = true
++    private val shouldApplyTopInset = false
