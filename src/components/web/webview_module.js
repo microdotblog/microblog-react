@@ -94,7 +94,6 @@ const WebViewModule = observer((props) => {
 
       document.addEventListener('touchend', event => {
         if (should_ignore_post_touch(event)) {
-          event.stopPropagation()
           return
         }
 
@@ -102,12 +101,6 @@ const WebViewModule = observer((props) => {
         if (photo) {
           event.stopPropagation()
           open_photo(photo)
-        }
-      }, true)
-
-      document.addEventListener('click', event => {
-        if (should_ignore_post_touch(event)) {
-          event.stopPropagation()
         }
       }, true)
     }()
