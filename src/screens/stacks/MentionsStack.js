@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { Platform } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MentionsScreen from '../mentions/mentions';
 import ProfileImage from './../../components/header/profile_image';
@@ -21,8 +20,7 @@ export default class Mentions extends React.Component{
       <MentionsStack.Navigator
         screenOptions={{
           headerTintColor: App.theme_text_color(),
-          headerBackVisible: false,
-          headerStatusBarHeight: Platform.OS === 'android' ? 0 : undefined
+          headerBackVisible: false
         }}
       >
         <MentionsStack.Screen

@@ -40,3 +40,49 @@ diff --git a/ios/RNSScreen.mm b/ios/RNSScreen.mm
    _markedForUnmountInCurrentTransaction = YES;
 +  self.userInteractionEnabled = NO;
  }
+diff --git a/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt b/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt
+--- a/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt
++++ b/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt
+@@ -8,7 +8,8 @@ import android.os.Build
+ import android.view.Choreographer
+ import android.view.WindowInsets
+ import android.view.WindowManager
+ import androidx.appcompat.widget.Toolbar
+ import androidx.core.view.WindowInsetsCompat
+ import com.facebook.react.modules.core.ReactChoreographer
++import com.facebook.react.views.view.isEdgeToEdgeFeatureFlagOn
+ import com.facebook.react.uimanager.ThemedReactContext
+@@ -35,1 +36,4 @@ open class CustomToolbar(
+-    private val shouldApplyTopInset = true
++    private val shouldApplyTopInset: Boolean
++        get() =
++            Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM &&
++                isEdgeToEdgeFeatureFlagOn
+@@ -138,16 +142,20 @@ open class CustomToolbar(
+                 cutoutInsets.right + systemBarInsets.right,
+                 0,
+             )
+-
+-        // We want to handle display cutout always, no matter the HeaderConfig prop values.
+-        // If there are no cutout displays, we want to apply the additional padding to
+-        // respect the status bar.
+-        val verticalInsets =
++
++        val statusBarInsets =
++            resolveInsetsOrZero(WindowInsetsCompat.Type.statusBars(), unhandledInsets)
++
++        // Keep a status bar inset on Android 15+ edge-to-edge windows, but do not let
++        // displayCutout.top or other system bar insets make the toolbar taller.
++        val topInset = if (shouldApplyTopInset) statusBarInsets.top else 0
++
++        val verticalInsets =
+             InsetsCompat.of(
+                 0,
+-                max(cutoutInsets.top, if (shouldApplyTopInset) systemBarInsets.top else 0),
++                topInset,
+                 0,
+                 max(cutoutInsets.bottom, 0),
+             )
+-
++
+         val newInsets = InsetsCompat.add(horizontalInsets, verticalInsets)
