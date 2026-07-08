@@ -40,7 +40,7 @@ import ShareMenu from 'react-native-share-menu'
 import ShareScreen from './share'
 import PublishingProgress from '../components/generic/publishing_progress'
 import ImageModalModule from '../components/images/image_modal'
-import { headerLeftElement, headerRightElement } from '../utils/navigation'
+import { android_status_bar_options, headerLeftElement, headerRightElement } from '../utils/navigation'
 
 const Stack = createNativeStackNavigator();
 
@@ -150,7 +150,8 @@ export default class MainApp extends React.Component {
                   initialRouteName="Tabs"
                   screenOptions={{
                     headerShown: false,
-                    headerTintColor: App.theme_text_color()
+                    headerTintColor: App.theme_text_color(),
+                    ...android_status_bar_options()
                   }}
 
                 >

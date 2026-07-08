@@ -1,4 +1,17 @@
+import { Platform } from 'react-native'
+import App from '../stores/App'
+import { android_status_bar_style } from './theme'
 import { isLiquidGlass } from './ui'
+
+export function android_status_bar_options() {
+  if (Platform.OS !== 'android') {
+    return {}
+  }
+
+  return {
+    statusBarStyle: android_status_bar_style(App.is_dark_mode()),
+  }
+}
 
 function customHeaderItem(element, options = {}) {
   return {

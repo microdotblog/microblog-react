@@ -9,7 +9,7 @@ import DiscoverTopicScreen from '../../screens/discover/topic';
 import { getSharedScreens } from './SharedStack'
 import App from '../../stores/App'
 import Auth from '../../stores/Auth'
-import { headerLeftElement, headerRightElement } from '../../utils/navigation'
+import { android_status_bar_options, headerLeftElement, headerRightElement } from '../../utils/navigation'
 import { isLiquidGlass } from '../../utils/ui'
 
 const DiscoverStack = createNativeStackNavigator();
@@ -46,7 +46,8 @@ export default class Discover extends React.Component{
       <DiscoverStack.Navigator
         screenOptions={{
           headerTintColor: App.theme_text_color(),
-          headerBackVisible: false
+          headerBackVisible: false,
+          ...android_status_bar_options()
         }}
       >
         <DiscoverStack.Screen

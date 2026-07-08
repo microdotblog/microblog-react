@@ -38,3 +38,8 @@ export const resolve_app_accent_color = ({
 
   return DEFAULT_ACCENT_COLOR
 }
+
+// react-native-screens statusBarStyle: light icons on dark chrome, dark icons on light.
+export const android_status_bar_style = (is_dark = false) => {
+  return is_dark ? 'light' : 'dark'
+}
