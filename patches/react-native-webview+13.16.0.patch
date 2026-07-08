@@ -1,0 +1,36 @@
+diff --git a/apple/RNCWebViewImpl.m b/apple/RNCWebViewImpl.m
+--- a/apple/RNCWebViewImpl.m
++++ b/apple/RNCWebViewImpl.m
+@@ -1624,6 +1624,12 @@
+ #if !TARGET_OS_OSX
+ - (void)addPullToRefreshControl
+ {
++  // Avoid stacking orphan UIRefreshControls when the prop is reapplied true→true.
++  // Multiple controls can leave gesture recognizers fighting the scroll view.
++  if (_refreshControl != nil && _refreshControl.superview != nil) {
++    return;
++  }
++
+   UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+   _refreshControl = refreshControl;
+   if(_refreshControlLightMode) {
+@@ -1642,12 +1648,19 @@
+ 
+ - (void)setPullToRefreshEnabled:(BOOL)pullToRefreshEnabled
+ {
++  if (_pullToRefreshEnabled == pullToRefreshEnabled &&
++      ((_refreshControl != nil && _refreshControl.superview != nil) == pullToRefreshEnabled)) {
++    [self setBounces:_bounces];
++    return;
++  }
++
+   _pullToRefreshEnabled = pullToRefreshEnabled;
+ 
+   if (pullToRefreshEnabled) {
+     [self addPullToRefreshControl];
+   } else {
+     [_refreshControl removeFromSuperview];
++    _refreshControl = nil;
+   }
+ 
+   [self setBounces:_bounces];
