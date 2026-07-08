@@ -113,14 +113,14 @@ export default class MainApp extends React.Component {
     return (
       <SafeAreaProvider initialMetrics={initialWindowMetrics} >
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <KeyboardProvider statusBarTranslucent={Platform.OS !== "android"} navigationBarTranslucent={!is_reply_pane_open}>
+          <KeyboardProvider statusBarTranslucent={true} navigationBarTranslucent={!is_reply_pane_open}>
             <SheetProvider>
               {
                 Platform.OS === 'android' &&
                 <StatusBar
                   barStyle={App.is_dark_mode() ? 'light-content' : 'dark-content'}
-                  backgroundColor={App.theme_navbar_background_color()}
-                  translucent={false}
+                  backgroundColor="transparent"
+                  translucent={true}
                 />
               }
               <NavigationContainer
