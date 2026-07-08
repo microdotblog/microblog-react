@@ -7,7 +7,7 @@ import NewPostButton from '../../components/header/new_post';
 import BackButton from '../../components/header/back';
 import { getSharedScreens } from './SharedStack'
 import App from '../../stores/App'
-import { headerLeftElement, headerRightElement } from '../../utils/navigation'
+import { android_status_bar_options, headerLeftElement, headerRightElement } from '../../utils/navigation'
 
 const MentionsStack = createNativeStackNavigator();
 
@@ -20,7 +20,8 @@ export default class Mentions extends React.Component{
       <MentionsStack.Navigator
         screenOptions={{
           headerTintColor: App.theme_text_color(),
-          headerBackVisible: false
+          headerBackVisible: false,
+          ...android_status_bar_options()
         }}
       >
         <MentionsStack.Screen

@@ -1,4 +1,5 @@
 import {
+  android_status_bar_style,
   normalise_accent_color,
   normalise_theme,
   resolve_app_accent_color,
@@ -60,5 +61,10 @@ describe('theme resolution', () => {
       auto_android_theme: false,
       system_accent_color: '#3366AA',
     })).toBe('#f80')
+  })
+
+  test('maps app theme to react-native-screens status bar icon style', () => {
+    expect(android_status_bar_style(true)).toBe('light')
+    expect(android_status_bar_style(false)).toBe('dark')
   })
 })

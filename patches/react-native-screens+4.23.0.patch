@@ -52,13 +52,15 @@ diff --git a/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt b/an
  import com.facebook.react.modules.core.ReactChoreographer
 +import com.facebook.react.views.view.isEdgeToEdgeFeatureFlagOn
  import com.facebook.react.uimanager.ThemedReactContext
-@@ -35,1 +36,4 @@ open class CustomToolbar(
+@@ -35,1 +36,6 @@ open class CustomToolbar(
 -    private val shouldApplyTopInset = true
++    // Android 15+ enforces edge-to-edge for targetSdk 35+ even when RN's
++    // edgeToEdgeEnabled flag is false, so always keep the status bar inset there.
 +    private val shouldApplyTopInset: Boolean
 +        get() =
-+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM &&
++            Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM ||
 +                isEdgeToEdgeFeatureFlagOn
-@@ -138,16 +142,20 @@ open class CustomToolbar(
+@@ -138,16 +144,20 @@ open class CustomToolbar(
                  cutoutInsets.right + systemBarInsets.right,
                  0,
              )
