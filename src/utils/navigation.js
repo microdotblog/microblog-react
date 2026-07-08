@@ -9,6 +9,9 @@ export function android_status_bar_options() {
   }
 
   return {
+    // Draw under a transparent status bar so navbar chrome provides the colour.
+    // Toolbar top inset (CustomToolbar patch) keeps header controls below the bar.
+    statusBarTranslucent: true,
     statusBarStyle: android_status_bar_style(App.is_dark_mode()),
   }
 }
