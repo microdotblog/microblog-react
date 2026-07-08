@@ -1,11 +1,10 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { Platform, Pressable } from 'react-native'
+import { Platform, Pressable, TouchableOpacity } from 'react-native'
 import App from './../../stores/App'
 import { HEADER_BUTTON_HIT_SLOP, isLiquidGlass } from './../../utils/ui'
 import { SFSymbol } from 'react-native-sfsymbols'
 import { SvgXml } from 'react-native-svg'
-import { HeaderBackButton } from '@react-navigation/elements'
 import { useNavigation } from '@react-navigation/native'
 
 const BackButtonContent = observer(() => {
@@ -77,12 +76,15 @@ const BackButtonContent = observer(() => {
   }
 
   return (
-    <HeaderBackButton
+    <TouchableOpacity
       onPress={handle_press}
       style={button_style}
-      labelVisible={false}
-      backImage={() => back_icon}
-    />
+      hitSlop={HEADER_BUTTON_HIT_SLOP}
+      accessibilityRole="button"
+      accessibilityLabel="Back"
+    >
+      {back_icon}
+    </TouchableOpacity>
   )
 })
 

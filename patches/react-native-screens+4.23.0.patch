@@ -1,9 +1,7 @@
 diff --git a/ios/RNSScreen.mm b/ios/RNSScreen.mm
 --- a/ios/RNSScreen.mm
 +++ b/ios/RNSScreen.mm
-@@ -569,8 +569,9 @@
-   }
- }
+@@ -571,6 +571,7 @@
  
  - (void)notifyDismissedWithCount:(int)dismissCount
  {
@@ -11,8 +9,7 @@ diff --git a/ios/RNSScreen.mm b/ios/RNSScreen.mm
  #ifdef RCT_NEW_ARCH_ENABLED
    // If screen is already unmounted then there will be no event emitter
    if (_eventEmitter != nullptr) {
-@@ -591,7 +592,8 @@
- }
+@@ -592,6 +593,7 @@
  
  - (void)notifyDismissCancelledWithDismissCount:(int)dismissCount
  {
@@ -20,8 +17,7 @@ diff --git a/ios/RNSScreen.mm b/ios/RNSScreen.mm
  #ifdef RCT_NEW_ARCH_ENABLED
    // If screen is already unmounted then there will be no event emitter
    if (_eventEmitter != nullptr) {
-@@ -607,7 +609,8 @@
- }
+@@ -608,6 +610,7 @@
  
  - (void)notifyWillAppear
  {
@@ -29,30 +25,30 @@ diff --git a/ios/RNSScreen.mm b/ios/RNSScreen.mm
  #ifdef RCT_NEW_ARCH_ENABLED
    // If screen is already unmounted then there will be no event emitter
    if (_eventEmitter != nullptr) {
-@@ -1340,9 +1343,10 @@
- - (BOOL)hasHeaderConfig
- {
-   return _config != nil;
- }
- 
+@@ -1345,6 +1348,7 @@
  - (void)willBeUnmountedInUpcomingTransaction
  {
    _markedForUnmountInCurrentTransaction = YES;
 +  self.userInteractionEnabled = NO;
  }
+ 
+ + (react::ComponentDescriptorProvider)componentDescriptorProvider
 diff --git a/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt b/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt
 --- a/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt
 +++ b/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt
-@@ -8,7 +8,8 @@ import android.os.Build
- import android.view.Choreographer
- import android.view.WindowInsets
- import android.view.WindowManager
- import androidx.appcompat.widget.Toolbar
- import androidx.core.view.WindowInsetsCompat
+@@ -11,6 +11,8 @@
  import com.facebook.react.modules.core.ReactChoreographer
-+import com.facebook.react.views.view.isEdgeToEdgeFeatureFlagOn
  import com.facebook.react.uimanager.ThemedReactContext
-@@ -35,1 +36,6 @@ open class CustomToolbar(
+ import com.swmansion.rnscreens.utils.InsetsCompat
++import com.facebook.react.views.view.isEdgeToEdgeFeatureFlagOn
++import com.swmansion.rnscreens.utils.getDecorViewTopInset
+ import com.swmansion.rnscreens.utils.resolveInsetsOrZero
+ import kotlin.math.max
+ 
+@@ -32,7 +34,12 @@
+     // edge-to-edge was enabled: https://github.com/software-mansion/react-native-screens/pull/2464/files#diff-bd1164595b04f44490738b8183f84a625c0e7552a4ae70bfefcdf3bca4d37fc7R34).
+     private val shouldAvoidDisplayCutout = true
+ 
 -    private val shouldApplyTopInset = true
 +    // Android 15+ enforces edge-to-edge for targetSdk 35+ even when RN's
 +    // edgeToEdgeEnabled flag is false, so always keep the status bar inset there.
@@ -60,24 +56,39 @@ diff --git a/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt b/an
 +        get() =
 +            Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM ||
 +                isEdgeToEdgeFeatureFlagOn
-@@ -138,16 +144,20 @@ open class CustomToolbar(
-                 cutoutInsets.right + systemBarInsets.right,
+ 
+     private var shouldApplyLayoutCorrectionForTopInset = false
+ 
+@@ -139,13 +146,32 @@
                  0,
              )
--
+ 
 -        // We want to handle display cutout always, no matter the HeaderConfig prop values.
 -        // If there are no cutout displays, we want to apply the additional padding to
 -        // respect the status bar.
--        val verticalInsets =
-+
 +        val statusBarInsets =
 +            resolveInsetsOrZero(WindowInsetsCompat.Type.statusBars(), unhandledInsets)
 +
 +        // Keep a status bar inset on Android 15+ edge-to-edge windows, but do not let
 +        // displayCutout.top or other system bar insets make the toolbar taller.
-+        val topInset = if (shouldApplyTopInset) statusBarInsets.top else 0
++        // SafeAreaProvider may already have consumed statusBars, leaving unhandled top
++        // as 0 — fall back to DecorView root insets so header buttons stay tappable.
++        val topInset =
++            if (shouldApplyTopInset) {
++                // Keep in sync with src/utils/android_toolbar_inset.test.js
++                val fromUnhandled = statusBarInsets.top
++                if (fromUnhandled > 0) {
++                    fromUnhandled
++                } else {
++                    val decorView =
++                        (context as? ThemedReactContext)?.currentActivity?.window?.decorView
++                    if (decorView != null) getDecorViewTopInset(decorView) else 0
++                }
++            } else {
++                0
++            }
 +
-+        val verticalInsets =
+         val verticalInsets =
              InsetsCompat.of(
                  0,
 -                max(cutoutInsets.top, if (shouldApplyTopInset) systemBarInsets.top else 0),
@@ -85,6 +96,3 @@ diff --git a/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt b/an
                  0,
                  max(cutoutInsets.bottom, 0),
              )
--
-+
-         val newInsets = InsetsCompat.add(horizontalInsets, verticalInsets)
