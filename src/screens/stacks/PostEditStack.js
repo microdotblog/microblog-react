@@ -6,7 +6,7 @@ import PostingOptionsScreen from '../../screens/posts/options';
 import ClosePostClearButton from '../../components/header/close_post_clear';
 import UpdatePostButton from '../../components/header/update_post';
 import App from '../../stores/App'
-import { headerLeftElement, headerRightElement } from '../../utils/navigation'
+import { android_status_bar_options, headerLeftElement, headerRightElement } from '../../utils/navigation'
 
 const PostingEditStack = createNativeStackNavigator();
 
@@ -22,7 +22,8 @@ export default class PostEditStack extends React.Component{
           headerShown: true,
           headerBackTitle: "Back",
           headerTintColor: App.theme_text_color(),
-          headerBackTitleVisible: false
+          headerBackTitleVisible: false,
+          ...android_status_bar_options()
 				}}
 			>
         <PostingEditStack.Screen

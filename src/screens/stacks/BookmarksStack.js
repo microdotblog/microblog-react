@@ -11,7 +11,7 @@ import { getSharedScreens } from './SharedStack'
 import TagsButton from '../../components/header/tags_button';
 import BackButton from '../../components/header/back';
 import App from '../../stores/App'
-import { headerItemGroupStyle, headerLeftElement, headerRightElement } from '../../utils/navigation'
+import { android_status_bar_options, headerItemGroupStyle, headerLeftElement, headerRightElement } from '../../utils/navigation'
 
 const BookmarksStack = createNativeStackNavigator();
 
@@ -24,7 +24,8 @@ export default class Bookmarks extends React.Component{
       <BookmarksStack.Navigator
         screenOptions={{
           headerTintColor: App.theme_text_color(),
-          headerBackVisible: false
+          headerBackVisible: false,
+          ...android_status_bar_options()
         }}
       >
         <BookmarksStack.Screen

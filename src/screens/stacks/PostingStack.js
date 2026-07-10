@@ -14,7 +14,7 @@ import RefreshActivity from '../../components/header/refresh_activity';
 import BackButton from '../../components/header/back';
 import Auth from '../../stores/Auth'
 import App from '../../stores/App'
-import { headerItemGroupStyle, headerLeftElement, headerRightElement } from '../../utils/navigation'
+import { android_status_bar_options, headerItemGroupStyle, headerLeftElement, headerRightElement } from '../../utils/navigation'
 import { isLiquidGlass } from '../../utils/ui'
 
 const PostingStack = createNativeStackNavigator();
@@ -95,7 +95,8 @@ export default class Posting extends React.Component{
           headerShown: true,
           headerBackTitle: "Back",
           headerTintColor: App.theme_text_color(),
-          headerBackTitleVisible: false
+          headerBackTitleVisible: false,
+          ...android_status_bar_options()
 				}}
 			>
         <PostingStack.Screen

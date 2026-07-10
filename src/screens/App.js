@@ -40,7 +40,7 @@ import ShareMenu from 'react-native-share-menu'
 import ShareScreen from './share'
 import PublishingProgress from '../components/generic/publishing_progress'
 import ImageModalModule from '../components/images/image_modal'
-import { headerLeftElement, headerRightElement } from '../utils/navigation'
+import { android_status_bar_options, android_uses_translucent_status_bar, headerLeftElement, headerRightElement } from '../utils/navigation'
 
 const Stack = createNativeStackNavigator();
 
@@ -103,6 +103,7 @@ export default class MainApp extends React.Component {
 
   render() {
     const is_reply_pane_open = (this.state.current_route === "Reply") || Reply.is_sheet_open
+    const android_translucent_status_bar = Platform.OS === 'android' && android_uses_translucent_status_bar()
     if (App.is_loading) {
       return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: App.theme_background_color() }}>
@@ -113,14 +114,14 @@ export default class MainApp extends React.Component {
     return (
       <SafeAreaProvider initialMetrics={initialWindowMetrics} >
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <KeyboardProvider statusBarTranslucent={Platform.OS !== "android"} navigationBarTranslucent={!is_reply_pane_open}>
+          <KeyboardProvider statusBarTranslucent={Platform.OS !== 'android' || android_translucent_status_bar} navigationBarTranslucent={!is_reply_pane_open}>
             <SheetProvider>
               {
                 Platform.OS === 'android' &&
                 <StatusBar
                   barStyle={App.is_dark_mode() ? 'light-content' : 'dark-content'}
-                  backgroundColor={App.theme_navbar_background_color()}
-                  translucent={false}
+                  backgroundColor={android_translucent_status_bar ? 'transparent' : App.theme_navbar_background_color()}
+                  translucent={android_translucent_status_bar}
                 />
               }
               <NavigationContainer
@@ -150,7 +151,8 @@ export default class MainApp extends React.Component {
                   initialRouteName="Tabs"
                   screenOptions={{
                     headerShown: false,
-                    headerTintColor: App.theme_text_color()
+                    headerTintColor: App.theme_text_color(),
+                    ...android_status_bar_options()
                   }}
 
                 >
