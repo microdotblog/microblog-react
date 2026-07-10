@@ -1,6 +1,9 @@
 export const DEFAULT_THEME = 'light'
 export const DEFAULT_ACCENT_COLOR = '#f80'
 
+// Matches Build.VERSION_CODES.VANILLA_ICE_CREAM in CustomToolbar.kt.
+export const ANDROID_EDGE_TO_EDGE_API = 35
+
 export const normalise_theme = (theme = null) => {
   return theme === 'dark' ? 'dark' : DEFAULT_THEME
 }
@@ -42,4 +45,17 @@ export const resolve_app_accent_color = ({
 // react-native-screens statusBarStyle: light icons on dark chrome, dark icons on light.
 export const android_status_bar_style = (is_dark = false) => {
   return is_dark ? 'light' : 'dark'
+}
+
+// Must stay in sync with CustomToolbar.kt shouldApplyTopInset.
+export const should_use_android_translucent_status_bar = ({
+  platform_os = '',
+  platform_version = 0,
+  edge_to_edge_enabled = false,
+} = {}) => {
+  if (platform_os !== 'android') {
+    return false
+  }
+
+  return platform_version >= ANDROID_EDGE_TO_EDGE_API || edge_to_edge_enabled
 }
