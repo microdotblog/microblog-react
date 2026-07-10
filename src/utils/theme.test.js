@@ -5,6 +5,7 @@ import {
   resolve_app_accent_color,
   resolve_app_theme,
   should_follow_system_theme,
+  should_use_android_translucent_status_bar,
 } from './theme'
 
 describe('theme resolution', () => {
@@ -66,5 +67,31 @@ describe('theme resolution', () => {
   test('maps app theme to react-native-screens status bar icon style', () => {
     expect(android_status_bar_style(true)).toBe('light')
     expect(android_status_bar_style(false)).toBe('dark')
+  })
+
+  test('enables translucent status bar only when toolbar inset applies', () => {
+    expect(should_use_android_translucent_status_bar({
+      platform_os: 'ios',
+      platform_version: 35,
+      edge_to_edge_enabled: true,
+    })).toBe(false)
+
+    expect(should_use_android_translucent_status_bar({
+      platform_os: 'android',
+      platform_version: 34,
+      edge_to_edge_enabled: false,
+    })).toBe(false)
+
+    expect(should_use_android_translucent_status_bar({
+      platform_os: 'android',
+      platform_version: 35,
+      edge_to_edge_enabled: false,
+    })).toBe(true)
+
+    expect(should_use_android_translucent_status_bar({
+      platform_os: 'android',
+      platform_version: 34,
+      edge_to_edge_enabled: true,
+    })).toBe(true)
   })
 })
