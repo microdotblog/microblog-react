@@ -102,7 +102,6 @@
     "react-native-fs@2.20.0": "patches/react-native-fs+2.20.0.patch",
     "react-native-push-notification@8.1.1": "patches/react-native-push-notification+8.1.1.patch",
     "react-native-screens@4.23.0": "patches/react-native-screens+4.23.0.patch",
-    "react-native-sensitive-info@5.5.8": "patches/react-native-sensitive-info@5.5.8.patch",
-    "react-native-webview@13.16.0": "patches/react-native-webview+13.16.0.patch"
+    "react-native-sensitive-info@5.5.8": "patches/react-native-sensitive-info@5.5.8.patch"
   }
 }

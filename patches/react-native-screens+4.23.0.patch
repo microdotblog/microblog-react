@@ -25,22 +25,7 @@ diff --git a/ios/RNSScreen.mm b/ios/RNSScreen.mm
  #ifdef RCT_NEW_ARCH_ENABLED
    // If screen is already unmounted then there will be no event emitter
    if (_eventEmitter != nullptr) {
-@@ -816,9 +819,13 @@
-     // Disabling interactions for parent navigation controller won't be enough in case of nested stack
-     // Furthermore, a stack put inside a modal will exist in an entirely different hierarchy
- 
-+    // Only disable while attaching into a transition. Disabling on detach (newWindow == nil)
-+    // can leave the stack non-interactive if the matching enableInteractions call is skipped
-+    // (e.g. interrupted modal/stack transitions). That presents as a forefront screen that
-+    // no longer receives touches until another navigation re-enables the subtree.
-     // Use RNSViewInteractionManager util to find a suitable subtree to disable interations on,
-     // starting from reactSuperview, because on Paper, self is not attached yet.
--    if (![self isPresentedAsNativeModal]) {
-+    if (newWindow != nil && ![self isPresentedAsNativeModal]) {
-       [RNSScreenView.viewInteractionManagerInstance disableInteractionsForSubtreeWith:self.reactSuperview];
-     }
-   }
-@@ -1345,6 +1352,7 @@
+@@ -1345,6 +1348,7 @@
  - (void)willBeUnmountedInUpcomingTransaction
  {
    _markedForUnmountInCurrentTransaction = YES;
@@ -48,20 +33,6 @@ diff --git a/ios/RNSScreen.mm b/ios/RNSScreen.mm
  }
  
  + (react::ComponentDescriptorProvider)componentDescriptorProvider
-diff --git a/ios/RNSScreenStack.mm b/ios/RNSScreenStack.mm
---- a/ios/RNSScreenStack.mm
-+++ b/ios/RNSScreenStack.mm
-@@ -874,7 +874,9 @@
- 
- - (void)rnscreens_enableInteractions
- {
--  self.subviews[0].userInteractionEnabled = YES;
-+  if (self.subviews.count > 0) {
-+    self.subviews[0].userInteractionEnabled = YES;
-+  }
-   [self removeGestureRecognizer:_sinkEventsPanGestureRecognizer];
- }
- 
 diff --git a/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt b/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt
 --- a/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt
 +++ b/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt

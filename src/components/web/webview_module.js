@@ -221,17 +221,7 @@ const WebViewModule = observer((props) => {
         decelerationRate={0.998}
         startInLoadingState={true}
         renderLoading={() => (
-          <View
-            pointerEvents="none"
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: App.theme_background_color(),
-            }}
-          />
+          <View style={{ flex: 1, backgroundColor: App.theme_background_color() }} />
         )}
         onLoadStart={() => {
           setState(prevState => {
