@@ -330,6 +330,7 @@ export default class ReplyToolbar extends React.Component{
             }}
           >
             <Text
+              maxFontSizeMultiplier={1.5}
               style={{
                 fontWeight: '400',
                 padding: 2,
