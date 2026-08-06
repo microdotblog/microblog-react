@@ -345,6 +345,7 @@ export default class PostToolbar extends React.Component{
 					{
 						!posting.post_title && !this.props.hide_count && ((!App.toolbar_select_destination_open && !App.is_share_extension ) || App.is_share_extension) &&
 						<Text
+							maxFontSizeMultiplier={1.5}
 							style={{
 								fontWeight: '400',
 								paddingVertical: 2,
