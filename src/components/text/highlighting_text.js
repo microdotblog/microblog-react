@@ -79,6 +79,17 @@ export default class HighlightingText extends React.Component {
     return StyleSheet.flatten(this.props.style) || {}
   }
 
+  scaledFontSize(font_size) {
+    if (this.props.allowFontScaling === false) {
+      return font_size
+    }
+
+    const font_scale = App.font_scale || 1
+    const max_multiplier = this.props.maxFontSizeMultiplier
+    const multiplier = max_multiplier > 0 ? Math.min(font_scale, max_multiplier) : font_scale
+    return font_size * multiplier
+  }
+
   editorConfig() {
     const style = this.flattenedStyle()
     const padding = style.padding != null ? style.padding : 0
@@ -89,7 +100,7 @@ export default class HighlightingText extends React.Component {
       backgroundColor: style.backgroundColor || App.theme_background_color(),
       textColor: style.color || App.theme_text_color(),
       placeholderTextColor: this.props.placeholderTextColor || App.theme_placeholder_text_color(),
-      fontSize: style.fontSize || 18,
+      fontSize: this.scaledFontSize(style.fontSize || 18),
       paddingTop: style.paddingTop != null ? style.paddingTop : padding,
       paddingRight: style.paddingRight != null ? style.paddingRight : padding,
       paddingBottom: style.paddingBottom != null ? style.paddingBottom : padding,
