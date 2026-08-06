@@ -297,14 +297,22 @@ export default class PostToolbar extends React.Component{
 						{
 							!this.props.is_post_edit && posting.selected_service?.config?.active_destination() != null && (posting.selected_service?.config?.destination?.length > 1 || (!posting.selected_service?.is_microblog && !App.is_share_extension)) ?
 							<TouchableOpacity style={{marginLeft: 6, marginRight: 4}} onPress={() => {!posting.selected_service?.is_microblog ? App.navigate_to_screen("post_service", App.is_share_extension ? Share.selected_user : Auth.selected_user) : App.toggle_select_destination()}}>
-								<Text style={{ fontSize: 15, fontWeight: '500', textAlign: 'center', color: App.theme_text_color() }}>
+								<Text
+									numberOfLines={1}
+									maxFontSizeMultiplier={1.3}
+									style={{ fontSize: 15, fontWeight: '500', textAlign: 'center', color: App.theme_text_color() }}
+								>
 									{posting.selected_service.config.active_destination().name}
 								</Text>
 							</TouchableOpacity>
 							: 
 							!this.props.is_post_edit && posting.selected_service?.config?.active_destination() == null && !posting.selected_service?.is_microblog && !App.is_share_extension ?
 							<TouchableOpacity style={{marginLeft: 6, marginRight: 4}} onPress={() => {!posting.selected_service?.is_microblog ? App.navigate_to_screen("post_service", App.is_share_extension ? Share.selected_user : Auth.selected_user) : App.toggle_select_destination()}}>
-								<Text style={{ fontSize: 15, fontWeight: '500', textAlign: 'center', color: App.theme_text_color() }}>
+								<Text
+									numberOfLines={1}
+									maxFontSizeMultiplier={1.3}
+									style={{ fontSize: 15, fontWeight: '500', textAlign: 'center', color: App.theme_text_color() }}
+								>
 									{posting.selected_service?.name}
 								</Text>
 							</TouchableOpacity>
