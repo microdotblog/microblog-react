@@ -52,7 +52,6 @@
     "react-native-reanimated": "4.2.1",
     "react-native-safe-area-context": "~5.6.2",
     "react-native-screens": "~4.23.0",
-    "react-native-sensitive-info": "5.5.8",
     "react-native-sfsymbols": "^1.2.2",
     "react-native-share-menu": "microdotblog/react-native-share-menu",
     "react-native-simple-toast": "^3.3.2",
@@ -101,7 +100,6 @@
     "@react-navigation/bottom-tabs@7.8.8": "patches/@react-navigation+bottom-tabs+7.8.8.patch",
     "react-native-fs@2.20.0": "patches/react-native-fs+2.20.0.patch",
     "react-native-push-notification@8.1.1": "patches/react-native-push-notification+8.1.1.patch",
-    "react-native-screens@4.23.0": "patches/react-native-screens+4.23.0.patch",
-    "react-native-sensitive-info@5.5.8": "patches/react-native-sensitive-info@5.5.8.patch"
+    "react-native-screens@4.23.0": "patches/react-native-screens+4.23.0.patch"
   }
 }
