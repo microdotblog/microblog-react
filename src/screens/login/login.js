@@ -43,7 +43,6 @@ export default class LoginScreen extends React.Component {
   did_request_dismiss = false
   state = {
     is_token_modal_visible: false,
-    token_value: '',
   }
 
   componentDidMount() {
@@ -101,6 +100,7 @@ export default class LoginScreen extends React.Component {
 
   open_token_modal = () => {
     Login.clear_error()
+    Login.set_input_value('')
     this.setState({
       is_token_modal_visible: true,
     })
@@ -112,27 +112,24 @@ export default class LoginScreen extends React.Component {
     }
 
     Login.clear_error()
+    Login.set_input_value('')
     this.setState({
       is_token_modal_visible: false,
-      token_value: '',
     })
   }
 
-  handle_token_value_change = (value = '') => {
-    this.setState({ token_value: value })
-    if (Login.show_error) {
-      Login.clear_error()
-    }
+  handle_credential_value_change = (value = '') => {
+    Login.set_input_value(value)
   }
 
-  handle_token_submit = async () => {
-    const did_sign_in = await Login.login_with_token(false, this.state.token_value)
+  handle_credential_submit = async () => {
+    const did_complete = await Login.submit_email_or_token(false)
 
-    if (did_sign_in) {
+    if (did_complete) {
       this.setState({
         is_token_modal_visible: false,
-        token_value: '',
       })
+      Login.set_input_value('')
     }
   }
 
@@ -250,18 +247,20 @@ export default class LoginScreen extends React.Component {
 
         <TokenSignInModal
           accent={accent}
+          can_submit={Login.can_submit_credentials()}
           error_message={modal_error_message}
           ink={ink}
           ink_soft={ink_soft}
           input_bg={input_bg}
+          input_value={Login.input_value}
           is_dark={is_dark}
           is_signing_in={Login.is_loading}
           line={line}
           onCancel={this.close_token_modal}
-          onChangeTokenValue={this.handle_token_value_change}
-          onSubmit={this.handle_token_submit}
+          onChangeValue={this.handle_credential_value_change}
+          onSubmit={this.handle_credential_submit}
           paper={paper}
-          token_value={this.state.token_value}
+          submit_label={Login.submit_button_label()}
           visible={this.state.is_token_modal_visible}
         />
       </View>
@@ -316,7 +315,7 @@ const LoginFooter = observer(function LoginFooter({
       ) : null}
 
       <PrimaryButton
-        accessibilityHint="Long press to sign in with an app token."
+        accessibilityHint="Long press to sign in with email or an app token."
         accent={accent}
         disabled={Login.is_loading}
         is_dark={is_dark}
@@ -561,18 +560,20 @@ function PrimaryButton({
 
 function TokenSignInModal({
   accent,
+  can_submit = false,
   error_message = null,
   ink,
   ink_soft,
   input_bg,
+  input_value = '',
   is_dark,
   is_signing_in = false,
   line,
   onCancel,
-  onChangeTokenValue,
+  onChangeValue,
   onSubmit,
   paper,
-  token_value = '',
+  submit_label = 'Continue',
   visible = false,
 }) {
   return (
@@ -606,10 +607,10 @@ function TokenSignInModal({
           ]}
         >
           <Text style={[styles.modalTitle, { color: ink }]}>
-            Sign in with a token
+            Sign in with email or token
           </Text>
           <Text style={[styles.modalBody, { color: ink_soft }]}>
-            Paste a Micro.blog app token from your account page.
+            Enter your email address for a sign-in link, or paste a Micro.blog app token from your account page.
           </Text>
 
           <View
@@ -622,19 +623,25 @@ function TokenSignInModal({
             ]}
           >
             <TextInput
-              accessibilityLabel="Micro.blog app token"
+              accessibilityLabel="Email or Micro.blog app token"
               autoCapitalize="none"
               autoCorrect={false}
               autoFocus={visible}
               keyboardAppearance={is_dark ? 'dark' : 'light'}
-              onChangeText={onChangeTokenValue}
-              onSubmitEditing={onSubmit}
-              placeholder="Micro.blog token"
+              keyboardType="email-address"
+              onChangeText={onChangeValue}
+              onSubmitEditing={() => {
+                if (can_submit && !is_signing_in) {
+                  onSubmit()
+                }
+              }}
+              placeholder="Email or app token"
               placeholderTextColor={ink_soft}
-              returnKeyType="done"
+              returnKeyType="go"
               selectionColor={accent}
               style={[styles.modalInput, { color: ink }]}
-              value={token_value}
+              textContentType="emailAddress"
+              value={input_value}
             />
           </View>
 
@@ -647,10 +654,10 @@ function TokenSignInModal({
           <View style={styles.modalActions}>
             <PrimaryButton
               accent={accent}
-              disabled={is_signing_in}
+              disabled={!can_submit || is_signing_in}
               is_dark={is_dark}
               is_loading={is_signing_in}
-              label={is_signing_in ? 'Checking token...' : 'Sign in with token'}
+              label={submit_label}
               onPress={onSubmit}
               paper={paper}
             />
