@@ -218,7 +218,7 @@ export default class LoginScreen extends React.Component {
                   {
                     is_add_account
                       ? 'Add another account'
-                      : 'Your timeline, bookmarks, and conversations.'
+                      : 'Personal blogging, as social as you want.'
                   }
                 </Text>
                 <Text style={[styles.body, { color: ink_soft }]}>
