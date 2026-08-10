@@ -73,9 +73,14 @@ describe('App navigation reset', () => {
     await App.set_navigation(null)
     await App.set_navigation_ready(false)
     await App.set_current_tab_key('Timeline')
+    await App.set_is_loading(true)
     Push.replay_pending_notification.mockReset()
     Push.check_and_remove_notifications_with_post_id.mockReset()
     CommonActions.reset.mockClear()
+  })
+
+  test('starts in a loading state before hydrate finishes', () => {
+    expect(App.is_loading).toBe(true)
   })
 
   afterEach(() => {

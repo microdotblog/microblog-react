@@ -51,7 +51,7 @@ const consume_suppressed_webview_conversation_click = () => {
 }
 
 export default App = types.model('App', {
-  is_loading: types.optional(types.boolean, false),
+  is_loading: types.optional(types.boolean, true),
   navigation_ready: types.optional(types.boolean, false),
   app_state: types.optional(types.string, AppState.currentState || 'active'),
   image_modal_is_open: types.optional(types.boolean, false),
@@ -157,9 +157,6 @@ export default App = types.model('App', {
         if (Auth.is_logged_in()) {
           Push.replay_pending_notification()
         }
-        else if (!Auth.is_logged_in()) {
-          App.navigate_to_screen("Login")
-        }
       }
       catch(error){
         console.error(error)
@@ -236,7 +233,10 @@ export default App = types.model('App', {
 
       self.url_listener = Linking.addEventListener('url', (event) => {
         console.log("App:set_up_url_listener:event", event)
-        if (event?.url && event?.url.indexOf('/signin/') > -1) {
+        if (Login.is_loading && Login.can_handle_open_url(event?.url)) {
+          return
+        }
+        if (event?.url && Login.can_handle_open_url(event.url)) {
           Login.trigger_login_from_url(event.url)
         }
         else if (event?.url && event?.url.includes('/post?text=') && Auth.is_logged_in()) {
@@ -252,7 +252,7 @@ export default App = types.model('App', {
       })
       Linking.getInitialURL().then((value) => {
         console.log("App:set_up_url_listener:getInitialURL", value)
-        if (value?.indexOf('/signin/') > -1) {
+        if (value && Login.can_handle_open_url(value)) {
           Login.trigger_login_from_url(value)
         }
         else if (value?.includes('/post?text=') && Auth.is_logged_in()) {
@@ -1152,7 +1152,9 @@ export default App = types.model('App', {
       Alert.alert(`Please sign in again`, `Your token for, @${user.username}, is no longer valid.`)
       Login.reset_apple_credentials()
       yield Auth.logout_user(user)
-      App.navigate_to_screen("Login")
+      if (Auth.is_logged_in()) {
+        App.navigate_to_screen("Login")
+      }
     }),
   
     set_is_loading_bookmarks: flow(function*(loading) {
