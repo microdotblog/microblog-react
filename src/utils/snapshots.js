@@ -1,7 +1,6 @@
 import { onSnapshot } from 'mobx-state-tree';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from 'expo-secure-store';
-import SFInfo from 'react-native-sensitive-info'
 
 import Tokens from './../stores/Tokens';
 import Auth from './../stores/Auth';
@@ -20,8 +19,7 @@ function debounce(func, wait) {
 const debounce_ms = 1500
 
 onSnapshot(Tokens, snapshot => {
-  SFInfo.setItem('Tokens', JSON.stringify(snapshot), {}),
-  SecureStore.setItem('Tokens', JSON.stringify(snapshot), {}),
+  SecureStore.setItem('Tokens', JSON.stringify(snapshot))
   console.log("SNAPSHOT:::TOKENS")
 });
 onSnapshot(Auth, debounce(
