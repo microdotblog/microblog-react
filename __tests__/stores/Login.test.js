@@ -15,6 +15,7 @@ jest.mock('../../src/api/MicroBlogApi', () => ({
   __esModule: true,
   default: {
     login_with_apple: jest.fn(),
+    login_with_email: jest.fn(),
     login_with_token: jest.fn()
   },
   APPLE_USERNAME_REQUIRED: 12,
@@ -71,11 +72,13 @@ describe('Login Apple sign in', () => {
   beforeEach(() => {
     Login.reset()
     MicroBlogApi.login_with_apple.mockReset()
+    MicroBlogApi.login_with_email.mockReset()
     MicroBlogApi.login_with_token.mockReset()
     App.navigate_to_screen.mockReset()
     App.reset_to_tabs.mockReset()
     App.bump_web_view_epoch.mockReset()
     App.close_sheet.mockReset()
+    App.open_sheet.mockReset()
     mockCanGoBack.mockReset()
     mockGoBack.mockReset()
     mockNavigate.mockReset()
@@ -376,5 +379,37 @@ describe('Login Apple sign in', () => {
       username: 'vincent',
       token: 'app-token',
     })
+  })
+
+  test('routes email input to the email sign-in flow', async () => {
+    MicroBlogApi.login_with_email.mockResolvedValue(3)
+    await Login.set_input_value('vincent@example.com')
+
+    expect(Login.submit_button_label()).toBe('Continue')
+
+    const did_complete = await Login.submit_email_or_token()
+
+    expect(did_complete).toBe(true)
+    expect(MicroBlogApi.login_with_email).toHaveBeenCalledWith('vincent@example.com')
+    expect(MicroBlogApi.login_with_token).not.toHaveBeenCalled()
+    expect(App.open_sheet).toHaveBeenCalledWith('login-message-sheet')
+  })
+
+  test('routes token input to the token sign-in flow', async () => {
+    const token = '12345678901234567890'
+    MicroBlogApi.login_with_token.mockResolvedValue({
+      username: 'vincent',
+      token: 'app-token',
+    })
+    Auth.handle_new_login.mockResolvedValue(true)
+    await Login.set_input_value(token)
+
+    expect(Login.submit_button_label()).toBe('Sign in with token')
+
+    const did_complete = await Login.submit_email_or_token()
+
+    expect(did_complete).toBe(true)
+    expect(MicroBlogApi.login_with_token).toHaveBeenCalledWith(token)
+    expect(MicroBlogApi.login_with_email).not.toHaveBeenCalled()
   })
 })

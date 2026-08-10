@@ -1,6 +1,6 @@
 import { flow, types, applySnapshot } from 'mobx-state-tree'
 import * as WebBrowser from 'expo-web-browser'
-import MicroBlogApi, { LOGIN_ERROR, LOGIN_INCORRECT, LOGIN_TOKEN_INVALID, APPLE_USERNAME_REQUIRED } from './../api/MicroBlogApi'
+import MicroBlogApi, { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_INCORRECT, LOGIN_TOKEN_INVALID, APPLE_USERNAME_REQUIRED } from './../api/MicroBlogApi'
 import {
   build_micro_blog_auth_url,
   create_oauth_state,
@@ -11,7 +11,8 @@ import {
   is_micro_blog_callback_url,
   is_signin_token_url,
 } from './../api/MicroBlogAuth'
-import { Alert } from 'react-native'
+import StringChecker from './../utils/string_checker'
+import { Alert, Platform } from 'react-native'
 import Auth from './Auth'
 import App from './App'
 
@@ -188,6 +189,61 @@ const Login = types.model('Login', {
     }
   }),
   
+  submit_email_or_token: flow(function* (reset_navigation = false) {
+    if (self.is_loading || !self.can_submit_credentials()) {
+      return false
+    }
+
+    if (self.is_valid_email_address()) {
+      return yield self.login_with_email()
+    }
+
+    if (self.is_valid_token()) {
+      return yield self.login_with_token(reset_navigation, self.input_value)
+    }
+
+    self.set_error('Enter a valid email address or app token.')
+    return false
+  }),
+
+  login_with_email: flow(function* (email = self.input_value) {
+    const trimmed_email = `${email || ''}`.trim()
+    if (!StringChecker._validate_email(trimmed_email)) {
+      self.set_error('Enter a valid email address.')
+      return false
+    }
+
+    self.is_loading = true
+    self.message = null
+    self.clear_error()
+
+    try {
+      const login = yield MicroBlogApi.login_with_email(trimmed_email)
+      console.log("LOGIN:login_with_email:login", login)
+      if (login === LOGIN_SUCCESS) {
+        self.message = `Email sent! Check your email on this device and tap the "Open in Micro.blog for ${Platform.OS === 'ios' ? "iOS" : "Android"}" button.`
+        App.open_sheet("login-message-sheet")
+        return true
+      }
+      else if (login === LOGIN_INCORRECT) {
+        self.set_error("Your sign in details were incorrect. Please double check and try again.")
+        return false
+      }
+      else {
+        self.set_error("An error occured whilst trying to sign you in. Please try again.")
+        return false
+      }
+    }
+    catch (error) {
+      console.log("LOGIN:login_with_email:error", error)
+      self.set_error("An error occured whilst trying to sign you in. Please try again.")
+      return false
+    }
+    finally {
+      self.is_loading = false
+    }
+  }),
+  
   login_with_token: flow(function* (reset_navigation = false, token = self.input_value) {
     const trimmed_token = `${token || ''}`.trim()
     if (!trimmed_token) {
@@ -329,6 +385,40 @@ const Login = types.model('Login', {
   
 }))
 .views(self => ({
+
+  is_valid_email_address(){
+    return StringChecker._validate_email(`${self.input_value || ''}`.trim())
+  },
+
+  is_valid_token(){
+    return StringChecker._validate_is_token(`${self.input_value || ''}`.trim())
+  },
+
+  can_submit_credentials(){
+    return !self.is_loading && (this.is_valid_email_address() || this.is_valid_token())
+  },
+
+  submit_button_label(){
+    if (self.is_loading) {
+      if (this.is_valid_email_address()) {
+        return 'Sending email...'
+      }
+      if (this.is_valid_token()) {
+        return 'Checking token...'
+      }
+      return 'Signing in...'
+    }
+
+    if (this.is_valid_token()) {
+      return 'Sign in with token'
+    }
+
+    if (this.is_valid_email_address()) {
+      return 'Continue'
+    }
+
+    return 'Continue'
+  },
 
   can_submit_apple_username(){
     return !self.is_loading &&
