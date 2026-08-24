@@ -1,6 +1,6 @@
 export const MICRO_BLOG_AUTH_URL = 'https://micro.blog/indieauth/auth'
 export const MICRO_BLOG_TOKEN_URL = 'https://micro.blog/indieauth/token'
-export const MICRO_BLOG_CLIENT_ID = 'https://micro.blog/'
+export const MICRO_BLOG_CLIENT_ID = 'https://micro.blog/client.json'
 export const MICRO_BLOG_SCOPE = 'create'
 export const MICRO_BLOG_SCHEME = 'microblog'
 export const MICRO_BLOG_REDIRECT_URI = `${MICRO_BLOG_SCHEME}://auth/callback`
@@ -15,6 +15,7 @@ export function build_micro_blog_auth_url({
   state,
 } = {}) {
   const params = new URLSearchParams({
+    app: 1,
     client_id,
     redirect_uri,
     response_type: 'code',
