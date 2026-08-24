@@ -12,7 +12,8 @@ describe('MicroBlogAuth helpers', () => {
     const auth_url = build_micro_blog_auth_url({ state: 'abc123' })
 
     expect(auth_url).toContain('https://micro.blog/indieauth/auth?')
-    expect(auth_url).toContain('client_id=https%3A%2F%2Fmicro.blog%2F')
+    expect(auth_url).toContain('client_id=https%3A%2F%2Fmicro.blog%2Fclient.json')
+    expect(auth_url).toContain('app=1')
     expect(auth_url).toContain('response_type=code')
     expect(auth_url).toContain('scope=create')
     expect(auth_url).toContain('state=abc123')
