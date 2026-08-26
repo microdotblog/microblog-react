@@ -38,6 +38,7 @@ jest.mock('../../src/api/MicroBlogAuth', () => {
 
 jest.mock('expo-web-browser', () => ({
   openAuthSessionAsync: jest.fn(),
+  dismissAuthSession: jest.fn(),
   maybeCompleteAuthSession: jest.fn(),
 }))
 
@@ -94,6 +95,7 @@ describe('Login Apple sign in', () => {
     App.bump_web_view_epoch.mockResolvedValue(true)
     App.close_sheet.mockResolvedValue(true)
     WebBrowser.openAuthSessionAsync.mockReset()
+    WebBrowser.dismissAuthSession.mockReset()
     create_oauth_state.mockReset()
     create_oauth_state.mockReturnValue('oauth-state')
     exchange_micro_blog_code.mockReset()
@@ -347,6 +349,105 @@ describe('Login Apple sign in', () => {
     expect(Login.pending_oauth_state).toBeNull()
     expect(Login.show_error).toBe(false)
     expect(exchange_micro_blog_code).not.toHaveBeenCalled()
+  })
+
+  test('completes Micro.blog sign in from a callback URL while the auth sheet is still open', async () => {
+    let resolve_auth_session
+    WebBrowser.openAuthSessionAsync.mockReturnValue(new Promise(resolve => {
+      resolve_auth_session = resolve
+    }))
+    exchange_micro_blog_code.mockResolvedValue({
+      access_token: 'access-token',
+    })
+    MicroBlogApi.login_with_token.mockResolvedValue({
+      username: 'vincent',
+      token: 'app-token',
+    })
+    Auth.handle_new_login.mockResolvedValue(true)
+
+    const sign_in_promise = Login.sign_in_with_micro_blog()
+    await Promise.resolve()
+
+    expect(Login.is_loading).toBe(true)
+    expect(Login.pending_oauth_state).toBe('oauth-state')
+
+    const did_handle = await Login.trigger_login_from_url(
+      'microblog://auth/callback?code=AUTHCODE&state=oauth-state'
+    )
+
+    expect(did_handle).toBe(true)
+    expect(exchange_micro_blog_code).toHaveBeenCalledWith({ code: 'AUTHCODE' })
+    expect(MicroBlogApi.login_with_token).toHaveBeenCalledWith('access-token')
+    expect(WebBrowser.dismissAuthSession).toHaveBeenCalled()
+    expect(Auth.handle_new_login).toHaveBeenCalledWith({
+      username: 'vincent',
+      token: 'app-token',
+    })
+
+    resolve_auth_session({ type: 'dismiss' })
+    const did_sign_in = await sign_in_promise
+
+    expect(did_sign_in).toBe(true)
+    expect(Login.show_error).toBe(false)
+    expect(Login.pending_oauth_state).toBeNull()
+    expect(Login.is_loading).toBe(false)
+  })
+
+  test('ignores a mismatched auth callback while the auth sheet is still open', async () => {
+    let resolve_auth_session
+    WebBrowser.openAuthSessionAsync.mockReturnValue(new Promise(resolve => {
+      resolve_auth_session = resolve
+    }))
+
+    const sign_in_promise = Login.sign_in_with_micro_blog()
+    await Promise.resolve()
+
+    const did_handle = await Login.trigger_login_from_url(
+      'microblog://auth/callback?code=STALE&state=other-state'
+    )
+
+    expect(did_handle).toBe(false)
+    expect(Login.pending_oauth_state).toBe('oauth-state')
+    expect(WebBrowser.dismissAuthSession).not.toHaveBeenCalled()
+    expect(exchange_micro_blog_code).not.toHaveBeenCalled()
+
+    resolve_auth_session({ type: 'cancel' })
+    const did_sign_in = await sign_in_promise
+
+    expect(did_sign_in).toBe(false)
+    expect(Login.pending_oauth_state).toBeNull()
+  })
+
+  test('exchanges an auth code once when Linking and the auth session both deliver the callback', async () => {
+    let resolve_auth_session
+    WebBrowser.openAuthSessionAsync.mockReturnValue(new Promise(resolve => {
+      resolve_auth_session = resolve
+    }))
+    exchange_micro_blog_code.mockResolvedValue({
+      access_token: 'access-token',
+    })
+    MicroBlogApi.login_with_token.mockResolvedValue({
+      username: 'vincent',
+      token: 'app-token',
+    })
+    Auth.handle_new_login.mockResolvedValue(true)
+
+    const callback_url = 'microblog://auth/callback?code=AUTHCODE&state=oauth-state'
+    const sign_in_promise = Login.sign_in_with_micro_blog()
+    await Promise.resolve()
+
+    const did_handle = await Login.trigger_login_from_url(callback_url)
+    resolve_auth_session({
+      type: 'success',
+      url: callback_url,
+    })
+    const did_sign_in = await sign_in_promise
+
+    expect(did_handle).toBe(true)
+    expect(did_sign_in).toBe(true)
+    expect(exchange_micro_blog_code).toHaveBeenCalledTimes(1)
+    expect(MicroBlogApi.login_with_token).toHaveBeenCalledTimes(1)
+    expect(Login.show_error).toBe(false)
   })
 
   test('rejects oauth callbacks with a mismatched state', async () => {
