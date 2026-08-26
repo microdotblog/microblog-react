@@ -125,12 +125,10 @@ const Login = types.model('Login', {
         if (did_handle_callback) {
           return true
         }
+      }
 
-        self.pending_oauth_state = null
-        if (!self.show_error) {
-          self.set_error('Micro.blog sign in did not complete. Please try again.')
-        }
-        return false
+      if (!self.pending_oauth_state) {
+        return !self.show_error
       }
 
       self.pending_oauth_state = null
@@ -138,7 +136,7 @@ const Login = types.model('Login', {
       if (auth_result?.type === 'cancel' || auth_result?.type === 'dismiss') {
         self.clear_error()
       }
-      else {
+      else if (!self.show_error) {
         self.set_error('Micro.blog sign in did not complete. Please try again.')
       }
 
@@ -155,11 +153,18 @@ const Login = types.model('Login', {
     }
   }),
 
+  dismiss_open_auth_session() {
+    try {
+      WebBrowser.dismissAuthSession()
+    }
+    catch (error) {
+      console.log("LOGIN:dismiss_open_auth_session", error)
+    }
+  },
+
   complete_sign_in_callback: flow(function* (raw_url = '') {
     const { code, state } = extract_micro_blog_callback_params(raw_url)
     const expected_state = self.pending_oauth_state
-
-    self.pending_oauth_state = null
 
     if (!code) {
       self.set_error('Micro.blog did not return an authorization code. Please try again.')
@@ -171,20 +176,26 @@ const Login = types.model('Login', {
       return false
     }
 
+    self.pending_oauth_state = null
+
     try {
       const token_payload = yield exchange_micro_blog_code({ code })
       const access_token = `${token_payload?.access_token || ''}`.trim()
 
       if (!access_token) {
         self.set_error('Micro.blog did not return an access token. Please try again.')
+        self.dismiss_open_auth_session()
         return false
       }
 
-      return yield self.login_with_token(true, access_token)
+      const did_login = yield self.login_with_token(true, access_token)
+      self.dismiss_open_auth_session()
+      return did_login
     }
     catch (error) {
       console.log("LOGIN:complete_sign_in_callback:error", error)
       self.set_error('We could not finish signing you in. Please try again.')
+      self.dismiss_open_auth_session()
       return false
     }
   }),

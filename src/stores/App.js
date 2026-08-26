@@ -233,9 +233,6 @@ export default App = types.model('App', {
 
       self.url_listener = Linking.addEventListener('url', (event) => {
         console.log("App:set_up_url_listener:event", event)
-        if (Login.is_loading && Login.can_handle_open_url(event?.url)) {
-          return
-        }
         if (event?.url && Login.can_handle_open_url(event.url)) {
           Login.trigger_login_from_url(event.url)
         }
