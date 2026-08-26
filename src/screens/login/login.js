@@ -180,7 +180,6 @@ export default class LoginScreen extends React.Component {
     const line = is_dark ? 'rgba(255, 136, 0, 0.22)' : 'rgba(255, 136, 0, 0.2)'
     const input_bg = is_dark ? '#1a120c' : '#fffaf0'
     const canvas = is_dark ? '#15100b' : '#fffaf0'
-    const safe_edges = is_add_account ? ['bottom'] : ['top', 'bottom']
     const content_style = [
       styles.content,
       is_add_account ? styles.contentWithHeader : null,
@@ -198,7 +197,7 @@ export default class LoginScreen extends React.Component {
         style={[styles.screen, { backgroundColor: canvas }]}
       >
         <AuthBackground />
-        <SafeAreaView edges={safe_edges} style={styles.safeArea}>
+        <SafeAreaView edges={['top', 'bottom']} style={styles.safeArea}>
           <ScrollView
             bounces={false}
             contentContainerStyle={content_style}
@@ -705,7 +704,7 @@ const styles = StyleSheet.create({
     paddingTop: 28,
   },
   contentWithHeader: {
-    paddingTop: 12,
+    paddingTop: 64,
   },
   errorMessage: {
     fontSize: 14,
