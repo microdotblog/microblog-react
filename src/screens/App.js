@@ -177,7 +177,8 @@ export default class MainApp extends React.Component {
                     name="Login"
                     component={LoginScreen}
                     options={{
-                      title: "Sign In",
+                      title: "",
+                      headerTitle: () => null,
                       headerShown: true,
                       headerBackVisible: false,
                       headerBackTitleVisible: false,
