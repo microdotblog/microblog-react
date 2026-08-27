@@ -42,6 +42,7 @@ class FilterThumbnail extends React.Component {
 					var new_asset = MediaAsset.create({
 						uri: this.filteredURI,
 						type: asset.type,
+						original_filename: asset.original_filename,
 						width: asset.width,
 						height: asset.height
 					})
@@ -144,6 +145,7 @@ export default class ImageCropScreen extends React.Component{
 					var media_asset = MediaAsset.create({
 						uri: url,
 						type: this.asset.type,
+						original_filename: this.asset.original_filename,
 						width: crop_size,
 						height: crop_size
 					})

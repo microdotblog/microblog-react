@@ -1,6 +1,7 @@
 import { types, flow, isAlive } from 'mobx-state-tree';
 import MicroPubApi, { POST_ERROR } from './../../../api/MicroPubApi';
 import XMLRPCApi, { XML_ERROR } from '../../../api/XMLRPCApi';
+import { originalFileNameFromMedia } from '../../../utils/file_names'
 const FS = require("react-native-fs")
 import axios from 'axios';
 
@@ -17,12 +18,17 @@ export default MediaAsset = types.model('MediaAsset', {
 	alt_text: types.maybe(types.string),
 	progress: types.optional(types.number, 0),
 	base64: types.maybe(types.string),
+	original_filename: types.maybe(types.string),
 	upload_id: types.maybe(types.number),
 	is_video: types.optional(types.boolean, false),
 	is_inline: types.optional(types.boolean, false),
 	cached_uri: types.maybe(types.string),
 	cancelled: types.optional(types.boolean, false)
 })
+.preProcessSnapshot(snapshot => ({
+	...snapshot,
+	original_filename: originalFileNameFromMedia(snapshot) || undefined
+}))
 .volatile(() => ({
 	cancel_source: null
 }))
@@ -33,12 +39,11 @@ export default MediaAsset = types.model('MediaAsset', {
 		self.is_uploading = true
 		if (service_object.type !== "xmlrpc") {
 			self.cancel_source = axios.CancelToken.source()
-			const file_extension = self.file_extension()
 			const upload_file = {
 				uri: self.uri,
 				type: self.type,
+				original_filename: self.original_filename,
 				cancel_source: self.cancel_source,
-				file_extension: () => file_extension,
 				update_progress: progress => {
 					if (isAlive(self)) {
 						self.update_progress(progress)
@@ -140,6 +145,7 @@ export default MediaAsset = types.model('MediaAsset', {
 		var new_asset = MediaAsset.create({
 			uri: "file://" + new_path,
 			type: self.type,
+			original_filename: self.original_filename,
 			width: self.width,
 			height: self.height
 		})
