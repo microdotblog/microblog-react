@@ -9,7 +9,7 @@ import {
 describe("upload filenames", () => {
   test("normalizes picker filename shapes", () => {
     expect(buildUploadFileName({
-      original_file_name: "Final Clip.MOV",
+      original_filename: "Final Clip.MOV",
       fileName: "Ignored Clip.mp4",
       type: "video/quicktime"
     }, 1)).toBe("final-clip.mov")

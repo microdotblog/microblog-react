@@ -47,7 +47,7 @@ export default class TempUploadCell extends React.Component {
   }
 
   upload_detail_label(upload) {
-    const name = upload.original_file_name || upload.name || upload.fileName
+    const name = upload.original_filename || upload.name || upload.fileName
     if (name && name.length > 0) {
       return name
     }

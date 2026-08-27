@@ -346,7 +346,7 @@ export default Posting = types.model('Posting', {
       const upload_media = {
         uri: media_asset.uri,
         type: media_asset.type,
-        original_file_name: media_asset.original_file_name,
+        original_filename: media_asset.original_filename,
         fileSize: media_asset.fileSize,
         file_size: media_asset.file_size,
         cached_uri: media_asset.cached_uri

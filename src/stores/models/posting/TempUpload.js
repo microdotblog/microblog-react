@@ -21,7 +21,7 @@ const TempUpload = types.model('TempUpload', {
 	cached_uri: types.maybe(types.string),
 	name: types.maybe(types.string),
 	fileName: types.maybe(types.string),
-	original_file_name: types.maybe(types.string),
+	original_filename: types.maybe(types.string),
 	type: types.maybe(types.string),
 	url: types.maybe(types.string),
 	published: types.maybe(types.string),
@@ -35,7 +35,7 @@ const TempUpload = types.model('TempUpload', {
 })
 	.preProcessSnapshot(snapshot => ({
 		...snapshot,
-		original_file_name: originalFileNameFromMedia(snapshot) || undefined
+		original_filename: originalFileNameFromMedia(snapshot) || undefined
 	}))
 	.volatile(() => ({
 		cancel_source: null
@@ -49,7 +49,7 @@ const TempUpload = types.model('TempUpload', {
 			const upload_file = {
 				uri: self.uri,
 				type: self.type,
-				original_file_name: self.original_file_name,
+				original_filename: self.original_filename,
 				cancel_source: self.cancel_source,
 				update_progress: progress => {
 					if (isAlive(self)) {

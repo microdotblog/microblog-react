@@ -22,7 +22,7 @@ describe("MediaAsset filenames", () => {
       fileName: "Family Clip.MOV"
     })
 
-    expect(asset.original_file_name).toBe("Family Clip.MOV")
+    expect(asset.original_filename).toBe("Family Clip.MOV")
   })
 
   test("falls back to the URI basename", () => {
@@ -31,6 +31,6 @@ describe("MediaAsset filenames", () => {
       type: "image/jpeg"
     })
 
-    expect(asset.original_file_name).toBe("Shared Photo.JPG")
+    expect(asset.original_filename).toBe("Shared Photo.JPG")
   })
 })

@@ -18,7 +18,7 @@ export default MediaAsset = types.model('MediaAsset', {
 	alt_text: types.maybe(types.string),
 	progress: types.optional(types.number, 0),
 	base64: types.maybe(types.string),
-	original_file_name: types.maybe(types.string),
+	original_filename: types.maybe(types.string),
 	upload_id: types.maybe(types.number),
 	is_video: types.optional(types.boolean, false),
 	is_inline: types.optional(types.boolean, false),
@@ -27,7 +27,7 @@ export default MediaAsset = types.model('MediaAsset', {
 })
 .preProcessSnapshot(snapshot => ({
 	...snapshot,
-	original_file_name: originalFileNameFromMedia(snapshot) || undefined
+	original_filename: originalFileNameFromMedia(snapshot) || undefined
 }))
 .volatile(() => ({
 	cancel_source: null
@@ -42,7 +42,7 @@ export default MediaAsset = types.model('MediaAsset', {
 			const upload_file = {
 				uri: self.uri,
 				type: self.type,
-				original_file_name: self.original_file_name,
+				original_filename: self.original_filename,
 				cancel_source: self.cancel_source,
 				update_progress: progress => {
 					if (isAlive(self)) {
@@ -145,7 +145,7 @@ export default MediaAsset = types.model('MediaAsset', {
 		var new_asset = MediaAsset.create({
 			uri: "file://" + new_path,
 			type: self.type,
-			original_file_name: self.original_file_name,
+			original_filename: self.original_filename,
 			width: self.width,
 			height: self.height
 		})

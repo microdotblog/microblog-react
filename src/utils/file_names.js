@@ -73,7 +73,7 @@ const fileNameStem = (name, extension = "") => {
 }
 
 export const originalFileNameFromMedia = media => {
-  const explicit_name = media?.original_file_name || media?.fileName || media?.filename || media?.name
+  const explicit_name = media?.original_filename || media?.fileName || media?.filename || media?.name
   return lastPathComponent(explicit_name || media?.uri || media?.cached_uri || media?.cachedUri)
 }
 
