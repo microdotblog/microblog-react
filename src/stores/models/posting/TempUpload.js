@@ -5,6 +5,7 @@ import Toast from 'react-native-simple-toast'
 import axios from 'axios'
 import MicroPubApi, { POST_ERROR } from '../../../api/MicroPubApi'
 import RNFS from 'react-native-fs'
+import { originalFileNameFromMedia } from '../../../utils/file_names'
 
 const get_image_size = uri => {
 	return new Promise(resolve => {
@@ -20,6 +21,7 @@ const TempUpload = types.model('TempUpload', {
 	cached_uri: types.maybe(types.string),
 	name: types.maybe(types.string),
 	fileName: types.maybe(types.string),
+	original_file_name: types.maybe(types.string),
 	type: types.maybe(types.string),
 	url: types.maybe(types.string),
 	published: types.maybe(types.string),
@@ -31,6 +33,10 @@ const TempUpload = types.model('TempUpload', {
 	did_upload: types.optional(types.boolean, false),
 	cancelled: types.optional(types.boolean, false)
 })
+	.preProcessSnapshot(snapshot => ({
+		...snapshot,
+		original_file_name: originalFileNameFromMedia(snapshot) || undefined
+	}))
 	.volatile(() => ({
 		cancel_source: null
 	}))
@@ -43,7 +49,7 @@ const TempUpload = types.model('TempUpload', {
 			const upload_file = {
 				uri: self.uri,
 				type: self.type,
-				name: self.name || self.fileName,
+				original_file_name: self.original_file_name,
 				cancel_source: self.cancel_source,
 				update_progress: progress => {
 					if (isAlive(self)) {
