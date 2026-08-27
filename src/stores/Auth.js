@@ -117,10 +117,8 @@ export default Auth = types.model('Auth', {
       self.is_selecting_user = false
     }
     else{
-      // As we have no users left, let's also delete all tokens.
       Tokens.destroy_all_token_data()
       App.close_sheet("main_sheet")
-      App.navigate_to_screen("Login")
     }
   }),
   

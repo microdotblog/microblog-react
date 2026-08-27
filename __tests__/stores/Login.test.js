@@ -1,13 +1,21 @@
 import Login from '../../src/stores/Login'
 import MicroBlogApi, { APPLE_USERNAME_REQUIRED } from '../../src/api/MicroBlogApi'
+import {
+  build_micro_blog_auth_url,
+  create_oauth_state,
+  exchange_micro_blog_code,
+  get_micro_blog_redirect_uri,
+} from '../../src/api/MicroBlogAuth'
 import App from '../../src/stores/App'
 import Auth from '../../src/stores/Auth'
 import { Alert } from 'react-native'
+import * as WebBrowser from 'expo-web-browser'
 
 jest.mock('../../src/api/MicroBlogApi', () => ({
   __esModule: true,
   default: {
     login_with_apple: jest.fn(),
+    login_with_email: jest.fn(),
     login_with_token: jest.fn()
   },
   APPLE_USERNAME_REQUIRED: 12,
@@ -15,6 +23,23 @@ jest.mock('../../src/api/MicroBlogApi', () => ({
   LOGIN_INCORRECT: 1,
   LOGIN_SUCCESS: 3,
   LOGIN_TOKEN_INVALID: 4
+}))
+
+jest.mock('../../src/api/MicroBlogAuth', () => {
+  const actual = jest.requireActual('../../src/api/MicroBlogAuth')
+  return {
+    ...actual,
+    build_micro_blog_auth_url: jest.fn(actual.build_micro_blog_auth_url),
+    create_oauth_state: jest.fn(() => 'oauth-state'),
+    exchange_micro_blog_code: jest.fn(),
+    get_micro_blog_redirect_uri: jest.fn(actual.get_micro_blog_redirect_uri),
+  }
+})
+
+jest.mock('expo-web-browser', () => ({
+  openAuthSessionAsync: jest.fn(),
+  dismissAuthSession: jest.fn(),
+  maybeCompleteAuthSession: jest.fn(),
 }))
 
 jest.mock('../../src/stores/Auth', () => ({
@@ -48,11 +73,13 @@ describe('Login Apple sign in', () => {
   beforeEach(() => {
     Login.reset()
     MicroBlogApi.login_with_apple.mockReset()
+    MicroBlogApi.login_with_email.mockReset()
     MicroBlogApi.login_with_token.mockReset()
     App.navigate_to_screen.mockReset()
     App.reset_to_tabs.mockReset()
     App.bump_web_view_epoch.mockReset()
     App.close_sheet.mockReset()
+    App.open_sheet.mockReset()
     mockCanGoBack.mockReset()
     mockGoBack.mockReset()
     mockNavigate.mockReset()
@@ -67,6 +94,13 @@ describe('Login Apple sign in', () => {
     App.reset_to_tabs.mockResolvedValue(true)
     App.bump_web_view_epoch.mockResolvedValue(true)
     App.close_sheet.mockResolvedValue(true)
+    WebBrowser.openAuthSessionAsync.mockReset()
+    WebBrowser.dismissAuthSession.mockReset()
+    create_oauth_state.mockReset()
+    create_oauth_state.mockReturnValue('oauth-state')
+    exchange_micro_blog_code.mockReset()
+    build_micro_blog_auth_url.mockClear()
+    get_micro_blog_redirect_uri.mockClear()
     jest.spyOn(Alert, 'alert').mockImplementation(() => {})
   })
 
@@ -175,12 +209,13 @@ describe('Login Apple sign in', () => {
     expect(Login.is_loading).toBe(false)
   })
 
-  test('bumps web view epoch after successful Apple sign in', async () => {
+  test('bumps web view epoch after successful first-time Apple sign in without stack navigation', async () => {
     MicroBlogApi.login_with_apple.mockResolvedValue({
       username: 'vincent',
       token: 'app-token'
     })
     Auth.handle_new_login.mockResolvedValue(true)
+    Auth.is_logged_in.mockReturnValue(false)
 
     await Login.login_with_apple_credentials({
       user_id: 'apple-user-id',
@@ -193,16 +228,36 @@ describe('Login Apple sign in', () => {
     })
     expect(App.bump_web_view_epoch).toHaveBeenCalledTimes(1)
     expect(App.close_sheet).toHaveBeenCalledWith('main_sheet')
-    expect(mockGoBack).toHaveBeenCalled()
+    expect(mockGoBack).not.toHaveBeenCalled()
+    expect(App.reset_to_tabs).not.toHaveBeenCalled()
   })
 
-  test('resets to tabs after successful sign in from a microblog URL', async () => {
+  test('goes back after successful Apple sign in when adding another account', async () => {
+    MicroBlogApi.login_with_apple.mockResolvedValue({
+      username: 'vincent',
+      token: 'app-token'
+    })
+    Auth.handle_new_login.mockResolvedValue(true)
+    Auth.is_logged_in.mockReturnValue(true)
+
+    await Login.login_with_apple_credentials({
+      user_id: 'apple-user-id',
+      identity_token: 'apple-identity-token'
+    })
+
+    expect(App.bump_web_view_epoch).toHaveBeenCalledTimes(1)
+    expect(mockGoBack).toHaveBeenCalled()
+    expect(App.reset_to_tabs).not.toHaveBeenCalled()
+  })
+
+  test('completes first-time sign in from a microblog URL without stack navigation', async () => {
     const signin_token = '12345678901234567890'
     MicroBlogApi.login_with_token.mockResolvedValue({
       username: 'vincent',
       token: 'app-token'
     })
     Auth.handle_new_login.mockResolvedValue(true)
+    Auth.is_logged_in.mockReturnValue(false)
 
     await Login.trigger_login_from_url(`microblog://signin/${signin_token}`)
 
@@ -213,8 +268,23 @@ describe('Login Apple sign in', () => {
     })
     expect(App.close_sheet).toHaveBeenCalledWith('main_sheet')
     expect(App.close_sheet).toHaveBeenCalledWith('login-message-sheet')
-    expect(App.reset_to_tabs).toHaveBeenCalledTimes(1)
+    expect(App.reset_to_tabs).not.toHaveBeenCalled()
     expect(mockReset).not.toHaveBeenCalled()
+    expect(mockGoBack).not.toHaveBeenCalled()
+  })
+
+  test('resets to tabs after microblog URL sign in when already signed in', async () => {
+    const signin_token = '12345678901234567890'
+    MicroBlogApi.login_with_token.mockResolvedValue({
+      username: 'vincent',
+      token: 'app-token'
+    })
+    Auth.handle_new_login.mockResolvedValue(true)
+    Auth.is_logged_in.mockReturnValue(true)
+
+    await Login.trigger_login_from_url(`microblog://signin/${signin_token}`)
+
+    expect(App.reset_to_tabs).toHaveBeenCalledTimes(1)
     expect(mockGoBack).not.toHaveBeenCalled()
   })
 
@@ -238,5 +308,209 @@ describe('Login Apple sign in', () => {
       token: 'app-token'
     })
     await login_promise
+  })
+
+  test('signs in with Micro.blog through the IndieAuth browser session', async () => {
+    WebBrowser.openAuthSessionAsync.mockResolvedValue({
+      type: 'success',
+      url: 'microblog://auth/callback?code=AUTHCODE&state=oauth-state',
+    })
+    exchange_micro_blog_code.mockResolvedValue({
+      access_token: 'access-token',
+    })
+    MicroBlogApi.login_with_token.mockResolvedValue({
+      username: 'vincent',
+      token: 'app-token',
+    })
+    Auth.handle_new_login.mockResolvedValue(true)
+
+    const did_sign_in = await Login.sign_in_with_micro_blog()
+
+    expect(did_sign_in).toBe(true)
+    expect(WebBrowser.openAuthSessionAsync).toHaveBeenCalled()
+    expect(exchange_micro_blog_code).toHaveBeenCalledWith({ code: 'AUTHCODE' })
+    expect(MicroBlogApi.login_with_token).toHaveBeenCalledWith('access-token')
+    expect(Auth.handle_new_login).toHaveBeenCalledWith({
+      username: 'vincent',
+      token: 'app-token',
+    })
+    expect(Login.pending_oauth_state).toBeNull()
+    expect(Login.is_loading).toBe(false)
+  })
+
+  test('clears pending oauth state when the browser session is cancelled', async () => {
+    WebBrowser.openAuthSessionAsync.mockResolvedValue({
+      type: 'cancel',
+    })
+
+    const did_sign_in = await Login.sign_in_with_micro_blog()
+
+    expect(did_sign_in).toBe(false)
+    expect(Login.pending_oauth_state).toBeNull()
+    expect(Login.show_error).toBe(false)
+    expect(exchange_micro_blog_code).not.toHaveBeenCalled()
+  })
+
+  test('completes Micro.blog sign in from a callback URL while the auth sheet is still open', async () => {
+    let resolve_auth_session
+    WebBrowser.openAuthSessionAsync.mockReturnValue(new Promise(resolve => {
+      resolve_auth_session = resolve
+    }))
+    exchange_micro_blog_code.mockResolvedValue({
+      access_token: 'access-token',
+    })
+    MicroBlogApi.login_with_token.mockResolvedValue({
+      username: 'vincent',
+      token: 'app-token',
+    })
+    Auth.handle_new_login.mockResolvedValue(true)
+
+    const sign_in_promise = Login.sign_in_with_micro_blog()
+    await Promise.resolve()
+
+    expect(Login.is_loading).toBe(true)
+    expect(Login.pending_oauth_state).toBe('oauth-state')
+
+    const did_handle = await Login.trigger_login_from_url(
+      'microblog://auth/callback?code=AUTHCODE&state=oauth-state'
+    )
+
+    expect(did_handle).toBe(true)
+    expect(exchange_micro_blog_code).toHaveBeenCalledWith({ code: 'AUTHCODE' })
+    expect(MicroBlogApi.login_with_token).toHaveBeenCalledWith('access-token')
+    expect(WebBrowser.dismissAuthSession).toHaveBeenCalled()
+    expect(Auth.handle_new_login).toHaveBeenCalledWith({
+      username: 'vincent',
+      token: 'app-token',
+    })
+
+    resolve_auth_session({ type: 'dismiss' })
+    const did_sign_in = await sign_in_promise
+
+    expect(did_sign_in).toBe(true)
+    expect(Login.show_error).toBe(false)
+    expect(Login.pending_oauth_state).toBeNull()
+    expect(Login.is_loading).toBe(false)
+  })
+
+  test('ignores a mismatched auth callback while the auth sheet is still open', async () => {
+    let resolve_auth_session
+    WebBrowser.openAuthSessionAsync.mockReturnValue(new Promise(resolve => {
+      resolve_auth_session = resolve
+    }))
+
+    const sign_in_promise = Login.sign_in_with_micro_blog()
+    await Promise.resolve()
+
+    const did_handle = await Login.trigger_login_from_url(
+      'microblog://auth/callback?code=STALE&state=other-state'
+    )
+
+    expect(did_handle).toBe(false)
+    expect(Login.pending_oauth_state).toBe('oauth-state')
+    expect(WebBrowser.dismissAuthSession).not.toHaveBeenCalled()
+    expect(exchange_micro_blog_code).not.toHaveBeenCalled()
+
+    resolve_auth_session({ type: 'cancel' })
+    const did_sign_in = await sign_in_promise
+
+    expect(did_sign_in).toBe(false)
+    expect(Login.pending_oauth_state).toBeNull()
+  })
+
+  test('exchanges an auth code once when Linking and the auth session both deliver the callback', async () => {
+    let resolve_auth_session
+    WebBrowser.openAuthSessionAsync.mockReturnValue(new Promise(resolve => {
+      resolve_auth_session = resolve
+    }))
+    exchange_micro_blog_code.mockResolvedValue({
+      access_token: 'access-token',
+    })
+    MicroBlogApi.login_with_token.mockResolvedValue({
+      username: 'vincent',
+      token: 'app-token',
+    })
+    Auth.handle_new_login.mockResolvedValue(true)
+
+    const callback_url = 'microblog://auth/callback?code=AUTHCODE&state=oauth-state'
+    const sign_in_promise = Login.sign_in_with_micro_blog()
+    await Promise.resolve()
+
+    const did_handle = await Login.trigger_login_from_url(callback_url)
+    resolve_auth_session({
+      type: 'success',
+      url: callback_url,
+    })
+    const did_sign_in = await sign_in_promise
+
+    expect(did_handle).toBe(true)
+    expect(did_sign_in).toBe(true)
+    expect(exchange_micro_blog_code).toHaveBeenCalledTimes(1)
+    expect(MicroBlogApi.login_with_token).toHaveBeenCalledTimes(1)
+    expect(Login.show_error).toBe(false)
+  })
+
+  test('rejects oauth callbacks with a mismatched state', async () => {
+    create_oauth_state.mockReturnValue('expected-state')
+    WebBrowser.openAuthSessionAsync.mockResolvedValue({
+      type: 'success',
+      url: 'microblog://auth/callback?code=AUTHCODE&state=other-state',
+    })
+
+    const did_sign_in = await Login.sign_in_with_micro_blog()
+
+    expect(did_sign_in).toBe(false)
+    expect(Login.error_message).toBe('Micro.blog sign in could not be verified. Please try again.')
+    expect(Login.pending_oauth_state).toBeNull()
+    expect(exchange_micro_blog_code).not.toHaveBeenCalled()
+  })
+
+  test('signs in with a pasted app token', async () => {
+    MicroBlogApi.login_with_token.mockResolvedValue({
+      username: 'vincent',
+      token: 'app-token',
+    })
+    Auth.handle_new_login.mockResolvedValue(true)
+
+    const did_sign_in = await Login.login_with_token(false, ' pasted-token ')
+
+    expect(did_sign_in).toBe(true)
+    expect(MicroBlogApi.login_with_token).toHaveBeenCalledWith('pasted-token')
+    expect(Auth.handle_new_login).toHaveBeenCalledWith({
+      username: 'vincent',
+      token: 'app-token',
+    })
+  })
+
+  test('routes email input to the email sign-in flow', async () => {
+    MicroBlogApi.login_with_email.mockResolvedValue(3)
+    await Login.set_input_value('vincent@example.com')
+
+    expect(Login.submit_button_label()).toBe('Continue')
+
+    const did_complete = await Login.submit_email_or_token()
+
+    expect(did_complete).toBe(true)
+    expect(MicroBlogApi.login_with_email).toHaveBeenCalledWith('vincent@example.com')
+    expect(MicroBlogApi.login_with_token).not.toHaveBeenCalled()
+    expect(App.open_sheet).toHaveBeenCalledWith('login-message-sheet')
+  })
+
+  test('routes token input to the token sign-in flow', async () => {
+    const token = '12345678901234567890'
+    MicroBlogApi.login_with_token.mockResolvedValue({
+      username: 'vincent',
+      token: 'app-token',
+    })
+    Auth.handle_new_login.mockResolvedValue(true)
+    await Login.set_input_value(token)
+
+    expect(Login.submit_button_label()).toBe('Sign in with token')
+
+    const did_complete = await Login.submit_email_or_token()
+
+    expect(did_complete).toBe(true)
+    expect(MicroBlogApi.login_with_token).toHaveBeenCalledWith(token)
+    expect(MicroBlogApi.login_with_email).not.toHaveBeenCalled()
   })
 })

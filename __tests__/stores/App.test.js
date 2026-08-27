@@ -1,5 +1,6 @@
 import App from '../../src/stores/App'
 import Push from '../../src/stores/Push'
+import Login from '../../src/stores/Login'
 import { Linking } from 'react-native'
 import { CommonActions } from '@react-navigation/native'
 
@@ -13,7 +14,11 @@ jest.mock('../../src/stores/Auth', () => ({
   users: []
 }))
 
-jest.mock('../../src/stores/Login', () => ({}))
+jest.mock('../../src/stores/Login', () => ({
+  is_loading: false,
+  can_handle_open_url: jest.fn(() => false),
+  trigger_login_from_url: jest.fn()
+}))
 jest.mock('../../src/stores/Reply', () => ({
   hydrate: jest.fn()
 }))
@@ -73,9 +78,14 @@ describe('App navigation reset', () => {
     await App.set_navigation(null)
     await App.set_navigation_ready(false)
     await App.set_current_tab_key('Timeline')
+    await App.set_is_loading(true)
     Push.replay_pending_notification.mockReset()
     Push.check_and_remove_notifications_with_post_id.mockReset()
     CommonActions.reset.mockClear()
+  })
+
+  test('starts in a loading state before hydrate finishes', () => {
+    expect(App.is_loading).toBe(true)
   })
 
   afterEach(() => {
@@ -158,5 +168,36 @@ describe('App navigation reset', () => {
     await App.handle_url_from_webview('microblog://open/456')
 
     expect(navigation.navigate).toHaveBeenCalledWith('Timeline-Conversation', { conversation_id: '456' })
+  })
+})
+
+describe('App auth callback URLs', () => {
+  let url_event_handler
+
+  beforeEach(async () => {
+    Login.is_loading = false
+    Login.can_handle_open_url.mockReset()
+    Login.trigger_login_from_url.mockReset()
+    Login.can_handle_open_url.mockReturnValue(false)
+    Linking.getInitialURL = jest.fn(() => Promise.resolve(null))
+    if (!url_event_handler) {
+      Linking.addEventListener = jest.fn((type, handler) => {
+        if (type === 'url') {
+          url_event_handler = handler
+        }
+        return { remove: jest.fn() }
+      })
+      await App.set_up_url_listener()
+    }
+  })
+
+  test('signs in from a Micro.blog auth callback while the auth sheet is still open', async () => {
+    const callback_url = 'microblog://auth/callback?code=27D1AEC374F9F621CB2D&state=4f36064754e102267754952f2535ce21'
+    Login.is_loading = true
+    Login.can_handle_open_url.mockReturnValue(true)
+
+    url_event_handler({ url: callback_url })
+
+    expect(Login.trigger_login_from_url).toHaveBeenCalledWith(callback_url)
   })
 })

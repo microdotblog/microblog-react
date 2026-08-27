@@ -12,7 +12,9 @@ import {
   initialWindowMetrics,
 } from "react-native-safe-area-context";
 import App from './../stores/App';
+import Auth from './../stores/Auth';
 import TabNavigator from './stacks/TabNavigator';
+import AuthNavigator from './stacks/AuthNavigator';
 import LoginScreen from './login/login';
 import AppleUsernameScreen from './login/apple_username';
 import ReplyScreen from './conversation/reply';
@@ -102,6 +104,7 @@ export default class MainApp extends React.Component {
   }
 
   render() {
+    const is_logged_in = Auth.is_logged_in()
     const is_reply_pane_open = (this.state.current_route === "Reply") || Reply.is_sheet_open
     const android_translucent_status_bar = Platform.OS === 'android' && android_uses_translucent_status_bar()
     if (App.is_loading) {
@@ -111,6 +114,19 @@ export default class MainApp extends React.Component {
         </View>
       )
     }
+
+    if (!is_logged_in) {
+      return (
+        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <KeyboardProvider statusBarTranslucent>
+              <AuthNavigator />
+            </KeyboardProvider>
+          </GestureHandlerRootView>
+        </SafeAreaProvider>
+      )
+    }
+
     return (
       <SafeAreaProvider initialMetrics={initialWindowMetrics} >
         <GestureHandlerRootView style={{ flex: 1 }}>
@@ -161,10 +177,16 @@ export default class MainApp extends React.Component {
                     name="Login"
                     component={LoginScreen}
                     options={{
-                      title: "Sign In",
+                      title: "",
+                      headerTitle: () => null,
                       headerShown: true,
                       headerBackVisible: false,
                       headerBackTitleVisible: false,
+                      headerTransparent: true,
+                      headerShadowVisible: false,
+                      headerStyle: {
+                        backgroundColor: 'transparent'
+                      },
                       ...headerLeftElement(renderBackButton)
                     }}
                   />
@@ -174,7 +196,12 @@ export default class MainApp extends React.Component {
                     options={{
                       title: "Create Account",
                       headerShown: true,
-                      headerBackTitle: "Sign In"
+                      headerBackTitle: "Sign In",
+                      headerTransparent: true,
+                      headerShadowVisible: false,
+                      headerStyle: {
+                        backgroundColor: 'transparent'
+                      }
                     }}
                   />
                   <Stack.Group

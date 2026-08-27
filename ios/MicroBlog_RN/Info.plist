@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>$(PRODUCT_NAME)</string>
+	<string>Micro.blog</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -51,7 +51,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>For taking new photos and posting them.</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>Allow $(PRODUCT_NAME) to access your Face ID biometric data.</string>
+	<string>Allow Micro.blog to access your Face ID biometric data.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>The location may be used when posting photos.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
