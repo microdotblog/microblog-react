@@ -2,7 +2,7 @@ import { Platform } from "react-native"
 import RNFS from "react-native-fs"
 import axios from "axios"
 import MicroPubApi, { POST_ERROR, FETCH_ERROR } from "../../../api/MicroPubApi"
-import { buildUploadFileName, inferExtensionFromType, sanitizeFileName } from "../../../utils/file_names"
+import { buildCacheFileName, buildUploadFileName } from "../../../utils/file_names"
 
 export const LARGE_UPLOAD_CHUNK_SIZE = 1000 * 1024
 export const LARGE_UPLOAD_MAX_SIZE = 1024 * 1024 * 1024
@@ -19,8 +19,8 @@ export const ensure_local_uri_for_upload = async (media, fallback_name) => {
 	if (current_uri.startsWith("file://")) {
 		return current_uri
 	}
-	const target_name = fallback_name || `upload-${Date.now()}${inferExtensionFromType(media?.type || "")}`
-	const safe_name = sanitizeFileName(target_name)
+	const target_name = fallback_name || buildUploadFileName(media, Date.now(), "video/mp4")
+	const safe_name = buildCacheFileName(target_name)
 	const target_path = `${RNFS.CachesDirectoryPath}/${Date.now()}-${safe_name}`
 	let source_path = current_uri
 	try {
@@ -67,8 +67,8 @@ export async function upload_large_media_task({
 
 	const active_cancel_source = cancel_source || create_cancel_source()
 	const file_id = Math.floor(Math.random() * 1000000)
-	const file_name = buildUploadFileName(media, file_id)
 	const file_type = media?.type || "video/mp4"
+	const file_name = buildUploadFileName(media, file_id, file_type)
 
 	try {
 		const local_uri = await ensure_local_uri_for_upload(media, file_name)
