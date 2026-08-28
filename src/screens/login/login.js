@@ -213,18 +213,11 @@ export default class LoginScreen extends React.Component {
                 <Text style={[styles.kicker, { color: accent }]}>
                   Micro.blog
                 </Text>
-                <Text style={[styles.title, { color: ink }]}>
-                  {
-                    is_add_account
-                      ? 'Add another account'
-                      : 'Personal blogging, as social as you want.'
-                  }
-                </Text>
                 <Text style={[styles.body, { color: ink_soft }]}>
                   {
                     is_add_account
-                      ? 'Sign in with Micro.blog to add an account.'
-                      : 'Sign in with Micro.blog to get started.'
+                      ? 'Sign in to add an account.'
+                      : 'Sign in to get started.'
                   }
                 </Text>
               </View>
@@ -724,9 +717,9 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   kicker: {
-    fontSize: 16,
+    fontSize: 26,
     fontWeight: '800',
-    lineHeight: 21,
+    lineHeight: 32,
   },
   legal: {
     alignItems: 'center',

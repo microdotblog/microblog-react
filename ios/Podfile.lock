@@ -2863,7 +2863,7 @@ SPEC CHECKSUMS:
   ExpoSecureStore: f495a3e0ab65683be8427a96f694726a88048f46
   ExpoWebBrowser: 3f57d6eec40cd76608ee9e660915bc474b7cfa6a
   FBLazyVector: 427fa1856a481856091061293ce865a75aa4f20f
-  hermes-engine: 005e88ab86167d754a6dd6ccfef17c56bc4682bf
+  hermes-engine: 9b3360823aedb9b1973bed6c5584c6aea21dd460
   libavif: 5f8e715bea24debec477006f21ef9e95432e254d
   libdav1d: 23581a4d8ec811ff171ed5e2e05cd27bad64c39f
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
@@ -2875,7 +2875,7 @@ SPEC CHECKSUMS:
   React: 9b033c7a99e1c8eec40960b6b2e6844e011e8bd1
   React-callinvoker: f64c8d57f45173835b6b9891cda27f1625551972
   React-Core: 341863a2597c4a2320f916b4232d280cb8a28e4b
-  React-Core-prebuilt: 09c1c72e1af4819464f8c12c8663e6c9482777df
+  React-Core-prebuilt: 967d10eba328b6dd67e2516ad70a2e9121634702
   React-CoreModules: 9370769c9b2b1732c58960687f4d50d9d3510efc
   React-cxxreact: 41ae74bd9eab80af9c5da6a9b4934eb97e2c7569
   React-debug: eb0f19ff879ad3870dc760b6c21ad56cbb3e4b98
@@ -2947,7 +2947,7 @@ SPEC CHECKSUMS:
   ReactAppDependencyProvider: 3ec8fc5d32ad422f5b805523a5a5ea5556d8b3a2
   ReactCodegen: 169fa6c4ad3c3065f98fa2364bf95e9a21c3afec
   ReactCommon: ba28cd4e7d9e24014d2772a80e32da020c732b00
-  ReactNativeDependencies: 1b6406c8f01077c05d4896bf0ca80ec47ad45836
+  ReactNativeDependencies: 55dacc81de97d3d7160d2c04cfa1e8d192494631
   RNAppleAuthentication: a89c9804592b38ed4ab11f0aee68d05ba12ad432
   RNCAsyncStorage: 3a4f5e2777dae1688b781a487923a08569e27fe4
   RNCClipboard: 88d7eeb555d1183915f0885bdbc5c97eb6f7f3ba
@@ -2969,4 +2969,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: b7b0b21e39ec98e457fc86268586d1a897a022df
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
