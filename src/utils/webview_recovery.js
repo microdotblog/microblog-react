@@ -150,6 +150,7 @@ export const build_webview_source_uri = ({
     ['redirect_to', prepared_endpoint],
     ['theme', normalise_theme(theme)],
     ['show_actions', 'true'],
+    ['plainjs', '1'],
   ])
 
   return `${web_url}/hybrid/signin?${query_string}`
