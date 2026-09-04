@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import { Keyboard, Platform, StyleSheet, View } from 'react-native'
+import { Keyboard, Platform, StyleSheet, TextInput, View } from 'react-native'
 import { WebView } from 'react-native-webview'
 import App from '../../stores/App'
 import { EditorKeyboardFrameContext } from '../keyboard/editor_keyboard_avoiding_view'
@@ -15,7 +15,8 @@ export default class HighlightingText extends React.Component {
     this.state = {
       container_height: 0,
       measured_editor_height: 0,
-      keyboard_scroll_request: 0
+      keyboard_scroll_request: 0,
+      android_focus_proxy: Platform.OS === 'android' && !!props.autoFocus
     }
     this.container = React.createRef()
     this.webview = React.createRef()
@@ -27,6 +28,7 @@ export default class HighlightingText extends React.Component {
     this.keyboard_show_listener = null
     this.keyboard_hide_listener = null
     this.pending_focus_options = null
+    this.android_proxy_frame = null
   }
 
   componentDidMount() {
@@ -69,6 +71,9 @@ export default class HighlightingText extends React.Component {
   componentWillUnmount() {
     this.keyboard_show_listener?.remove()
     this.keyboard_hide_listener?.remove()
+    if (this.android_proxy_frame) {
+      cancelAnimationFrame(this.android_proxy_frame)
+    }
   }
 
   normalizedValue(props = this.props) {
@@ -290,6 +295,9 @@ export default class HighlightingText extends React.Component {
     }
 
     this.last_config = JSON.stringify(config)
+    if (payload.focus) {
+      this.webview.current?.requestFocus?.()
+    }
     this.injectJavaScript(`window.MicroBlogReactEditor.updateFromReact(${JSON.stringify(payload)})`)
   }
 
@@ -312,6 +320,14 @@ export default class HighlightingText extends React.Component {
       })
       if (this.pending_focus_options) {
         this.focus(this.pending_focus_options)
+      }
+      if (this.state.android_focus_proxy) {
+        this.focus({ cursorToEnd: true })
+        this.android_proxy_frame = requestAnimationFrame(() => {
+          this.setState({
+            android_focus_proxy: false
+          })
+        })
       }
       return
     }
@@ -354,6 +370,21 @@ export default class HighlightingText extends React.Component {
 
     return (
       <View ref={this.container} onLayout={this.handleLayout} style={this.webviewStyle()}>
+        {
+          this.state.android_focus_proxy ?
+            <TextInput
+              style={styles.android_focus_proxy}
+              autoFocus={true}
+              caretHidden={true}
+              autoCorrect={false}
+              spellCheck={false}
+              showSoftInputOnFocus={true}
+              importantForAutofill="no"
+              importantForAccessibility="no-hide-descendants"
+              pointerEvents="none"
+            />
+            : null
+        }
         <WebView
           ref={this.webview}
           source={{ html: editorHtml, baseUrl: 'https://micro.blog' }}
@@ -383,5 +414,13 @@ export default class HighlightingText extends React.Component {
 const styles = StyleSheet.create({
   webview: {
     flex: 1
+  },
+  android_focus_proxy: {
+    position: 'absolute',
+    width: 1,
+    height: 1,
+    opacity: 0,
+    left: 0,
+    top: 0
   }
 })
