@@ -89,7 +89,10 @@
     "typescript": "~5.8.3"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|react-native-url-polyfill|@react-native(-community)?)/)"
+    ]
   },
   "engines": {
     "node": ">=20.19.4",

@@ -1,5 +1,6 @@
 import { Alert } from 'react-native';
 import axios from 'axios';
+import { URL, URLSearchParams } from 'react-native-url-polyfill'
 import { DOMParser } from "@xmldom/xmldom";
 import App from "./../stores/App";
 import { buildUploadFileName } from "../utils/file_names"
@@ -112,43 +113,41 @@ class MicroPubApi {
 		return new_url
 	}
 
-	async verify_code(service, auth_url) {		
-		const regex = /[?&]code=([^&]+)/
-		const match = regex.exec(auth_url)
-		if (match) {			
-			const auth_code = match[1];
-			console.log("Micropub: Got code:", auth_code);
-			console.log("Micropub: Sending to", service.token_endpoint)
-			var params_s = ""
-			params_s = params_s + "client_id=" + encodeURIComponent("https://micro.blog/")
-			params_s = params_s	+ "&code=" + encodeURIComponent(auth_code)
-			params_s = params_s + "&redirect_uri=" + encodeURIComponent("https://micro.blog/indieauth/redirect")
-			params_s = params_s	+ "&grant_type=" + "authorization_code"
-			const verify_response = axios
-				.post(service.token_endpoint, params_s, {
-					headers: {
-						"Content-type": "application/x-www-form-urlencoded",
-						"Accept": "application/json"
-					}
-				})
-				.then(response => {
-					const access_token = response.data["access_token"]
-					console.log("Micropub: Got access token:", access_token)
-					if(access_token != null){
-						return access_token
-					}
-					return NO_AUTH;
-				})
-				.catch(error => {
-					console.log(error)
-					return FETCH_ERROR;
-				});
-			return verify_response
-		}
-		else {
-			return NO_AUTH
-		}
-	}
+  async verify_code(service, auth_url) {
+    let auth_code
+    try {
+      // Decode the callback value before encoding it once in the token request.
+      auth_code = new URL(auth_url).searchParams.get('code')
+    }
+    catch (error) {
+      return NO_AUTH
+    }
+
+    if (!auth_code) {
+      return NO_AUTH
+    }
+
+    const params = new URLSearchParams({
+      client_id: 'https://micro.blog/',
+      code: auth_code,
+      redirect_uri: 'https://micro.blog/indieauth/redirect',
+      grant_type: 'authorization_code'
+    })
+
+    try {
+      const response = await axios.post(service.token_endpoint, params.toString(), {
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded',
+          Accept: 'application/json'
+        }
+      })
+      return response.data.access_token ?? NO_AUTH
+    }
+    catch (error) {
+      console.log(error)
+      return FETCH_ERROR
+    }
+  }
 
 	async get_config(service) {
 		console.log('MicroPubApi:get_config', service.username);
