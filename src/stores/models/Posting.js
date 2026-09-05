@@ -164,7 +164,8 @@ export default Posting = types.model('Posting', {
       return false
     }
     // Check if any uploads are still pending (for both regular posts and share extension)
-    const pending_uploads = self.post_assets.filter(asset => !asset.did_upload && !asset.is_uploading)
+    const upload_before_post = self.selected_service.type === 'xmlrpc' || !!self.selected_service.service_object().media_endpoint
+    const pending_uploads = upload_before_post ? self.post_assets.filter(asset => !asset.did_upload && !asset.is_uploading) : []
     const uploading_assets = self.post_assets.filter(asset => asset.is_uploading)
     
     if (pending_uploads.length > 0) {
@@ -192,7 +193,7 @@ export default Posting = types.model('Posting', {
     const should_show_progress = should_show_publishing_progress(self.post_status)
     const post_success = self.selected_service.type === "xmlrpc" ?
       yield XMLRPCApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
-      : yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status, self.post_syndicates.length === self.selected_service.active_destination()?.syndicates?.length ? null : self.post_syndicates, self.summary)
+      : yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status, self.selected_service.is_microblog && self.post_syndicates.length === self.selected_service.active_destination()?.syndicates?.length ? null : self.post_syndicates, self.summary)
     if(post_success !== POST_ERROR && post_success !== XML_ERROR){
       self.post_text = ""
       self.post_title = null
@@ -211,7 +212,7 @@ export default Posting = types.model('Posting', {
       self.is_sending_post = false
       self.is_closing_after_post = true
       if (should_show_progress) {
-        App.show_publishing_progress();
+        App.show_publishing_progress(self.selected_service.is_microblog, post_success.url)
       }
       return true
     }
@@ -317,7 +318,7 @@ export default Posting = types.model('Posting', {
           }
           const media_asset = MediaAsset.create(asset)
           self.post_assets.push(media_asset)
-          if (is_video && self.selected_service?.type !== "xmlrpc") {
+          if (is_video && self.selected_service?.is_microblog) {
             self.upload_video_asset(media_asset)
           }
           else {
@@ -482,7 +483,7 @@ export default Posting = types.model('Posting', {
     self.is_adding_bookmark = false
     if (post_success !== POST_ERROR) {
       App.handle_web_view_message("bookmark_added_from_app")
-      App.show_publishing_progress()
+      App.show_publishing_progress(self.selected_service.is_microblog, post_success.url)
       return true
     }
     return false
@@ -510,12 +511,13 @@ export default Posting = types.model('Posting', {
     }
     self.is_sending_post = true
     const should_show_progress = should_show_publishing_progress(self.post_status)
-    const post_success = yield MicroPubApi.post_update(self.selected_service.service_object(), self.post_text, self.post_url, self.post_title, self.post_categories, self.post_status)
+    const post_url = self.post_url
+    const post_success = yield MicroPubApi.post_update(self.selected_service.service_object(), self.post_text, post_url, self.post_title, self.post_categories, self.post_status)
     self.is_sending_post = false
     if(post_success !== POST_ERROR){
       self.clear_post()
       if (should_show_progress) {
-        App.show_publishing_progress()
+        App.show_publishing_progress(self.selected_service.is_microblog, post_success.url || post_url)
       }
       return true
     }
@@ -582,7 +584,9 @@ export default Posting = types.model('Posting', {
   }),
   
   activate_new_service: flow(function* (service = null) {
-    if(service === null){return false}
+    if(service === null){
+      return false
+    }
     self.selected_service = service
     console.log("Posting:activate_new_service", service)
     return true
@@ -641,7 +645,9 @@ export default Posting = types.model('Posting', {
   
   toggle_title: flow(function* () {
     console.log("Posting:toggle_title")
-    if(self.post_title){return}
+    if(self.post_title){
+      return
+    }
     self.show_title = !self.show_title
   }),
   

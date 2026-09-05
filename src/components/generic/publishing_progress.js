@@ -182,4 +182,4 @@ const PublishingProgress = observer(() => {
   )
 })
 
-export default PublishingProgress 
+export default PublishingProgress

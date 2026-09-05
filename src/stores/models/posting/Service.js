@@ -26,32 +26,17 @@ const Service = types.model('Service', {
 
   hydrate: flow(function* () {
     console.log("Service:hydrate", self.id)
-    if(self.credentials()?.token == null){ return }
+    if(self.credentials()?.token == null){
+      return
+    }
     if(self.is_microblog || self.type === "micropub"){
       const config = yield MicroPubApi.get_config(self.service_object())
       console.log("Service:hydrate:micropub:config", config)
-      if(config){
-        // We need to check if config.destination exists, and if not, we need to create it.
-        if(config.destination == null){
-          config.destination = [
-            {
-              uid: self.name.includes("http://") || self.name.includes("https://") ? self.name : `https://${self.name}`,
-              name: self.name
-            }
-          ]
-        }
-        // Before we set the new config, let's check if we had a config beforehand
+      if (config !== FETCH_ERROR) {
         const previously_set_destination = self.config?.selected_posts_destination
-        self.config = config        
-        if(previously_set_destination != null){
+        yield self.set_initial_config(config)
+        if (previously_set_destination != null) {
           self.config.set_previously_selected_posts_destination(previously_set_destination)
-        }
-        else{
-          self.config.hydrate_default_destination()
-        }
-        self.check_for_syndicate_to_targets()
-        if(App.is_share_extension){
-          self.check_for_categories()
         }
       }
     }
@@ -66,7 +51,9 @@ const Service = types.model('Service', {
 
   check_for_categories: flow(function* () {
     
-    if(self.credentials()?.token == null){ return }
+    if(self.credentials()?.token == null){
+      return
+    }
     
     if(self.config?.destination != null && self.config.destination.length > 0 && self.type !== "xmlrpc"){
       self.config.destination.forEach(async (destination) => {
@@ -372,7 +359,7 @@ const Service = types.model('Service', {
         if (res.assets?.length > 0) {
           res.assets.forEach((asset) => {
             console.log("Destination:pick_image:asset", asset)
-            if (asset?.type?.startsWith("video")) {
+            if (self.is_microblog && asset?.type?.startsWith("video")) {
               destination.upload_large_media(asset, self);
             }
             else {
@@ -388,8 +375,17 @@ const Service = types.model('Service', {
     if((self.is_microblog || self.type === "micropub") && self.credentials()?.token != null && config != null){
       console.log("Service:set_initial_config:config", config)
       if(config){
-        self.config = config
+        self.config = {
+          ...config,
+          destination: config.destination?.length ? config.destination : [{ uid: self.url, name: self.name }]
+        }
         self.config.hydrate_default_destination()
+        if (Array.isArray(config['syndicate-to'])) {
+          self.config.active_destination().set_syndicate_to_targets(config['syndicate-to'])
+        }
+        else {
+          self.check_for_syndicate_to_targets()
+        }
         if(App.is_share_extension){
           self.check_for_categories()
         }
@@ -453,6 +449,7 @@ export default Service
       temporary_destination: self.config?.temporary_destination()?.uid,
       blog_id: self.blog_id,
       type: self.type,
+      is_microblog: self.is_microblog,
     }
   },
 

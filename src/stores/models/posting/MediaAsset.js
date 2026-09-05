@@ -35,6 +35,10 @@ export default MediaAsset = types.model('MediaAsset', {
 .actions(self => ({
 
 	upload: flow(function* (service_object) {
+    // Without a media endpoint the file is sent with the post itself.
+    if (service_object.type === 'micropub' && !service_object.media_endpoint) {
+      return true
+    }
 		self.cancelled = false
 		self.is_uploading = true
 		if (service_object.type !== "xmlrpc") {

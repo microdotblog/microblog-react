@@ -53,7 +53,7 @@ const Destination = types.model('Destination', {
 	set_posts(entries) {
 		console.log("Destination:set_posts", entries.length)
 		const posts = entries.reduce((acc, entry) => {
-			const uid = entry.properties.uid && entry.properties.uid[0] ? parseInt(entry.properties.uid[0], 10) : 0
+			const uid = String(entry.properties.uid?.[0] ?? entry.properties.url?.[0] ?? '')
 			const name = entry.properties.name ? entry.properties.name[0] : ""
 			const content = entry.properties.content ? entry.properties.content[0] : ""
 			const published = entry.properties.published ? entry.properties.published[0] : ""
@@ -64,14 +64,14 @@ const Destination = types.model('Destination', {
 			const post = {
 				uid: uid,
 				name: name,
-				content: content,
+				content: content?.html ?? content,
 				published: published,
 				url: url,
 				post_status: post_status,
 				category: categories,
 				summary: summary
 			}
-			if (uid === 0 || url === "") {
+			if (url === "") {
 				return acc
 			}
 			return [...acc, post]
@@ -83,7 +83,7 @@ const Destination = types.model('Destination', {
 	set_drafts(entries) {
 		console.log("Destination:set_drafts", entries.length)
 		const posts = entries.reduce((acc, entry) => {
-			const uid = entry.properties.uid && entry.properties.uid[0] ? parseInt(entry.properties.uid[0], 10) : 0
+			const uid = String(entry.properties.uid?.[0] ?? entry.properties.url?.[0] ?? '')
 			const name = entry.properties.name ? entry.properties.name[0] : ""
 			const content = entry.properties.content ? entry.properties.content[0] : ""
 			const published = entry.properties.published ? entry.properties.published[0] : ""
@@ -94,14 +94,14 @@ const Destination = types.model('Destination', {
 			const post = {
 				uid: uid,
 				name: name,
-				content: content,
+				content: content?.html ?? content,
 				published: published,
 				url: url,
 				post_status: post_status,
 				category: categories,
 				summary: summary
 			}
-			if (uid === 0 || url === "") {
+			if (url === "") {
 				return acc
 			}
 			return [...acc, post]
@@ -113,7 +113,7 @@ const Destination = types.model('Destination', {
 	set_pages(entries) {
 		console.log("Destination:set_pages", entries.length)
 		const pages = entries.reduce((acc, entry) => {
-			const uid =  entry.properties.uid && entry.properties.uid[0] ? parseInt(entry.properties.uid[0], 10) : 0
+			const uid = String(entry.properties.uid?.[0] ?? entry.properties.url?.[0] ?? '')
 			const name = entry.properties.name ? entry.properties.name[0] : ""
 			const content = entry.properties.content ? entry.properties.content[0] : ""
 			const published = entry.properties.published ? entry.properties.published[0] : ""
@@ -122,12 +122,12 @@ const Destination = types.model('Destination', {
 			const post = {
 				uid: uid,
 				name: name,
-				content: content,
+				content: content?.html ?? content,
 				published: published,
 				url: url,
 				template: template
 			}
-			if (uid === 0 || url === "") {
+			if (url === "") {
 				return acc;
 			}
 			return [...acc, post]

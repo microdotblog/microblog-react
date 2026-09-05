@@ -1,12 +1,13 @@
 import App from '../../src/stores/App'
 import Push from '../../src/stores/Push'
 import Login from '../../src/stores/Login'
+import MicroBlogApi from '../../src/api/MicroBlogApi'
 import { Linking } from 'react-native'
 import { CommonActions } from '@react-navigation/native'
 
 jest.mock('../../src/api/MicroBlogApi', () => ({
   __esModule: true,
-  default: {}
+  default: { check_publishing_progress: jest.fn() }
 }))
 
 jest.mock('../../src/stores/Auth', () => ({
@@ -199,5 +200,50 @@ describe('App auth callback URLs', () => {
     url_event_handler({ url: callback_url })
 
     expect(Login.trigger_login_from_url).toHaveBeenCalledWith(callback_url)
+  })
+})
+
+describe('Publishing completion', () => {
+  afterEach(async () => {
+    await App.hide_publishing_progress()
+    jest.restoreAllMocks()
+  })
+
+  test('shows the third-party Location without polling Micro.blog', async () => {
+    MicroBlogApi.check_publishing_progress.mockClear()
+    await App.show_publishing_progress(false, 'https://third.example/post/1')
+    expect(App.latest_published_url).toBe('https://third.example/post/1')
+    expect(App.is_publishing).toBe(false)
+    expect(App.publishing_progress_visible).toBe(true)
+    expect(MicroBlogApi.check_publishing_progress).not.toHaveBeenCalled()
+  })
+
+  test('keeps the existing Micro.blog publishing progress behavior', async () => {
+    MicroBlogApi.check_publishing_progress.mockResolvedValue({
+      is_publishing: false, publishing_progress: 1, latest_url: 'https://blog.example/post/1'
+    })
+    await App.show_publishing_progress(true)
+    expect(MicroBlogApi.check_publishing_progress).toHaveBeenCalled()
+    expect(App.latest_published_url).toBe('https://blog.example/post/1')
+  })
+
+  test('does not let an earlier Micro.blog poll replace a third-party result', async () => {
+    let finish_poll
+    MicroBlogApi.check_publishing_progress.mockReturnValue(new Promise(resolve => { finish_poll = resolve }))
+    await App.show_publishing_progress(true)
+    await App.show_publishing_progress(false, 'https://third.example/post/1')
+    finish_poll({ is_publishing: false, publishing_progress: 1, latest_url: 'https://blog.example/old-post' })
+    await Promise.resolve()
+    expect(App.latest_published_url).toBe('https://third.example/post/1')
+  })
+
+  test('finishes without polling when a third-party response has no Location', async () => {
+    const toast = jest.spyOn(App, 'show_toast').mockImplementation(() => {})
+    MicroBlogApi.check_publishing_progress.mockClear()
+    await App.show_publishing_progress(false)
+    expect(App.is_publishing).toBe(false)
+    expect(App.publishing_progress_visible).toBe(false)
+    expect(toast).toHaveBeenCalledWith('Post sent.')
+    expect(MicroBlogApi.check_publishing_progress).not.toHaveBeenCalled()
   })
 })

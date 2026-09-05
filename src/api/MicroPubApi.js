@@ -1,5 +1,6 @@
 import { Alert } from 'react-native';
 import axios from 'axios';
+import { URL, URLSearchParams } from 'react-native-url-polyfill'
 import { DOMParser } from "@xmldom/xmldom";
 import App from "./../stores/App";
 import { buildUploadFileName } from "../utils/file_names"
@@ -27,234 +28,216 @@ const progress_from_upload_event = progressEvent => {
 class MicroPubApi {
   
   async discover_micropub_endpoints(url, alternate_html_match = false) {
-    console.log("MicroPubApi:discover_micropub_endpoints", url, alternate_html_match)
     try {
       const response = await fetch(url, {
-        headers: {
-          "Accept": "text/html",
-          "Cache-Control": "no-cache"
-        }
+        headers: { Accept: 'text/html', 'Cache-Control': 'no-cache' }
       })
-      const html = await response.text()
-      let links = []
-      
-      if (alternate_html_match) {
-        const headContent = html.match(/<head[^>]*>[\s\S]*?<\/head>/i)?.[0] || ""
-  
-        if (!headContent) {
-          throw new Error("Head content not found")
+      const base_url = response.url || url
+      const endpoints = {}
+      const addLink = (href, rel) => {
+        if (!href) {
+          return
         }
-        
-        const wrappedHtml = `<html>${headContent}</html>`
-        const dom_parser = new DOMParser()
-        const doc = dom_parser.parseFromString(wrappedHtml, "text/html")
-        links = doc.getElementsByTagName("link")
-      }
-      else {
-        const dom_parser = new DOMParser()
-        const doc = dom_parser.parseFromString(html, "text/html")
-        const head = doc.getElementsByTagName("head")[0]
-        links = head.getElementsByTagName("link")
-      }
-      
-      let micropub_link, auth_link, token_link
-      for (let i = 0; i < links.length; i++) {
-        const link = links[i]
-        if (link.getAttribute("rel") === "micropub") {
-          micropub_link = link
-        }
-        else if (link.getAttribute("rel") === "authorization_endpoint") {
-          auth_link = link
-        }
-        else if (link.getAttribute("rel") === "token_endpoint") {
-          token_link = link
+        for (const name of rel.split(/\s+/)) {
+          if (['micropub', 'authorization_endpoint', 'token_endpoint'].includes(name) && !endpoints[name]) {
+            endpoints[name] = new URL(href, base_url).href
+          }
         }
       }
-  
-      if (micropub_link && auth_link && token_link) {
+      // HTTP Link headers take precedence over HTML links.
+      const link_header = response.headers.get('Link') || ''
+      for (const match of link_header.matchAll(/<([^>]+)>([^,]*)/g)) {
+        const rel = match[2].match(/;\s*rel\s*=\s*(?:"([^"]+)"|([^;\s]+))/i)
+        if (rel) {
+          addLink(match[1], rel[1] || rel[2])
+        }
+      }
+      if (!endpoints.micropub || !endpoints.authorization_endpoint || !endpoints.token_endpoint) {
+        const html = await response.text()
+        const source = alternate_html_match ? `<html>${html.match(/<head[^>]*>[\s\S]*?<\/head>/i)?.[0] || ''}</html>` : html
+        const doc = new DOMParser().parseFromString(source, 'text/html')
+        const links = doc.getElementsByTagName('head')[0]?.getElementsByTagName('link') || []
+        for (let i = 0; i < links.length; i++) {
+          addLink(links[i].getAttribute('href'), links[i].getAttribute('rel') || '')
+        }
+      }
+      if (endpoints.micropub && endpoints.authorization_endpoint && endpoints.token_endpoint) {
         return {
-          micropub: micropub_link.getAttribute("href"),
-          auth: auth_link.getAttribute("href"),
-          token: token_link.getAttribute("href"),
-          is_wordpress: micropub_link.getAttribute("href").includes("/wp-json")
+          micropub: endpoints.micropub,
+          auth: endpoints.authorization_endpoint,
+          token: endpoints.token_endpoint,
+          is_wordpress: endpoints.micropub.includes('/wp-json')
         }
       }
-      else {
-        return MICROPUB_NOT_FOUND
-      }
+      return MICROPUB_NOT_FOUND
     }
     catch (error) {
       console.log(error)
-      if (error?.toString()?.includes("Network error")) {
-        Alert.alert("Whoops. There was an error connecting to the URL. Please check the url and try again.")
-      }
-      else if (!alternate_html_match) {
+      if (!alternate_html_match) {
         return this.discover_micropub_endpoints(url, true)
-      }
-      else {
-        Alert.alert("An error occurred trying to connect. Please try again.")
       }
       return MICROPUB_NOT_FOUND
     }
   }
 
-	make_auth_url(me_url, base_auth_url) {
-		var new_url = base_auth_url		
-		var new_state = Math.floor(Math.random() * 10000).toString(); // need to store this
-		
-		new_url = new_url + "?me=" + encodeURIComponent(me_url)
-		new_url = new_url + "&redirect_uri=" + encodeURIComponent("https://micro.blog/indieauth/redirect")
-		new_url = new_url + "&client_id=" + encodeURIComponent("https://micro.blog/")
-		new_url = new_url + "&state=" + new_state
-		new_url = new_url + "&scope=" + "create"
-		new_url = new_url + "&response_type=" + "code"
-		
-		return new_url
-	}
+  make_auth_url(me_url, base_auth_url) {
+    const url = new URL(base_auth_url)
+    url.searchParams.set('me', me_url)
+    url.searchParams.set('redirect_uri', 'https://micro.blog/indieauth/redirect')
+    url.searchParams.set('client_id', 'https://micro.blog/')
+    url.searchParams.set('state', Math.floor(Math.random() * 10000).toString())
+    url.searchParams.set('scope', 'create update delete')
+    url.searchParams.set('response_type', 'code')
+    return url.href
+  }
 
-	async verify_code(service, auth_url) {		
-		const regex = /[?&]code=([^&]+)/
-		const match = regex.exec(auth_url)
-		if (match) {			
-			const auth_code = match[1];
-			console.log("Micropub: Got code:", auth_code);
-			console.log("Micropub: Sending to", service.token_endpoint)
-			var params_s = ""
-			params_s = params_s + "client_id=" + encodeURIComponent("https://micro.blog/")
-			params_s = params_s	+ "&code=" + encodeURIComponent(auth_code)
-			params_s = params_s + "&redirect_uri=" + encodeURIComponent("https://micro.blog/indieauth/redirect")
-			params_s = params_s	+ "&grant_type=" + "authorization_code"
-			const verify_response = axios
-				.post(service.token_endpoint, params_s, {
-					headers: {
-						"Content-type": "application/x-www-form-urlencoded",
-						"Accept": "application/json"
-					}
-				})
-				.then(response => {
-					const access_token = response.data["access_token"]
-					console.log("Micropub: Got access token:", access_token)
-					if(access_token != null){
-						return access_token
-					}
-					return NO_AUTH;
-				})
-				.catch(error => {
-					console.log(error)
-					return FETCH_ERROR;
-				});
-			return verify_response
-		}
-		else {
-			return NO_AUTH
-		}
-	}
+  async verify_code(service, auth_url) {
+    let auth_code
+    try {
+      // Decode the callback value before encoding it once in the token request.
+      auth_code = new URL(auth_url).searchParams.get('code')
+    }
+    catch (error) {
+      return NO_AUTH
+    }
 
-	async get_config(service) {
-		console.log('MicroPubApi:get_config', service.username);
-		const config = axios
-			.get(service.endpoint, {
-				headers: { Authorization: `Bearer ${service.token}` },
-				params: { q: "config" }
-			})
-			.then(response => {
-				return response.data;
-			})
-			.catch(error => {
-				console.log(error);
-				return FETCH_ERROR;
-			});
-		return config;
-	}
+    if (!auth_code) {
+      return NO_AUTH
+    }
 
-	async send_post(service, content, title = null, assets = [], categories = [], status = null, syndicate_to = null, summary = null) {
-		console.log('MicroBlogApi:send_post', service, content, title, assets, status, syndicate_to);		
-		const params = new FormData()
-		params.append('h', 'entry')
-		params.append('content', content)
-		if (title) {
-			params.append('name', title)
-		}
-		if (status) {
-			params.append('post-status', status)
-		}
-		if (assets.length) {
-			const images_with_url = assets.filter(asset => asset.remote_url !== null && asset.did_upload && !asset.is_video)
-			if (images_with_url) {
-				// Now that we have images, we can append them to our params
-				if (images_with_url.length === 1) {
-					const first_image = images_with_url[0]
-					params.append('photo', first_image.remote_url)
-					if(first_image.alt_text != null && first_image.alt_text !== ""){
-						params.append('mp-photo-alt', first_image.alt_text)
-					}
-				}
-				else {
-					images_with_url.map((image) => {
-						params.append('photo[]', image.remote_url)
-						if(image.alt_text != null && image.alt_text !== ""){
-							params.append('mp-photo-alt[]', image.alt_text)
-						}
-					})
-				}
-			}
-			const videos_with_url = assets.filter(asset => asset.remote_url !== null && asset.did_upload && asset.is_video)
-			if (videos_with_url) {
-				// Now that we have images, we can append them to our params
-				if (videos_with_url.length === 1) {
-					const first_asset = videos_with_url[0]
-					params.append('video', first_asset.remote_url)
-				}
-				else {
-					videos_with_url.map((video) => {
-						params.append('video[]', video.remote_url)
-					})
-				}
-			}
-		}
-		if (categories.length) {
-			categories.map((category) => {
-				params.append('category[]', category)
-			})
-		}
-		params.append('mp-destination', service.destination)
-		if (syndicate_to != null && syndicate_to.length > 0){
-			syndicate_to.map((syndicate) => {
-				params.append('mp-syndicate-to[]', syndicate)
-			})
-		}
-		else if(syndicate_to != null && syndicate_to.length === 0){
-			params.append('mp-syndicate-to[]', "")
-		}
-		if (summary) {
-			params.append('summary', summary)
-		}
-		console.log("MicroBlogApi:send_post:FORM_DATA:PARAMS", params)
-		const post = axios
-			.post(service.endpoint, params ,{
-				headers: { Authorization: `Bearer ${service.token}` }
-			})
-			.then(() => {
-				return true;
-			})
-			.catch(error => {
-				console.log("MicroBlogApi:send_post:ERROR", error.response.status, error.response.data);
-				if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
-					Alert.alert(
-						"Something went wrong.",
-						`${error.response.data.error_description}`,
-					)
-				}
-				else {
-					Alert.alert(
-						"Something went wrong.",
-						`Please try again later.`,
-					)
-				}
-				return POST_ERROR;
-			});
-		return post;
-	}
+    const params = new URLSearchParams({
+      client_id: 'https://micro.blog/',
+      code: auth_code,
+      redirect_uri: 'https://micro.blog/indieauth/redirect',
+      grant_type: 'authorization_code'
+    })
+
+    try {
+      const response = await axios.post(service.token_endpoint, params.toString(), {
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded',
+          Accept: 'application/json'
+        }
+      })
+      return response.data.access_token ?? NO_AUTH
+    }
+    catch (error) {
+      console.log(error)
+      return FETCH_ERROR
+    }
+  }
+
+  async get_config(service) {
+    try {
+      const url = new URL(service.endpoint)
+      url.searchParams.set('q', 'config')
+      const response = await fetch(url.href, {
+        headers: { Authorization: `Bearer ${service.token}`, Accept: 'application/json' }
+      })
+      if ([400, 404, 405, 501].includes(response.status)) {
+        return {}
+      }
+      if (!response.ok) {
+        return FETCH_ERROR
+      }
+      const config = await response.json().catch(() => ({}))
+      return config && typeof config === 'object' && !Array.isArray(config) ? config : {}
+    }
+    catch (error) {
+      console.log(error)
+      return FETCH_ERROR
+    }
+  }
+
+  async sendRequest(service, body, content_type, error_code = POST_ERROR) {
+    try {
+      const headers = { Authorization: `Bearer ${service.token}` }
+      if (content_type) {
+        headers['Content-Type'] = content_type
+      }
+      const response = await fetch(service.endpoint, { method: 'POST', headers, body })
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}))
+        throw new Error(error?.error_description || `Server error (${response.status}). Please try again later.`)
+      }
+      const location = response.headers.get('Location')
+      return { url: location ? new URL(location, response.url || service.endpoint).href : null }
+    }
+    catch (error) {
+      console.log('MicroPubApi:sendRequest:error', error)
+      Alert.alert('Something went wrong.', error.message || 'Please try again later.')
+      return error_code
+    }
+  }
+
+  async send_post(service, content, title = null, assets = [], categories = [], status = null, syndicate_to = null, summary = null) {
+    const properties = { content: [content] }
+    if (title) {
+      properties.name = [title]
+    }
+    if (status) {
+      properties['post-status'] = [status]
+    }
+    if (categories.length) {
+      properties.category = categories
+    }
+    if (summary) {
+      properties.summary = [summary]
+    }
+    if (service.destination) {
+      properties['mp-destination'] = [service.destination]
+    }
+    if (syndicate_to != null) {
+      properties['mp-syndicate-to'] = syndicate_to.length ? syndicate_to : ['']
+    }
+
+    let has_files = false
+    for (const asset of assets) {
+      if (asset.is_inline && !service.is_microblog) {
+        continue
+      }
+      const property = asset.is_video ? 'video' : 'photo'
+      let value = asset.remote_url
+      if (!asset.did_upload && !service.media_endpoint) {
+        has_files = true
+        value = { uri: asset.cached_uri || asset.uri, type: asset.type, name: buildUploadFileName(asset, Date.now()) }
+      }
+      else if (!asset.did_upload || !value) {
+        continue
+      }
+      else if (!asset.is_video && asset.alt_text && !service.is_microblog) {
+        value = { value, alt: asset.alt_text }
+      }
+      if (!properties[property]) {
+        properties[property] = []
+      }
+      properties[property].push(value)
+      if (!asset.is_video && service.is_microblog) {
+        if (!properties['mp-photo-alt']) {
+          properties['mp-photo-alt'] = []
+        }
+        properties['mp-photo-alt'].push(asset.alt_text || '')
+      }
+    }
+
+    const needs_json = !has_files && Object.values(properties).some(values => values.some(value => typeof value === 'object'))
+    if (needs_json) {
+      const params = { type: ['h-entry'], properties }
+      for (const key of Object.keys(properties).filter(key => key.startsWith('mp-'))) {
+        params[key] = key === 'mp-destination' ? properties[key][0] : properties[key]
+        delete properties[key]
+      }
+      return this.sendRequest(service, JSON.stringify(params), 'application/json')
+    }
+    const params = has_files ? new FormData() : new URLSearchParams()
+    params.append('h', 'entry')
+    for (const [key, values] of Object.entries(properties)) {
+      for (const value of values) {
+        params.append(values.length > 1 ? `${key}[]` : key, value?.value || value)
+      }
+    }
+    return this.sendRequest(service, has_files ? params : params.toString(), has_files ? null : 'application/x-www-form-urlencoded')
+  }
 
 	async get_categories(service, destination = null) {
 		console.log('MicroPubApi:get_categories');
@@ -516,90 +499,35 @@ class MicroPubApi {
 			})
 	}
 
-	async send_entry(service, entry, entry_type) {
-		console.log('MicroBlogApi:send_post', service, entry, entry_type);
-		const params = new FormData()
-		params.append('h', 'entry')
-		params.append(entry_type, entry)
-		params.append('mp-destination', service.destination)
-		console.log("MicroBlogApi:send_entry:FORM_DATA:PARAMS", params)
-		
-		const post = axios
-			.post(service.endpoint, params ,{
-				headers: { Authorization: `Bearer ${service.token}` }
-			})
-			.then(() => {
-				return true;
-			})
-			.catch(error => {
-				console.log("MicroBlogApi:send_entry:ERROR", error.response.status, error.response.data);
-				if (axios.isCancel(error)) {
-					console.log("Request canceled:", error.message)
-				}
-				else if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
-					Alert.alert(
-						"Something went wrong.",
-						`${error.response.data.error_description}`,
-					)
-				}
-				else {
-					Alert.alert(
-						"Something went wrong.",
-						`Please try again later.`,
-					)
-				}
-				return POST_ERROR;
-			});
-		return post;
-	}
-	
-	async post_update(service, content, url, title, categories, post_status = "") {
-		console.log('MicroBlogApi:MicroPub:post_update', content, url, title, categories);
-		const params = {
-			"action": "update",
-			"url": url,
-			"mp-destination": service.destination,
-			"replace": {
-				"content": [
-					content
-				],
-				"name": [
-					title
-				],
-				"category": categories,
-				"post-status": [
-					post_status
-				]
-			}
-		}
-		console.log("MicroBlogApi:MicroPub:post_update:PARAMS", params)
-		
-		const post = axios
-			.post(`https://micro.blog/micropub`, params ,{
-				headers: { Authorization: `Bearer ${service.token}` }
-			})
-			.then(response => {
-				return true;
-			})
-			.catch(error => {
-				console.log("MicroBlogApi:post_update:ERROR", error.response.status, error.response.data);
-				if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
-					Alert.alert(
-						"Something went wrong.",
-						`${error.response.data.error_description}. Try again later.`,
-					)
-				}
-				else {
-					Alert.alert(
-						"Something went wrong.",
-						`Please try again later.`,
-					)
-				}
-				return POST_ERROR;
-			});
-		return post;
-	}
-	
+  async send_entry(service, entry, entry_type) {
+    const params = new URLSearchParams({ h: 'entry', [entry_type]: entry })
+    if (service.destination) {
+      params.set('mp-destination', service.destination)
+    }
+    return this.sendRequest(service, params.toString(), 'application/x-www-form-urlencoded')
+  }
+
+  async post_update(service, content, url, title, categories, post_status = '') {
+    const replace = { content: [content] }
+    const params = { action: 'update', url, replace }
+    if (title === null || title === '') {
+      params.delete = ['name']
+    }
+    else if (title !== undefined) {
+      replace.name = [title]
+    }
+    if (categories) {
+      replace.category = categories
+    }
+    if (post_status) {
+      replace['post-status'] = [post_status]
+    }
+    if (service.destination) {
+      params['mp-destination'] = service.destination
+    }
+    return this.sendRequest(service, JSON.stringify(params), 'application/json')
+  }
+
 	async get_posts(service, destination = null, is_drafts = false) {
 		console.log('MicroPubApi:get_posts', is_drafts);
 		let params = {
@@ -624,81 +552,19 @@ class MicroPubApi {
 		return config;
 	}
 	
-	async delete_post(service, url) {
-		console.log('MicroBlogApi:MicroPub:delete_post', url);
-		const params = {
-			"action": "delete",
-			"url": url,
-			"mp-destination": service.destination
-		}
-		console.log("MicroBlogApi:MicroPub:delete_post:PARAMS", params)
-		
-		const post = axios
-			.post(`https://micro.blog/micropub`, params ,{
-				headers: { Authorization: `Bearer ${service.token}` }
-			})
-			.then(response => {
-				return true;
-			})
-			.catch(error => {
-				console.log("MicroBlogApi:delete_post:ERROR", error.response.status, error.response.data);
-				if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
-					Alert.alert(
-						"Something went wrong.",
-						`${error.response.data.error_description}. Try again later.`,
-					)
-				}
-				else {
-					Alert.alert(
-						"Something went wrong.",
-						`Please try again later.`,
-					)
-				}
-				return DELETE_ERROR;
-			});
-		return post;
-	}
+  async delete_post(service, url) {
+    const params = { action: 'delete', url }
+    if (service.destination) {
+      params['mp-destination'] = service.destination
+    }
+    return this.sendRequest(service, JSON.stringify(params), 'application/json', DELETE_ERROR)
+  }
 
-	async publish_draft(service, content, url, title) {
-		console.log('MicroBlogApi:MicroPub:publish_post', url);
-		const params = {
-			"action": "update",
-			"url": url,
-			"mp-destination": service.destination,
-			"replace": {
-				"name": [ title ],
-				"content": [ content ],
-				"post-status": [ "published" ]
-			}
-		}
-		console.log("MicroBlogApi:MicroPub:publish_draft:PARAMS", params)
-		
-		const post = axios
-			.post(`https://micro.blog/micropub`, params ,{
-				headers: { Authorization: `Bearer ${service.token}` }
-			})
-			.then(response => {
-				return true;
-			})
-			.catch(error => {
-				console.log("MicroBlogApi:publish_draft:ERROR", error.response.status, error.response.data);
-				if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
-					Alert.alert(
-						"Something went wrong.",
-						`${error.response.data.error_description}. Try again later.`,
-					)
-				}
-				else {
-					Alert.alert(
-						"Something went wrong.",
-						`Please try again later.`,
-					)
-				}
-				return DELETE_ERROR;
-			});
-		return post;
-	}
-	
+  async publish_draft(service, content, url, title) {
+    const result = await this.post_update(service, content, url, title, undefined, 'published')
+    return result === POST_ERROR ? DELETE_ERROR : result
+  }
+
 	async get_pages(service, destination = null) {
 		console.log('MicroPubApi:get_pages');
 		const config = axios
@@ -733,41 +599,15 @@ class MicroPubApi {
 		return config;
 	}
 
-	async delete_upload(service, url) {
-		console.log('MicroBlogApi:MicroPub:delete_upload', url);
-		const params = {
-			"action": "delete",
-			"url": url,
-			"mp-destination": service.temporary_destination
-		}
-		console.log("MicroBlogApi:MicroPub:delete_upload:PARAMS", params)
-		
-		const upload = axios
-			.post(service.media_endpoint, "", {
-				headers: { Authorization: `Bearer ${ service.token }` },
-				params: params
-			})
-			.then(response => {
-				return true;
-			})
-			.catch(error => {
-				console.log("MicroBlogApi:delete_upload:ERROR", error.response.status, error.response.data);
-				if (error.response.data.error_description !== undefined && error.response.data.error_description !== null) {
-					Alert.alert(
-						"Something went wrong.",
-						`${error.response.data.error_description}. Try again later.`,
-					)
-				}
-				else {
-					Alert.alert(
-						"Something went wrong.",
-						`Please try again later.`,
-					)
-				}
-				return DELETE_ERROR;
-			});
-		return upload;
-	}
+  async delete_upload(service, url) {
+    const endpoint = new URL(service.media_endpoint)
+    endpoint.searchParams.set('action', 'delete')
+    endpoint.searchParams.set('url', url)
+    if (service.temporary_destination) {
+      endpoint.searchParams.set('mp-destination', service.temporary_destination)
+    }
+    return this.sendRequest({ ...service, endpoint: endpoint.href }, '', null, DELETE_ERROR)
+  }
 
 	async get_collections(service, destination = null) {
 		console.log('MicroPubApi:get_collections');

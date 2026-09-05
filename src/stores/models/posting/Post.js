@@ -6,7 +6,7 @@ let html_parser = new DOMParser({ onError: (error) => {
 }});
 
 export default Post = types.model('Post', {
-  uid: types.identifierNumber,
+  uid: types.identifier,
   name: types.maybe(types.string),
   content: types.maybe(types.string),
   published: types.maybe(types.string),
@@ -15,6 +15,7 @@ export default Post = types.model('Post', {
   category: types.optional(types.array(types.string), []),
   summary: types.maybeNull(types.string)
 })
+.preProcessSnapshot(snapshot => ({ ...snapshot, uid: String(snapshot.uid) }))
 .views(self => ({
   
   plain_text_content(){
