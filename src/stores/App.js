@@ -960,7 +960,9 @@ export default App = types.model('App', {
   
     set_current_tab_index: flow(function*(tab_index) {
       console.log("App:set_current_tab_index", tab_index)
-      if (tab_index === self.current_tab_index) { return }
+      if (tab_index === self.current_tab_index) {
+        return
+      }
       self.current_tab_index = tab_index
       AsyncStorage.setItem("App:tab_index", JSON.stringify(self.current_tab_index))
     }),
@@ -1164,8 +1166,20 @@ export default App = types.model('App', {
       self.toolbar_categories_open = !self.toolbar_categories_open
     }),
 
-    show_publishing_progress: flow(function*() {
+    show_publishing_progress: flow(function* (is_microblog = true, url = null) {
       console.log("App:show_publishing_progress")
+      self.stop_publishing_progress_polling()
+      if (!is_microblog) {
+        self.is_publishing = false
+        self.publishing_progress = 100
+        self.publishing_status = 'Post sent.'
+        self.latest_published_url = url || null
+        self.publishing_progress_visible = !!url
+        if (!url) {
+          self.show_toast('Post sent.')
+        }
+        return
+      }
       self.publishing_progress_visible = true
       self.is_publishing = true
       self.publishing_progress = 0
@@ -1204,6 +1218,9 @@ export default App = types.model('App', {
       }
 
       const response = yield MicroBlogApi.check_publishing_progress()
+      if (!self.publishing_progress_visible || !self.is_publishing) {
+        return
+      }
       if (response !== API_ERROR && response != null) {
         self.is_publishing = response.is_publishing
         self.publishing_progress = response.publishing_progress * 100

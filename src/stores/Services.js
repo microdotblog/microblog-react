@@ -5,6 +5,7 @@ import Auth from "./Auth";
 import { blog_services } from './enums/blog_services';
 import Tokens from "./Tokens";
 import { Alert, Linking } from 'react-native';
+import { URL } from 'react-native-url-polyfill'
 import App from './App';
 
 export default Services = types.model('Services', {
@@ -75,7 +76,9 @@ export default Services = types.model('Services', {
     }
   
     // check for Micropub first, then try XML-RPC
-    const micropub_endpoints = yield MicroPubApi.discover_micropub_endpoints(`${discover_url}?v=${App.now()}`)
+    const discovery_url = new URL(discover_url)
+    discovery_url.searchParams.set('v', App.now().toString())
+    const micropub_endpoints = yield MicroPubApi.discover_micropub_endpoints(discovery_url.href)
     if (micropub_endpoints !== MICROPUB_NOT_FOUND && !micropub_endpoints.is_wordpress) {
       console.log("Micropub: Found endpoints:", micropub_endpoints)
       self.micropub_endpoint = micropub_endpoints["micropub"]
@@ -86,7 +89,7 @@ export default Services = types.model('Services', {
       Linking.openURL(auth_url)
     }
     else {
-      const rsd_link = yield XMLRPCApi.discover_rsd_endpoint(`${discover_url}?v=${App.now()}`)
+      const rsd_link = yield XMLRPCApi.discover_rsd_endpoint(discovery_url.href)
       console.log("Services:setup_new_service:rsd_link", rsd_link)
       if(rsd_link !== RSD_NOT_FOUND){
         const blog_info = yield XMLRPCApi.discover_preferred_blog(rsd_link)
