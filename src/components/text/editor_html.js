@@ -137,6 +137,7 @@ const editorHtml = String.raw`<!doctype html>
 
     .editor_link_url {
       color: var(--editor-link-url);
+      font-weight: 300;
       word-break: break-all;
     }
 
@@ -146,6 +147,7 @@ const editorHtml = String.raw`<!doctype html>
 
     .editor_tag {
       color: var(--editor-tag);
+      font-weight: 300;
     }
 
     .editor_attr_name {
@@ -154,6 +156,7 @@ const editorHtml = String.raw`<!doctype html>
 
     .editor_attr_value {
       color: var(--editor-link);
+      font-weight: normal;
     }
 
     .editor_code_inline,
@@ -206,7 +209,7 @@ const editorHtml = String.raw`<!doctype html>
       var lastText = "";
       var didApplyInitialValue = false;
       var editorMarkerSelector = '[data-editor-marker="caret"]';
-      var markdownCharacters = [' ', '*', '_', '[', ']', '(', ')', '<', '>', '"', '\`', '#', '-', '@'];
+      var markdownCharacters = [' ', '*', '_', '[', ']', '(', ')', '<', '>', '"', '\`', '#', '-', '@', '~', '\\'];
 
       function editor() {
         return document.getElementById("editor");
@@ -520,14 +523,6 @@ const editorHtml = String.raw`<!doctype html>
         clampScrollOffsets();
       }
 
-      function escapeHtml(text) {
-        return text
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;");
-      }
-
       function preserveTrailingNewline(html) {
         if (html.endsWith("\n")) {
           return html.slice(0, -1) + '<br><span class="editor_marker" data-editor-marker="caret" aria-hidden="true">\u200b</span>';
@@ -536,31 +531,915 @@ const editorHtml = String.raw`<!doctype html>
         return html;
       }
 
+      function escapeEditorHTML(text) {
+        return String(text)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;')
+      }
+
+      function formatHTMLTag(text) {
+        if (text.startsWith('<!') || text.startsWith('<?')) {
+          return '<span class="editor_tag">' + escapeEditorHTML(text) + '</span>'
+        }
+        let current_pos = text[1] == '/' ? 2 : 1
+        while (/[A-Za-z0-9:-]/.test(text[current_pos] ?? '')) {
+          current_pos++
+        }
+        let formatted = escapeEditorHTML(text.substring(0, current_pos))
+        while (current_pos < text.length) {
+          const char = text[current_pos]
+          if (isWhitespace(char) || char == '/' || char == '>') {
+            formatted += escapeEditorHTML(char)
+            current_pos++
+            continue
+          }
+          const name_start = current_pos
+          while (current_pos < text.length && !/[\s=/>]/.test(text[current_pos])) {
+            current_pos++
+          }
+          formatted +=
+            '<span class="editor_attr_name">' + escapeEditorHTML(text.substring(name_start, current_pos)) + '</span>'
+          while (isWhitespace(text[current_pos])) {
+            formatted += escapeEditorHTML(text[current_pos])
+            current_pos++
+          }
+          if (text[current_pos] != '=') {
+            continue
+          }
+          formatted += '='
+          current_pos++
+          while (isWhitespace(text[current_pos])) {
+            formatted += escapeEditorHTML(text[current_pos])
+            current_pos++
+          }
+          const value_start = current_pos
+          const quote = text[current_pos] == '"' || text[current_pos] == "'" ? text[current_pos] : null
+          if (quote) {
+            current_pos++
+            while (current_pos < text.length && text[current_pos] != quote) {
+              current_pos++
+            }
+            if (text[current_pos] == quote) {
+              current_pos++
+            }
+          } else {
+            while (current_pos < text.length && !/[\s>]/.test(text[current_pos])) {
+              current_pos++
+            }
+          }
+          formatted +=
+            '<span class="editor_attr_value">' + escapeEditorHTML(text.substring(value_start, current_pos)) + '</span>'
+        }
+        return '<span class="editor_tag">' + formatted + '</span>'
+      }
+
+      function createPlaceholderStore(text) {
+        let attempt = 0
+        let prefix = '\uE000' + text.length + '\uE001'
+        while (text.includes(prefix)) {
+          attempt++
+          prefix = '\uE000' + text.length + ':' + attempt + '\uE001'
+        }
+        const entries = []
+        const token_source = prefix + '(\\d+)' + prefix
+        function add(type, value) {
+          const index = entries.length
+          entries.push({
+            type: type,
+            value: value
+          })
+          return prefix + index + prefix
+        }
+        function tokenAt(value, position, type) {
+          if (!value.startsWith(prefix, position)) {
+            return null
+          }
+          const index_start = position + prefix.length
+          const token_end = value.indexOf(prefix, index_start)
+          if (token_end == -1) {
+            return null
+          }
+          const index_text = value.substring(index_start, token_end)
+          if (!/^\d+$/.test(index_text)) {
+            return null
+          }
+          const entry = entries[Number(index_text)]
+          if (!entry || entry.type != type) {
+            return null
+          }
+          return {
+            end: token_end + prefix.length
+          }
+        }
+        function rawText(value) {
+          // outer atoms can contain tokens created by earlier protection passes
+          const token_regex = new RegExp(token_source, 'g')
+          return value.replace(token_regex, (match, index) => {
+            const nested_entry = entries[Number(index)]
+            if (!nested_entry || nested_entry.type == 'markup') {
+              return match
+            }
+            return rawText(nested_entry.value)
+          })
+        }
+        function restore(value) {
+          const token_regex = new RegExp(token_source, 'g')
+          return value.replace(token_regex, (match, index) => {
+            const entry = entries[Number(index)]
+            if (!entry) {
+              return match
+            }
+            if (entry.type == 'markup') {
+              return entry.value
+            }
+            const raw_value = rawText(entry.value)
+            if (entry.type == 'html_tag') {
+              return formatHTMLTag(raw_value)
+            }
+            const escaped_value = escapeEditorHTML(raw_value)
+            if (entry.type == 'code_block') {
+              return '<span class="editor_code_block">' + escaped_value + '</span>'
+            } else if (entry.type == 'code_inline') {
+              return '<span class="editor_code_inline">' + escaped_value + '</span>'
+            }
+            return escaped_value
+          })
+        }
+        return {
+          add: add,
+          tokenAt: tokenAt,
+          restore: restore
+        }
+      }
+
+      function isEscaped(text, position) {
+        let slash_count = 0
+        for (let i = position - 1; i >= 0 && text[i] == '\\'; i--) {
+          slash_count++
+        }
+        return slash_count % 2 == 1
+      }
+
+      function isSpaceOrTab(char) {
+        return char == ' ' || char == '\t'
+      }
+
+      function isWhitespace(char) {
+        return !char || /\s/u.test(char)
+      }
+
+      function lineEnd(text, start) {
+        let end = text.indexOf('\n', start)
+        if (end == -1) {
+          end = text.length
+        }
+        if (end > start && text[end - 1] == '\r') {
+          end--
+        }
+        return end
+      }
+
+      function findMarkdownTargetEnd(text, start, limit, closing_char, allow_empty, recovery_starts = null) {
+        let current_pos = start
+        let destination_end = start
+
+        // angle-wrapped destinations have their own delimiter rules
+        if (text[current_pos] == '<') {
+          current_pos++
+          let found_angle_end = false
+          let escaped = false
+          while (current_pos < limit) {
+            if (recovery_starts?.has(current_pos)) {
+              return -1
+            }
+            const char = text[current_pos]
+            if (escaped) {
+              escaped = false
+            } else if (char == '\\') {
+              escaped = true
+            } else if (char == '<') {
+              return -1
+            } else if (char == '>') {
+              found_angle_end = true
+              current_pos++
+              break
+            }
+            current_pos++
+          }
+          if (!found_angle_end) {
+            return -1
+          }
+          destination_end = current_pos
+        } else {
+          let parenthesis_depth = 0
+          let escaped = false
+          while (current_pos < limit) {
+            if (recovery_starts?.has(current_pos)) {
+              return -1
+            }
+            const char = text[current_pos]
+            if (escaped) {
+              if (isSpaceOrTab(char)) {
+                return -1
+              }
+              escaped = false
+            } else if (char == '\\') {
+              escaped = true
+            } else if (isSpaceOrTab(char)) {
+              if (parenthesis_depth != 0) {
+                return -1
+              }
+              break
+            } else if (char == '<' || char == '>') {
+              return -1
+            } else if (char == '(') {
+              parenthesis_depth++
+            } else if (char == ')') {
+              if (parenthesis_depth == 0) {
+                if (closing_char == ')') {
+                  break
+                }
+                return -1
+              }
+              parenthesis_depth--
+            }
+            current_pos++
+          }
+          if (parenthesis_depth != 0 || (!allow_empty && current_pos == start)) {
+            return -1
+          }
+          destination_end = current_pos
+        }
+        while (current_pos < limit && isSpaceOrTab(text[current_pos])) {
+          current_pos++
+        }
+        if (closing_char ? text[current_pos] == closing_char : current_pos == limit) {
+          return current_pos
+        }
+
+        // an optional title must be separated from the destination by whitespace
+        if (current_pos == destination_end) {
+          return -1
+        }
+        const title_open = text[current_pos]
+        let title_close
+        if (title_open == '"' || title_open == "'") {
+          title_close = title_open
+        } else if (title_open == '(') {
+          title_close = ')'
+        } else {
+          return -1
+        }
+        current_pos++
+        let found_title_end = false
+        let escaped = false
+        while (current_pos < limit) {
+          if (recovery_starts?.has(current_pos)) {
+            return -1
+          }
+          const char = text[current_pos]
+          if (escaped) {
+            escaped = false
+          } else if (char == '\\') {
+            escaped = true
+          } else if (title_open == '(' && char == '(') {
+            return -1
+          } else if (char == title_close) {
+            found_title_end = true
+            current_pos++
+            break
+          }
+          current_pos++
+        }
+        if (!found_title_end) {
+          return -1
+        }
+        while (current_pos < limit && isSpaceOrTab(text[current_pos])) {
+          current_pos++
+        }
+        if (closing_char ? text[current_pos] == closing_char : current_pos == limit) {
+          return current_pos
+        }
+        return -1
+      }
+
+      function parseLineContainer(text, start, end) {
+        let current_pos = start
+        let quote_depth = 0
+
+        // blockquote markers are part of the fence's container
+        while (current_pos < end) {
+          let marker_pos = current_pos
+          let spaces = 0
+          while (spaces < 3 && text[marker_pos] == ' ') {
+            marker_pos++
+            spaces++
+          }
+          if (text[marker_pos] != '>') {
+            break
+          }
+          quote_depth++
+          current_pos = marker_pos + 1
+          if (isSpaceOrTab(text[current_pos])) {
+            current_pos++
+          }
+        }
+        const content_start = current_pos
+        let indent = 0
+        while (isSpaceOrTab(text[current_pos])) {
+          indent = text[current_pos] == '\t' ? indent + 4 - (indent % 4) : indent + 1
+          current_pos++
+        }
+        let has_list_marker = false
+        let list_indent = 0
+        const list_indents = []
+        let marker_column = indent
+        while (current_pos < end) {
+          const marker_start = current_pos
+          let marker_end = marker_start
+          if (/[-+*]/.test(text[marker_end] ?? '')) {
+            marker_end++
+          } else if (/\d/.test(text[marker_end] ?? '')) {
+            while (marker_end < end && /\d/.test(text[marker_end]) && marker_end - marker_start < 9) {
+              marker_end++
+            }
+            if (text[marker_end] != '.' && text[marker_end] != ')') {
+              marker_end = marker_start
+            } else {
+              marker_end++
+            }
+          }
+          if (marker_end == marker_start) {
+            break
+          }
+          if (marker_end == end) {
+            has_list_marker = true
+            marker_column += marker_end - marker_start
+            list_indent = marker_column + 1
+            list_indents.push(list_indent)
+            current_pos = marker_end
+            break
+          }
+          if (!isSpaceOrTab(text[marker_end])) {
+            break
+          }
+          has_list_marker = true
+          marker_column += marker_end - marker_start
+          while (isSpaceOrTab(text[marker_end])) {
+            marker_column = text[marker_end] == '\t' ? marker_column + 4 - (marker_column % 4) : marker_column + 1
+            marker_end++
+          }
+          current_pos = marker_end
+          list_indent = marker_column
+          list_indents.push(list_indent)
+        }
+        return {
+          quote_depth: quote_depth,
+          has_list_marker: has_list_marker,
+          indent: indent,
+          list_indent: list_indent,
+          list_indents: list_indents,
+          in_list: has_list_marker,
+          content_position: current_pos,
+          is_blank: text.substring(content_start, end).trim() == ''
+        }
+      }
+
+      function parseFenceLine(text, start, end, container = null) {
+        const line_container = container ?? parseLineContainer(text, start, end)
+        let current_pos = line_container.content_position
+        const fence_char = text[current_pos]
+        if (fence_char != '\`' && fence_char != '~') {
+          return null
+        }
+        const fence_start = current_pos
+        while (text[current_pos] == fence_char) {
+          current_pos++
+        }
+        const fence_length = current_pos - fence_start
+        if (fence_length < 3) {
+          return null
+        }
+        const remainder = text.substring(current_pos, end)
+        const is_closing = /^[ \t]*$/.test(remainder)
+        if (!is_closing && fence_char == '\`' && remainder.includes('\`')) {
+          return null
+        }
+        return {
+          start: start,
+          quote_depth: line_container.quote_depth,
+          has_list_marker: line_container.has_list_marker,
+          indent: line_container.indent,
+          list_indent: line_container.list_indent,
+          in_list: line_container.in_list,
+          fence_char: fence_char,
+          fence_length: fence_length,
+          is_closing: is_closing
+        }
+      }
+
+      function canOpenFence(candidate) {
+        return candidate.indent <= 3 || (candidate.in_list && candidate.inherited_list)
+      }
+
+      function fenceContainerEnded(opening, container) {
+        if (container.quote_depth < opening.quote_depth) {
+          return true
+        }
+        if (container.is_blank) {
+          return false
+        }
+        return opening.in_list && container.quote_depth == opening.quote_depth && container.indent < opening.list_indent
+      }
+
+      function fenceCloses(opening, candidate) {
+        if (
+          !candidate.is_closing ||
+          candidate.fence_char != opening.fence_char ||
+          candidate.fence_length < opening.fence_length ||
+          candidate.quote_depth != opening.quote_depth
+        ) {
+          return false
+        }
+        if (!opening.in_list) {
+          return !candidate.has_list_marker && candidate.indent <= 3
+        }
+        return (
+          !candidate.has_list_marker && candidate.indent >= opening.list_indent && candidate.indent <= opening.list_indent + 3
+        )
+      }
+
+      function protectFencedCode(text, placeholders) {
+        let result = ''
+        let last_pos = 0
+        let opening = null
+        let active_lists = []
+        let line_start = 0
+        while (line_start <= text.length) {
+          const newline_pos = text.indexOf('\n', line_start)
+          const line_end = newline_pos == -1 ? text.length : newline_pos
+          const content_end = line_end > line_start && text[line_end - 1] == '\r' ? line_end - 1 : line_end
+          const container = parseLineContainer(text, line_start, content_end)
+          const candidate = parseFenceLine(text, line_start, content_end, container)
+
+          // carry list indentation onto continuation lines and nested list items
+          let line_lists = []
+          let inherited_list = false
+          if (container.is_blank && (active_lists.length == 0 || active_lists[0].quote_depth == container.quote_depth)) {
+            line_lists = active_lists
+            inherited_list = line_lists.length > 0
+          } else {
+            line_lists = active_lists.filter((item) => {
+              return item.quote_depth == container.quote_depth && item.indent <= container.indent
+            })
+            inherited_list = line_lists.length > 0
+            if (container.indent <= 3 || inherited_list) {
+              for (const indent of container.list_indents) {
+                line_lists.push({
+                  quote_depth: container.quote_depth,
+                  indent: indent
+                })
+              }
+            }
+          }
+          if (candidate && line_lists.length > 0) {
+            const line_list = line_lists[line_lists.length - 1]
+            candidate.in_list = true
+            candidate.inherited_list = inherited_list
+            candidate.list_indent = line_list.indent
+            candidate.list_contexts = line_lists.slice()
+          }
+          if (opening && fenceContainerEnded(opening, container)) {
+            let block_end = line_start - 1
+            if (block_end > opening.start && text[block_end - 1] == '\r') {
+              block_end--
+            }
+            result += text.substring(last_pos, opening.start)
+            result += placeholders.add('code_block', text.substring(opening.start, block_end))
+            last_pos = block_end
+            opening = null
+          }
+          if (!opening && candidate && canOpenFence(candidate)) {
+            opening = candidate
+          } else if (opening && candidate && fenceCloses(opening, candidate)) {
+            result += text.substring(last_pos, opening.start)
+            result += placeholders.add('code_block', text.substring(opening.start, line_end))
+            last_pos = line_end
+            opening = null
+          }
+          // code contents are opaque, so keep their opening list context unchanged
+          if (opening?.in_list) {
+            active_lists = opening.list_contexts
+          } else {
+            active_lists = line_lists
+          }
+          if (newline_pos == -1) {
+            break
+          }
+          line_start = newline_pos + 1
+        }
+        if (opening) {
+          result += text.substring(last_pos, opening.start)
+          result += placeholders.add('code_block', text.substring(opening.start))
+          last_pos = text.length
+        }
+        return result + text.substring(last_pos)
+      }
+
+      function protectReferenceDefinitions(text, placeholders) {
+        const reference_start_regex = /^[ \t]{0,3}\[[^\]\r\n]+\]:[ \t]*/gm
+        let result = ''
+        let last_pos = 0
+        let match
+        while ((match = reference_start_regex.exec(text)) != null) {
+          const target_start = reference_start_regex.lastIndex
+          const target_limit = lineEnd(text, target_start)
+          const target_end = findMarkdownTargetEnd(text, target_start, target_limit, null, false)
+          if (target_end != target_limit) {
+            continue
+          }
+          result += text.substring(last_pos, match.index)
+          result += placeholders.add('reference', text.substring(match.index, target_limit))
+          last_pos = target_limit
+          reference_start_regex.lastIndex = target_limit
+        }
+        return result + text.substring(last_pos)
+      }
+
+      function protectCodeSpans(text, placeholders) {
+        const runs = []
+        let current_pos = 0
+        while ((current_pos = text.indexOf('\`', current_pos)) != -1) {
+          const run_start = current_pos
+          while (text[current_pos] == '\`') {
+            current_pos++
+          }
+          runs.push({
+            start: run_start,
+            end: current_pos,
+            length: current_pos - run_start,
+            escaped: isEscaped(text, run_start)
+          })
+        }
+        const next_run = []
+        const next_by_length = new Map()
+        for (let i = runs.length - 1; i >= 0; i--) {
+          next_run[i] = next_by_length.get(runs[i].length) ?? -1
+          next_by_length.set(runs[i].length, i)
+        }
+        let result = ''
+        let last_pos = 0
+        let run_index = 0
+        while (run_index < runs.length) {
+          if (runs[run_index].escaped) {
+            run_index++
+            continue
+          }
+          const closing_index = next_run[run_index]
+          if (closing_index == -1) {
+            run_index++
+            continue
+          }
+          const opening = runs[run_index]
+          const closing = runs[closing_index]
+          result += text.substring(last_pos, opening.start)
+          result += placeholders.add('code_inline', text.substring(opening.start, closing.end))
+          last_pos = closing.end
+          run_index = closing_index + 1
+        }
+        return result + text.substring(last_pos)
+      }
+
+      function findInlineLinkCandidates(text) {
+        const candidates = new Map()
+        const starts = new Set()
+        let current_pos = 0
+        const brackets = []
+        while (current_pos < text.length) {
+          const char = text[current_pos]
+          if (char == '\r' || char == '\n') {
+            brackets.length = 0
+            current_pos++
+            continue
+          }
+          if (char == '[' && !isEscaped(text, current_pos)) {
+            brackets.push(current_pos)
+            current_pos++
+            continue
+          }
+          if (char != ']' || isEscaped(text, current_pos) || brackets.length == 0) {
+            current_pos++
+            continue
+          }
+          const label_start = brackets.pop()
+          if (text[current_pos + 1] == '(') {
+            candidates.set(current_pos, label_start)
+            starts.add(label_start)
+          }
+          current_pos++
+        }
+        return {
+          candidates: candidates,
+          starts: starts
+        }
+      }
+
+      function protectInlineLinkTargets(text, placeholders) {
+        let result = ''
+        let last_pos = 0
+        let minimum_label_start = 0
+        let failed_label_start = -1
+        let retried_containing_label = false
+        let recovering = false
+        const links = findInlineLinkCandidates(text)
+        for (const [label_end, label_start] of links.candidates) {
+          if (label_start < last_pos) {
+            continue
+          }
+          if (label_start < minimum_label_start) {
+            // retry one containing label, then skip further overlaps to keep this linear
+            if (retried_containing_label || label_start >= failed_label_start) {
+              continue
+            }
+            retried_containing_label = true
+          }
+          const target_start = label_end + 2
+          const target_limit = lineEnd(text, target_start)
+          const recovery_starts = recovering ? links.starts : null
+          const target_end = findMarkdownTargetEnd(text, target_start, target_limit, ')', true, recovery_starts)
+          if (target_end == -1) {
+            // later candidates whose labels overlap this target cannot be separate links
+            minimum_label_start = Math.max(minimum_label_start, target_start)
+            failed_label_start = label_start
+            recovering = true
+            continue
+          }
+          result += text.substring(last_pos, label_end + 1)
+          result += placeholders.add('link_target', text.substring(label_end + 1, target_end + 1))
+          last_pos = target_end + 1
+          minimum_label_start = last_pos
+          failed_label_start = -1
+          retried_containing_label = false
+          recovering = false
+        }
+        return result + text.substring(last_pos)
+      }
+
+      function markInlineLinks(text, placeholders, text_open, url_open, span_close) {
+        let result = ''
+        let last_pos = 0
+        let current_pos = 0
+        const brackets = []
+        while (current_pos < text.length) {
+          const char = text[current_pos]
+          if (char == '\r' || char == '\n') {
+            brackets.length = 0
+            current_pos++
+            continue
+          }
+          if (char == '[' && !isEscaped(text, current_pos)) {
+            brackets.push(current_pos)
+            current_pos++
+            continue
+          }
+          if (char != ']' || isEscaped(text, current_pos) || brackets.length == 0) {
+            current_pos++
+            continue
+          }
+          const label_start = brackets.pop()
+          const target = placeholders.tokenAt(text, current_pos + 1, 'link_target')
+          if (!target) {
+            current_pos++
+            continue
+          }
+          result += text.substring(last_pos, label_start)
+          result += text_open + text.substring(label_start, current_pos + 1) + span_close
+          result += url_open + text.substring(current_pos + 1, target.end) + span_close
+          last_pos = target.end
+          current_pos = target.end
+          brackets.length = 0
+        }
+        return result + text.substring(last_pos)
+      }
+
+      function findHTMLTagEnd(text, start) {
+        if (text.startsWith('<!--', start)) {
+          const comment_end = text.indexOf('-->', start + 4)
+          return comment_end == -1 ? -1 : comment_end + 2
+        }
+        if (text.startsWith('<![CDATA[', start)) {
+          const cdata_end = text.indexOf(']]>', start + 9)
+          return cdata_end == -1 ? -1 : cdata_end + 2
+        }
+        if (text.startsWith('<?', start)) {
+          const instruction_end = text.indexOf('?>', start + 2)
+          return instruction_end == -1 ? -1 : instruction_end + 1
+        }
+        if (text.startsWith('<!', start)) {
+          return text.indexOf('>', start + 2)
+        }
+        let current_pos = start + 1
+        if (text[current_pos] == '/') {
+          current_pos++
+        }
+        if (!/[A-Za-z]/.test(text[current_pos] ?? '')) {
+          return -1
+        }
+        while (/[A-Za-z0-9:-]/.test(text[current_pos] ?? '')) {
+          current_pos++
+        }
+        if (!isSpaceOrTab(text[current_pos]) && text[current_pos] != '/' && text[current_pos] != '>') {
+          return -1
+        }
+        let quote = null
+        while (current_pos < text.length) {
+          const char = text[current_pos]
+          if (char == '\r' || char == '\n') {
+            return -1
+          }
+          if (quote) {
+            if (char == quote) {
+              quote = null
+            }
+          } else if (char == '"' || char == "'") {
+            quote = char
+          } else if (char == '<') {
+            return -1
+          } else if (char == '>') {
+            return current_pos
+          }
+          current_pos++
+        }
+        return -1
+      }
+
+      function protectHTMLTags(text, placeholders) {
+        let result = ''
+        let last_pos = 0
+        let current_pos = 0
+        while ((current_pos = text.indexOf('<', current_pos)) != -1) {
+          if (isEscaped(text, current_pos)) {
+            current_pos++
+            continue
+          }
+          const tag_end = findHTMLTagEnd(text, current_pos)
+          if (tag_end == -1) {
+            if (text.startsWith('<!', current_pos) || text.startsWith('<?', current_pos)) {
+              result += text.substring(last_pos, current_pos)
+              result += placeholders.add('html_tag', text.substring(current_pos))
+              last_pos = text.length
+              break
+            }
+            current_pos++
+            continue
+          }
+          result += text.substring(last_pos, current_pos)
+          result += placeholders.add('html_tag', text.substring(current_pos, tag_end + 1))
+          last_pos = tag_end + 1
+          current_pos = tag_end + 1
+        }
+        return result + text.substring(last_pos)
+      }
+
+      function protectURLs(text, placeholders) {
+        const url_regex = /\bhttps?:\/\/[^\s<()]+(?:\([^\s<()]*\)[^\s<()]*)*/g
+        return text.replace(url_regex, (match) => {
+          let url = match
+          let suffix = ''
+          function trimSuffix(length) {
+            suffix = url.substring(url.length - length) + suffix
+            url = url.substring(0, url.length - length)
+          }
+          const trailing = url.match(/[*_.,!?;:]+$/)
+          if (trailing) {
+            trimSuffix(trailing[0].length)
+          }
+          return placeholders.add('url', url) + suffix
+        })
+      }
+
+      function protectAutolinks(text, placeholders) {
+        const autolink_regex = /<(?:https?:\/\/[^<>\s]+|[A-Za-z0-9.!#$%&'*+/=?^_\`{|}~-]+@[A-Za-z0-9.-]+)>/g
+        return text.replace(autolink_regex, (match) => placeholders.add('url', match))
+      }
+
+      function markDelimited(text, delimiter, open_marker, close_marker, can_open, can_close) {
+        let result = ''
+        let last_pos = 0
+        let opening_pos = -1
+        let current_pos = 0
+        let previous_pos = 0
+        while ((current_pos = text.indexOf(delimiter, current_pos)) != -1) {
+          if (opening_pos != -1 && /[\r\n]/.test(text.substring(previous_pos, current_pos))) {
+            opening_pos = -1
+          }
+          if (isEscaped(text, current_pos)) {
+            current_pos += delimiter.length
+            previous_pos = current_pos
+            continue
+          }
+          if (opening_pos == -1) {
+            if (can_open(text, current_pos)) {
+              opening_pos = current_pos
+            }
+          } else if (can_close(text, current_pos)) {
+            result += text.substring(last_pos, opening_pos)
+            result += open_marker
+            result += text.substring(opening_pos + delimiter.length, current_pos)
+            result += close_marker
+            last_pos = current_pos + delimiter.length
+            opening_pos = -1
+          } else if (can_open(text, current_pos)) {
+            // prefer a later viable opener over an unmatched earlier delimiter
+            opening_pos = current_pos
+          }
+          current_pos += delimiter.length
+          previous_pos = current_pos
+        }
+        return result + text.substring(last_pos)
+      }
+
+      function isWordCharacter(char) {
+        return !!char && /[\p{L}\p{N}_]/u.test(char)
+      }
+
+      function markItalics(text, open_marker, close_marker) {
+        return markDelimited(
+          text,
+          '_',
+          open_marker,
+          close_marker,
+          (value, position) => {
+            return !isWordCharacter(value[position - 1]) && !isWhitespace(value[position + 1]) && value[position + 1] != '_'
+          },
+          (value, position) => {
+            return !isWhitespace(value[position - 1]) && value[position - 1] != '_' && !isWordCharacter(value[position + 1])
+          }
+        )
+      }
+
+      function markBold(text, open_marker, close_marker) {
+        return markDelimited(
+          text,
+          '**',
+          open_marker,
+          close_marker,
+          (value, position) => {
+            return value[position - 1] != '*' && !isWhitespace(value[position + 2]) && value[position + 2] != '*'
+          },
+          (value, position) => {
+            return value[position - 1] != '*' && !isWhitespace(value[position - 1]) && value[position + 2] != '*'
+          }
+        )
+      }
+
+      function formatEditorHTML(text) {
+        const quote_regex = /^ {0,3}>.*$/gm
+        const header_regex = /^ {0,3}#{1,6}(?:[ \t]+.*)?$/gm
+        const divider_regex = /^ {0,3}(?:-[ \t]*){3,}(?=\r?$)/gm
+        const username_regex = /@([a-zA-Z0-9_@-]+(?:\.[a-zA-Z0-9_@-]+)*)/g
+        let s = String(text)
+        const placeholders = createPlaceholderStore(s)
+
+        // protect atomic Markdown ranges before looking for formatting delimiters
+        s = protectFencedCode(s, placeholders)
+        s = protectReferenceDefinitions(s, placeholders)
+        s = protectCodeSpans(s, placeholders)
+        s = protectInlineLinkTargets(s, placeholders)
+        s = protectAutolinks(s, placeholders)
+        s = protectHTMLTags(s, placeholders)
+        s = protectURLs(s, placeholders)
+
+        // formatting markers stay as placeholders until every source regex has run
+        const italic_open = placeholders.add('markup', '<span class="editor_italic">_')
+        const italic_close = placeholders.add('markup', '_</span>')
+        const bold_open = placeholders.add('markup', '<span class="editor_bold">**')
+        const bold_close = placeholders.add('markup', '**</span>')
+        const quote_open = placeholders.add('markup', '<span class="editor_quote">')
+        const header_open = placeholders.add('markup', '<span class="editor_header">')
+        const divider_open = placeholders.add('markup', '<span class="editor_divider">')
+        const username_open = placeholders.add('markup', '<span class="editor_username">')
+        const link_text_open = placeholders.add('markup', '<span class="editor_link_text">')
+        const link_url_open = placeholders.add('markup', '<span class="editor_link_url">')
+        const span_close = placeholders.add('markup', '</span>')
+        s = markItalics(s, italic_open, italic_close)
+        s = markBold(s, bold_open, bold_close)
+        s = s.replace(quote_regex, (match) => quote_open + match + span_close)
+        s = s.replace(header_regex, (match) => header_open + match + span_close)
+        s = s.replace(divider_regex, (match) => divider_open + match + span_close)
+        s = s.replace(username_regex, (match) => username_open + match + span_close)
+        s = markInlineLinks(s, placeholders, link_text_open, link_url_open, span_close)
+
+        // escape all remaining source once, then restore trusted markup and escaped atoms
+        s = escapeEditorHTML(s)
+        return placeholders.restore(s)
+      }
+
       function highlightHtml(text) {
-        var urls = [];
-        var s = text.replace(/\bhttps?:\/\/[^\s<()]+(?:\([^\s<()]*\)[^\s<()]*)*/g, function (match) {
-          var index = urls.length;
-          urls.push(match);
-          return "MICROBLOGURLPLACEHOLDER" + index + "TOKEN";
-        });
-
-        s = escapeHtml(s);
-        s = s.replace(/(&lt;\/?[a-zA-Z][a-zA-Z0-9-]*)(\s|&gt;)/g, '<span class="editor_tag">$1</span>$2');
-        s = s.replace(/([a-zA-Z:-]+)=(&quot;[^&]*?&quot;)/g, '<span class="editor_attr_name">$1</span>=<span class="editor_attr_value">$2</span>');
-        s = s.replace(/(\`\`\`[\s\S]*?\`\`\`)/g, '<span class="editor_code_block">$1</span>');
-        s = s.replace(/(^|[^\`])\`([^\`\r\n]+)\`(?!\`)/g, '$1<span class="editor_code_inline">\`$2\`</span>');
-        s = s.replace(/\*\*(.*?)\*\*/g, '<span class="editor_bold">**$1**</span>');
-        s = s.replace(/(^|[^\w<>])_([^_\r\n()]+)_/g, '$1<span class="editor_italic">_$2_</span>');
-        s = s.replace(/\[([^\]\r\n]+)\]\(([^\)\r\n]*)\)/g, '<span class="editor_link_text">[$1]</span><span class="editor_link_url">($2)</span>');
-        s = s.replace(/^&gt;(.*)/gm, '<span class="editor_quote">&gt;$1</span>');
-        s = s.replace(/^(#+ .*)$/gm, '<span class="editor_header">$1</span>');
-        s = s.replace(/(-{3,})/g, '<span class="editor_divider">$1</span>');
-        s = s.replace(/@([a-zA-Z0-9@_]+(?:\.[a-zA-Z]+)*)/g, '<span class="editor_username">@$1</span>');
-        s = s.replace(/MICROBLOGURLPLACEHOLDER(\d+)TOKEN/g, function (match, index) {
-          return escapeHtml(urls[Number(index)] || match);
-        });
-
-        return preserveTrailingNewline(s);
+        return preserveTrailingNewline(formatEditorHTML(text))
       }
 
       function shouldSkipHighlighting(text) {
@@ -866,6 +1745,40 @@ const editorHtml = String.raw`<!doctype html>
 
           isIgnoringInput = false;
         });
+
+        root.addEventListener('copy', function (e) {
+          const selection = window.getSelection()
+          if (!e.clipboardData || !selection || selection.rangeCount == 0 || selection.isCollapsed) {
+            return
+          }
+          const parts = []
+          for (let i = 0; i < selection.rangeCount; i++) {
+            const selected_range = selection.getRangeAt(i)
+            if (!root.contains(selected_range.startContainer) || !root.contains(selected_range.endContainer)) {
+              return
+            }
+
+            // Keep partially selected caret markers wrapped so text extraction can omit them.
+            const range = selected_range.cloneRange()
+            const start_node = selected_range.startContainer
+            const end_node = selected_range.endContainer
+            const start_element = start_node.nodeType == Node.ELEMENT_NODE ? start_node : start_node.parentElement
+            const end_element = end_node.nodeType == Node.ELEMENT_NODE ? end_node : end_node.parentElement
+            const start_marker = start_element?.closest(editorMarkerSelector)
+            const end_marker = end_element?.closest(editorMarkerSelector)
+            if (start_marker) {
+              range.setStartBefore(start_marker)
+            }
+            if (end_marker) {
+              range.setEndAfter(end_marker)
+            }
+            const container = document.createElement('div')
+            container.appendChild(range.cloneContents())
+            parts.push(editorPlainText(container))
+          }
+          e.clipboardData.setData('text/plain', parts.join(''))
+          e.preventDefault()
+        })
 
         root.addEventListener("paste", function (event) {
           event.preventDefault();
