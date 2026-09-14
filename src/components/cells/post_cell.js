@@ -206,6 +206,7 @@ export default class PostCell extends React.Component {
           actions={menu_items}
         >
           <TouchableOpacity
+            activeOpacity={1}
             style={{
               padding: 15,
               backgroundColor: App.theme_background_color_secondary(),

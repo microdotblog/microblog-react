@@ -78,6 +78,7 @@ export default class ReplyCell extends React.Component{
         renderRightActions={(progress) => this._right_actions(progress, reply)}
       >
         <TouchableOpacity
+          activeOpacity={1}
           style={{
             padding: 15,
             borderColor: App.theme_alt_background_div_color(),
