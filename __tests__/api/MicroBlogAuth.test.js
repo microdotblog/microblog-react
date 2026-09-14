@@ -15,7 +15,7 @@ describe('MicroBlogAuth helpers', () => {
     expect(auth_url).toContain('client_id=https%3A%2F%2Fmicro.blog%2Fclient.json')
     expect(auth_url).toContain('app=1')
     expect(auth_url).toContain('response_type=code')
-    expect(auth_url).toContain('scope=create')
+    expect(new URL(auth_url).searchParams.get('scope')).toBe('read write')
     expect(auth_url).toContain('state=abc123')
     expect(auth_url).toContain(`redirect_uri=${encodeURIComponent(get_micro_blog_redirect_uri())}`)
   })

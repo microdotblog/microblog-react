@@ -6,13 +6,14 @@ let html_parser = new DOMParser({ onError: (error) => {
 }});
 
 export default Page = types.model('Page', {
-  uid: types.identifierNumber,
+  uid: types.identifier,
   name: types.maybe(types.string),
   content: types.maybe(types.string),
   published: types.maybe(types.string),
   url: types.maybe(types.string),
   template: types.optional(types.boolean, false)
 })
+.preProcessSnapshot(snapshot => ({ ...snapshot, uid: String(snapshot.uid) }))
 .views(self => ({
   
   plain_text_content(){
