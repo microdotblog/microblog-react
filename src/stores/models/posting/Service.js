@@ -377,7 +377,8 @@ const Service = types.model('Service', {
       if(config){
         self.config = {
           ...config,
-          destination: config.destination?.length ? config.destination : [{ uid: self.url, name: self.name }]
+          // Keep a UI entry without inventing a server destination.
+          destination: config.destination?.length ? config.destination : [{ uid: '', name: self.name }]
         }
         self.config.hydrate_default_destination()
         if (Array.isArray(config['syndicate-to'])) {
@@ -444,9 +445,9 @@ export default Service
       endpoint: self.url,
       username: self.username,
       token: this.credentials()?.token,
-      destination: self.config?.active_destination()?.uid,
+      destination: self.config?.active_destination()?.uid || null,
       media_endpoint: self.config?.media_endpoint(),
-      temporary_destination: self.config?.temporary_destination()?.uid,
+      temporary_destination: self.config?.temporary_destination()?.uid || null,
       blog_id: self.blog_id,
       type: self.type,
       is_microblog: self.is_microblog,

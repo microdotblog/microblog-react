@@ -67,11 +67,65 @@ test('initializes a generic destination and keeps standard syndication targets',
   const service = posting.selected_service
   const targets = [{ uid: 'social.example/user', name: 'Social' }]
   await service.set_initial_config({ 'media-endpoint': media_endpoint, 'syndicate-to': targets })
-  expect(service.active_destination().uid).toBe(endpoint)
+  expect(service.active_destination().uid).toBe('')
+  expect(service.config.posts_destination()).toBe(service.active_destination())
   expect(getSnapshot(service.active_destination().syndicates)).toEqual(targets)
-  expect(service.service_object()).toMatchObject({ is_microblog: false, media_endpoint })
+  expect(service.service_object()).toMatchObject({ is_microblog: false, media_endpoint, destination: null, temporary_destination: null })
   await service.set_initial_config({})
   expect(service.active_destination()).not.toBeNull()
+})
+
+test.each([[undefined], [[]], [[{ uid: 'blog', name: 'Blog' }]], [[{ uid: endpoint, name: 'Blog' }]]])('only sends advertised destinations for configuration %j', async destinations => {
+  const service = createPosting().selected_service
+  await service.set_initial_config({ 'media-endpoint': media_endpoint, destination: destinations, 'syndicate-to': [] })
+  const destination = service.active_destination()
+  const api_service = service.service_object()
+  const expected_destination = destinations?.[0]?.uid || null
+
+  expect(service.config.posts_destination()).toBe(destination)
+  expect(api_service.destination).toBe(expected_destination)
+  expect(api_service.temporary_destination).toBe(expected_destination)
+
+  await MicroPubApi.send_post(api_service, 'Hello')
+  await MicroPubApi.post_update(api_service, 'Edited', post_url)
+  await MicroPubApi.delete_post(api_service, post_url)
+  for (const [, options] of fetch.mock.calls) {
+    const body = options.headers['Content-Type'] === 'application/json' ? JSON.parse(options.body) :
+      Object.fromEntries(new (require('url').URLSearchParams)(options.body))
+    if (expected_destination) {
+      expect(body['mp-destination']).toBe(expected_destination)
+    }
+    else {
+      expect(body).not.toHaveProperty('mp-destination')
+    }
+  }
+
+  axios.get.mockClear()
+  for (const method of ['get_categories', 'get_syndicate_to', 'get_posts', 'get_pages', 'get_uploads', 'get_collections', 'get_uploads_from_collection']) {
+    await MicroPubApi[method](api_service, destination.uid)
+  }
+  for (const [url, options] of axios.get.mock.calls) {
+    const request_url = jest.requireActual('axios').getUri({ url, ...options })
+    const params = new (require('url').URL)(request_url).searchParams
+    expect(params.get('mp-destination')).toBe(expected_destination)
+  }
+
+  const original_form_data = global.FormData
+  global.FormData = require('react-native/Libraries/Network/FormData').default
+  axios.post.mockClear()
+  axios.post.mockResolvedValue({ data: {} })
+  try {
+    await MicroPubApi.upload_image(api_service, {
+      uri: 'file:///tmp/photo.jpg', type: 'image/jpeg', cancel_source: { token: {} }
+    })
+    const parts = axios.post.mock.calls[0][1].getParts()
+    expect(parts.filter(part => part.fieldName === 'mp-destination').map(part => part.string)).toEqual(
+      expected_destination ? [expected_destination] : []
+    )
+  }
+  finally {
+    global.FormData = original_form_data
+  }
 })
 
 test('keeps existing configuration when refresh fails', async () => {

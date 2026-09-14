@@ -245,7 +245,7 @@ class MicroPubApi {
 		const config = axios
 			.get(service.endpoint, {
 				headers: { Authorization: `Bearer ${service.token}` },
-				params: { q: "category", "mp-destination": destination }
+				params: { q: "category", "mp-destination": destination || undefined }
 			})
 			.then(response => {
 				return response.data;
@@ -262,7 +262,7 @@ class MicroPubApi {
 		const config = axios
 			.get(service.endpoint, {
 				headers: { Authorization: `Bearer ${service.token}` },
-				params: { q: "syndicate-to", "mp-destination": destination }
+				params: { q: "syndicate-to", "mp-destination": destination || undefined }
 			})
 			.then(response => {
 				return response.data;
@@ -282,7 +282,10 @@ class MicroPubApi {
 			type: file.type,
 			uri: file.uri
 		})
-		data.append("mp-destination", App.current_screen_name === "microblog.UploadsScreen" ? service.temporary_destination : service.destination)
+		const destination = App.current_screen_name === "microblog.UploadsScreen" ? service.temporary_destination : service.destination
+		if (destination) {
+			data.append("mp-destination", destination)
+		}
 		console.log('MicroPubApi:upload_image', service, file, data);
 		
 		const upload = axios
@@ -532,7 +535,7 @@ class MicroPubApi {
 	async get_posts(service, destination = null, is_drafts = false) {
 		console.log('MicroPubApi:get_posts', is_drafts);
 		let params = {
-			q: "source", "mp-destination": destination
+			q: "source", "mp-destination": destination || undefined
 		};
 		if (is_drafts) {
 			params["post-status"] = "draft";
@@ -571,7 +574,7 @@ class MicroPubApi {
 		const config = axios
 			.get(service.endpoint, {
 				headers: { Authorization: `Bearer ${service.token}` },
-				params: { q: "source", "mp-destination": destination, "mp-channel": "pages" }
+				params: { q: "source", "mp-destination": destination || undefined, "mp-channel": "pages" }
 			})
 			.then(response => {
 				return response.data;
@@ -588,7 +591,7 @@ class MicroPubApi {
 		const config = axios
 			.get(service.media_endpoint, {
 				headers: { Authorization: `Bearer ${service.token}` },
-				params: { q: "source", "mp-destination": destination }
+				params: { q: "source", "mp-destination": destination || undefined }
 			})
 			.then(response => {
 				return response.data;
@@ -615,7 +618,7 @@ class MicroPubApi {
 		const config = axios
 			.get(service.endpoint, {
 				headers: { Authorization: `Bearer ${service.token}` },
-				params: { q: "source", "mp-destination": destination, "mp-channel": "collections" }
+				params: { q: "source", "mp-destination": destination || undefined, "mp-channel": "collections" }
 			})
 			.then(response => {
 				return response.data;
@@ -634,7 +637,7 @@ class MicroPubApi {
 				headers: { Authorization: `Bearer ${service.token}` },
 				params: {
 					q: "source",
-					"mp-destination": destination,
+					"mp-destination": destination || undefined,
 					"microblog-collection": collection_url
 				}
 			})
@@ -654,7 +657,7 @@ class MicroPubApi {
 		const params = {
 			"action": "update",
 		    "mp-channel": "collections",
-			"mp-destination": service.temporary_destination,
+			"mp-destination": service.temporary_destination || undefined,
 			"url": collection_url,
 			"add": {
 				"photo": [ upload_url ]
@@ -681,7 +684,7 @@ class MicroPubApi {
 		const params = {
 			"action": "update",
 			"mp-channel": "collections",
-			"mp-destination": service.temporary_destination,
+			"mp-destination": service.temporary_destination || undefined,
 			"url": collection_url,
 			"delete": {
 				"photo": [ upload_url ]
@@ -707,7 +710,7 @@ class MicroPubApi {
 	
 		const params = {
 			"mp-channel": "collections",
-			"mp-destination": service.temporary_destination,
+			"mp-destination": service.temporary_destination || undefined,
 			"properties": {
 				"name": [ name ]
 			}
@@ -732,7 +735,7 @@ class MicroPubApi {
 		
 		const params = {
 			"mp-channel": "collections",
-			"mp-destination": service.temporary_destination,
+			"mp-destination": service.temporary_destination || undefined,
 			"action": "delete",
 			"url": collection_url
 		};
@@ -755,7 +758,9 @@ class MicroPubApi {
 		console.log('MicroPubApi:set_alt_for_upload');
 
 		const params = new FormData()
-		params.append('mp-destination', service.temporary_destination);
+		if (service.temporary_destination) {
+			params.append('mp-destination', service.temporary_destination)
+		}
 		params.append('action', 'update');
 		params.append('url', upload_url);
 		params.append('alt', alt_text);
