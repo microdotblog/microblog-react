@@ -203,7 +203,6 @@ const editorHtml = String.raw`<!doctype html>
       var changeTimer = null;
       var selectionTimer = null;
       var viewportHeight = null;
-      var touchStartY = 0;
       var lastText = "";
       var didApplyInitialValue = false;
       var editorMarkerSelector = '[data-editor-marker="caret"]';
@@ -460,15 +459,8 @@ const editorHtml = String.raw`<!doctype html>
         setSelectionRange(length, length);
       }
 
-      function maxEditorScroll() {
-        var root = editor();
-        return Math.max(0, root.scrollHeight - root.clientHeight);
-      }
-
       function clampScrollOffsets() {
-        var root = editor();
-        var maxScroll = maxEditorScroll();
-
+        // Keep the outer page fixed while allowing the editor itself to bounce.
         if (window.scrollX !== 0 || window.scrollY !== 0) {
           window.scrollTo(0, 0);
         }
@@ -480,36 +472,10 @@ const editorHtml = String.raw`<!doctype html>
         if (document.body.scrollTop !== 0) {
           document.body.scrollTop = 0;
         }
-
-        if (root.scrollTop < 0) {
-          root.scrollTop = 0;
-        }
-        else if (root.scrollTop > maxScroll) {
-          root.scrollTop = maxScroll;
-        }
       }
 
       function scheduleClampScrollOffsets() {
         requestAnimationFrame(clampScrollOffsets);
-      }
-
-      function shouldBlockEditorPan(deltaY) {
-        var root = editor();
-        var maxScroll = maxEditorScroll();
-
-        if (maxScroll <= 0) {
-          return true;
-        }
-
-        if (deltaY > 0 && root.scrollTop <= 0) {
-          return true;
-        }
-
-        if (deltaY < 0 && root.scrollTop >= maxScroll) {
-          return true;
-        }
-
-        return false;
       }
 
       function scrollSelectionIntoView() {
@@ -871,31 +837,8 @@ const editorHtml = String.raw`<!doctype html>
         });
 
         root.addEventListener("input", handleInput);
-        root.addEventListener("scroll", clampScrollOffsets);
         window.addEventListener("scroll", clampScrollOffsets);
         document.addEventListener("scroll", clampScrollOffsets);
-
-        root.addEventListener("touchstart", function (event) {
-          if (event.touches.length > 0) {
-            touchStartY = event.touches[0].clientY;
-          }
-        }, {
-          passive: true
-        });
-
-        root.addEventListener("touchmove", function (event) {
-          if (event.touches.length === 0) {
-            return;
-          }
-
-          var deltaY = event.touches[0].clientY - touchStartY;
-          if (shouldBlockEditorPan(deltaY)) {
-            event.preventDefault();
-            clampScrollOffsets();
-          }
-        }, {
-          passive: false
-        });
 
         root.addEventListener("compositionstart", function () {
           isComposing = true;
