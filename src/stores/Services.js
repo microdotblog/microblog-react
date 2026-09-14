@@ -76,7 +76,16 @@ export default Services = types.model('Services', {
     }
   
     // check for Micropub first, then try XML-RPC
-    const discovery_url = new URL(discover_url)
+    let discovery_url
+    try {
+      discovery_url = new URL(discover_url)
+    }
+    catch (error) {
+      console.log('Services:setup_new_service:invalid_url', error)
+      self.is_setting_up = false
+      Alert.alert('Invalid URL', 'Please enter a valid URL for your weblog.')
+      return
+    }
     discovery_url.searchParams.set('v', App.now().toString())
     const micropub_endpoints = yield MicroPubApi.discover_micropub_endpoints(discovery_url.href)
     if (micropub_endpoints !== MICROPUB_NOT_FOUND && !micropub_endpoints.is_wordpress) {
