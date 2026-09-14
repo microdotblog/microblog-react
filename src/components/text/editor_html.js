@@ -194,7 +194,7 @@ const editorHtml = String.raw`<!doctype html>
 
   </style>
 </head>
-<body><div class="editor_shell"><div contenteditable="true" class="editor" id="editor" spellcheck="true" autocapitalize="sentences"></div><div class="editor_bottom_scrim" aria-hidden="true"></div></div>
+<body><div class="editor_shell"><div contenteditable="true" class="editor" id="editor" spellcheck="true" autocapitalize="sentences" enterkeyhint="enter" inputmode="text"></div><div class="editor_bottom_scrim" aria-hidden="true"></div></div>
   <script>
     (function () {
       var isIgnoringInput = false;
@@ -601,6 +601,35 @@ const editorHtml = String.raw`<!doctype html>
         return text.length > 5000;
       }
 
+      function editorHasFocus(root) {
+        var active = document.activeElement;
+        return active === root || !!(root && root.contains(active));
+      }
+
+      function insertLineBreakInPlace() {
+        var root = editor();
+        var selection = window.getSelection();
+        if (!selection || selection.rangeCount === 0) {
+          return false;
+        }
+
+        try {
+          var range = selection.getRangeAt(0);
+          range.deleteContents();
+          var br = document.createElement("br");
+          range.insertNode(br);
+          range.setStartAfter(br);
+          range.collapse(true);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          root.focus();
+          return true;
+        }
+        catch (error) {
+          return false;
+        }
+      }
+
       function applyStyles(selection, options) {
         var force = options && options.force;
         if ((!force && isIgnoringInput) || isComposing || isApplyingStyles) {
@@ -614,8 +643,12 @@ const editorHtml = String.raw`<!doctype html>
         }
 
         var saved = selection || currentSelection();
+        var hadFocus = options && options.hadFocus != null ? !!options.hadFocus : editorHasFocus(root);
         isApplyingStyles = true;
         root.innerHTML = highlightHtml(text);
+        if (hadFocus) {
+          root.focus();
+        }
         setSelectionRange(saved.start, saved.end);
         scheduleClampScrollOffsets();
         isApplyingStyles = false;
@@ -646,22 +679,26 @@ const editorHtml = String.raw`<!doctype html>
 
       function replaceSelectionWithText(insertedText) {
         var root = editor();
+        var hadFocus = editorHasFocus(root);
         var text = editorPlainText(root);
         var selection = currentSelection();
         var start = Math.min(selection.start, selection.end);
         var end = Math.max(selection.start, selection.end);
         var nextText = text.slice(0, start) + insertedText + text.slice(end);
         var nextPosition = start + insertedText.length;
+        var insertedNewline = insertedText.indexOf("\n") > -1;
 
         root.textContent = nextText;
         applyStyles({
           start: nextPosition,
           end: nextPosition
         }, {
-          force: true
+          force: true,
+          hadFocus: hadFocus || insertedNewline
         });
-        if (insertedText.indexOf("\n") > -1) {
+        if (insertedNewline) {
           setTimeout(function () {
+            editor().focus();
             setSelectionRange(nextPosition, nextPosition);
             scrollSelectionIntoView();
             sendSelectionNow();
@@ -770,6 +807,13 @@ const editorHtml = String.raw`<!doctype html>
           return;
         }
 
+        if (event.inputType === "insertParagraph" || event.inputType === "insertLineBreak") {
+          scheduleChange();
+          scheduleSelection();
+          scheduleClampScrollOffsets();
+          return;
+        }
+
         var root = editor();
         var data = event.data || "";
         var shouldForce = hasTrailingMarker(root);
@@ -798,7 +842,25 @@ const editorHtml = String.raw`<!doctype html>
 
           if (event.inputType === "insertParagraph" || event.inputType === "insertLineBreak") {
             event.preventDefault();
-            replaceSelectionWithText("\n");
+            var isAndroid = /Android/i.test(navigator.userAgent);
+            if (isAndroid) {
+              var insertedNewline = false;
+              try {
+                insertedNewline = document.execCommand("insertLineBreak");
+              }
+              catch (error) {
+                insertedNewline = false;
+              }
+              if (!insertedNewline) {
+                insertLineBreakInPlace();
+              }
+            }
+            else {
+              replaceSelectionWithText("\n");
+            }
+            scheduleChange();
+            scheduleSelection();
+            scheduleClampScrollOffsets();
             return;
           }
 
