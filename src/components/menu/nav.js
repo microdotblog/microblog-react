@@ -34,7 +34,7 @@ export default class MenuNavigation extends React.Component{
   }
 
   _render_secondary_menu_items = (items = []) => {
-    return items.map(item => {
+    return items.map((item, index) => {
       let image = null
       let symbol = null
       let svg = null
@@ -90,11 +90,24 @@ export default class MenuNavigation extends React.Component{
           `
         break;
       }
-      return this._return_nav_item(item, image, symbol, svg)
+      return this._return_nav_item(item, image, symbol, svg, index > 0)
     })
   }
+
+  _render_menu_group = (items) => {
+    return (
+      <View style={{
+        width: '100%',
+        borderRadius: 20,
+        backgroundColor: App.theme_button_background_color(),
+        overflow: 'hidden',
+      }}>
+        {this._render_secondary_menu_items(items)}
+      </View>
+    )
+  }
   
-  _return_nav_item = (item, image = null, symbol = null, svg = null) => {
+  _return_nav_item = (item, image = null, symbol = null, svg = null, show_divider = false) => {
     return(
       <TouchableOpacity
         onPress={() => App.navigate_to_screen_from_menu(item)}
@@ -103,11 +116,10 @@ export default class MenuNavigation extends React.Component{
         accessibilityLabel={item}
         style={{ 
           width: '100%',
-          padding: 8,
+          padding: 12,
           paddingHorizontal: 16,
-          borderRadius: 20,
-          backgroundColor: App.theme_button_background_color(),
-          marginBottom: 8,
+          borderTopWidth: show_divider ? 0.5 : 0,
+          borderColor: App.theme_alt_background_div_color(),
           flexDirection: 'row',
           alignItems: 'center',
         }}
@@ -151,7 +163,7 @@ export default class MenuNavigation extends React.Component{
         >
           {
             posting.selected_service?.type !== "xmlrpc" ?
-              this._render_secondary_menu_items(this.manage_menu)
+              this._render_menu_group(this.manage_menu)
             :
             <TouchableOpacity
               onPress={() => App.navigate_to_screen_from_menu("PostService", true)}
@@ -170,14 +182,12 @@ export default class MenuNavigation extends React.Component{
             </TouchableOpacity>
           }
           <View style={{
-            paddingTop: 15,
-            marginTop: 10,
-            paddingBottom: 5,
+            marginTop: 20,
             width: '100%',
             flexDirection: 'column',
             justifyContent: 'space-between',
           }}>
-            {this._render_secondary_menu_items(this.extras_menu)}
+            {this._render_menu_group(this.extras_menu)}
           </View>
         </View>
       )
