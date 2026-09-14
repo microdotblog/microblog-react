@@ -191,9 +191,15 @@ export default Posting = types.model('Posting', {
     }
     self.is_sending_post = true
     const should_show_progress = should_show_publishing_progress(self.post_status)
+    const syndicates = self.selected_service.active_destination()?.syndicates || []
+    let syndicate_to = self.post_syndicates
+    // Use Micro.blog's cross-post-everywhere default when all targets are selected.
+    if (!syndicates.length || (self.selected_service.is_microblog && self.post_syndicates.length === syndicates.length)) {
+      syndicate_to = null
+    }
     const post_success = self.selected_service.type === "xmlrpc" ?
       yield XMLRPCApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
-      : yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status, self.selected_service.is_microblog && self.post_syndicates.length === self.selected_service.active_destination()?.syndicates?.length ? null : self.post_syndicates, self.summary)
+      : yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status, syndicate_to, self.summary)
     if(post_success !== POST_ERROR && post_success !== XML_ERROR){
       self.post_text = ""
       self.post_title = null
@@ -202,13 +208,7 @@ export default Posting = types.model('Posting', {
       self.new_category_text = ""
       // self.post_status = "published"
       self.summary = null
-      if(self.selected_service && self.selected_service.active_destination()?.syndicates?.length > 0){
-        let syndicate_targets = []
-        self.selected_service.active_destination()?.syndicates.forEach((syndicate) => {
-          syndicate_targets.push(syndicate.uid)
-        })
-        self.post_syndicates = syndicate_targets
-      }
+      self.reset_post_syndicates()
       self.is_sending_post = false
       self.is_closing_after_post = true
       if (should_show_progress) {
@@ -630,13 +630,7 @@ export default Posting = types.model('Posting', {
   
   reset_post_syndicates: flow(function* () {
     console.log("Posting:reset_post_syndicates")
-    if(self.selected_service && self.selected_service.active_destination()?.syndicates?.length > 0){
-      let syndicate_targets = []
-      self.selected_service.active_destination()?.syndicates.forEach((syndicate) => {
-        syndicate_targets.push(syndicate.uid)
-      })
-      self.post_syndicates = syndicate_targets
-    }
+    self.post_syndicates = self.selected_service?.active_destination()?.syndicates?.map(syndicate => syndicate.uid) || []
   }),
   
   reset_post_status: flow(function* () {

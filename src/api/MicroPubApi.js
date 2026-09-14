@@ -188,7 +188,7 @@ class MicroPubApi {
       properties['mp-destination'] = [service.destination]
     }
     if (syndicate_to != null) {
-      properties['mp-syndicate-to'] = syndicate_to.length ? syndicate_to : ['']
+      properties['mp-syndicate-to'] = syndicate_to
     }
 
     let has_files = false
@@ -220,7 +220,7 @@ class MicroPubApi {
       }
     }
 
-    const needs_json = !has_files && Object.values(properties).some(values => values.some(value => typeof value === 'object'))
+    const needs_json = !has_files && Object.values(properties).some(values => !values.length || values.some(value => typeof value === 'object'))
     if (needs_json) {
       const params = { type: ['h-entry'], properties }
       for (const key of Object.keys(properties).filter(key => key.startsWith('mp-'))) {
@@ -232,8 +232,9 @@ class MicroPubApi {
     const params = has_files ? new FormData() : new URLSearchParams()
     params.append('h', 'entry')
     for (const [key, values] of Object.entries(properties)) {
-      for (const value of values) {
-        params.append(values.length > 1 ? `${key}[]` : key, value?.value || value)
+      // Multipart cannot express [], so retain an explicit empty value for no syndication.
+      for (const value of values.length ? values : ['']) {
+        params.append(key === 'mp-syndicate-to' || values.length > 1 ? `${key}[]` : key, value?.value || value)
       }
     }
     return this.sendRequest(service, has_files ? params : params.toString(), has_files ? null : 'application/x-www-form-urlencoded')

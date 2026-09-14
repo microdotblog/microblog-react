@@ -90,6 +90,44 @@ test('sends all selected syndication targets and uses the external post URL', as
   expect(App.show_publishing_progress).toHaveBeenCalledWith(false, post_url)
 })
 
+test('omits syndication when all Micro.blog targets are selected', async () => {
+  const posting = createPosting(true)
+  await expect(posting.send_post()).resolves.toBe(true)
+  const params = new (require('url').URLSearchParams)(fetch.mock.calls[0][1].body)
+  expect(params.has('mp-syndicate-to')).toBe(false)
+  expect(params.has('mp-syndicate-to[]')).toBe(false)
+})
+
+test.each([false, true])('omits syndication and clears stale selections when no targets exist, is_microblog=%s', async is_microblog => {
+  const posting = createPosting(is_microblog)
+  posting.selected_service.active_destination().set_syndicate_to_targets([])
+  await posting.reset_post_syndicates()
+  expect(getSnapshot(posting.post_syndicates)).toEqual([])
+  await expect(posting.send_post()).resolves.toBe(true)
+  const params = new (require('url').URLSearchParams)(fetch.mock.calls[0][1].body)
+  expect(params.has('mp-syndicate-to')).toBe(false)
+  expect(params.has('mp-syndicate-to[]')).toBe(false)
+})
+
+test.each([false, true])('sends a single selected target as an array, is_microblog=%s', async is_microblog => {
+  const posting = createPosting(is_microblog)
+  await posting.handle_post_syndicates_select('b')
+  await expect(posting.send_post()).resolves.toBe(true)
+  const params = new (require('url').URLSearchParams)(fetch.mock.calls[0][1].body)
+  expect(params.getAll('mp-syndicate-to[]')).toEqual(['a'])
+  expect(params.has('mp-syndicate-to')).toBe(false)
+})
+
+test.each([false, true])('sends an explicit empty list when all targets are deselected, is_microblog=%s', async is_microblog => {
+  const posting = createPosting(is_microblog)
+  await posting.handle_post_syndicates_select('a')
+  await posting.handle_post_syndicates_select('b')
+  await expect(posting.send_post()).resolves.toBe(true)
+  const options = fetch.mock.calls[0][1]
+  expect(options.headers['Content-Type']).toBe('application/json')
+  expect(JSON.parse(options.body)['mp-syndicate-to']).toEqual([])
+})
+
 test('clears the sending flag and preserves the draft when the network fails', async () => {
   const posting = createPosting()
   fetch.mockRejectedValue(new Error('Offline'))

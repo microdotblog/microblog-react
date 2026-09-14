@@ -152,6 +152,34 @@ describe('Micropub interoperability', () => {
     expect(params.has('photo')).toBe(false)
   })
 
+  test('preserves an empty syndication array when sending photo alt text as JSON', async () => {
+    await MicroPubApi.send_post(service, 'Hello', null, [{
+      remote_url: 'https://media.example/photo.jpg', did_upload: true, alt_text: 'A bird'
+    }], [], null, [])
+    const body = JSON.parse(fetch.mock.calls[0][1].body)
+    expect(body['mp-syndicate-to']).toEqual([])
+    expect(body.properties.photo).toEqual([{ value: 'https://media.example/photo.jpg', alt: 'A bird' }])
+  })
+
+  test.each([[null], [[]], [['social-a']], [['social-a', 'social-b']]])('encodes multipart syndication selection %j', async syndicate_to => {
+    const original_form_data = global.FormData
+    global.FormData = require('react-native/Libraries/Network/FormData').default
+    try {
+      await MicroPubApi.send_post({ ...service, media_endpoint: null }, 'Hello', null, [{
+        uri: 'file:///tmp/photo.jpg', type: 'image/jpeg', did_upload: false
+      }], [], null, syndicate_to)
+      const parts = fetch.mock.calls[0][1].body.getParts()
+      const syndication_parts = parts.filter(part => part.fieldName.startsWith('mp-syndicate-to'))
+      const expected = syndicate_to == null ? [] : syndicate_to.length ? syndicate_to : ['']
+      expect(syndication_parts.map(part => ({ name: part.fieldName, value: part.string }))).toEqual(
+        expected.map(value => ({ name: 'mp-syndicate-to[]', value }))
+      )
+    }
+    finally {
+      global.FormData = original_form_data
+    }
+  })
+
   test('preserves Micro.blog Markdown and keeps photo descriptions aligned', async () => {
     await MicroPubApi.send_post({ ...service, is_microblog: true }, '**Hello**', null, [
       { remote_url: 'https://media.example/1.jpg', did_upload: true },
