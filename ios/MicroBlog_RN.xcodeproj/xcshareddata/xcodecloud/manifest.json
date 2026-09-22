@@ -1,0 +1,9 @@
+{
+  "id" : "6794d4b1-d61a-4d25-a110-b5a4309b4132",
+  "targets" : [
+    {
+      "id" : "5FDB6AC5-339A-4C41-A4BB-6B7F4773B107",
+      "name" : "MicroBlog_RN"
+    }
+  ]
+}

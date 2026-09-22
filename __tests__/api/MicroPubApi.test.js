@@ -209,17 +209,28 @@ describe('Micropub interoperability', () => {
     finally { global.FormData = original_form_data }
   })
 
-  test('uses the selected endpoint for edits and deletes, and removes an empty title', async () => {
+  test('uses the selected endpoint for edits and deletes, and replaces blank titles with an empty string', async () => {
     await MicroPubApi.post_update(service, '<p>Hello</p>', post_url, null, [], 'published')
     await MicroPubApi.delete_post(service, post_url)
     await MicroPubApi.publish_draft(service, '<p>Hello</p>', post_url, '')
     expect(fetch.mock.calls.map(([url]) => url)).toEqual([service.endpoint, service.endpoint, service.endpoint])
     const [edit, deletion, draft] = fetch.mock.calls.map(([, options]) => JSON.parse(options.body))
-    expect(edit).toMatchObject({ action: 'update', url: post_url, delete: ['name'], replace: { content: ['<p>Hello</p>'] } })
-    expect(edit.replace.name).toBeUndefined()
+    expect(edit).toMatchObject({ action: 'update', url: post_url, replace: { content: ['<p>Hello</p>'], name: [''] } })
+    expect(edit.delete).toBeUndefined()
     expect(deletion).toEqual({ action: 'delete', url: post_url })
     expect(draft.replace['post-status']).toEqual(['published'])
     expect(draft.replace.content).toEqual(['<p>Hello</p>'])
+    expect(draft.replace.name).toEqual([''])
+    expect(draft.delete).toBeUndefined()
+  })
+
+  test.each([null, '', 'Updated title'])('replaces the title %p without a delete operation', async title => {
+    await MicroPubApi.post_update(service, 'Hello', post_url, title)
+    expect(JSON.parse(fetch.mock.calls[0][1].body)).toEqual({
+      action: 'update',
+      url: post_url,
+      replace: { content: ['Hello'], name: [title === null ? '' : title] }
+    })
   })
 
   test('does not delete unrelated properties when only content is being edited', async () => {
