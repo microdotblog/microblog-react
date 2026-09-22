@@ -514,11 +514,8 @@ class MicroPubApi {
   async post_update(service, content, url, title, categories, post_status = '') {
     const replace = { content: [content] }
     const params = { action: 'update', url, replace }
-    if (title === null || title === '') {
-      params.delete = ['name']
-    }
-    else if (title !== undefined) {
-      replace.name = [title]
+    if (title !== undefined) {
+      replace.name = [title ?? '']
     }
     if (categories) {
       replace.category = categories
