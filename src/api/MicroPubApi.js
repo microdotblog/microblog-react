@@ -61,7 +61,7 @@ class MicroPubApi {
           addLink(links[i].getAttribute('href'), links[i].getAttribute('rel') || '')
         }
       }
-      if (endpoints.micropub && endpoints.authorization_endpoint && endpoints.token_endpoint) {
+      if (endpoints.micropub) {
         return {
           micropub: endpoints.micropub,
           auth: endpoints.authorization_endpoint,

@@ -300,3 +300,17 @@ describe('Micropub interoperability', () => {
     })
   })
 })
+
+test('discovers a token-only Micropub server', async () => {
+  jest.spyOn(global, 'fetch').mockResolvedValue({
+    url: 'https://user.pika.page/',
+    headers: { get: () => null },
+    text: async () => '<html><head><link rel="micropub" href="https://pika.page/micropub"/></head></html>'
+  })
+  try {
+    await expect(MicroPubApi.discover_micropub_endpoints('https://user.pika.page/')).resolves.toEqual({
+      micropub: 'https://pika.page/micropub', auth: undefined, token: undefined, is_wordpress: false
+    })
+  }
+  finally { jest.restoreAllMocks() }
+})
