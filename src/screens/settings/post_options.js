@@ -73,8 +73,26 @@ export default class PostOptionsSettingsScreen extends React.Component{
                 onChangeText={(text) => Services.set_url(text)}
                 onSubmitEditing={() => {Services.setup_new_service(); Keyboard.dismiss()}}
                 value={Services.current_url}
-                editable={!Services.did_set_up_successfully}
+                editable={!Services.did_set_up_successfully && !Services.checking_credentials}
               />
+              {Services.show_micropub_token && !Services.did_set_up_successfully && (
+                <View style={{ marginBottom: 12 }}>
+                  <Text style={{ color: App.theme_text_color(), marginBottom: 12 }}>This blog uses an app token. Create one in your blog's settings and paste it below.</Text>
+                  <TextInput
+                    style={{ backgroundColor: App.theme_input_contrast_alt_background_color(), padding: 12, borderRadius: 8, color: App.theme_text_color(), marginBottom: 12 }}
+                    accessibilityLabel="Micropub app token"
+                    placeholder="App token"
+                    placeholderTextColor={App.theme_placeholder_text_color()}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    secureTextEntry={true}
+                    onChangeText={Services.set_micropub_token}
+                    value={Services.temp_micropub_token}
+                    editable={!Services.checking_credentials}
+                  />
+                  <Button title="Connect with App Token" color={App.theme_accent_color()} onPress={Services.setup_with_micropub_token} disabled={!Services.temp_micropub_token.trim() || Services.checking_credentials} />
+                </View>
+              )}
               {
                 Services.show_credentials && !Services.did_set_up_successfully ?
                 <View style={{ padding: 12, borderRadius: 8, backgroundColor: App.theme_settings_group_background_color(), marginBottom: 12 }}>
@@ -144,10 +162,10 @@ export default class PostOptionsSettingsScreen extends React.Component{
                   :
                   <>
                   <Button
-                    title={Services.should_show_set_up() ? "Set Up..." : "Remove Blog..."}
+                    title={Services.show_micropub_token ? "Cancel" : Services.should_show_set_up() ? "Set Up..." : "Remove Blog..."}
                     color={Services.should_show_set_up() ? App.theme_accent_color() : Platform.OS === "ios" ? App.theme_error_text_color() : App.theme_error_background_color()}
-                    onPress={Services.should_show_set_up() ? Services.setup_new_service : Services.trigger_custom_service_delete}
-                    disabled={!Services.can_set_up() || Services.is_setting_up}
+                    onPress={Services.show_micropub_token ? Services.clear : Services.should_show_set_up() ? Services.setup_new_service : Services.trigger_custom_service_delete}
+                    disabled={!Services.can_set_up() || Services.is_setting_up || Services.checking_credentials}
                   />
                   {
                     Services.show_loading() &&
