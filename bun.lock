@@ -18,7 +18,9 @@
         "@react-navigation/native-stack": "^7.8.2",
         "@xmldom/xmldom": "^0.9.8",
         "axios": "^0.22.0",
+        "base64-js": "^1.5.1",
         "expo": "~55.0.17",
+        "expo-crypto": "~55.0.19",
         "expo-image": "~55.0.9",
         "expo-secure-store": "~55.0.13",
         "expo-web-browser": "~55.0.14",
@@ -996,6 +998,8 @@
     "expo-asset": ["expo-asset@55.0.17", "", { "dependencies": { "@expo/image-utils": "^0.8.14", "expo-constants": "~55.0.16" }, "peerDependencies": { "expo": "*", "react": "*", "react-native": "*" } }, "sha512-pK9HHJuFqjE8kDUcbMFsZj3Cz8WdXpvZHZmYl7ouFQp59P83BvHln6VnqPDGlO+/4929G0Lm8ZUzbONuNRhi9w=="],
 
     "expo-constants": ["expo-constants@55.0.16", "", { "dependencies": { "@expo/env": "~2.1.2" }, "peerDependencies": { "expo": "*", "react-native": "*" } }, "sha512-Z15/No94UHoogD+pulxjudGAeOHTEIWZgb/vnX48Wx5D+apWTeCbnKxQZZtGQlosvduYL5kaic2/W8U+NHfBQQ=="],
+
+    "expo-crypto": ["expo-crypto@55.0.19", "", { "peerDependencies": { "expo": "*" } }, "sha512-Ip1jQ5GphvrC4Ls5osAmIapi+JZXOqRJYaaMxTFWpkhssNUq88oP45pWGv2uU2K/Ci6j7iLDJzU8eN3v+B7jrA=="],
 
     "expo-file-system": ["expo-file-system@55.0.23", "", { "peerDependencies": { "expo": "*", "react-native": "*" } }, "sha512-XNV/NaPc7Tvd2JIsWkPW8s2vfJUI/Oe4UMX9TmOGpc6cn5BckDw/nn2Qre9lq4btT4FWHJw4SAOHmATShLC0og=="],
 

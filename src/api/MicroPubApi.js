@@ -12,6 +12,11 @@ export const POST_OK = 5
 export const NO_AUTH = 6
 export const DELETE_ERROR = 7
 export const MICROPUB_NOT_FOUND = 8
+export const AUTH_ERROR = 9
+export const UNSUPPORTED_PKCE = 10
+
+const CLIENT_ID = 'https://micro.blog/'
+const REDIRECT_URI = 'https://micro.blog/indieauth/redirect'
 
 const progress_from_upload_event = progressEvent => {
 	const loaded = Number(progressEvent?.loaded)
@@ -27,11 +32,23 @@ const progress_from_upload_event = progressEvent => {
 
 class MicroPubApi {
   
-  async discover_micropub_endpoints(url, alternate_html_match = false) {
+  async discover_micropub_endpoints(url) {
+    const endpoints = await this.discover_endpoints(url, { skip_wordpress: true })
+    if (typeof endpoints !== 'object') {
+      return endpoints
+    }
+    return endpoints.micropub && endpoints.auth && endpoints.token ? endpoints : MICROPUB_NOT_FOUND
+  }
+
+  async discover_endpoints(url, { alternate_html_match = false, skip_wordpress = false } = {}) {
+    let metadata_url
     try {
       const response = await fetch(url, {
         headers: { Accept: 'text/html', 'Cache-Control': 'no-cache' }
       })
+      if (!response.ok) {
+        return MICROPUB_NOT_FOUND
+      }
       const base_url = response.url || url
       const endpoints = {}
       const addLink = (href, rel) => {
@@ -39,8 +56,11 @@ class MicroPubApi {
           return
         }
         for (const name of rel.split(/\s+/)) {
-          if (['micropub', 'authorization_endpoint', 'token_endpoint'].includes(name) && !endpoints[name]) {
-            endpoints[name] = new URL(href, base_url).href
+          if (['micropub', 'indieauth-metadata', 'authorization_endpoint', 'token_endpoint'].includes(name) && !endpoints[name]) {
+            const resolved = new URL(href, base_url)
+            if (['http:', 'https:'].includes(resolved.protocol)) {
+              endpoints[name] = resolved.href
+            }
           }
         }
       }
@@ -52,7 +72,9 @@ class MicroPubApi {
           addLink(match[1], rel[1] || rel[2])
         }
       }
-      if (!endpoints.micropub || !endpoints.authorization_endpoint || !endpoints.token_endpoint) {
+      // Look for metadata even if all the legacy endpoints were in headers.
+      const content_type = response.headers.get('Content-Type') || ''
+      if ((!endpoints['indieauth-metadata'] || !endpoints.micropub) && (!content_type || content_type.includes('html'))) {
         const html = await response.text()
         const source = alternate_html_match ? `<html>${html.match(/<head[^>]*>[\s\S]*?<\/head>/i)?.[0] || ''}</html>` : html
         const doc = new DOMParser().parseFromString(source, 'text/html')
@@ -61,69 +83,154 @@ class MicroPubApi {
           addLink(links[i].getAttribute('href'), links[i].getAttribute('rel') || '')
         }
       }
-      if (endpoints.micropub && endpoints.authorization_endpoint && endpoints.token_endpoint) {
-        return {
-          micropub: endpoints.micropub,
-          auth: endpoints.authorization_endpoint,
-          token: endpoints.token_endpoint,
-          is_wordpress: endpoints.micropub.includes('/wp-json')
+
+      let metadata = {}
+      const is_wordpress = endpoints.micropub?.includes('/wp-json') || false
+      // WordPress setup uses XML-RPC, independently of its IndieAuth metadata.
+      metadata_url = skip_wordpress && is_wordpress ? null : endpoints['indieauth-metadata']
+      if (metadata_url) {
+        const metadata_response = await fetch(metadata_url, { headers: { Accept: 'application/json' } })
+        if (!metadata_response.ok) {
+          return AUTH_ERROR
+        }
+        metadata = await metadata_response.json()
+        const issuer = new URL(metadata.issuer)
+        const auth = new URL(metadata.authorization_endpoint)
+        const token = new URL(metadata.token_endpoint)
+        if (issuer.protocol !== 'https:' || issuer.search || issuer.hash ||
+            !['http:', 'https:'].includes(auth.protocol) || !['http:', 'https:'].includes(token.protocol)) {
+          return AUTH_ERROR
+        }
+        endpoints.authorization_endpoint = auth.href
+        endpoints.token_endpoint = token.href
+        const methods = metadata.code_challenge_methods_supported
+        if (methods != null && !Array.isArray(methods)) {
+          return AUTH_ERROR
+        }
+        if (methods?.length && !methods.includes('S256')) {
+          return UNSUPPORTED_PKCE
         }
       }
-      return MICROPUB_NOT_FOUND
+      if (!endpoints.authorization_endpoint) {
+        return MICROPUB_NOT_FOUND
+      }
+      return {
+        micropub: endpoints.micropub,
+        auth: endpoints.authorization_endpoint,
+        token: endpoints.token_endpoint,
+        me: base_url,
+        issuer: metadata.issuer || '',
+        requires_issuer: metadata.authorization_response_iss_parameter_supported === true,
+        supports_pkce: metadata.code_challenge_methods_supported?.includes('S256') || false,
+        is_wordpress
+      }
     }
     catch (error) {
-      console.log(error)
+      console.log('Micropub discovery failed')
+      if (metadata_url) {
+        return AUTH_ERROR
+      }
       if (!alternate_html_match) {
-        return this.discover_micropub_endpoints(url, true)
+        return this.discover_endpoints(url, { alternate_html_match: true, skip_wordpress })
       }
       return MICROPUB_NOT_FOUND
     }
   }
 
-  make_auth_url(me_url, base_auth_url) {
+  make_auth_url(me_url, base_auth_url, authorization) {
     const url = new URL(base_auth_url)
     url.searchParams.set('me', me_url)
-    url.searchParams.set('redirect_uri', 'https://micro.blog/indieauth/redirect')
-    url.searchParams.set('client_id', 'https://micro.blog/')
-    url.searchParams.set('state', Math.floor(Math.random() * 10000).toString())
+    url.searchParams.set('redirect_uri', REDIRECT_URI)
+    url.searchParams.set('client_id', CLIENT_ID)
+    url.searchParams.set('state', authorization.state)
     url.searchParams.set('scope', 'create update delete')
     url.searchParams.set('response_type', 'code')
+    if (authorization.code_challenge) {
+      url.searchParams.set('code_challenge', authorization.code_challenge)
+      url.searchParams.set('code_challenge_method', 'S256')
+    }
     return url.href
   }
 
-  async verify_code(service, auth_url) {
-    let auth_code
+  is_auth_callback(raw_url) {
     try {
-      // Decode the callback value before encoding it once in the token request.
-      auth_code = new URL(auth_url).searchParams.get('code')
+      const url = new URL(raw_url)
+      return url.protocol === 'microblog:' && url.host === 'indieauth' && url.pathname === ''
     }
     catch (error) {
+      return false
+    }
+  }
+
+  async verify_code(authorization, auth_url) {
+    if (!this.is_auth_callback(auth_url)) {
       return NO_AUTH
     }
-
-    if (!auth_code) {
+    const callback = new URL(auth_url)
+    const state = callback.searchParams.get('state')
+    const issuer = callback.searchParams.get('iss')
+    // Decode the callback value before encoding it once in the token request.
+    const auth_code = callback.searchParams.get('code')
+    if (!state || state !== authorization.state || !auth_code || callback.searchParams.has('error')) {
+      return NO_AUTH
+    }
+    if ((authorization.requires_issuer && !issuer) || (authorization.issuer && issuer && issuer !== authorization.issuer)) {
       return NO_AUTH
     }
 
     const params = new URLSearchParams({
-      client_id: 'https://micro.blog/',
+      client_id: CLIENT_ID,
       code: auth_code,
-      redirect_uri: 'https://micro.blog/indieauth/redirect',
+      redirect_uri: REDIRECT_URI,
       grant_type: 'authorization_code'
     })
+    if (authorization.code_challenge && !authorization.code_verifier) {
+      return NO_AUTH
+    }
+    if (authorization.code_challenge) {
+      params.set('code_verifier', authorization.code_verifier)
+    }
 
     try {
-      const response = await axios.post(service.token_endpoint, params.toString(), {
+      const response = await fetch(authorization.token_endpoint, {
+        method: 'POST',
+        body: params.toString(),
         headers: {
-          'Content-type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/x-www-form-urlencoded',
           Accept: 'application/json'
         }
       })
-      return response.data.access_token ?? NO_AUTH
+      if (!response.ok) {
+        return FETCH_ERROR
+      }
+      const data = await response.json()
+      return typeof data.access_token === 'string' && data.access_token ? data : NO_AUTH
     }
     catch (error) {
-      console.log(error)
+      console.log('Micropub token exchange failed')
       return FETCH_ERROR
+    }
+  }
+
+  async verify_profile(authorization, me) {
+    // Older OAuth servers may omit the IndieAuth profile URL.
+    if (me == null) {
+      return true
+    }
+    if (typeof me !== 'string' || !me) {
+      return false
+    }
+    try {
+      const profile_url = new URL(me).href
+      if (profile_url === authorization.me || profile_url === authorization.profile_url) {
+        return true
+      }
+      const endpoints = await this.discover_endpoints(profile_url)
+      return typeof endpoints === 'object' && endpoints.auth === authorization.auth_endpoint &&
+        (!authorization.issuer || endpoints.issuer === authorization.issuer)
+    }
+    catch (error) {
+      return false
     }
   }
 

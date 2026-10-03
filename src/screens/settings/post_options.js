@@ -73,7 +73,7 @@ export default class PostOptionsSettingsScreen extends React.Component{
                 onChangeText={(text) => Services.set_url(text)}
                 onSubmitEditing={() => {Services.setup_new_service(); Keyboard.dismiss()}}
                 value={Services.current_url}
-                editable={!Services.did_set_up_successfully}
+                editable={!Services.did_set_up_successfully && !Services.is_setting_up && !Services.checking_credentials}
               />
               {
                 Services.show_credentials && !Services.did_set_up_successfully ?

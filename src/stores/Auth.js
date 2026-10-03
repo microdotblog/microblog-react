@@ -6,6 +6,7 @@ import Tokens from './Tokens'
 import CookieManager from '@react-native-cookies/cookies';
 import Push from './Push'
 import App from './App'
+import Services from './Services'
 import Toast from 'react-native-simple-toast';
 import { invalidate_webview_bootstrap_state } from '../utils/webview_recovery'
 
@@ -89,6 +90,7 @@ export default Auth = types.model('Auth', {
   
   select_user: flow(function* (user) {
     console.log("Auth:select_user", user)
+    yield Services.clear_micropub_authorization()
     yield Auth.clear_cookies()
     self.selected_user = user
     if (self.selected_user.posting.selected_service != null) {
@@ -104,6 +106,7 @@ export default Auth = types.model('Auth', {
   
   logout_user: flow(function* (user = null) {
     console.log("Auth:logout_user", user)
+    yield Services.clear_micropub_authorization()
     if (user == null) {
       user = self.selected_user
     }
@@ -124,6 +127,7 @@ export default Auth = types.model('Auth', {
   
   logout_all_user: flow(function* () {
     console.log("Auth:logout_all_users")
+    yield Services.clear_micropub_authorization()
     yield Auth.clear_cookies()
     self.users.forEach((user) => {
       Push.unregister_user_from_push(user.token())
