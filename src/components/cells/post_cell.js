@@ -1,8 +1,9 @@
 import * as React from "react";
 import { observer } from "mobx-react";
-import { View, Text, TouchableOpacity, Animated, Platform } from "react-native";
+import { View, Text, TouchableOpacity, Animated, Platform, Alert } from "react-native"
 import App from "../../stores/App";
 import Auth from "../../stores/Auth";
+import MicroBlogApi, { API_ERROR } from '../../api/MicroBlogApi'
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { RectButton } from "react-native-gesture-handler";
 import { SvgXml } from "react-native-svg";
@@ -133,6 +134,17 @@ export default class PostCell extends React.Component {
     );
   };
 
+  _show_conversation = async () => {
+    const id = await MicroBlogApi.get_conversation_id_for_url(this.props.post.url)
+    if (id === null || id === API_ERROR) {
+      Alert.alert('Could Not Show Conversation', id === null ?
+        'Micro.blog could not find a conversation for this post.' :
+        'Could not load the conversation. Please try again.')
+      return
+    }
+    App.navigate_to_screen('open', id)
+  }
+
   make_context_menu = (item) => {
     let menu_items = [];
 
@@ -162,6 +174,14 @@ export default class PostCell extends React.Component {
         id: "open_in_browser",
         systemIcon: "safari",
       });
+
+      if (item.url && item.published && new Date(item.published).getTime() <= Date.now()) {
+        menu_items.push({
+          title: 'Show Conversation',
+          id: 'show_conversation',
+          systemIcon: 'bubble.left.and.bubble.right'
+        })
+      }
     }
 
     menu_items.push({
@@ -197,6 +217,8 @@ export default class PostCell extends React.Component {
               Toast.showWithGravity("URL copied", Toast.SHORT, Toast.CENTER);
             } else if (nativeEvent.name == "Open in Browser") {
               App.open_url(post.url);
+            } else if (nativeEvent.name === 'Show Conversation') {
+              this._show_conversation()
             } else if (nativeEvent.name == "Delete") {
               Auth.selected_user.posting.selected_service?.trigger_post_delete(
                 post
