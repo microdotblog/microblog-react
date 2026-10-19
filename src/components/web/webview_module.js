@@ -108,8 +108,8 @@ const WebViewModule = observer((props) => {
     true
   `
   const web_view_injected_javascript = Platform.OS === 'ios' ? `
-    const meta = document.createElement('meta')
-    meta.setAttribute('content', 'width=width, initial-scale=${App.web_font_scale()}')
+    const meta = document.querySelector('meta[name="viewport"]') || document.createElement('meta')
+    meta.setAttribute('content', 'width=device-width, initial-scale=${App.web_font_scale()}')
     meta.setAttribute('name', 'viewport')
     document.getElementsByTagName('head')[0].appendChild(meta)
     ${web_view_css_properties_javascript}
