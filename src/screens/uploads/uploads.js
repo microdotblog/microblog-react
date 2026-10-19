@@ -248,20 +248,24 @@ export default class UploadsScreen extends React.Component{
   
   render() {
     return (
-      <HorizontalSafeAreaView style={{ backgroundColor: App.theme_background_color_secondary() }}>
-        <View onLayout={this.handleLayout} style={{ flex: 1, alignItems: 'center' }}>
-          {
-            Auth.is_logged_in() && !Auth.is_selecting_user ?
-              <>
+      <View style={{ flex: 1, backgroundColor: App.theme_background_color_secondary() }}>
+        {
+          Auth.is_logged_in() && !Auth.is_selecting_user ?
+            <>
+              <HorizontalSafeAreaView style={{ flex: 0, height: 50, backgroundColor: App.theme_input_background_color() }}>
                 {this._return_header()}
-                {this.state.cell_dimension > 0 && this._return_temp_uploads_list()}
-                {this.state.cell_dimension > 0 && this._return_uploads_list()}
-              </>
-            :
-            <LoginMessage title="Uploads" />
-          }
-        </View>
-      </HorizontalSafeAreaView>
+              </HorizontalSafeAreaView>
+              <HorizontalSafeAreaView>
+                <View onLayout={this.handleLayout} style={{ flex: 1, alignItems: 'center' }}>
+                  {this.state.cell_dimension > 0 && this._return_temp_uploads_list()}
+                  {this.state.cell_dimension > 0 && this._return_uploads_list()}
+                </View>
+              </HorizontalSafeAreaView>
+            </>
+          :
+          <LoginMessage title="Uploads" />
+        }
+      </View>
     )
   }
   

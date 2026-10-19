@@ -316,17 +316,21 @@ export default class PostsScreen extends React.Component{
   
   render() {
     return (
-      <HorizontalSafeAreaView style={{ backgroundColor: App.theme_background_color_secondary() }}>
+      <View style={{ flex: 1, backgroundColor: App.theme_background_color_secondary() }}>
         {
           Auth.is_logged_in() && !Auth.is_selecting_user ?
             <>
-            {this._return_header()}
-            {this._return_posts_list()}
+              <HorizontalSafeAreaView style={{ flex: 0, height: 50, backgroundColor: App.theme_input_background_color() }}>
+                {this._return_header()}
+              </HorizontalSafeAreaView>
+              <HorizontalSafeAreaView>
+                {this._return_posts_list()}
+              </HorizontalSafeAreaView>
             </>
           :
           <LoginMessage title="Posts" />
         }
-      </HorizontalSafeAreaView>
+      </View>
     )
   }
   

@@ -7,11 +7,13 @@ import { SafeAreaView } from 'react-native-screens/experimental'
 export default class HorizontalSafeAreaView extends React.Component {
   render() {
     return (
-      <SafeAreaView edges={{ left: true, right: true }} style={[styles.container, this.props.style]}>
-        <View style={styles.container}>
-          {this.props.children}
-        </View>
-      </SafeAreaView>
+      <View style={[styles.container, this.props.style]}>
+        <SafeAreaView edges={{ left: true, right: true }} style={styles.container}>
+          <View style={styles.container}>
+            {this.props.children}
+          </View>
+        </SafeAreaView>
+      </View>
     )
   }
 }
