@@ -19,8 +19,6 @@
 		2837C73874E55DEB2797484F /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961AB331816A548D082E9A56 /* ExpoModulesProvider.swift */; };
 		28E40035B1E151C13639876C /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCF007C5134030FD80BBAC8 /* ExpoModulesProvider.swift */; };
 		4B06FCA829FABD0800E97371 /* UIScrollViewDelegate+Zooming.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B06FCA729FABD0800E97371 /* UIScrollViewDelegate+Zooming.m */; };
-		4B3498672AE86AA900233BA2 /* RCTInputAccessoryShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3498662AE86AA900233BA2 /* RCTInputAccessoryShadowView.m */; };
-		4B3498682AE86AA900233BA2 /* RCTInputAccessoryShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3498662AE86AA900233BA2 /* RCTInputAccessoryShadowView.m */; };
 		4B719C392E63B0D6006D4E7D /* UIBarButtonItem+Plainify.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B719C382E63B0D6006D4E7D /* UIBarButtonItem+Plainify.m */; };
 		4B719C3A2E63B0D6006D4E7D /* UIBarButtonItem+Plainify.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B719C382E63B0D6006D4E7D /* UIBarButtonItem+Plainify.m */; };
 		4B8CE8AB2A1FCC69006D79CF /* GetURL.js in Resources */ = {isa = PBXBuildFile; fileRef = 4B8CE8AA2A1FCC69006D79CF /* GetURL.js */; };
@@ -79,8 +77,6 @@
 		47E9C7DD11A09B7944E82B75 /* Pods-MicroBlog_RN.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MicroBlog_RN.debug.xcconfig"; path = "Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN.debug.xcconfig"; sourceTree = "<group>"; };
 		4B06FCA629FABD0800E97371 /* UIScrollViewDelegate+Zooming.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "UIScrollViewDelegate+Zooming.h"; path = "MicroBlog_RN/UIScrollViewDelegate+Zooming.h"; sourceTree = "<group>"; };
 		4B06FCA729FABD0800E97371 /* UIScrollViewDelegate+Zooming.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "UIScrollViewDelegate+Zooming.m"; path = "MicroBlog_RN/UIScrollViewDelegate+Zooming.m"; sourceTree = "<group>"; };
-		4B3498652AE86AA900233BA2 /* RCTInputAccessoryShadowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RCTInputAccessoryShadowView.h; path = MicroBlog_RN/RCTInputAccessoryShadowView.h; sourceTree = "<group>"; };
-		4B3498662AE86AA900233BA2 /* RCTInputAccessoryShadowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RCTInputAccessoryShadowView.m; path = MicroBlog_RN/RCTInputAccessoryShadowView.m; sourceTree = "<group>"; };
 		4B719C372E63B0D6006D4E7D /* UIBarButtonItem+Plainify.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "UIBarButtonItem+Plainify.h"; path = "MicroBlog_RN/UIBarButtonItem+Plainify.h"; sourceTree = "<group>"; };
 		4B719C382E63B0D6006D4E7D /* UIBarButtonItem+Plainify.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "UIBarButtonItem+Plainify.m"; path = "MicroBlog_RN/UIBarButtonItem+Plainify.m"; sourceTree = "<group>"; };
 		4B8CE8AA2A1FCC69006D79CF /* GetURL.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = GetURL.js; sourceTree = "<group>"; };
@@ -144,8 +140,6 @@
 				4B06FCA729FABD0800E97371 /* UIScrollViewDelegate+Zooming.m */,
 				4B719C372E63B0D6006D4E7D /* UIBarButtonItem+Plainify.h */,
 				4B719C382E63B0D6006D4E7D /* UIBarButtonItem+Plainify.m */,
-				4B3498652AE86AA900233BA2 /* RCTInputAccessoryShadowView.h */,
-				4B3498662AE86AA900233BA2 /* RCTInputAccessoryShadowView.m */,
 				4BD1A3002F08000000A10001 /* MBLiquidGlassButton.h */,
 				4BD1A3012F08000000A10001 /* MBLiquidGlassButton.m */,
 				4BD1A3022F08000000A10001 /* MBLiquidGlassButtonManager.m */,
@@ -434,13 +428,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -477,13 +467,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN/Pods-MicroBlog_RN-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -498,13 +484,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/Pods-MicroBlog_RN-MicroBlog_Share-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MicroBlog_RN-MicroBlog_Share/Pods-MicroBlog_RN-MicroBlog_Share-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -543,7 +525,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				0221AB3829D4327B00838597 /* ReactShareViewController.swift in Sources */,
-				4B3498682AE86AA900233BA2 /* RCTInputAccessoryShadowView.m in Sources */,
 				4BB0A4612DFCA4DC00900B0B /* MBClipboardHelper.m in Sources */,
 				0221AB3529D42CE500838597 /* ShareViewController.swift in Sources */,
 				4B719C392E63B0D6006D4E7D /* UIBarButtonItem+Plainify.m in Sources */,
@@ -561,7 +542,6 @@
 				0251EE462716191A00B475D5 /* File.swift in Sources */,
 				4B06FCA829FABD0800E97371 /* UIScrollViewDelegate+Zooming.m in Sources */,
 				4B719C3A2E63B0D6006D4E7D /* UIBarButtonItem+Plainify.m in Sources */,
-				4B3498672AE86AA900233BA2 /* RCTInputAccessoryShadowView.m in Sources */,
 				4BD1A3032F08000000A10001 /* MBLiquidGlassButton.m in Sources */,
 				4BD1A3052F08000000A10001 /* MBLiquidGlassButtonManager.m in Sources */,
 				BF76CC3E2E8E980900F61FC2 /* AppDelegate.swift in Sources */,
@@ -612,7 +592,7 @@
 				INFOPLIST_FILE = MicroBlog_Share/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MicroBlog_Share;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -660,7 +640,7 @@
 				INFOPLIST_FILE = MicroBlog_Share/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MicroBlog_Share;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -697,7 +677,7 @@
 				DEVELOPMENT_TEAM = 3F9MDJ6K4E;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MicroBlog_RN/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -734,7 +714,7 @@
 				CURRENT_PROJECT_VERSION = 461;
 				DEVELOPMENT_TEAM = 3F9MDJ6K4E;
 				INFOPLIST_FILE = MicroBlog_RN/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -810,7 +790,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD = "";
 				LDPLUSPLUS = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -824,9 +804,19 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CFLAGS = "$(inherited)";
-				OTHER_CPLUSPLUSFLAGS = "$(inherited)";
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-DRCT_REMOVE_LEGACY_ARCH=1",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(inherited)",
+					"-DRCT_REMOVE_LEGACY_ARCH=1",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
+				PODFILE_DIR = "$(SRCROOT)";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -880,7 +870,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD = "";
 				LDPLUSPLUS = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -893,9 +883,19 @@
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_CFLAGS = "$(inherited)";
-				OTHER_CPLUSPLUSFLAGS = "$(inherited)";
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-DRCT_REMOVE_LEGACY_ARCH=1",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(inherited)",
+					"-DRCT_REMOVE_LEGACY_ARCH=1",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
+				PODFILE_DIR = "$(SRCROOT)";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
