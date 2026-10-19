@@ -1,12 +1,11 @@
 import * as React from "react";
 import { observer } from "mobx-react";
-import { Dimensions, View, Platform, Pressable, Animated } from "react-native";
+import { View, Platform, Pressable, Animated } from "react-native";
 import App from "../../stores/App";
 import { SvgXml } from "react-native-svg";
 import { SFSymbol } from "react-native-sfsymbols";
 import { MenuView } from "@react-native-menu/menu";
 import Auth from "../../stores/Auth";
-import DeviceInfo from "react-native-device-info";
 import MBImage from "../common/MBImage";
 
 @observer
@@ -17,7 +16,6 @@ export default class UploadCell extends React.Component {
       did_load: false,
       use_original_url: false,
       use_preview_url: false,
-      num_columns: DeviceInfo.isTablet() ? 4 : 3,
     };
   }
 
@@ -78,8 +76,7 @@ export default class UploadCell extends React.Component {
 
   render_cell(upload) {
     const has_poster = upload.poster && upload.poster.length > 0;
-    const dimension =
-      Dimensions.get("screen")?.width / this.state.num_columns - 10;
+    const { dimension } = this.props
     if (upload.is_audio() || upload.is_video()) {
       return (
         <View
