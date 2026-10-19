@@ -10,6 +10,7 @@ import SearchBar from '../../components/search_bar';
 import { SFSymbol } from "react-native-sfsymbols";
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import { tabBarScrollContentBottomPadding } from '../../utils/ui'
+import HorizontalSafeAreaView from '../../components/common/horizontal_safe_area_view'
 @observer
 export default class PostsScreen extends React.Component{
 
@@ -315,7 +316,7 @@ export default class PostsScreen extends React.Component{
   
   render() {
     return (
-      <View style={{ flex: 1, justifyContent: 'flex-start' }}>
+      <HorizontalSafeAreaView style={{ backgroundColor: App.theme_background_color_secondary() }}>
         {
           Auth.is_logged_in() && !Auth.is_selecting_user ?
             <>
@@ -325,7 +326,7 @@ export default class PostsScreen extends React.Component{
           :
           <LoginMessage title="Posts" />
         }
-      </View>
+      </HorizontalSafeAreaView>
     )
   }
   

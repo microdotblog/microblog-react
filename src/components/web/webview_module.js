@@ -10,6 +10,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import WebView from 'react-native-webview'
 import WebErrorViewModule from './error_view'
 import LoadingBanner from './loading_banner'
+import HorizontalSafeAreaView from '../common/horizontal_safe_area_view'
 import {
   build_webview_source_uri,
   get_base_webview_path,
@@ -365,15 +366,15 @@ const WebViewModule = observer((props) => {
 
   if (should_render_direct_webview) {
     return (
-      <>
+      <HorizontalSafeAreaView style={{ backgroundColor: App.theme_background_color() }}>
         {loading_banner}
         {_webview()}
-      </>
+      </HorizontalSafeAreaView>
     )
   }
 
   return (
-    <>
+    <HorizontalSafeAreaView style={{ backgroundColor: App.theme_background_color() }}>
       {loading_banner}
       <ScrollView
         overScrollMode={Platform.OS === 'ios' ? 'auto' : 'always'}
@@ -403,7 +404,7 @@ const WebViewModule = observer((props) => {
         }
         {_webview()}
       </ScrollView>
-    </>
+    </HorizontalSafeAreaView>
   )
 })
 

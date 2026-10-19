@@ -8,6 +8,7 @@ import Replies from '../../stores/Replies';
 import ReplyCell from '../../components/cells/reply_cell';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import { tabBarScrollContentBottomPadding } from '../../utils/ui'
+import HorizontalSafeAreaView from '../../components/common/horizontal_safe_area_view'
 
 @observer
 export default class RepliesScreen extends React.Component{
@@ -103,7 +104,7 @@ export default class RepliesScreen extends React.Component{
   
   render() {
     return(
-      <View style={{ flex: 1, justifyContent: 'flex-start' }}>
+      <HorizontalSafeAreaView style={{ backgroundColor: App.theme_background_color_secondary() }}>
         {
           Auth.is_logged_in() && !Auth.is_selecting_user ?
             <>
@@ -113,7 +114,7 @@ export default class RepliesScreen extends React.Component{
           :
           <LoginMessage title="Replies" />
         }
-      </View>
+      </HorizontalSafeAreaView>
     )
   }
   
