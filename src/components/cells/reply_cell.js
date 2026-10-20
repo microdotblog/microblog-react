@@ -5,6 +5,9 @@ import App from '../../stores/App'
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { RectButton } from 'react-native-gesture-handler';
 import { SvgXml } from 'react-native-svg';
+import ContextMenu from 'react-native-context-menu-view'
+import Clipboard from '@react-native-clipboard/clipboard'
+import Toast from 'react-native-simple-toast'
 
 @observer
 export default class ReplyCell extends React.Component{
@@ -67,6 +70,58 @@ export default class ReplyCell extends React.Component{
     );
   }
   
+  make_context_menu = (reply) => [
+    {
+      title: 'Edit',
+      id: 'edit',
+      systemIcon: 'square.and.pencil',
+      disabled: !reply.can_edit()
+    },
+    {
+      title: 'Copy Link',
+      id: 'copy_link',
+      systemIcon: 'link',
+      disabled: !reply.url
+    },
+    {
+      title: 'Open in Browser',
+      id: 'open_in_browser',
+      systemIcon: 'safari',
+      disabled: !reply.url
+    },
+    {
+      title: 'Show Conversation',
+      id: 'show_conversation',
+      systemIcon: 'bubble.left.and.bubble.right'
+    },
+    {
+      title: 'Delete',
+      id: 'delete',
+      systemIcon: 'trash',
+      destructive: true
+    }
+  ]
+
+  _handle_context_menu = ({ nativeEvent }) => {
+    const { reply } = this.props
+    if (nativeEvent.name === 'Edit' && reply.can_edit()) {
+      reply.trigger_edit()
+    }
+    else if (nativeEvent.name === 'Copy Link' && reply.url) {
+      Clipboard.setString(reply.url)
+      Toast.showWithGravity('URL copied', Toast.SHORT, Toast.CENTER)
+    }
+    else if (nativeEvent.name === 'Open in Browser' && reply.url) {
+      App.open_url(reply.url)
+    }
+    else if (nativeEvent.name === 'Show Conversation') {
+      App.navigate_to_screen('open', reply.id)
+    }
+    else if (nativeEvent.name === 'Delete') {
+      reply.trigger_delete()
+    }
+  }
+
   render() {
     const { reply } = this.props
     return(
@@ -77,36 +132,43 @@ export default class ReplyCell extends React.Component{
         enableTrackpadTwoFingerGesture={true}
         renderRightActions={(progress) => this._right_actions(progress, reply)}
       >
-        <TouchableOpacity
-          activeOpacity={1}
-          style={{
-            padding: 15,
-            borderColor: App.theme_alt_background_div_color(),
-            borderBottomWidth: .5,
-            backgroundColor: App.theme_background_color_secondary(),
-            width: '100%'
-          }}
-          onPress={reply.can_edit() ? reply.trigger_edit : () => App.handle_url_from_webview(reply.url)}
+        <ContextMenu
+          previewBackgroundColor="rgba(0, 0, 0, 0.0)"
+          actions={this.make_context_menu(reply)}
+          onPress={this._handle_context_menu}
         >
-          <Text style={{color: App.theme_text_color(), fontSize: App.theme_default_font_size(), opacity: reply.can_edit() ? 1 : .5}}>{reply.content_text}</Text>
-          <View
+          <TouchableOpacity
+            activeOpacity={1}
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginTop: 20
+              padding: 15,
+              borderColor: App.theme_alt_background_div_color(),
+              borderBottomWidth: .5,
+              backgroundColor: App.theme_background_color_secondary(),
+              width: '100%'
             }}
+            onPress={reply.can_edit() ? reply.trigger_edit : () => App.handle_url_from_webview(reply.url)}
+            onLongPress={() => {}}
           >
-            <TouchableOpacity onPress={() => App.handle_url_from_webview(reply.url)}>
-              <Text style={{color: "gray", fontSize: 12}}>{reply.relative_date()}</Text>
-            </TouchableOpacity>
-            {
-              Platform.OS === "android" &&
-              <TouchableOpacity onPress={reply.trigger_delete} style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={{color: "rgb(239,68,68)", fontSize: 15}}>Delete...</Text>
+            <Text style={{color: App.theme_text_color(), fontSize: App.theme_default_font_size(), opacity: reply.can_edit() ? 1 : .5}}>{reply.content_text}</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginTop: 20
+              }}
+            >
+              <TouchableOpacity onPress={() => App.handle_url_from_webview(reply.url)}>
+                <Text style={{color: "gray", fontSize: 12}}>{reply.relative_date()}</Text>
               </TouchableOpacity>
-            }
-          </View>
-        </TouchableOpacity>
+              {
+                Platform.OS === "android" &&
+                <TouchableOpacity onPress={reply.trigger_delete} style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text style={{color: "rgb(239,68,68)", fontSize: 15}}>Delete...</Text>
+                </TouchableOpacity>
+              }
+            </View>
+          </TouchableOpacity>
+        </ContextMenu>
       </Swipeable>
     )
   }

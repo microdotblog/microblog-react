@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Platform } from 'react-native'
+import { URL } from 'react-native-url-polyfill'
 import Auth from './../stores/Auth';
 
 export const API_URL = 'https://micro.blog';
@@ -176,6 +177,34 @@ class MicroBlogApi {
         return API_ERROR
       });
     return discover
+  }
+
+  async get_conversation_id_for_url(post_url) {
+    try {
+      const url = new URL('/conversation.js', API_URL)
+      url.searchParams.set('url', post_url)
+      url.searchParams.set('format', 'jsonfeed')
+      const response = await fetch(url.href, {
+        headers: { Accept: 'application/json' }
+      })
+      if (response.status === 404) {
+        return null
+      }
+      if (!response.ok) {
+        return API_ERROR
+      }
+      const data = await response.json()
+      const conversation_url = new URL(data.home_page_url)
+      const id = conversation_url.pathname.split('/').filter(Boolean).pop()
+      if (conversation_url.hostname === 'micro.blog' && /^\d+$/.test(id) && Number(id) > 0) {
+        return id
+      }
+      return API_ERROR
+    }
+    catch (error) {
+      console.log('MicroBlogApi:get_conversation_id_for_url', error)
+      return API_ERROR
+    }
   }
 
   async get_conversation(id) {

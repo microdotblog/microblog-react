@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, FlatList, RefreshControl, TouchableOpacity, Keyboard, Dimensions, Image, Platform } from 'react-native';
+import { View, Text, FlatList, RefreshControl, TouchableOpacity, Keyboard, Image, Platform } from 'react-native';
 import Auth from './../../stores/Auth';
 import LoginMessage from '../../components/info/login_message'
 import App from '../../stores/App'
@@ -9,9 +9,9 @@ import TempUploadCell from '../../components/cells/temp_upload_cell'
 import SearchIcon from '../../assets/icons/nav/discover.png';
 import SearchBar from '../../components/search_bar';
 import { SFSymbol } from "react-native-sfsymbols";
-import DeviceInfo from 'react-native-device-info';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import { tabBarScrollContentBottomPadding } from '../../utils/ui'
+import HorizontalSafeAreaView from '../../components/common/horizontal_safe_area_view'
 
 @observer
 export default class UploadsScreen extends React.Component{
@@ -22,7 +22,20 @@ export default class UploadsScreen extends React.Component{
     this.flatListRef = React.createRef();
     this.requested_uploads_key = null
     this.state = {
-      num_columns: DeviceInfo.isTablet() ? 4 : 3
+      num_columns: 3,
+      cell_dimension: 0
+    }
+  }
+
+  handleLayout = ({ nativeEvent: { layout: { width } } }) => {
+    if (width <= 0) {
+      return
+    }
+
+    const num_columns = Math.max(3, Math.floor(width / 140))
+    const cell_dimension = width / num_columns - 10
+    if (num_columns !== this.state.num_columns || cell_dimension !== this.state.cell_dimension) {
+      this.setState({ num_columns, cell_dimension })
     }
   }
 
@@ -144,6 +157,7 @@ export default class UploadsScreen extends React.Component{
       <UploadCell
         key={item.url}
         upload={item}
+        dimension={this.state.cell_dimension}
         add_to_editor={this.props.route?.params?.did_open_from_editor}
         trigger_pop={() => this.props.navigation.goBack()}
       />
@@ -166,7 +180,7 @@ export default class UploadsScreen extends React.Component{
               key={list_key}
               ref={this.flatListRef}
               data={uploads}
-              extraData={`${list_key}-${uploads.length}-${selected_service.is_loading_uploads}`}
+              extraData={`${list_key}-${uploads.length}-${selected_service.is_loading_uploads}-${this.state.cell_dimension}`}
               keyExtractor={this._key_extractor}
               renderItem={this.render_upload_item}
               style={{
@@ -177,8 +191,8 @@ export default class UploadsScreen extends React.Component{
               contentContainerStyle={{ paddingBottom: bottom_padding }}
               scrollIndicatorInsets={Platform.OS === 'ios' ? { bottom: bottom_padding } : undefined}
               numColumns={this.state.num_columns}
-              initialNumToRender={12}
-              maxToRenderPerBatch={6}
+              initialNumToRender={this.state.num_columns * 4}
+              maxToRenderPerBatch={this.state.num_columns * 2}
               windowSize={5}
               refreshControl={
                 <RefreshControl
@@ -197,7 +211,7 @@ export default class UploadsScreen extends React.Component{
 
   render_temporary_upload_item = ({ item }) => {
     return (
-      <TempUploadCell key={item.uri} upload={item} />
+      <TempUploadCell key={item.uri} upload={item} dimension={this.state.cell_dimension} />
     )
   }
 
@@ -205,13 +219,12 @@ export default class UploadsScreen extends React.Component{
     const { selected_service } = Auth.selected_user.posting
     const { config } = selected_service
     const temp_uploads = config.temp_uploads_for_destination()?.slice() || []
-    const cell_dimension = Dimensions.get("screen")?.width / 4 - 10
-    const row_height = cell_dimension + 22
+    const row_height = this.state.cell_dimension + 22
     if (temp_uploads.length) {
       return (
         <FlatList
           data={temp_uploads}
-          extraData={`${temp_uploads.length}-${selected_service.is_loading_uploads}`}
+          extraData={`${temp_uploads.length}-${selected_service.is_loading_uploads}-${this.state.cell_dimension}`}
           keyExtractor={this._temp_key_extractor}
           renderItem={this.render_temporary_upload_item}
           style={{
@@ -235,13 +248,19 @@ export default class UploadsScreen extends React.Component{
   
   render() {
     return (
-      <View style={{ flex: 1, alignItems: 'center', backgroundColor: App.theme_background_color_secondary() }}>
+      <View style={{ flex: 1, backgroundColor: App.theme_background_color_secondary() }}>
         {
           Auth.is_logged_in() && !Auth.is_selecting_user ?
             <>
-              {this._return_header()}
-              {this._return_temp_uploads_list()}
-              {this._return_uploads_list()}
+              <HorizontalSafeAreaView style={{ flex: 0, height: 50, backgroundColor: App.theme_input_background_color() }}>
+                {this._return_header()}
+              </HorizontalSafeAreaView>
+              <HorizontalSafeAreaView>
+                <View onLayout={this.handleLayout} style={{ flex: 1, alignItems: 'center' }}>
+                  {this.state.cell_dimension > 0 && this._return_temp_uploads_list()}
+                  {this.state.cell_dimension > 0 && this._return_uploads_list()}
+                </View>
+              </HorizontalSafeAreaView>
             </>
           :
           <LoginMessage title="Uploads" />

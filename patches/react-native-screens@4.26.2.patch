@@ -1,0 +1,82 @@
+diff --git a/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt b/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt
+index e0762e87bc2080805bec5e9f25523fc6d42afae6..cc2a4ac5ff10ff4f9404aef6958a995e442eec11 100644
+--- a/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt
++++ b/android/src/main/java/com/swmansion/rnscreens/CustomToolbar.kt
+@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar
+ import androidx.core.view.WindowInsetsCompat
+ import com.facebook.react.modules.core.ReactChoreographer
+ import com.facebook.react.uimanager.ThemedReactContext
++import com.facebook.react.views.view.isEdgeToEdgeFeatureFlagOn
+ import com.swmansion.rnscreens.utils.InsetsCompat
+ import com.swmansion.rnscreens.utils.getDecorViewTopInset
+ import com.swmansion.rnscreens.utils.resolveInsetsOrZero
+@@ -33,7 +34,11 @@ open class CustomToolbar(
+     // edge-to-edge was enabled: https://github.com/software-mansion/react-native-screens/pull/2464/files#diff-bd1164595b04f44490738b8183f84a625c0e7552a4ae70bfefcdf3bca4d37fc7R34).
+     private val shouldAvoidDisplayCutout = true
+ 
+-    private val shouldApplyTopInset = true
++    // Android 15+ enforces edge-to-edge even when RN's flag is false.
++    private val shouldApplyTopInset: Boolean
++        get() =
++            Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM ||
++                isEdgeToEdgeFeatureFlagOn
+ 
+     private var lastInsets = InsetsCompat.NONE
+ 
+@@ -174,9 +179,18 @@ open class CustomToolbar(
+         // respective edge is not opted out. If there are no cutout displays, we want to apply the
+         // additional top padding to respect the status bar. Top and bottom are controlled
+         // independently so that disabling one does not silently drop the other.
++        val statusBarInsets =
++            resolveInsetsOrZero(WindowInsetsCompat.Type.statusBars(), unhandledInsets)
+         val topInset =
+-            if (shouldHandleTopInset) {
+-                max(cutoutInsets.top, if (shouldApplyTopInset) systemBarInsets.top else 0)
++            if (shouldHandleTopInset && shouldApplyTopInset) {
++                // SafeAreaProvider may already have consumed the status bar inset.
++                if (statusBarInsets.top > 0) {
++                    statusBarInsets.top
++                } else {
++                    val decorView =
++                        (context as? ThemedReactContext)?.currentActivity?.window?.decorView
++                    if (decorView != null) getDecorViewTopInset(decorView) else 0
++                }
+             } else {
+                 0
+             }
+diff --git a/ios/RNSScreen.mm b/ios/RNSScreen.mm
+index 9b66012dc8db1e3af0cb5457f8dad86e7f2fe5e3..9acb9d03c3498bde3fc58bbd57ac03140234664c 100644
+--- a/ios/RNSScreen.mm
++++ b/ios/RNSScreen.mm
+@@ -484,6 +484,7 @@ - (void)contentWrapper:(RNSScreenContentWrapper *)contentWrapper receivedReactFr
+ 
+ - (void)notifyDismissedWithCount:(int)dismissCount
+ {
++  self.userInteractionEnabled = NO;
+   // If screen is already unmounted then there will be no event emitter
+   if (_eventEmitter != nullptr) {
+     std::dynamic_pointer_cast<const react::RNSScreenEventEmitter>(_eventEmitter)
+@@ -493,6 +494,7 @@ - (void)notifyDismissedWithCount:(int)dismissCount
+ 
+ - (void)notifyDismissCancelledWithDismissCount:(int)dismissCount
+ {
++  self.userInteractionEnabled = YES;
+   // If screen is already unmounted then there will be no event emitter
+   if (_eventEmitter != nullptr) {
+     std::dynamic_pointer_cast<const react::RNSScreenEventEmitter>(_eventEmitter)
+@@ -503,6 +505,7 @@ - (void)notifyDismissCancelledWithDismissCount:(int)dismissCount
+ 
+ - (void)notifyWillAppear
+ {
++  self.userInteractionEnabled = YES;
+   [self setupBackdropTapGestureRecognizer];
+   // If screen is already unmounted then there will be no event emitter
+   if (_eventEmitter != nullptr) {
+@@ -1182,6 +1185,7 @@ - (BOOL)hasHeaderConfig
+ 
+ - (void)willBeUnmountedInUpcomingTransaction
+ {
++  self.userInteractionEnabled = NO;
+   _markedForUnmountInCurrentTransaction = YES;
+ }
+ 

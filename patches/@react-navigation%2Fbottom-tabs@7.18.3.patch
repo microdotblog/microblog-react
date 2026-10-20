@@ -1,0 +1,105 @@
+diff --git a/lib/module/unstable/NativeBottomTabView.native.js b/lib/module/unstable/NativeBottomTabView.native.js
+index 20a6a5cf5694d2633ce26f8960d8d53cebbfc082..a8a26f85f0620d93154ed6da662eb7001b459156 100644
+--- a/lib/module/unstable/NativeBottomTabView.native.js
++++ b/lib/module/unstable/NativeBottomTabView.native.js
+@@ -263,6 +263,11 @@ export function NativeBottomTabView({
+           tabBarItemTitleFontColor: activeTintColor,
+           tabBarItemIconColor: activeTintColor
+         };
++        const selectedTabItemAppearanceIOS = {
++          ...tabItemAppearance,
++          tabBarItemTitleFontColor: activeTintColor,
++          tabBarItemIconColor: activeTintColor
++        };
+         const icon = typeof tabBarIcon === 'function' ? getPlatformIcon(tabBarIcon({
+           focused: false
+         })) : tabBarIcon != null ? getPlatformIcon(tabBarIcon) : undefined;
+@@ -325,13 +330,16 @@ export function NativeBottomTabView({
+               tabBarShadowColor,
+               tabBarBlurEffect,
+               stacked: {
+-                normal: tabItemAppearance
++                normal: tabItemAppearance,
++                selected: selectedTabItemAppearanceIOS
+               },
+               inline: {
+-                normal: tabItemAppearance
++                normal: tabItemAppearance,
++                selected: selectedTabItemAppearanceIOS
+               },
+               compactInline: {
+-                normal: tabItemAppearance
++                normal: tabItemAppearance,
++                selected: selectedTabItemAppearanceIOS
+               }
+             },
+             standardAppearance: {
+@@ -339,13 +347,16 @@ export function NativeBottomTabView({
+               tabBarShadowColor,
+               tabBarBlurEffect,
+               stacked: {
+-                normal: tabItemAppearance
++                normal: tabItemAppearance,
++                selected: selectedTabItemAppearanceIOS
+               },
+               inline: {
+-                normal: tabItemAppearance
++                normal: tabItemAppearance,
++                selected: selectedTabItemAppearanceIOS
+               },
+               compactInline: {
+-                normal: tabItemAppearance
++                normal: tabItemAppearance,
++                selected: selectedTabItemAppearanceIOS
+               }
+             },
+             overrideScrollViewContentInsetAdjustmentBehavior
+diff --git a/src/unstable/NativeBottomTabView.native.tsx b/src/unstable/NativeBottomTabView.native.tsx
+index 7e22d0cbdaade282e205d6d1894d15fe30f149b8..f0d8c9daf4148bf8baf993f63758962da3424993 100644
+--- a/src/unstable/NativeBottomTabView.native.tsx
++++ b/src/unstable/NativeBottomTabView.native.tsx
+@@ -398,6 +398,12 @@ export function NativeBottomTabView({ state, navigation, descriptors }: Props) {
+               tabBarItemIconColor: activeTintColor,
+             };
+ 
++          const selectedTabItemAppearanceIOS: TabsScreenItemStateAppearanceIOS = {
++            ...tabItemAppearance,
++            tabBarItemTitleFontColor: activeTintColor,
++            tabBarItemIconColor: activeTintColor,
++          };
++
+           const icon =
+             typeof tabBarIcon === 'function'
+               ? getPlatformIcon(tabBarIcon({ focused: false }))
+@@ -461,12 +467,15 @@ export function NativeBottomTabView({ state, navigation, descriptors }: Props) {
+                   tabBarBlurEffect,
+                   stacked: {
+                     normal: tabItemAppearance,
++                    selected: selectedTabItemAppearanceIOS,
+                   },
+                   inline: {
+                     normal: tabItemAppearance,
++                    selected: selectedTabItemAppearanceIOS,
+                   },
+                   compactInline: {
+                     normal: tabItemAppearance,
++                    selected: selectedTabItemAppearanceIOS,
+                   },
+                 },
+                 standardAppearance: {
+@@ -475,12 +484,15 @@ export function NativeBottomTabView({ state, navigation, descriptors }: Props) {
+                   tabBarBlurEffect,
+                   stacked: {
+                     normal: tabItemAppearance,
++                    selected: selectedTabItemAppearanceIOS,
+                   },
+                   inline: {
+                     normal: tabItemAppearance,
++                    selected: selectedTabItemAppearanceIOS,
+                   },
+                   compactInline: {
+                     normal: tabItemAppearance,
++                    selected: selectedTabItemAppearanceIOS,
+                   },
+                 },
+                 overrideScrollViewContentInsetAdjustmentBehavior,

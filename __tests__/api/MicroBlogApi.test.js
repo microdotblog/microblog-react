@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import MicroBlogApi from '../../src/api/MicroBlogApi'
+import MicroBlogApi, { API_ERROR } from '../../src/api/MicroBlogApi'
 
 jest.mock('axios', () => ({
   defaults: {},
@@ -63,5 +63,48 @@ describe('MicroBlogApi Apple sign in', () => {
     expect(result).toEqual({
       error: 'That username is not available.'
     })
+  })
+})
+
+describe('Post conversation lookup', () => {
+  beforeEach(() => {
+    jest.spyOn(global, 'fetch')
+    jest.spyOn(console, 'log').mockImplementation(() => {})
+  })
+
+  afterEach(() => jest.restoreAllMocks())
+
+  test('resolves a blog URL to the root timeline ID, independently of reply IDs', async () => {
+    fetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ home_page_url: 'https://micro.blog/alice/12345', items: [{ id: '67890' }] })
+    })
+    const post_url = 'https://alice.example/post.html?one=1&two=2'
+    await expect(MicroBlogApi.get_conversation_id_for_url(post_url)).resolves.toBe('12345')
+    const url = new URL(fetch.mock.calls[0][0])
+    expect(url.origin + url.pathname).toBe('https://micro.blog/conversation.js')
+    expect(url.searchParams.get('url')).toBe(post_url)
+    expect(url.searchParams.get('format')).toBe('jsonfeed')
+  })
+
+  test('can open the root post when it has no replies', async () => {
+    fetch.mockResolvedValue({ ok: true, json: async () => ({ home_page_url: 'https://micro.blog/alice/12345', items: [] }) })
+    await expect(MicroBlogApi.get_conversation_id_for_url('https://alice.example/post.html')).resolves.toBe('12345')
+  })
+
+  test.each([undefined, 'not a URL', 'https://elsewhere.example/alice/12345', 'https://micro.blog/alice/zero', 'https://micro.blog/alice/0'])('rejects an invalid conversation URL %p', async home_page_url => {
+    fetch.mockResolvedValue({ ok: true, json: async () => ({ home_page_url }) })
+    await expect(MicroBlogApi.get_conversation_id_for_url('https://alice.example/post.html')).resolves.toBe(API_ERROR)
+  })
+
+  test('distinguishes a missing conversation from a failed request', async () => {
+    fetch.mockResolvedValueOnce({ ok: false, status: 404 }).mockResolvedValueOnce({ ok: false, status: 500 })
+    await expect(MicroBlogApi.get_conversation_id_for_url('https://alice.example/post.html')).resolves.toBeNull()
+    await expect(MicroBlogApi.get_conversation_id_for_url('https://alice.example/post.html')).resolves.toBe(API_ERROR)
+  })
+
+  test('handles network failures', async () => {
+    fetch.mockRejectedValue(new Error('Offline'))
+    await expect(MicroBlogApi.get_conversation_id_for_url('https://alice.example/post.html')).resolves.toBe(API_ERROR)
   })
 })

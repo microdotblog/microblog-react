@@ -1,15 +1,22 @@
-import { types, flow } from 'mobx-state-tree';
-import XMLRPCApi, { RSD_NOT_FOUND, BLOG_ID_NOT_FOUND, XML_ERROR } from '../api/XMLRPCApi';
-import MicroPubApi, { MICROPUB_NOT_FOUND, FETCH_ERROR, NO_AUTH } from '../api/MicroPubApi';
-import Auth from "./Auth";
-import { blog_services } from './enums/blog_services';
-import Tokens from "./Tokens";
-import { Alert, Linking } from 'react-native';
+import { Alert } from 'react-native'
+import { types, flow } from 'mobx-state-tree'
+import * as SecureStore from 'expo-secure-store'
+import * as WebBrowser from 'expo-web-browser'
 import { URL } from 'react-native-url-polyfill'
-import App from './App';
+import XMLRPCApi, { RSD_NOT_FOUND, BLOG_ID_NOT_FOUND, XML_ERROR } from '../api/XMLRPCApi'
+import MicroPubApi, { MICROPUB_NOT_FOUND, FETCH_ERROR, NO_AUTH, AUTH_ERROR, UNSUPPORTED_PKCE } from '../api/MicroPubApi'
+import Auth from './Auth'
+import Tokens from './Tokens'
+import App from './App'
+import { blog_services } from './enums/blog_services'
+import { createAuthorization } from '../utils/indieauth'
+
+const AUTH_STORAGE_KEY = 'MicropubAuth'
+const AUTH_LIFETIME = 10 * 60 * 1000
 
 export default Services = types.model('Services', {
   is_setting_up: types.optional(types.boolean, false),
+  pending_micropub_auth: types.maybeNull(types.frozen()),
   current_url: types.optional(types.string, ""),
   current_username: types.optional(types.string, ""),
   xml_endpoint: types.optional(types.string, ""),
@@ -28,6 +35,7 @@ export default Services = types.model('Services', {
 .actions(self => ({
   
   hydrate_with_user: flow(function* (user = null) {
+    yield self.clear_micropub_authorization()
     self.show_micropub_token = false
     self.temp_micropub_token = ""
     self.current_username = user?.username
@@ -51,6 +59,7 @@ export default Services = types.model('Services', {
   
   clear: flow(function* () {
     console.log("Services:clear")
+    yield self.clear_micropub_authorization()
     self.current_url = ""
     self.xml_endpoint = ""
     self.micropub_endpoint = ""
@@ -63,8 +72,16 @@ export default Services = types.model('Services', {
     self.did_set_up_successfully = false
   }),
   
+  clear_micropub_authorization: flow(function* () {
+    self.pending_micropub_auth = null
+    yield SecureStore.deleteItemAsync(AUTH_STORAGE_KEY)
+  }),
+
   set_url: flow(function* (text) {
-    if(text !== self.current_url){
+    if (text !== self.current_url && self.pending_micropub_auth) {
+      yield self.clear_micropub_authorization()
+    }
+    if (text !== self.current_url) {
       self.show_credentials = false
       self.show_micropub_token = false
       self.temp_micropub_token = ""
@@ -73,88 +90,128 @@ export default Services = types.model('Services', {
   }),
   
   setup_new_service: flow(function* () {
-    console.log("Services:setup_new_service", self.current_url)
-    self.is_setting_up = true
-    
-    // assume HTTPS if no scheme
-    var discover_url = self.current_url
-    if (!discover_url.includes("http")) {
-      discover_url = "https://" + discover_url
-    }
-  
-    // check for Micropub first, then try XML-RPC
-    let discovery_url
-    try {
-      discovery_url = new URL(discover_url)
-    }
-    catch (error) {
-      console.log('Services:setup_new_service:invalid_url', error)
-      self.is_setting_up = false
-      Alert.alert('Invalid URL', 'Please enter a valid URL for your weblog.')
+    if (self.is_setting_up || self.checking_credentials) {
       return
     }
-    discovery_url.searchParams.set('v', App.now().toString())
-    const micropub_endpoints = yield MicroPubApi.discover_micropub_endpoints(discovery_url.href)
-    if (micropub_endpoints !== MICROPUB_NOT_FOUND && !micropub_endpoints.is_wordpress) {
-      console.log("Micropub: Found endpoints:", micropub_endpoints)
-      self.micropub_endpoint = micropub_endpoints["micropub"]
-      self.auth_endpoint = micropub_endpoints["auth"] || ""
-      self.token_endpoint = micropub_endpoints["token"] || ""
-      if (!self.auth_endpoint || !self.token_endpoint) {
-        self.show_micropub_token = true
-        self.is_setting_up = false
+    self.is_setting_up = true
+    try {
+      yield self.clear_micropub_authorization()
+      const blog_url = self.current_url
+      const username = self.current_username
+      // Assume HTTPS if no scheme.
+      const discover_url = blog_url.includes('http') ? blog_url : `https://${blog_url}`
+      let discovery_url
+      try {
+        discovery_url = new URL(discover_url)
+      }
+      catch (error) {
+        Alert.alert('Invalid URL', 'Please enter a valid URL for your weblog.')
         return
       }
-      let auth_url = MicroPubApi.make_auth_url(discover_url, micropub_endpoints["auth"])
-      console.log("Micropub: Make auth:", auth_url)
-      Linking.openURL(auth_url)
-    }
-    else {
-      const rsd_link = yield XMLRPCApi.discover_rsd_endpoint(discovery_url.href)
-      console.log("Services:setup_new_service:rsd_link", rsd_link)
-      if(rsd_link !== RSD_NOT_FOUND){
-        const blog_info = yield XMLRPCApi.discover_preferred_blog(rsd_link)
-        if(blog_info !== BLOG_ID_NOT_FOUND){
-          // We found a blog id, nice!
-          console.log("Services:setup_new_service:xmlrpc_url", blog_info.xmlrpc_url)
-          self.blog_id = blog_info.blog_id
-          self.xml_endpoint = blog_info.xmlrpc_url
-          self.show_credentials = true
+      const me = discovery_url.href
+      discovery_url.searchParams.set('v', App.now().toString())
+      const endpoints = yield MicroPubApi.discover_micropub_endpoints(discovery_url.href)
+      if (endpoints === AUTH_ERROR || endpoints === UNSUPPORTED_PKCE) {
+        Alert.alert('Unable to Authorize', endpoints === UNSUPPORTED_PKCE ?
+          'This server’s authorization method is not supported by Micro.blog.' : 'We could not discover how to authorize with this server. Please try again.')
+        return
+      }
+      if (endpoints !== MICROPUB_NOT_FOUND && !endpoints.is_wordpress) {
+        self.micropub_endpoint = endpoints.micropub
+        self.auth_endpoint = endpoints.auth || ''
+        self.token_endpoint = endpoints.token || ''
+        if (!self.auth_endpoint || !self.token_endpoint) {
+          self.show_micropub_token = true
+          return
+        }
+        const authorization = {
+          ...(yield createAuthorization(endpoints.supports_pkce)),
+          me,
+          profile_url: endpoints.me,
+          blog_url,
+          username,
+          micropub_endpoint: endpoints.micropub,
+          auth_endpoint: endpoints.auth,
+          token_endpoint: endpoints.token,
+          issuer: endpoints.issuer,
+          requires_issuer: endpoints.requires_issuer,
+          expires_at: Date.now() + AUTH_LIFETIME
+        }
+        yield SecureStore.setItemAsync(AUTH_STORAGE_KEY, JSON.stringify(authorization))
+        self.pending_micropub_auth = authorization
+        const auth_url = MicroPubApi.make_auth_url(me, endpoints.auth, authorization)
+        const result = yield WebBrowser.openAuthSessionAsync(auth_url, 'microblog://indieauth')
+        if (result?.type === 'success' && self.pending_micropub_auth?.state === authorization.state) {
+          yield self.check_micropub_credentials_and_proceed_setup(result.url)
+        }
+        if (self.pending_micropub_auth?.state === authorization.state) {
+          yield self.clear_micropub_authorization()
         }
       }
-      else{
-        Alert.alert("Sorry, we could not find the XML-RPC endpoint or Micropub API for your weblog.")
+      else {
+        const rsd_link = yield XMLRPCApi.discover_rsd_endpoint(discovery_url.href)
+        if (rsd_link !== RSD_NOT_FOUND) {
+          const blog_info = yield XMLRPCApi.discover_preferred_blog(rsd_link)
+          if (blog_info !== BLOG_ID_NOT_FOUND) {
+            self.blog_id = blog_info.blog_id
+            self.xml_endpoint = blog_info.xmlrpc_url
+            self.show_credentials = true
+          }
+        }
+        else {
+          Alert.alert('Sorry, we could not find the XML-RPC endpoint or Micropub API for your weblog.')
+        }
       }
     }
-    
-    self.is_setting_up = false
+    catch (error) {
+      yield self.clear_micropub_authorization()
+      Alert.alert('Unable to Authorize', 'We could not open authorization for your weblog. Please try again.')
+    }
+    finally {
+      self.is_setting_up = false
+    }
+  }),
+
+  set_username: flow(function* (text) {
+    self.temp_username = text
   }),
   
+  set_password: flow(function* (text) {
+    self.temp_password = text
+  }),
+
   set_micropub_token: flow(function* (text) {
     self.temp_micropub_token = text
   }),
 
   setup_with_micropub_token: flow(function* () {
     const token = self.temp_micropub_token.trim()
-    if (!token || !self.micropub_endpoint || self.checking_credentials) {
+    const username = self.current_username
+    const blog_url = self.current_url
+    const endpoint = self.micropub_endpoint
+    if (!token || !endpoint || self.checking_credentials || self.is_setting_up || username !== Auth.selected_user?.username) {
       return
     }
     self.checking_credentials = true
     try {
-      const config = yield MicroPubApi.get_config({ endpoint: self.micropub_endpoint, token })
+      const config = yield MicroPubApi.get_config({ endpoint, token })
+      if (self.current_username !== username || Auth.selected_user?.username !== username ||
+          self.current_url !== blog_url || self.micropub_endpoint !== endpoint) {
+        return
+      }
       if (config === FETCH_ERROR) {
         Alert.alert('Could not connect', 'Please check your app token and try again.')
         return
       }
-      const user = Auth.user_from_username(self.current_username)
+      const user = Auth.user_from_username(username)
       if (!user?.posting) {
         return
       }
-      const service = yield user.posting.create_new_service(blog_services.micropub, self.current_url, self.micropub_endpoint, self.current_username)
+      const service = yield user.posting.create_new_service(blog_services.micropub, blog_url, endpoint, username)
       if (!service) {
         return
       }
-      const saved_token = yield Tokens.create_new_service_token(self.current_username, token, service.id)
+      const saved_token = yield Tokens.create_new_service_token(username, token, service.id)
       if (saved_token && (yield service.set_initial_config(config)) && (yield user.posting.activate_new_service(service))) {
         self.did_set_up_successfully = true
         self.temp_micropub_token = ''
@@ -165,19 +222,12 @@ export default Services = types.model('Services', {
       }
     }
     catch (error) {
+      console.log('Micropub app-token setup failed')
       Alert.alert('Could not connect', 'Could not save your blog settings. Please try again.')
     }
     finally {
       self.checking_credentials = false
     }
-  }),
-
-  set_username: flow(function* (text) {
-    self.temp_username = text
-  }),
-  
-  set_password: flow(function* (text) {
-    self.temp_password = text
   }),
   
   check_credentials_and_proceed_setup: flow(function* () {
@@ -218,54 +268,71 @@ export default Services = types.model('Services', {
   }),
   
   check_micropub_credentials_and_proceed_setup: flow(function* (url) {
-    console.log("Services:check_micropub_credentials_and_proceed_setup", url)
-    self.checking_credentials = true
-    if(url != null){
-      const token = yield MicroPubApi.verify_code(self, url)
-      console.log("Services:check_micropub_credentials_and_proceed_setup:data", self.micropub_endpoint)
-      if(token !== NO_AUTH && token !== FETCH_ERROR && self.micropub_endpoint){
-        // Now that we have a token, let's try and get the config
-        const temp_service_object = {
-          endpoint: self.micropub_endpoint,
-          token: token
-        }
-        const config = yield MicroPubApi.get_config(temp_service_object)
-        console.log("Services:check_micropub_credentials_and_proceed_setup:config", config)
-        if(config !== FETCH_ERROR){
-          const user = Auth.user_from_username(self.current_username)
-          console.log("Services:check_micropub_credentials_and_proceed_setup:user", user)
-          if(user && user?.posting != null){
-            const service = yield user.posting?.create_new_service(blog_services["micropub"], self.current_url, temp_service_object.endpoint, self.current_username)
-            console.log("Services:check_credentials_and_proceed_setup:service", service)
-            if(service){
-              // Now that we have a service, let's save a token
-              const new_token = yield Tokens.create_new_service_token(self.current_username, temp_service_object.token, service.id)
-              console.log("Services:check_micropub_credentials_and_proceed_setup:token", new_token != null)
-              if(new_token != null){
-                // Now we have a saved token! Let's set the service as the active one.
-                const config_is_set_up = yield service.set_initial_config(config)
-                if(config_is_set_up){
-                  const activated = yield user.posting?.activate_new_service(service)
-                  if(activated){
-                    // We need to change the state of the current active one displayed on the page...
-                    self.did_set_up_successfully = true
-                  }
-                }
-                else{
-                  Alert.alert("Sorry, something went wrong setting up your Micropub endpoint. Please try again.")
-                }
-              }
-            }
-          }
-        }
-      }
-      else{
-        Alert.alert("Sorry, something went wrong setting up your Micropub endpoint. Please try again.")
-      }
+    if (self.checking_credentials || !MicroPubApi.is_auth_callback(url)) {
+      return false
     }
-    self.checking_credentials = false
+    self.checking_credentials = true
+    try {
+      const saved = self.pending_micropub_auth || JSON.parse((yield SecureStore.getItemAsync(AUTH_STORAGE_KEY)) || 'null')
+      if (!saved) {
+        return false
+      }
+      if (saved.expires_at <= Date.now() || saved.username !== Auth.selected_user?.username) {
+        yield self.clear_micropub_authorization()
+        Alert.alert('Unable to Authorize', 'This authorization has expired or the account has changed. Please try again.')
+        return false
+      }
+      const callback = new URL(url)
+      if (callback.searchParams.get('state') !== saved.state) {
+        Alert.alert('Unable to Authorize', 'We could not verify this authorization. Please try again.')
+        return false
+      }
+      // Consume the attempt before exchanging so duplicate callbacks cannot use it.
+      yield self.clear_micropub_authorization()
+      if (callback.searchParams.get('error') === 'access_denied') {
+        return false
+      }
+      const data = yield MicroPubApi.verify_code(saved, url)
+      if (data === NO_AUTH || data === FETCH_ERROR || !(yield MicroPubApi.verify_profile(saved, data.me))) {
+        Alert.alert('Unable to Authorize', 'We could not verify authorization for your weblog. Please try again.')
+        return false
+      }
+      const service_object = { endpoint: saved.micropub_endpoint, token: data.access_token }
+      const config = yield MicroPubApi.get_config(service_object)
+      const user = Auth.user_from_username(saved.username)
+      if (config === FETCH_ERROR || !user?.posting || Auth.selected_user?.username !== saved.username) {
+        return false
+      }
+      const service = yield user.posting.create_new_service(blog_services.micropub, saved.blog_url, saved.micropub_endpoint, saved.username)
+      if (!service) {
+        return false
+      }
+      const token = yield Tokens.create_new_service_token(saved.username, data.access_token, service.id)
+      if (!token || !(yield service.set_initial_config(config))) {
+        return false
+      }
+      if (!(yield user.posting.activate_new_service(service))) {
+        return false
+      }
+      self.current_url = saved.blog_url
+      self.current_username = saved.username
+      self.micropub_endpoint = saved.micropub_endpoint
+      self.auth_endpoint = saved.auth_endpoint
+      self.token_endpoint = saved.token_endpoint
+      self.did_set_up_successfully = true
+      return true
+    }
+    catch (error) {
+      console.log('Micropub authorization failed')
+      yield self.clear_micropub_authorization()
+      Alert.alert('Unable to Authorize', 'Something went wrong setting up your weblog. Please try again.')
+      return false
+    }
+    finally {
+      self.checking_credentials = false
+    }
   }),
-  
+
   set_microblog_service: flow(function* () {
     console.log("Services:set_microblog_service")
     const user = Auth.user_from_username(self.current_username)
@@ -328,6 +395,9 @@ export default Services = types.model('Services', {
   
 }))
 .views((self) => ({
+  can_handle_open_url(url) {
+    return MicroPubApi.is_auth_callback(url)
+  },
   
   can_set_up(){
     return self.current_url.length > 0

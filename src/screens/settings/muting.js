@@ -14,6 +14,7 @@ import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { SFSymbol } from "react-native-sfsymbols"
 import { SvgXml } from "react-native-svg"
 import App from "../../stores/App"
+import HorizontalSafeAreaView from '../../components/common/horizontal_safe_area_view'
 
 @observer
 export default class MutingScreen extends React.Component {
@@ -286,27 +287,29 @@ export default class MutingScreen extends React.Component {
     const { muting } = user
 
     return (
-      <KeyboardAvoidingView 
-        style={{ flex: 1 }} 
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 110 : 0}
-      >
-        <ScrollView 
-          ref={ref => this.state.scroll_ref = ref}
-          style={{ flex: 1, backgroundColor: App.theme_background_color() }}
-          contentContainerStyle={{ padding: 15, paddingBottom: 25 }}
-          keyboardShouldPersistTaps="handled"
+      <HorizontalSafeAreaView style={{ backgroundColor: App.theme_background_color() }}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 110 : 0}
         >
-          {this._render_add_section("Muted Users", "user")}
-          {this._render_list(muting.muted_users.filter(u => !u.is_hiding_other_replies), "user")}
-          
-          {this._render_add_section("Blocked Users", "block")}
-          {this._render_list(muting.blocked_users, "block")}
-          
-          {this._render_add_section("Muted Keywords", "keyword")}
-          {this._render_list(muting.muted_keywords, "keyword")}
-        </ScrollView>
-      </KeyboardAvoidingView>
+          <ScrollView
+            ref={ref => this.state.scroll_ref = ref}
+            style={{ flex: 1, backgroundColor: App.theme_background_color() }}
+            contentContainerStyle={{ padding: 15, paddingBottom: 25 }}
+            keyboardShouldPersistTaps="handled"
+          >
+            {this._render_add_section("Muted Users", "user")}
+            {this._render_list(muting.muted_users.filter(u => !u.is_hiding_other_replies), "user")}
+
+            {this._render_add_section("Blocked Users", "block")}
+            {this._render_list(muting.blocked_users, "block")}
+
+            {this._render_add_section("Muted Keywords", "keyword")}
+            {this._render_list(muting.muted_keywords, "keyword")}
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </HorizontalSafeAreaView>
     )
   }
 }

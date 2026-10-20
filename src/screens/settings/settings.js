@@ -15,6 +15,7 @@ import Settings from "../../stores/Settings";
 import UserPostingSettings from "../../components/settings/user_posting";
 import UserMutingSettings from "../../components/settings/user_muting";
 import MBImage from "../../components/common/MBImage";
+import HorizontalSafeAreaView from '../../components/common/horizontal_safe_area_view'
 
 @observer
 export default class SettingsScreen extends React.Component {
@@ -384,19 +385,21 @@ export default class SettingsScreen extends React.Component {
 
   render() {
     return (
-      <ScrollView
-        style={{
-          flex: 1,
-          padding: 15,
-          backgroundColor: App.theme_background_color(),
-        }}
-      >
-        {this._render_appearance_settings()}
-        {this._render_browser_settings()}
-        {this._render_posting_settings()}
-        {this._render_muting_settings()}
-        {this._render_push_settings()}
-      </ScrollView>
+      <HorizontalSafeAreaView style={{ backgroundColor: App.theme_background_color() }}>
+        <ScrollView
+          style={{
+            flex: 1,
+            padding: 15,
+            backgroundColor: App.theme_background_color(),
+          }}
+        >
+          {this._render_appearance_settings()}
+          {this._render_browser_settings()}
+          {this._render_posting_settings()}
+          {this._render_muting_settings()}
+          {this._render_push_settings()}
+        </ScrollView>
+      </HorizontalSafeAreaView>
     );
   }
 }

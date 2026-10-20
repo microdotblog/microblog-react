@@ -1,6 +1,6 @@
 import * as React from "react";
 import { observer } from "mobx-react";
-import { ActivityIndicator, Animated, Dimensions, View, Platform } from "react-native";
+import { ActivityIndicator, Animated, View, Platform } from "react-native";
 import App from "../../stores/App";
 import { MenuView } from "@react-native-menu/menu";
 import { SvgXml } from "react-native-svg";
@@ -85,8 +85,7 @@ export default class TempUploadCell extends React.Component {
   }
 
   render() {
-    const { upload } = this.props;
-    const dimension = Dimensions.get("screen")?.width / 4 - 10;
+    const { upload, dimension } = this.props
     const preview_uri = upload.cached_uri || upload.uri
     const destructive_icon_color = App.theme_warning_text_color()
     const progress = this.progress_for(upload)

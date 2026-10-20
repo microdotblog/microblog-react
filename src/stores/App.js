@@ -148,7 +148,6 @@ export default App = types.model('App', {
       yield App.set_current_initial_theme()
       yield App.sync_current_accent_color()
       yield App.set_current_initial_font_scale()
-      App.set_up_url_listener()
       App.setup_keyboard_listeners()
       
       try{
@@ -164,6 +163,7 @@ export default App = types.model('App', {
       finally{
         Push.set_auth_ready(true)
         Push.replay_pending_notification()
+        yield self.set_up_url_listener()
         App.set_is_loading(false)
       }
     }),
@@ -232,30 +232,29 @@ export default App = types.model('App', {
       }
 
       self.url_listener = Linking.addEventListener('url', (event) => {
-        console.log("App:set_up_url_listener:event", event)
         if (event?.url && Login.can_handle_open_url(event.url)) {
           Login.trigger_login_from_url(event.url)
         }
         else if (event?.url && event?.url.includes('/post?text=') && Auth.is_logged_in()) {
           App.navigate_to_screen("Posting", event.url, true)
         }
-        else if (event?.url && event?.url.includes('/indieauth') && Auth.is_logged_in()) {
-          console.log("Micropub:Opened app with IndieAuth")
+        else if (event?.url && Services.can_handle_open_url(event.url) && Auth.is_logged_in()) {
           Services.check_micropub_credentials_and_proceed_setup(event?.url)
         }
         else if (event?.url) {
           self.handle_url(event?.url)
         }
       })
-      Linking.getInitialURL().then((value) => {
-        console.log("App:set_up_url_listener:getInitialURL", value)
-        if (value && Login.can_handle_open_url(value)) {
-          Login.trigger_login_from_url(value)
-        }
-        else if (value?.includes('/post?text=') && Auth.is_logged_in()) {
-          App.navigate_to_screen("Posting", value, true)
-        }
-      })
+      const value = yield Linking.getInitialURL()
+      if (value && Login.can_handle_open_url(value)) {
+        Login.trigger_login_from_url(value)
+      }
+      else if (value && Services.can_handle_open_url(value) && Auth.is_logged_in()) {
+        Services.check_micropub_credentials_and_proceed_setup(value)
+      }
+      else if (value?.includes('/post?text=') && Auth.is_logged_in()) {
+        App.navigate_to_screen('Posting', value, true)
+      }
     }),
   
     open_sheet: flow(function*(sheet_name = null, payload = null) {

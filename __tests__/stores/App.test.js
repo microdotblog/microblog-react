@@ -1,3 +1,6 @@
+import { getType } from 'mobx-state-tree'
+import Auth from '../../src/stores/Auth'
+import Services from '../../src/stores/Services'
 import App from '../../src/stores/App'
 import Push from '../../src/stores/Push'
 import Login from '../../src/stores/Login'
@@ -12,7 +15,8 @@ jest.mock('../../src/api/MicroBlogApi', () => ({
 
 jest.mock('../../src/stores/Auth', () => ({
   selected_user: null,
-  users: []
+  users: [],
+  is_logged_in: jest.fn(() => true)
 }))
 
 jest.mock('../../src/stores/Login', () => ({
@@ -25,7 +29,10 @@ jest.mock('../../src/stores/Reply', () => ({
 }))
 jest.mock('../../src/stores/Discover', () => ({}))
 jest.mock('../../src/stores/Settings', () => ({}))
-jest.mock('../../src/stores/Services', () => ({}))
+jest.mock('../../src/stores/Services', () => ({
+  can_handle_open_url: jest.fn(url => url?.startsWith('microblog://indieauth?')),
+  check_micropub_credentials_and_proceed_setup: jest.fn(async () => true)
+}))
 
 jest.mock('../../src/stores/Push', () => ({
   replay_pending_notification: jest.fn(),
@@ -190,6 +197,29 @@ describe('App auth callback URLs', () => {
       })
       await App.set_up_url_listener()
     }
+  })
+
+  test('resumes external authorization from a cold-launch URL', async () => {
+    const callback_url = 'microblog://indieauth?code=abc123&state=compact-state'
+    Linking.getInitialURL.mockResolvedValue(callback_url)
+    const cold_app = getType(App).create()
+    await cold_app.set_up_url_listener()
+    expect(Services.check_micropub_credentials_and_proceed_setup).toHaveBeenCalledWith(callback_url)
+  })
+
+  test('handles an external callback while the app is running', () => {
+    Services.check_micropub_credentials_and_proceed_setup.mockClear()
+    const callback_url = 'microblog://indieauth?code=abc123&state=compact-state'
+    url_event_handler({ url: callback_url })
+    expect(Services.check_micropub_credentials_and_proceed_setup).toHaveBeenCalledWith(callback_url)
+  })
+
+  test('does not resume external authorization without a signed-in account', async () => {
+    Services.check_micropub_credentials_and_proceed_setup.mockClear()
+    Auth.is_logged_in.mockReturnValueOnce(false)
+    Linking.getInitialURL.mockResolvedValue('microblog://indieauth?code=abc123&state=compact-state')
+    await getType(App).create().set_up_url_listener()
+    expect(Services.check_micropub_credentials_and_proceed_setup).not.toHaveBeenCalled()
   })
 
   test('signs in from a Micro.blog auth callback while the auth sheet is still open', async () => {

@@ -4,15 +4,18 @@
 //
 //  Created by Vincent Ritter on 02/10/2025.
 //
+import UIKit
 internal import Expo
 import React
+import React_RCTAppDelegate
 import ReactAppDependencyProvider
 import RNShareMenu
 import UserNotifications
 
 @main
-class AppDelegate: ExpoAppDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: ExpoAppDelegate, ExpoReactNativeFactoryProvider, UNUserNotificationCenterDelegate {
   var window: UIWindow?
+  var reactNativeFactoryModuleName: String { "Micro.blog" }
 
   var reactNativeDelegate: ExpoReactNativeFactoryDelegate?
   var reactNativeFactory: RCTReactNativeFactory?
@@ -29,14 +32,7 @@ class AppDelegate: ExpoAppDelegate, UNUserNotificationCenterDelegate {
     reactNativeDelegate = delegate
     reactNativeFactory = factory
 
-    window = UIWindow(frame: UIScreen.main.bounds)
-
-    factory.startReactNative(
-      withModuleName: "Micro.blog",
-      in: window,
-      launchOptions: launchOptions
-    )
-
+    // Expo's scene delegate creates the window and starts React Native.
     UNUserNotificationCenter.current().delegate = self
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
