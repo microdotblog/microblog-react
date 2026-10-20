@@ -5,7 +5,7 @@ import * as WebBrowser from 'expo-web-browser'
 import Services from '../../src/stores/Services'
 import Auth from '../../src/stores/Auth'
 import Tokens from '../../src/stores/Tokens'
-import MicroPubApi, { AUTH_ERROR, UNSUPPORTED_PKCE } from '../../src/api/MicroPubApi'
+import MicroPubApi, { AUTH_ERROR, UNSUPPORTED_PKCE, FETCH_ERROR } from '../../src/api/MicroPubApi'
 import XMLRPCApi from '../../src/api/XMLRPCApi'
 import { createAuthorization } from '../../src/utils/indieauth'
 
@@ -30,6 +30,7 @@ jest.mock('../../src/api/MicroPubApi', () => ({
 }))
 jest.mock('../../src/api/XMLRPCApi', () => ({
   __esModule: true,
+  RSD_NOT_FOUND: 8,
   default: { discover_rsd_endpoint: jest.fn() }
 }))
 
@@ -56,6 +57,7 @@ beforeEach(() => {
   MicroPubApi.verify_code.mockResolvedValue({ access_token: 'access-token', me: 'https://example.com/' })
   MicroPubApi.verify_profile.mockResolvedValue(true)
   MicroPubApi.get_config.mockResolvedValue({})
+  XMLRPCApi.discover_rsd_endpoint.mockResolvedValue(8)
   createAuthorization.mockResolvedValue({ state: 'compact-state', code_verifier: 'original-verifier', code_challenge: 'original-challenge' })
   const service = { id: 'service-1', set_initial_config: jest.fn().mockResolvedValue(true) }
   posting = { create_new_service: jest.fn().mockResolvedValue(service), activate_new_service: jest.fn().mockResolvedValue(true) }
@@ -205,4 +207,128 @@ test('clears an older attempt when a replacement begins or the blog is reset', a
   mockStorage.set('MicropubAuth', JSON.stringify(attempt()))
   await Services.clear()
   expect(mockStorage.has('MicropubAuth')).toBe(false)
+})
+
+test('keeps WordPress on XML-RPC even without IndieAuth endpoints', async () => {
+  MicroPubApi.discover_micropub_endpoints.mockResolvedValue({ micropub: 'https://example.com/wp-json/micropub', is_wordpress: true })
+  await Services.set_url('example.com')
+  await Services.setup_new_service()
+  expect(XMLRPCApi.discover_rsd_endpoint).toHaveBeenCalled()
+  expect(Services.show_micropub_token).toBe(false)
+  expect(WebBrowser.openAuthSessionAsync).not.toHaveBeenCalled()
+})
+
+describe('Micropub app-token setup', () => {
+  beforeEach(async () => {
+    MicroPubApi.discover_micropub_endpoints.mockResolvedValue({ micropub: endpoints.micropub })
+    await Services.set_url('example.com')
+    await Services.setup_new_service()
+  })
+
+  test('prompts for a token without starting IndieAuth or XML-RPC', () => {
+    expect(Services.show_micropub_token).toBe(true)
+    expect(Services.is_setting_up).toBe(false)
+    expect(Services.auth_endpoint).toBe('')
+    expect(Services.token_endpoint).toBe('')
+    expect(WebBrowser.openAuthSessionAsync).not.toHaveBeenCalled()
+    expect(createAuthorization).not.toHaveBeenCalled()
+    expect(XMLRPCApi.discover_rsd_endpoint).not.toHaveBeenCalled()
+  })
+
+  test.each(['auth', 'token'])('also accepts an app token when only the %s endpoint is missing', async missing => {
+    MicroPubApi.discover_micropub_endpoints.mockResolvedValue({ ...endpoints, [missing]: undefined })
+    await Services.setup_new_service()
+    expect(Services.show_micropub_token).toBe(true)
+    expect(WebBrowser.openAuthSessionAsync).not.toHaveBeenCalled()
+  })
+
+  test('saves a trimmed token and activates the blog with its configuration', async () => {
+    const config = { 'media-endpoint': 'https://example.com/media' }
+    MicroPubApi.get_config.mockResolvedValue(config)
+    await Services.set_micropub_token('  app-token  ')
+    await Services.setup_with_micropub_token()
+    expect(MicroPubApi.get_config).toHaveBeenCalledWith({ endpoint: endpoints.micropub, token: 'app-token' })
+    expect(posting.create_new_service).toHaveBeenCalledWith(expect.objectContaining({ type: 'micropub' }), 'example.com', endpoints.micropub, 'alice')
+    expect(Tokens.create_new_service_token).toHaveBeenCalledWith('alice', 'app-token', 'service-1')
+    const service = await posting.create_new_service.mock.results[0].value
+    expect(service.set_initial_config).toHaveBeenCalledWith(config)
+    expect(posting.activate_new_service).toHaveBeenCalledWith(service)
+    expect(Services.did_set_up_successfully).toBe(true)
+    expect(Services.show_micropub_token).toBe(false)
+    expect(Services.temp_micropub_token).toBe('')
+    expect(Services.checking_credentials).toBe(false)
+  })
+
+  test('ignores an empty token', async () => {
+    await Services.set_micropub_token('  ')
+    await Services.setup_with_micropub_token()
+    expect(MicroPubApi.get_config).not.toHaveBeenCalled()
+    expect(posting.create_new_service).not.toHaveBeenCalled()
+  })
+
+  test('allows retrying an invalid token without saving a service', async () => {
+    MicroPubApi.get_config.mockResolvedValue(FETCH_ERROR)
+    await Services.set_micropub_token('invalid-token')
+    await Services.setup_with_micropub_token()
+    expect(posting.create_new_service).not.toHaveBeenCalled()
+    expect(Tokens.create_new_service_token).not.toHaveBeenCalled()
+    expect(Services.show_micropub_token).toBe(true)
+    expect(Services.checking_credentials).toBe(false)
+    expect(Alert.alert).toHaveBeenCalledWith('Could not connect', 'Please check your app token and try again.')
+  })
+
+  test('restores the form after a token storage error', async () => {
+    Tokens.create_new_service_token.mockRejectedValueOnce(new Error('storage failed'))
+    await Services.set_micropub_token('app-token')
+    await Services.setup_with_micropub_token()
+    expect(posting.activate_new_service).not.toHaveBeenCalled()
+    expect(Services.did_set_up_successfully).toBe(false)
+    expect(Services.checking_credentials).toBe(false)
+    expect(Alert.alert).toHaveBeenCalledWith('Could not connect', 'Could not save your blog settings. Please try again.')
+  })
+
+  test.each(['selected account', 'setup account', 'blog URL', 'endpoint', 'cancel'])('does not save a token after changing %s during configuration', async change => {
+    let finish_config
+    MicroPubApi.get_config.mockImplementationOnce(() => new Promise(resolve => { finish_config = resolve }))
+    await Services.set_micropub_token('app-token')
+    const setup = Services.setup_with_micropub_token()
+    await new Promise(setImmediate)
+    await Services.setup_with_micropub_token()
+    expect(MicroPubApi.get_config).toHaveBeenCalledTimes(1)
+    if (change === 'selected account') {
+      Auth.selected_user = { username: 'bob' }
+    }
+    else if (change === 'setup account') {
+      applySnapshot(Services, { ...Services.toJSON(), current_username: 'bob' })
+    }
+    else if (change === 'blog URL') {
+      await Services.set_url('other.example')
+    }
+    else if (change === 'endpoint') {
+      applySnapshot(Services, { ...Services.toJSON(), micropub_endpoint: 'https://other.example/micropub' })
+    }
+    else {
+      await Services.clear()
+    }
+    finish_config({})
+    await setup
+    expect(posting.create_new_service).not.toHaveBeenCalled()
+    expect(Tokens.create_new_service_token).not.toHaveBeenCalled()
+    expect(Services.checking_credentials).toBe(false)
+  })
+
+  test.each(['URL change', 'cancel', 'account hydration'])('clears temporary credentials on %s', async change => {
+    await Services.set_micropub_token('app-token')
+    if (change === 'URL change') {
+      await Services.set_url('other.example')
+    }
+    else if (change === 'cancel') {
+      await Services.clear()
+    }
+    else {
+      await Services.hydrate_with_user({ username: 'bob', posting: { selected_service: { is_microblog: true }, first_custom_service: () => null } })
+    }
+    expect(Services.show_micropub_token).toBe(false)
+    expect(Services.temp_micropub_token).toBe('')
+  })
 })

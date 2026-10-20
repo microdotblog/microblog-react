@@ -37,7 +37,7 @@ class MicroPubApi {
     if (typeof endpoints !== 'object') {
       return endpoints
     }
-    return endpoints.micropub && endpoints.auth && endpoints.token ? endpoints : MICROPUB_NOT_FOUND
+    return endpoints.micropub ? endpoints : MICROPUB_NOT_FOUND
   }
 
   async discover_endpoints(url, { alternate_html_match = false, skip_wordpress = false } = {}) {
@@ -111,7 +111,7 @@ class MicroPubApi {
           return UNSUPPORTED_PKCE
         }
       }
-      if (!endpoints.authorization_endpoint) {
+      if (!endpoints.micropub && !endpoints.authorization_endpoint) {
         return MICROPUB_NOT_FOUND
       }
       return {

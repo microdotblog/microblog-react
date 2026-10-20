@@ -321,6 +321,17 @@ describe('Micropub interoperability', () => {
     })
   })
 
+  test.each(['HTTP', 'HTML'])('discovers a Micropub-only endpoint from %s without IndieAuth endpoints', async source => {
+    fetch.mockResolvedValue({
+      ok: true, url: 'https://user.example/profile/',
+      headers: { get: name => name === 'Link' ? (source === 'HTTP' ? '</micropub>; rel="micropub"' : '') : (source === 'HTTP' ? 'application/json' : 'text/html') },
+      text: async () => '<html><head><link rel="micropub" href="/micropub"/></head></html>'
+    })
+    await expect(MicroPubApi.discover_micropub_endpoints('https://user.example/')).resolves.toMatchObject({
+      micropub: 'https://user.example/micropub', auth: undefined, token: undefined, is_wordpress: false
+    })
+  })
+
   test('combines HTTP and HTML discovery, resolves against the redirected URL, and retains WordPress detection', async () => {
     fetch.mockResolvedValue({
       ok: true, url: 'https://user.example/profile/',

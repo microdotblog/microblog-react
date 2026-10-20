@@ -25,6 +25,7 @@ export default Services = types.model('Services', {
   token_endpoint: types.optional(types.string, ""),
   blog_id: types.optional(types.string, ""),
   show_credentials: types.optional(types.boolean, false),
+  show_micropub_token: types.optional(types.boolean, false),
   checking_credentials: types.optional(types.boolean, false),
   temp_username: types.optional(types.string, ""),// We don't save the Services model in Async, so this is all temp data
   temp_password: types.optional(types.string, ""),// We don't save the Services model in Async, so this is all temp data
@@ -35,6 +36,8 @@ export default Services = types.model('Services', {
   
   hydrate_with_user: flow(function* (user = null) {
     yield self.clear_micropub_authorization()
+    self.show_micropub_token = false
+    self.temp_micropub_token = ""
     self.current_username = user?.username
     if(!user?.posting?.selected_service?.is_microblog){
       self.current_url = user.posting?.selected_service?.name // I know, bad property name
@@ -64,6 +67,8 @@ export default Services = types.model('Services', {
     self.token_endpoint = ""
     self.blog_id = ""
     self.show_credentials = false
+    self.show_micropub_token = false
+    self.temp_micropub_token = ""
     self.did_set_up_successfully = false
   }),
   
@@ -76,8 +81,10 @@ export default Services = types.model('Services', {
     if (text !== self.current_url && self.pending_micropub_auth) {
       yield self.clear_micropub_authorization()
     }
-    if(text !== self.current_url && self.show_credentials){
+    if (text !== self.current_url) {
       self.show_credentials = false
+      self.show_micropub_token = false
+      self.temp_micropub_token = ""
     }
     self.current_url = text
   }),
@@ -111,8 +118,12 @@ export default Services = types.model('Services', {
       }
       if (endpoints !== MICROPUB_NOT_FOUND && !endpoints.is_wordpress) {
         self.micropub_endpoint = endpoints.micropub
-        self.auth_endpoint = endpoints.auth
-        self.token_endpoint = endpoints.token
+        self.auth_endpoint = endpoints.auth || ''
+        self.token_endpoint = endpoints.token || ''
+        if (!self.auth_endpoint || !self.token_endpoint) {
+          self.show_micropub_token = true
+          return
+        }
         const authorization = {
           ...(yield createAuthorization(endpoints.supports_pkce)),
           me,
@@ -167,6 +178,56 @@ export default Services = types.model('Services', {
   
   set_password: flow(function* (text) {
     self.temp_password = text
+  }),
+
+  set_micropub_token: flow(function* (text) {
+    self.temp_micropub_token = text
+  }),
+
+  setup_with_micropub_token: flow(function* () {
+    const token = self.temp_micropub_token.trim()
+    const username = self.current_username
+    const blog_url = self.current_url
+    const endpoint = self.micropub_endpoint
+    if (!token || !endpoint || self.checking_credentials || self.is_setting_up || username !== Auth.selected_user?.username) {
+      return
+    }
+    self.checking_credentials = true
+    try {
+      const config = yield MicroPubApi.get_config({ endpoint, token })
+      if (self.current_username !== username || Auth.selected_user?.username !== username ||
+          self.current_url !== blog_url || self.micropub_endpoint !== endpoint) {
+        return
+      }
+      if (config === FETCH_ERROR) {
+        Alert.alert('Could not connect', 'Please check your app token and try again.')
+        return
+      }
+      const user = Auth.user_from_username(username)
+      if (!user?.posting) {
+        return
+      }
+      const service = yield user.posting.create_new_service(blog_services.micropub, blog_url, endpoint, username)
+      if (!service) {
+        return
+      }
+      const saved_token = yield Tokens.create_new_service_token(username, token, service.id)
+      if (saved_token && (yield service.set_initial_config(config)) && (yield user.posting.activate_new_service(service))) {
+        self.did_set_up_successfully = true
+        self.temp_micropub_token = ''
+        self.show_micropub_token = false
+      }
+      else {
+        Alert.alert('Could not connect', 'Could not save your blog settings. Please try again.')
+      }
+    }
+    catch (error) {
+      console.log('Micropub app-token setup failed')
+      Alert.alert('Could not connect', 'Could not save your blog settings. Please try again.')
+    }
+    finally {
+      self.checking_credentials = false
+    }
   }),
   
   check_credentials_and_proceed_setup: flow(function* () {
