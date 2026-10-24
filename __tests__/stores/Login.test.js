@@ -2,10 +2,10 @@ import Login from '../../src/stores/Login'
 import MicroBlogApi, { APPLE_USERNAME_REQUIRED } from '../../src/api/MicroBlogApi'
 import {
   build_micro_blog_auth_url,
-  create_oauth_state,
   exchange_micro_blog_code,
   get_micro_blog_redirect_uri,
 } from '../../src/api/MicroBlogAuth'
+import { createAuthorization } from '../../src/utils/indieauth'
 import App from '../../src/stores/App'
 import Auth from '../../src/stores/Auth'
 import { Alert } from 'react-native'
@@ -30,11 +30,14 @@ jest.mock('../../src/api/MicroBlogAuth', () => {
   return {
     ...actual,
     build_micro_blog_auth_url: jest.fn(actual.build_micro_blog_auth_url),
-    create_oauth_state: jest.fn(() => 'oauth-state'),
     exchange_micro_blog_code: jest.fn(),
     get_micro_blog_redirect_uri: jest.fn(actual.get_micro_blog_redirect_uri),
   }
 })
+
+jest.mock('../../src/utils/indieauth', () => ({
+  createAuthorization: jest.fn(),
+}))
 
 jest.mock('expo-web-browser', () => ({
   openAuthSessionAsync: jest.fn(),
@@ -96,8 +99,12 @@ describe('Login Apple sign in', () => {
     App.close_sheet.mockResolvedValue(true)
     WebBrowser.openAuthSessionAsync.mockReset()
     WebBrowser.dismissAuthSession.mockReset()
-    create_oauth_state.mockReset()
-    create_oauth_state.mockReturnValue('oauth-state')
+    createAuthorization.mockReset()
+    createAuthorization.mockResolvedValue({
+      state: 'oauth-state',
+      code_verifier: 'pkce-verifier',
+      code_challenge: 'pkce-challenge',
+    })
     exchange_micro_blog_code.mockReset()
     build_micro_blog_auth_url.mockClear()
     get_micro_blog_redirect_uri.mockClear()
@@ -327,18 +334,25 @@ describe('Login Apple sign in', () => {
     const did_sign_in = await Login.sign_in_with_micro_blog()
 
     expect(did_sign_in).toBe(true)
+    expect(createAuthorization).toHaveBeenCalledWith(true)
+    expect(build_micro_blog_auth_url).toHaveBeenCalledWith({
+      redirect_uri: get_micro_blog_redirect_uri(),
+      state: 'oauth-state',
+      code_challenge: 'pkce-challenge',
+    })
     expect(WebBrowser.openAuthSessionAsync).toHaveBeenCalled()
-    expect(exchange_micro_blog_code).toHaveBeenCalledWith({ code: 'AUTHCODE' })
+    expect(exchange_micro_blog_code).toHaveBeenCalledWith({ code: 'AUTHCODE', code_verifier: 'pkce-verifier' })
     expect(MicroBlogApi.login_with_token).toHaveBeenCalledWith('access-token')
     expect(Auth.handle_new_login).toHaveBeenCalledWith({
       username: 'vincent',
       token: 'app-token',
     })
     expect(Login.pending_oauth_state).toBeNull()
+    expect(Login.pending_code_verifier).toBeNull()
     expect(Login.is_loading).toBe(false)
   })
 
-  test('clears pending oauth state when the browser session is cancelled', async () => {
+  test('clears pending oauth state and verifier when the browser session is cancelled', async () => {
     WebBrowser.openAuthSessionAsync.mockResolvedValue({
       type: 'cancel',
     })
@@ -347,8 +361,35 @@ describe('Login Apple sign in', () => {
 
     expect(did_sign_in).toBe(false)
     expect(Login.pending_oauth_state).toBeNull()
+    expect(Login.pending_code_verifier).toBeNull()
     expect(Login.show_error).toBe(false)
     expect(exchange_micro_blog_code).not.toHaveBeenCalled()
+  })
+
+  test('does not open sign in when secure PKCE generation fails', async () => {
+    createAuthorization.mockRejectedValue(new Error('Crypto unavailable'))
+
+    expect(await Login.sign_in_with_micro_blog()).toBe(false)
+    expect(Login.pending_oauth_state).toBeNull()
+    expect(Login.pending_code_verifier).toBeNull()
+    expect(Login.is_loading).toBe(false)
+    expect(Login.show_error).toBe(true)
+    expect(WebBrowser.openAuthSessionAsync).not.toHaveBeenCalled()
+  })
+
+  test('clears the verifier when token exchange fails', async () => {
+    WebBrowser.openAuthSessionAsync.mockResolvedValue({
+      type: 'success',
+      url: 'microblog://auth/callback?code=AUTHCODE&state=oauth-state',
+    })
+    exchange_micro_blog_code.mockRejectedValue(new Error('Invalid grant'))
+
+    expect(await Login.sign_in_with_micro_blog()).toBe(false)
+    expect(exchange_micro_blog_code).toHaveBeenCalledWith({ code: 'AUTHCODE', code_verifier: 'pkce-verifier' })
+    expect(Login.pending_oauth_state).toBeNull()
+    expect(Login.pending_code_verifier).toBeNull()
+    expect(Login.show_error).toBe(true)
+    expect(MicroBlogApi.login_with_token).not.toHaveBeenCalled()
   })
 
   test('completes Micro.blog sign in from a callback URL while the auth sheet is still open', async () => {
@@ -370,13 +411,14 @@ describe('Login Apple sign in', () => {
 
     expect(Login.is_loading).toBe(true)
     expect(Login.pending_oauth_state).toBe('oauth-state')
+    expect(Login.pending_code_verifier).toBe('pkce-verifier')
 
     const did_handle = await Login.trigger_login_from_url(
       'microblog://auth/callback?code=AUTHCODE&state=oauth-state'
     )
 
     expect(did_handle).toBe(true)
-    expect(exchange_micro_blog_code).toHaveBeenCalledWith({ code: 'AUTHCODE' })
+    expect(exchange_micro_blog_code).toHaveBeenCalledWith({ code: 'AUTHCODE', code_verifier: 'pkce-verifier' })
     expect(MicroBlogApi.login_with_token).toHaveBeenCalledWith('access-token')
     expect(WebBrowser.dismissAuthSession).toHaveBeenCalled()
     expect(Auth.handle_new_login).toHaveBeenCalledWith({
@@ -390,6 +432,7 @@ describe('Login Apple sign in', () => {
     expect(did_sign_in).toBe(true)
     expect(Login.show_error).toBe(false)
     expect(Login.pending_oauth_state).toBeNull()
+    expect(Login.pending_code_verifier).toBeNull()
     expect(Login.is_loading).toBe(false)
   })
 
@@ -408,6 +451,7 @@ describe('Login Apple sign in', () => {
 
     expect(did_handle).toBe(false)
     expect(Login.pending_oauth_state).toBe('oauth-state')
+    expect(Login.pending_code_verifier).toBe('pkce-verifier')
     expect(WebBrowser.dismissAuthSession).not.toHaveBeenCalled()
     expect(exchange_micro_blog_code).not.toHaveBeenCalled()
 
@@ -416,6 +460,7 @@ describe('Login Apple sign in', () => {
 
     expect(did_sign_in).toBe(false)
     expect(Login.pending_oauth_state).toBeNull()
+    expect(Login.pending_code_verifier).toBeNull()
   })
 
   test('exchanges an auth code once when Linking and the auth session both deliver the callback', async () => {
@@ -451,7 +496,6 @@ describe('Login Apple sign in', () => {
   })
 
   test('rejects oauth callbacks with a mismatched state', async () => {
-    create_oauth_state.mockReturnValue('expected-state')
     WebBrowser.openAuthSessionAsync.mockResolvedValue({
       type: 'success',
       url: 'microblog://auth/callback?code=AUTHCODE&state=other-state',
@@ -462,6 +506,7 @@ describe('Login Apple sign in', () => {
     expect(did_sign_in).toBe(false)
     expect(Login.error_message).toBe('Micro.blog sign in could not be verified. Please try again.')
     expect(Login.pending_oauth_state).toBeNull()
+    expect(Login.pending_code_verifier).toBeNull()
     expect(exchange_micro_blog_code).not.toHaveBeenCalled()
   })
 

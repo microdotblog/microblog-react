@@ -3,7 +3,6 @@ import * as WebBrowser from 'expo-web-browser'
 import MicroBlogApi, { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_INCORRECT, LOGIN_TOKEN_INVALID, APPLE_USERNAME_REQUIRED } from './../api/MicroBlogApi'
 import {
   build_micro_blog_auth_url,
-  create_oauth_state,
   exchange_micro_blog_code,
   extract_micro_blog_callback_params,
   extract_signin_token,
@@ -12,6 +11,7 @@ import {
   is_signin_token_url,
 } from './../api/MicroBlogAuth'
 import StringChecker from './../utils/string_checker'
+import { createAuthorization } from './../utils/indieauth'
 import { Alert, Platform } from 'react-native'
 import Auth from './Auth'
 import App from './App'
@@ -24,6 +24,7 @@ const Login = types.model('Login', {
   error_message: types.maybeNull(types.string),
   did_trigger_login_from_url: types.optional(types.boolean, false),
   pending_oauth_state: types.maybeNull(types.string),
+  pending_code_verifier: types.maybeNull(types.string),
   apple_user_id: types.maybeNull(types.string),
   apple_identity_token: types.maybeNull(types.string),
   apple_email: types.maybeNull(types.string),
@@ -72,6 +73,7 @@ const Login = types.model('Login', {
     if (is_signin_token_url(raw_url)) {
       const token = extract_signin_token(raw_url)
       self.pending_oauth_state = null
+      self.pending_code_verifier = null
       return yield self.login_with_token(true, token)
     }
 
@@ -104,18 +106,20 @@ const Login = types.model('Login', {
     self.message = null
 
     try {
-      const oauth_state = create_oauth_state()
-      if (!oauth_state) {
+      const { state: oauth_state, code_verifier, code_challenge } = yield createAuthorization(true)
+      if (!oauth_state || !code_verifier || !code_challenge) {
         self.set_error('We could not prepare Micro.blog sign in. Please try again.')
         return false
       }
 
       self.pending_oauth_state = oauth_state
+      self.pending_code_verifier = code_verifier
 
       const redirect_uri = get_micro_blog_redirect_uri()
       const auth_url = build_micro_blog_auth_url({
         redirect_uri,
         state: oauth_state,
+        code_challenge,
       })
       const auth_result = yield WebBrowser.openAuthSessionAsync(auth_url, redirect_uri)
 
@@ -132,6 +136,7 @@ const Login = types.model('Login', {
       }
 
       self.pending_oauth_state = null
+      self.pending_code_verifier = null
 
       if (auth_result?.type === 'cancel' || auth_result?.type === 'dismiss') {
         self.clear_error()
@@ -145,6 +150,7 @@ const Login = types.model('Login', {
     catch (error) {
       console.log("LOGIN:sign_in_with_micro_blog:error", error)
       self.pending_oauth_state = null
+      self.pending_code_verifier = null
       self.set_error('We could not open Micro.blog sign in. Please try again.')
       return false
     }
@@ -177,9 +183,11 @@ const Login = types.model('Login', {
     }
 
     self.pending_oauth_state = null
+    const code_verifier = self.pending_code_verifier
+    self.pending_code_verifier = null
 
     try {
-      const token_payload = yield exchange_micro_blog_code({ code })
+      const token_payload = yield exchange_micro_blog_code({ code, code_verifier })
       const access_token = `${token_payload?.access_token || ''}`.trim()
 
       if (!access_token) {
