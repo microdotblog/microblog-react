@@ -13,6 +13,7 @@ export function build_micro_blog_auth_url({
   client_id = MICRO_BLOG_CLIENT_ID,
   redirect_uri = get_micro_blog_redirect_uri(),
   state,
+  code_challenge,
 } = {}) {
   const params = new URLSearchParams({
     app: 1,
@@ -22,6 +23,11 @@ export function build_micro_blog_auth_url({
     scope: MICRO_BLOG_SCOPE,
     state,
   })
+
+  if (code_challenge) {
+    params.set('code_challenge', code_challenge)
+    params.set('code_challenge_method', 'S256')
+  }
 
   return `${MICRO_BLOG_AUTH_URL}?${params.toString()}`
 }
@@ -100,6 +106,7 @@ export async function exchange_micro_blog_code({
   client_id = MICRO_BLOG_CLIENT_ID,
   code,
   redirect_uri = get_micro_blog_redirect_uri(),
+  code_verifier,
 } = {}) {
   const body = new URLSearchParams({
     client_id,
@@ -107,6 +114,10 @@ export async function exchange_micro_blog_code({
     grant_type: 'authorization_code',
     redirect_uri,
   })
+
+  if (code_verifier) {
+    body.set('code_verifier', code_verifier)
+  }
 
   const response = await fetch(MICRO_BLOG_TOKEN_URL, {
     body: body.toString(),
