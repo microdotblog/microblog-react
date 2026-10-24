@@ -109,9 +109,11 @@ const WebViewModule = observer((props) => {
   `
   const web_view_injected_javascript = Platform.OS === 'ios' ? `
     const meta = document.querySelector('meta[name="viewport"]') || document.createElement('meta')
-    meta.setAttribute('content', 'width=device-width, initial-scale=${App.web_font_scale()}')
+    meta.setAttribute('content', 'width=device-width, initial-scale=1')
     meta.setAttribute('name', 'viewport')
     document.getElementsByTagName('head')[0].appendChild(meta)
+    // Scale text instead of zooming the page so it wraps within the WebView.
+    document.documentElement.style.setProperty('-webkit-text-size-adjust', '${App.web_font_scale() * 100}%')
     ${web_view_css_properties_javascript}
     ${web_view_tap_guard_javascript}
   ` : should_inject_web_view_padding ? `
