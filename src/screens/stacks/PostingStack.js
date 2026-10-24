@@ -105,7 +105,7 @@ export default class Posting extends React.Component{
           options={{
             headerTitle: "New Post",
             ...headerLeftElement(() => <CloseModalButton />),
-            ...headerRightElement(() => <PostButton />)
+            ...headerRightElement(() => <PostButton />, { hidesSharedBackground: true })
           }}
         />
         <PostingStack.Screen

@@ -67,28 +67,8 @@ export default class SharePostScreen extends React.Component {
 						</View>
 					</EditorKeyboardAvoidingView>
 					<KeyboardStickyView>
-						<View style={{ position: 'relative' }}>
-							{
-								!posting.post_title &&
-								<Text
-									style={{
-										fontWeight: '400',
-										paddingVertical: 2,
-										paddingHorizontal: 6,
-										color: App.theme_text_color(),
-										position: 'absolute',
-										right: 3,
-										top: -26,
-										backgroundColor: App.theme_chars_background_color(),
-										borderRadius: 6,
-										overflow: 'hidden',
-										zIndex: 5
-									}}
-								><Text style={{ color: posting.post_text_length() > posting.max_post_length() ? '#a94442' : App.theme_text_color() }}>{posting.post_text_length()}</Text>/{posting.max_post_length()}</Text>
-							}
-							<AssetToolbar posting={posting} />
-							<PostToolbar posting={posting} hide_count />
-						</View>
+						<AssetToolbar posting={posting} />
+						<PostToolbar posting={posting} />
 					</KeyboardStickyView>
 				</>
 				: null

@@ -4,6 +4,7 @@ import { Button, Keyboard, Platform, Pressable, Text } from 'react-native'
 import App from './../../stores/App'
 import Auth from '../../stores/Auth'
 import { HEADER_BUTTON_HIT_SLOP, isLiquidGlass } from './../../utils/ui'
+import LiquidGlassButton from '../share/liquid_glass_button'
 
 @observer
 export default class PostButton extends React.Component {
@@ -24,13 +25,27 @@ export default class PostButton extends React.Component {
       }
     }
 
+    if (isLiquidGlass()) {
+      return (
+        <LiquidGlassButton
+          style={{ width: 72, height: 36 }}
+          title={title}
+          variant="prominent"
+          foregroundColor="#fff"
+          baseBackgroundColor={App.theme_accent_color()}
+          buttonAccessibilityLabel={title}
+          onPress={handle_press}
+        />
+      )
+    }
+
     if (Platform.OS === 'ios') {
       return (
         <Pressable
           onPress={handle_press}
           style={{
             minWidth: 44,
-            height: isLiquidGlass() ? 28 : 44,
+            height: 44,
             paddingHorizontal: 4,
             alignItems: 'center',
             justifyContent: 'center'
