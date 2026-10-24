@@ -82,6 +82,10 @@
 #if defined(__IPHONE_26_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_26_0
   if (@available(iOS 26.0, *)) {
     if ([self.variant isEqualToString:@"prominent"]) {
+      if (@available(iOS 26.1, *)) {
+        // Prominent glass tints the title even when its foreground is white.
+        return [UIButtonConfiguration filledButtonConfiguration];
+      }
       return [UIButtonConfiguration prominentGlassButtonConfiguration];
     }
 
