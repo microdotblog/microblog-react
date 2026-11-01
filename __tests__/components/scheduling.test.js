@@ -43,14 +43,22 @@ const findPicker = element => {
 beforeEach(() => jest.clearAllMocks())
 afterEach(() => jest.restoreAllMocks())
 
-test('iOS uses an inline calendar and time picker and sends an unambiguous timestamp', () => {
+test('iOS calendar and time controls preserve the other part of the selected timestamp', () => {
   jest.replaceProperty(Platform, 'OS', 'ios')
   const onChange = jest.fn()
-  const picker = new SchedulePicker({ value: '2099-06-01T09:30:00-05:00', onChange }).render()
-  expect(picker.type).toBe(DateTimePicker)
-  expect(picker.props).toMatchObject({ display: 'inline', mode: 'datetime' })
-  picker.props.onValueChange({}, new Date('2099-06-02T10:45:00-05:00'))
-  expect(onChange).toHaveBeenCalledWith('2099-06-02T15:45:00.000Z')
+  const value = new Date(2099, 5, 1, 9, 30).toISOString()
+  const calendar = new SchedulePicker({ value, onChange }).render().props.children[0]
+  expect(calendar.type).toBe(DateTimePicker)
+  expect(calendar.props).toMatchObject({ display: 'inline', mode: 'date' })
+  calendar.props.onValueChange({}, new Date(2099, 5, 2))
+  const updated_value = new Date(2099, 5, 2, 9, 30).toISOString()
+  expect(onChange).toHaveBeenLastCalledWith(updated_value)
+
+  const time_row = new SchedulePicker({ value: updated_value, onChange }).render().props.children[1]
+  const time_picker = time_row.props.children[1]
+  expect(time_picker.props).toMatchObject({ display: 'compact', mode: 'time' })
+  time_picker.props.onValueChange({}, new Date(2000, 0, 1, 10, 45))
+  expect(onChange).toHaveBeenLastCalledWith(new Date(2099, 5, 2, 10, 45).toISOString())
 })
 
 test('Android date and time fields open the native picker with the current selection', () => {

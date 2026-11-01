@@ -14,8 +14,15 @@ export function defaultScheduleDate() {
 export default class SchedulePicker extends React.Component {
   initial_date = new Date().toISOString()
 
-  handleChange = (event, date) => {
-    this.props.onChange(date.toISOString())
+  handleChange = (mode, date) => {
+    const selected_date = new Date(this.props.value || this.initial_date)
+    if (mode === 'date') {
+      selected_date.setFullYear(date.getFullYear(), date.getMonth(), date.getDate())
+    }
+    else {
+      selected_date.setHours(date.getHours(), date.getMinutes(), 0, 0)
+    }
+    this.props.onChange(selected_date.toISOString())
   }
 
   showAndroidPicker = mode => {
@@ -23,7 +30,7 @@ export default class SchedulePicker extends React.Component {
       value: new Date(this.props.value || this.initial_date),
       mode,
       minimumDate: this.props.minimumDate,
-      onValueChange: this.handleChange
+      onValueChange: (event, date) => this.handleChange(mode, date)
     })
   }
 
@@ -33,22 +40,35 @@ export default class SchedulePicker extends React.Component {
 
     if (Platform.OS === 'ios') {
       return (
-        <DateTimePicker
-          value={date}
-          mode="datetime"
-          display="inline"
-          minimumDate={minimumDate}
-          disabled={disabled}
-          themeVariant={App.is_dark_mode() ? 'dark' : 'light'}
-          accentColor={App.theme_accent_color()}
-          onValueChange={this.handleChange}
-          style={{ alignSelf: 'center', width: '100%', maxWidth: 380 }}
-        />
+        <View style={{ alignSelf: 'center', maxWidth: '100%' }}>
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="inline"
+            minimumDate={minimumDate}
+            disabled={disabled}
+            themeVariant={App.is_dark_mode() ? 'dark' : 'light'}
+            accentColor={App.theme_accent_color()}
+            onValueChange={(event, selected_date) => this.handleChange('date', selected_date)}
+          />
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 12, marginTop: 24, marginBottom: 8 }}>
+            <Text style={{ fontSize: 17, fontWeight: '600', color: App.theme_text_color() }}>Time</Text>
+            <DateTimePicker
+              value={date}
+              mode="time"
+              display="compact"
+              disabled={disabled}
+              themeVariant={App.is_dark_mode() ? 'dark' : 'light'}
+              accentColor={App.theme_accent_color()}
+              onValueChange={(event, selected_date) => this.handleChange('time', selected_date)}
+            />
+          </View>
+        </View>
       )
     }
 
     return (
-      <View style={{ gap: 12 }}>
+      <View style={{ gap: 24 }}>
         {['date', 'time'].map(mode => (
           <TouchableOpacity
             key={mode}
