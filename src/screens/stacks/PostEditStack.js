@@ -5,6 +5,7 @@ import PostEditScreen from '../posts/edit';
 import PostingOptionsScreen from '../../screens/posts/options';
 import ClosePostClearButton from '../../components/header/close_post_clear';
 import UpdatePostButton from '../../components/header/update_post';
+import BackButton from '../../components/header/back'
 import App from '../../stores/App'
 import { android_status_bar_options, headerLeftElement, headerRightElement } from '../../utils/navigation'
 
@@ -20,9 +21,8 @@ export default class PostEditStack extends React.Component{
 				screenOptions={{
 					gestureEnabled: false,
           headerShown: true,
-          headerBackTitle: "Back",
+          headerBackButtonDisplayMode: "minimal",
           headerTintColor: App.theme_text_color(),
-          headerBackTitleVisible: false,
           ...android_status_bar_options()
 				}}
 			>
@@ -39,7 +39,8 @@ export default class PostEditStack extends React.Component{
           name="PostEditOptions"
           component={PostingOptionsScreen}
           options={{
-            headerTitle: "Posting Options"
+            headerTitle: "Posting Options",
+            ...headerLeftElement(() => <BackButton />)
           }}
         />
       </PostingEditStack.Navigator>

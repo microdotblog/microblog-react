@@ -93,9 +93,8 @@ export default class Posting extends React.Component{
 				screenOptions={{
 					gestureEnabled: false,
           headerShown: true,
-          headerBackTitle: "Back",
+          headerBackButtonDisplayMode: "minimal",
           headerTintColor: App.theme_text_color(),
-          headerBackTitleVisible: false,
           ...android_status_bar_options()
 				}}
 			>

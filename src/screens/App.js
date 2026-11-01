@@ -196,12 +196,12 @@ export default class MainApp extends React.Component {
                     options={{
                       title: "Create Account",
                       headerShown: true,
-                      headerBackTitle: "Sign In",
                       headerTransparent: true,
                       headerShadowVisible: false,
                       headerStyle: {
                         backgroundColor: 'transparent'
-                      }
+                      },
+                      ...headerLeftElement(renderBackButton)
                     }}
                   />
                   <Stack.Group
