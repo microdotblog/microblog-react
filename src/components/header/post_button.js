@@ -14,8 +14,8 @@ export default class PostButton extends React.Component {
   }
 
   render() {
-    const { post_status } = Auth.selected_user?.posting
-    const title = post_status === "draft" ? "Save" : "Post"
+    const { posting } = Auth.selected_user
+    const title = posting.is_scheduled() ? "Schedule" : posting.post_status === "draft" ? "Save" : "Post"
     const handle_press = async () => {
       Keyboard.dismiss()
       const sent = await Auth.selected_user.posting.send_post()
@@ -28,7 +28,7 @@ export default class PostButton extends React.Component {
     if (isLiquidGlass()) {
       return (
         <LiquidGlassButton
-          style={{ width: 72, height: 36 }}
+          style={{ width: title === "Schedule" ? 100 : 72, height: 36 }}
           title={title}
           variant="prominent"
           foregroundColor="#fff"

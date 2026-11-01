@@ -1,7 +1,7 @@
 import { types, flow, destroy } from 'mobx-state-tree'
 import Tokens from './../../Tokens'
 import { Platform } from 'react-native';
-import MicroPubApi, { DELETE_ERROR, FETCH_ERROR } from './../../../api/MicroPubApi'
+import MicroPubApi, { DELETE_ERROR, FETCH_ERROR, POST_ERROR } from './../../../api/MicroPubApi'
 import XMLRPCApi, { XML_ERROR } from '../../../api/XMLRPCApi'
 import Config from './Config'
 import { Alert } from 'react-native'
@@ -127,9 +127,8 @@ const Service = types.model('Service', {
     }
   }),
 
-  refresh_posts_for_current_view: flow(function* (post = null) {
+  refresh_posts_for_current_view: flow(function* (show_drafts = false) {
     const active_destination = self.config.posts_destination()
-    const show_drafts = post?.is_draft ? post.is_draft() : false
 
     if(active_destination){
       if(App.post_search_query?.length > 2){
@@ -139,6 +138,11 @@ const Service = types.model('Service', {
         yield self.check_for_posts_for_destination(active_destination, show_drafts)
       }
     }
+  }),
+
+  refresh_post_lists: flow(function* () {
+    yield self.refresh_posts_for_current_view()
+    yield self.refresh_posts_for_current_view(true)
   }),
   
   set_active_destination: flow(function* (destination, type = null) { 
@@ -200,10 +204,11 @@ const Service = types.model('Service', {
     
   delete_post: flow(function* (post) {
     console.log("Destination:delete_post", post)
+    const show_drafts = post.is_draft()
     const status = yield MicroPubApi.delete_post(self.service_object(), post.url)
     if(status !== DELETE_ERROR){
       App.show_toast("Post was deleted.")
-      yield self.refresh_posts_for_current_view(post)
+      yield self.refresh_posts_for_current_view(show_drafts)
     }
     else{
       Alert.alert("Whoops", "Could not delete post. Please try again.")
@@ -227,11 +232,24 @@ const Service = types.model('Service', {
     const status = yield MicroPubApi.publish_draft(self.service_object(), post.content, post.url, post.name)
     if(status !== DELETE_ERROR){
       App.show_toast("Post was published.")
-      yield self.refresh_posts_for_current_view(post)
+      yield self.refresh_post_lists()
+      return true
     }
     else{
       Alert.alert("Error Publishing", "Could not publish the draft. Please try again.")
     }
+    return false
+  }),
+
+  schedule_post: flow(function* (post, published) {
+    const service = { ...self.service_object(), destination: self.config.posts_destination()?.uid || null }
+    const result = yield MicroPubApi.post_update(service, undefined, post.url, undefined, undefined, 'published', published)
+    if (result !== POST_ERROR) {
+      App.show_toast("Post was scheduled.")
+      yield self.refresh_post_lists()
+      return true
+    }
+    return false
   }),
   
   check_for_pages_for_destination: flow(function* (destination) { 

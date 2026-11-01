@@ -277,13 +277,16 @@ class MicroPubApi {
     }
   }
 
-  async send_post(service, content, title = null, assets = [], categories = [], status = null, syndicate_to = null, summary = null) {
+  async send_post(service, content, title = null, assets = [], categories = [], status = null, syndicate_to = null, summary = null, published = null) {
     const properties = { content: [content] }
     if (title) {
       properties.name = [title]
     }
     if (status) {
       properties['post-status'] = [status]
+    }
+    if (published) {
+      properties.published = [published]
     }
     if (categories.length) {
       properties.category = categories
@@ -618,9 +621,12 @@ class MicroPubApi {
     return this.sendRequest(service, params.toString(), 'application/x-www-form-urlencoded')
   }
 
-  async post_update(service, content, url, title, categories, post_status = '') {
-    const replace = { content: [content] }
+  async post_update(service, content, url, title, categories, post_status = '', published = null) {
+    const replace = {}
     const params = { action: 'update', url, replace }
+    if (content !== undefined) {
+      replace.content = [content]
+    }
     if (title !== undefined) {
       replace.name = [title ?? '']
     }
@@ -629,6 +635,9 @@ class MicroPubApi {
     }
     if (post_status) {
       replace['post-status'] = [post_status]
+    }
+    if (published) {
+      replace.published = [published]
     }
     if (service.destination) {
       params['mp-destination'] = service.destination

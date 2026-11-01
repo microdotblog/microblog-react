@@ -14,7 +14,7 @@ import md from 'markdown-it';
 const parser = md({ html: true });
 const { MBClipboardHelper } = NativeModules;
 
-const should_show_publishing_progress = post_status => post_status != "draft"
+const should_show_publishing_progress = (post_status, is_scheduled) => post_status != "draft" && !is_scheduled
 
 export default Posting = types.model('Posting', {
   username: types.identifier,
@@ -28,6 +28,7 @@ export default Posting = types.model('Posting', {
   new_category_text: types.optional(types.string, ""),
   post_syndicates: types.optional(types.array(types.string), []),
   post_status: types.optional(types.string, "published"),
+  post_published: types.maybeNull(types.string),
   is_adding_bookmark: types.optional(types.boolean, false),
   is_closing_after_post: types.optional(types.boolean, false),
   text_selection: types.optional(
@@ -92,6 +93,7 @@ export default Posting = types.model('Posting', {
     self.post_url = post.url
     self.summary = post.summary
     self.post_status = post.post_status
+    self.post_published = post.published || null
     
     if(post.category.length > 0){
       let categories = []
@@ -146,6 +148,17 @@ export default Posting = types.model('Posting', {
   set_summary: flow(function* (value) {
 		self.summary = value === "" ? null : value
   }),
+
+  set_post_published(value) {
+    self.post_published = value
+    if (Date.parse(value) > Date.now()) {
+      self.post_status = "published"
+    }
+  },
+
+  clear_post_published() {
+    self.post_published = self.is_editing_post ? new Date().toISOString() : null
+  },
   
   send_post: flow(function* () {
 		console.log("Posting:send_post", self.post_text, self.selected_service.service_object().destination)
@@ -190,7 +203,8 @@ export default Posting = types.model('Posting', {
       return false
     }
     self.is_sending_post = true
-    const should_show_progress = should_show_publishing_progress(self.post_status)
+    const is_scheduled = self.is_scheduled()
+    const should_show_progress = should_show_publishing_progress(self.post_status, is_scheduled)
     const syndicates = self.selected_service.active_destination()?.syndicates || []
     let syndicate_to = self.post_syndicates
     // Use Micro.blog's cross-post-everywhere default when all targets are selected.
@@ -199,7 +213,7 @@ export default Posting = types.model('Posting', {
     }
     const post_success = self.selected_service.type === "xmlrpc" ?
       yield XMLRPCApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
-      : yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status, syndicate_to, self.summary)
+      : yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status, syndicate_to, self.summary, self.post_published)
     if(post_success !== POST_ERROR && post_success !== XML_ERROR){
       self.post_text = ""
       self.post_title = null
@@ -208,11 +222,15 @@ export default Posting = types.model('Posting', {
       self.new_category_text = ""
       // self.post_status = "published"
       self.summary = null
+      self.post_published = null
       self.reset_post_syndicates()
       self.is_sending_post = false
       self.is_closing_after_post = true
       if (should_show_progress) {
         App.show_publishing_progress(self.selected_service.is_microblog, post_success.url)
+      }
+      if (is_scheduled) {
+        App.show_toast("Post was scheduled.")
       }
       return true
     }
@@ -474,6 +492,9 @@ export default Posting = types.model('Posting', {
   handle_post_status_select: flow(function* (status) {
     console.log("Posting:handle_post_status_select: " + status)
     self.post_status = status
+    if (status === "draft") {
+      self.post_published = null
+    }
   }),
 
   add_bookmark: flow(function* (url) {
@@ -510,15 +531,20 @@ export default Posting = types.model('Posting', {
       return false
     }
     self.is_sending_post = true
-    const should_show_progress = should_show_publishing_progress(self.post_status)
+    const is_scheduled = self.is_scheduled()
+    const should_show_progress = should_show_publishing_progress(self.post_status, is_scheduled)
     const post_url = self.post_url
-    const post_success = yield MicroPubApi.post_update(self.selected_service.service_object(), self.post_text, post_url, self.post_title, self.post_categories, self.post_status)
+    const post_success = yield MicroPubApi.post_update(self.selected_service.service_object(), self.post_text, post_url, self.post_title, self.post_categories, self.post_status, self.post_published)
     self.is_sending_post = false
     if(post_success !== POST_ERROR){
       self.clear_post()
       if (should_show_progress) {
         App.show_publishing_progress(self.selected_service.is_microblog, post_success.url || post_url)
       }
+      if (is_scheduled) {
+        App.show_toast("Post was scheduled.")
+      }
+      yield self.selected_service.refresh_post_lists()
       return true
     }
     return false
@@ -535,6 +561,7 @@ export default Posting = types.model('Posting', {
     self.is_closing_after_post = false
     self.is_editing_post = false
     self.post_url = null
+    self.post_published = null
     self.show_title = false
     self.reset_post_syndicates()
   }),
@@ -671,6 +698,10 @@ export default Posting = types.model('Posting', {
   
 }))
 .views(self => ({
+
+  is_scheduled() {
+    return self.post_status !== "draft" && self.selected_service?.type !== "xmlrpc" && Date.parse(self.post_published) > Date.now()
+  },
   
   posting_enabled(){
     return self.username != null && self.services != null && self.selected_service && self.selected_service.credentials()?.token != null

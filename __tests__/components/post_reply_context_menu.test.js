@@ -4,6 +4,7 @@ import Clipboard from '@react-native-clipboard/clipboard'
 import ReplyCell from '../../src/components/cells/reply_cell'
 import PostCell from '../../src/components/cells/post_cell'
 import App from '../../src/stores/App'
+import Auth from '../../src/stores/Auth'
 import MicroBlogApi, { API_ERROR } from '../../src/api/MicroBlogApi'
 
 jest.mock('mobx-react', () => ({ observer: component => component }))
@@ -18,6 +19,7 @@ jest.mock('../../src/stores/Auth', () => ({}))
 jest.mock('../../src/stores/App', () => ({
   navigate_to_screen: jest.fn(),
   open_url: jest.fn(),
+  open_sheet: jest.fn(),
   theme_alt_background_div_color: () => '#ccc',
   theme_background_color_secondary: () => '#fff',
   theme_text_color: () => '#000',
@@ -80,6 +82,20 @@ test('a reply without a URL cannot copy or open a missing link', () => {
 })
 
 const published_post = { uid: 'blog-post-987', post_status: 'published', published: '2020-01-01T12:00:00Z', url: 'https://alice.example/post.html' }
+
+test('drafts offer Schedule immediately after Publish and open the scheduling sheet', () => {
+  const service = {}
+  Auth.selected_user = { posting: { selected_service: service } }
+  const post = {
+    ...published_post, post_status: 'draft', is_draft: () => true,
+    plain_text_content: () => 'Draft', images_from_content: () => [], nice_local_published_date: () => 'Today'
+  }
+  const menu = new PostCell({ post }).render().props.children
+  expect(menu.props.actions.map(action => action.title)).toEqual(['Publish', 'Schedule…', 'Edit', 'Delete'])
+  menu.props.onPress({ nativeEvent: { name: 'Schedule…' } })
+  expect(App.open_sheet).toHaveBeenCalledWith('schedule_post_sheet', { service, post: { url: post.url } })
+  expect(new PostCell({ post: published_post }).make_context_menu(published_post).some(action => action.id === 'schedule')).toBe(false)
+})
 
 test.each([
   [published_post, true],

@@ -8,18 +8,15 @@ import Auth from '../../stores/Auth';
 export default class UpdatePostButton extends React.Component {
 
   render() {
-    const { post_status } = Auth.selected_user?.posting;
+    const { posting } = Auth.selected_user
     return (
       <Button
-        /* title={post_status == "draft" ? "Update" : "Publish"} */
-        title="Update"
+        title={posting.is_scheduled() ? "Schedule" : "Update"}
         color={App.theme_accent_color()}
 				onPress={async() => {
 					const sent = await Auth.selected_user.posting.send_update_post()
           if (sent) {
-            Auth.selected_user.posting.clear_post()
 						Keyboard.dismiss()
-						Auth.selected_user.posting.selected_service.update_posts_for_active_destination()
             App.go_back()
 					}
         }}

@@ -43,7 +43,7 @@ const createPosting = (is_microblog = false, media = media_endpoint) => {
     services: [{
       id: 'service', name: is_microblog ? 'Micro.blog' : 'Third party', type: 'micropub', url: endpoint,
       username: 'test', is_microblog,
-      config: { 'media-endpoint': media, destination: [{ uid: 'blog', syndicates: [{ uid: 'a', name: 'A' }, { uid: 'b', name: 'B' }] }] }
+      config: { 'media-endpoint': media, selected_posts_destination: 'blog', destination: [{ uid: 'blog', syndicates: [{ uid: 'a', name: 'A' }, { uid: 'b', name: 'B' }] }] }
     }],
     selected_service: 'service',
     post_text: 'Hello'
@@ -57,8 +57,9 @@ beforeEach(() => {
   jest.spyOn(console, 'log').mockImplementation(() => {})
   jest.spyOn(Alert, 'alert').mockImplementation(() => {})
   jest.spyOn(global, 'fetch').mockResolvedValue({ ok: true, status: 201, headers: { get: () => post_url } })
-  axios.get.mockResolvedValue({ data: {} })
+  axios.get.mockReset().mockResolvedValue({ data: {} })
   App.show_publishing_progress.mockClear()
+  App.show_toast.mockClear()
 })
 afterEach(() => jest.restoreAllMocks())
 
@@ -184,10 +185,12 @@ test.each([false, true])('sends an explicit empty list when all targets are dese
 
 test('clears the sending flag and preserves the draft when the network fails', async () => {
   const posting = createPosting()
+  posting.set_post_published('2099-06-01T14:30:00.000Z')
   fetch.mockRejectedValue(new Error('Offline'))
   await expect(posting.send_post()).resolves.toBe(false)
   expect(posting.is_sending_post).toBe(false)
   expect(posting.post_text).toBe('Hello')
+  expect(posting.post_published).toBe('2099-06-01T14:30:00.000Z')
   expect(App.show_publishing_progress).not.toHaveBeenCalled()
 })
 
@@ -248,4 +251,118 @@ test('preserves Markdown and clears the sending flag when an edit fails', async 
   await expect(posting.send_update_post()).resolves.toBe(true)
   expect(JSON.parse(fetch.mock.calls[1][1].body).replace.content).toEqual(['**Hello**'])
   expect(App.show_publishing_progress).toHaveBeenCalledWith(false, post_url)
+})
+
+const draft_entry = {
+  properties: { uid: ['draft'], url: [post_url], content: ['**Draft**'], 'post-status': ['draft'] }
+}
+
+test('publishing a draft refreshes both cached post lists', async () => {
+  const service = createPosting(true).selected_service
+  const destination = service.config.posts_destination()
+  destination.set_posts([draft_entry])
+  destination.set_drafts([draft_entry])
+  axios.get.mockImplementation((url, { params }) => Promise.resolve({ data: { items:
+    params['post-status'] === 'draft' ? [] : [{ properties: { ...draft_entry.properties, 'post-status': ['published'] } }]
+  } }))
+
+  await expect(service.publish_draft(destination.posts[0])).resolves.toBe(true)
+
+  expect(destination.posts[0].is_draft()).toBe(false)
+  expect(destination.drafts).toHaveLength(0)
+  expect(axios.get.mock.calls.map(([, { params }]) => params['post-status'])).toEqual([undefined, 'draft'])
+})
+
+test('scheduling a draft replaces only its date and status and refreshes both lists', async () => {
+  const service = createPosting(true).selected_service
+  const published = '2099-06-01T14:30:00.000Z'
+  await expect(service.schedule_post({ url: post_url }, published)).resolves.toBe(true)
+  expect(JSON.parse(fetch.mock.calls[0][1].body)).toEqual({
+    action: 'update', url: post_url, 'mp-destination': 'blog',
+    replace: { published: [published], 'post-status': ['published'] }
+  })
+  expect(axios.get).toHaveBeenCalledTimes(2)
+  expect(App.show_toast).toHaveBeenCalledWith('Post was scheduled.')
+})
+
+test('failed scheduling keeps cached drafts and does not report success', async () => {
+  const service = createPosting(true).selected_service
+  const destination = service.config.posts_destination()
+  destination.set_posts([draft_entry])
+  destination.set_drafts([draft_entry])
+  fetch.mockRejectedValueOnce(new Error('Offline'))
+
+  await expect(service.schedule_post({ url: post_url }, '2099-06-01T14:30:00Z')).resolves.toBe(false)
+
+  expect(destination.posts[0].is_draft()).toBe(true)
+  expect(destination.drafts).toHaveLength(1)
+  expect(axios.get).not.toHaveBeenCalled()
+  expect(App.show_toast).not.toHaveBeenCalled()
+})
+
+test('new posts send a chosen future date and clear it after scheduling', async () => {
+  const posting = createPosting(true)
+  const published = '2099-06-01T14:30:00.000Z'
+  await posting.handle_post_status_select('draft')
+  posting.set_post_published(published)
+  expect(posting.is_scheduled()).toBe(true)
+  expect(posting.post_status).toBe('published')
+
+  await expect(posting.send_post()).resolves.toBe(true)
+
+  const params = new (require('url').URLSearchParams)(fetch.mock.calls[0][1].body)
+  expect(params.get('published')).toBe(published)
+  expect(params.get('post-status')).toBe('published')
+  expect(App.show_publishing_progress).not.toHaveBeenCalled()
+  expect(App.show_toast).toHaveBeenCalledWith('Post was scheduled.')
+  expect(posting.post_published).toBeNull()
+})
+
+test('editing a draft can schedule it and refresh both lists', async () => {
+  const posting = createPosting(true)
+  const published = '2099-06-01T14:30:00.000Z'
+  await posting.hydrate_post_edit(Post.create({ uid: 'draft', url: post_url, content: '**Draft**', post_status: 'draft', published }))
+  expect(posting.is_scheduled()).toBe(false)
+  posting.set_post_published(published)
+  axios.get.mockClear()
+
+  await expect(posting.send_update_post()).resolves.toBe(true)
+
+  expect(JSON.parse(fetch.mock.calls[0][1].body).replace).toMatchObject({
+    content: ['**Draft**'], published: [published], 'post-status': ['published']
+  })
+  expect(axios.get).toHaveBeenCalledTimes(2)
+  expect(App.show_publishing_progress).not.toHaveBeenCalled()
+  expect(posting.post_published).toBeNull()
+})
+
+test('past dates do not schedule, and selecting draft or clearing a post removes scheduling', async () => {
+  const posting = createPosting()
+  posting.set_post_published('2020-01-01T12:00:00.000Z')
+  expect(posting.is_scheduled()).toBe(false)
+  posting.set_post_published('2099-06-01T14:30:00.000Z')
+  posting.clear_post_published()
+  expect(posting.is_scheduled()).toBe(false)
+  expect(posting.post_published).toBeNull()
+  posting.set_post_published('2099-06-01T14:30:00.000Z')
+  await posting.handle_post_status_select('draft')
+  expect(posting.post_published).toBeNull()
+  posting.set_post_published('2099-06-01T14:30:00.000Z')
+  await posting.clear_post()
+  expect(posting.post_published).toBeNull()
+})
+
+test('posting an existing scheduled post immediately replaces its future date', async () => {
+  const posting = createPosting(true)
+  await posting.hydrate_post_edit(Post.create({
+    uid: 'scheduled', url: post_url, content: 'Scheduled post', post_status: 'published',
+    published: '2099-06-01T14:30:00.000Z'
+  }))
+  expect(posting.is_scheduled()).toBe(true)
+  posting.clear_post_published()
+  expect(posting.is_scheduled()).toBe(false)
+  const published = posting.post_published
+  expect(Date.parse(published)).toBeLessThanOrEqual(Date.now())
+  await posting.send_update_post()
+  expect(JSON.parse(fetch.mock.calls[0][1].body).replace.published).toEqual([published])
 })

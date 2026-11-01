@@ -10,6 +10,7 @@ import NotificationsSheetsMenu from "./notifications";
 import UploadInfoSheet from "./upload_info";
 import CollectionsSheet from "./collections";
 import ReplySheet from './reply_sheet';
+import SchedulePostSheet from './schedule_post'
 
 registerSheet("login-message-sheet", LoginMessageSheet)
 registerSheet("main_sheet", SheetMenu);
@@ -22,5 +23,6 @@ registerSheet("notifications_sheet", NotificationsSheetsMenu)
 registerSheet("upload_info_sheet", UploadInfoSheet)
 registerSheet("collections_sheet", CollectionsSheet)
 registerSheet("reply_sheet", ReplySheet)
+registerSheet("schedule_post_sheet", SchedulePostSheet)
 
 export { }

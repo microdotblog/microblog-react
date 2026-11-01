@@ -5,6 +5,7 @@ import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
 import CheckmarkRowCell from '../../components/cells/checkmark_row_cell'
+import SchedulePicker from '../../components/posts/schedule_picker'
 
 @observer
 export default class PostingOptionsScreen extends React.Component{
@@ -12,7 +13,6 @@ export default class PostingOptionsScreen extends React.Component{
 		super(props);
 		this.scrollViewRef = React.createRef();
 		this.state = {
-			contentHeight: 0,
 			focusedField: null,
 			isPublishing: false
 		};
@@ -32,24 +32,14 @@ export default class PostingOptionsScreen extends React.Component{
 	}
 
 	handleKeyboardDidShow = () => {
-		const { posting } = Auth.selected_user;
-		
 		if (this.scrollViewRef.current) {
 			if (this.state.focusedField == "summary") {
-				// scroll down minus room for cross-posting checkboxes
-				const approx_checkbox_height = 50;
-				const num_services = posting.selected_service.active_destination()?.syndicates?.length;
-				const crossposting_height = num_services * approx_checkbox_height;
 				this.scrollViewRef.current.scrollTo({
-					y: this.state.contentHeight - crossposting_height,
+					y: this.summary_y || 0,
 					animated: true,
 				});
 			}
 		}
-	};
-
-	handleContentSizeChange = (contentWidth, contentHeight) => {
-		this.setState({ contentHeight });
 	};
 
 	handleFocus = (fieldName) => {
@@ -69,7 +59,7 @@ export default class PostingOptionsScreen extends React.Component{
           style={{ flex: 1 }}
           contentContainerStyle={{ padding: 15, paddingBottom: 50 }}
           showsVerticalScrollIndicator={true}
-		  onContentSizeChange={this.handleContentSizeChange}>
+        >
 				{/* Post status */}
 				{
 					posting.is_editing_post && (posting.post_status == "draft") &&
@@ -90,7 +80,6 @@ export default class PostingOptionsScreen extends React.Component{
 								}}
 								onPress={() => {	
 									if (!this.state.isPublishing) {
-										posting.draft
 										this.setState({ isPublishing: true });
 										const post = {
 											content: posting.post_text,
@@ -98,8 +87,12 @@ export default class PostingOptionsScreen extends React.Component{
 											url: posting.post_url
 										};
 										posting.selected_service.publish_draft(post).then(result => {
-											Keyboard.dismiss();
-											App.go_back();
+											this.setState({ isPublishing: false })
+											if (result) {
+												posting.handle_post_status_select("published")
+												Keyboard.dismiss()
+												App.go_back()
+											}
 										});
 									}
 								}}
@@ -217,7 +210,7 @@ export default class PostingOptionsScreen extends React.Component{
 				</View>
 				{/* Summary */}
 				{posting.selected_service.type !== "xmlrpc" && (
-					<View style={{ marginBottom: 25 }}>
+					<View onLayout={({ nativeEvent }) => { this.summary_y = nativeEvent.layout.y }} style={{ marginBottom: 25 }}>
 						<Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color(), marginBottom: 8 }}>Summary:</Text>
 						<TextInput
 							style={{
@@ -273,6 +266,15 @@ export default class PostingOptionsScreen extends React.Component{
 						</View>
 					</View>
 				}
+        {posting.selected_service.type !== "xmlrpc" && (
+          <View style={{ marginBottom: 25 }}>
+            <Text style={{ fontSize: 16, fontWeight: '500', color: App.theme_text_color(), marginBottom: 8 }}>Schedule:</Text>
+            <SchedulePicker value={posting.post_published} onChange={posting.set_post_published} />
+            {!posting.post_published && (
+              <Text style={{ color: App.theme_text_color(), textAlign: 'center', marginTop: 8 }}>Choose a date and time to schedule this post.</Text>
+            )}
+          </View>
+        )}
 				{/* Markdown reference */}
 				<View style={{ alignItems: 'center' }}>
 					<TouchableOpacity

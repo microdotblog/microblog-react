@@ -9,6 +9,7 @@
         "@likashefqet/react-native-image-zoom": "likashefqet/react-native-image-zoom",
         "@react-native-async-storage/async-storage": "2.2.0",
         "@react-native-clipboard/clipboard": "^1.16.3",
+        "@react-native-community/datetimepicker": "9.1.0",
         "@react-native-community/push-notification-ios": "^1.12.0",
         "@react-native-cookies/cookies": "^6.2.1",
         "@react-native-documents/picker": "^10.1.7",
@@ -512,6 +513,8 @@
     "@react-native-community/cli-tools": ["@react-native-community/cli-tools@20.0.0", "", { "dependencies": { "@vscode/sudo-prompt": "^9.0.0", "appdirsjs": "^1.2.4", "chalk": "^4.1.2", "execa": "^5.0.0", "find-up": "^5.0.0", "launch-editor": "^2.9.1", "mime": "^2.4.1", "ora": "^5.4.1", "prompts": "^2.4.2", "semver": "^7.5.2" } }, "sha512-akSZGxr1IajJ8n0YCwQoA3DI0HttJ0WB7M3nVpb0lOM+rJpsBN7WG5Ft+8ozb6HyIPX+O+lLeYazxn5VNG/Xhw=="],
 
     "@react-native-community/cli-types": ["@react-native-community/cli-types@20.0.0", "", { "dependencies": { "joi": "^17.2.1" } }, "sha512-7J4hzGWOPTBV1d30Pf2NidV+bfCWpjfCOiGO3HUhz1fH4MvBM0FbbBmE9LE5NnMz7M8XSRSi68ZGYQXgLBB2Qw=="],
+
+    "@react-native-community/datetimepicker": ["@react-native-community/datetimepicker@9.1.0", "", { "dependencies": { "invariant": "^2.2.4" }, "peerDependencies": { "expo": ">=52.0.0", "react": "*", "react-native": "*", "react-native-windows": "*" }, "optionalPeers": ["expo", "react-native-windows"] }, "sha512-eadbnk+I2vxvW30iTAsm/qlCnMMAadkifIMYNEB2lzhxN/SvlKc7S2V4k5DyrwjdCbqdcMk3t9K6fnUMcAV34w=="],
 
     "@react-native-community/eslint-config": ["@react-native-community/eslint-config@3.2.0", "", { "dependencies": { "@babel/core": "^7.14.0", "@babel/eslint-parser": "^7.18.2", "@react-native-community/eslint-plugin": "^1.1.0", "@typescript-eslint/eslint-plugin": "^5.30.5", "@typescript-eslint/parser": "^5.30.5", "eslint-config-prettier": "^8.5.0", "eslint-plugin-eslint-comments": "^3.2.0", "eslint-plugin-ft-flow": "^2.0.1", "eslint-plugin-jest": "^26.5.3", "eslint-plugin-prettier": "^4.2.1", "eslint-plugin-react": "^7.30.1", "eslint-plugin-react-hooks": "^4.6.0", "eslint-plugin-react-native": "^4.0.0" }, "peerDependencies": { "eslint": ">=8", "prettier": ">=2" } }, "sha512-ZjGvoeiBtCbd506hQqwjKmkWPgynGUoJspG8/MuV/EfKnkjCtBmeJvq2n+sWbWEvL9LWXDp2GJmPzmvU5RSvKQ=="],
 

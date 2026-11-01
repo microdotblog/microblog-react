@@ -154,6 +154,11 @@ export default class PostCell extends React.Component {
         id: "publish",
         systemIcon: "icloud.and.arrow.up",
       });
+      menu_items.push({
+        title: "Schedule…",
+        id: "schedule",
+        systemIcon: "calendar",
+      })
     }
 
     menu_items.push({
@@ -210,6 +215,11 @@ export default class PostCell extends React.Component {
           onPress={({ nativeEvent }) => {
             if (nativeEvent.name == "Publish") {
               Auth.selected_user.posting.selected_service?.publish_draft(post);
+            } else if (nativeEvent.name === "Schedule…") {
+              App.open_sheet("schedule_post_sheet", {
+                service: Auth.selected_user.posting.selected_service,
+                post: { url: post.url }
+              })
             } else if (nativeEvent.name == "Edit") {
               App.navigate_to_screen("PostEdit", post);
             } else if (nativeEvent.name == "Copy Link") {
