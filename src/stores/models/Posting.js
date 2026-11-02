@@ -29,6 +29,7 @@ export default Posting = types.model('Posting', {
   post_syndicates: types.optional(types.array(types.string), []),
   post_status: types.optional(types.string, "published"),
   post_published: types.maybeNull(types.string),
+  original_post_published: types.maybeNull(types.string),
   is_adding_bookmark: types.optional(types.boolean, false),
   is_closing_after_post: types.optional(types.boolean, false),
   text_selection: types.optional(
@@ -94,6 +95,7 @@ export default Posting = types.model('Posting', {
     self.summary = post.summary
     self.post_status = post.post_status
     self.post_published = post.published || null
+    self.original_post_published = self.post_published
     
     if(post.category.length > 0){
       let categories = []
@@ -562,6 +564,7 @@ export default Posting = types.model('Posting', {
     self.is_editing_post = false
     self.post_url = null
     self.post_published = null
+    self.original_post_published = null
     self.show_title = false
     self.reset_post_syndicates()
   }),

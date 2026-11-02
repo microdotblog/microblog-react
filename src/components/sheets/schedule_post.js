@@ -34,18 +34,20 @@ export default class SchedulePostSheet extends React.Component {
   render() {
     const { published, is_saving } = this.state
     const is_disabled = is_saving || published === this.initial_published || Date.parse(published) <= Date.now()
+    const disabled_text_color = App.is_dark_mode() ? App.theme_button_disabled_text_color() : 'lightgray'
     return (
       <ActionSheet
         id={this.props.sheetId}
         useBottomSafeAreaPadding={true}
         gestureEnabled={!is_saving}
+        headerAlwaysVisible={true}
         closable={!is_saving}
         closeOnTouchBackdrop={!is_saving}
         containerStyle={{ backgroundColor: App.theme_background_color(), maxWidth: 420, alignSelf: 'center' }}
       >
         <ScrollView contentContainerStyle={{ padding: 16 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 12 }}>
-            {is_saving && <ActivityIndicator style={{ marginRight: 10 }} />}
+            <ActivityIndicator animating={is_saving} hidesWhenStopped={true} style={{ marginRight: 10 }} />
             <TouchableOpacity
               disabled={is_disabled}
               onPress={this.schedulePost}
@@ -54,13 +56,14 @@ export default class SchedulePostSheet extends React.Component {
               style={{
                 padding: 8,
                 paddingHorizontal: 15,
-                backgroundColor: App.theme_button_background_color(),
+                backgroundColor: is_disabled ? App.theme_button_disabled_background_color() : App.theme_button_background_color(),
                 borderRadius: 20,
                 borderColor: is_disabled ? `${App.theme_section_background_color()}80` : App.theme_section_background_color(),
-                borderWidth: 1
+                borderWidth: 1,
+                opacity: is_disabled ? 0.5 : 1
               }}
             >
-              <Text style={{ color: is_disabled ? 'lightgray' : App.theme_button_text_color() }}>Schedule</Text>
+              <Text style={{ color: is_disabled ? disabled_text_color : App.theme_button_text_color() }}>Schedule</Text>
             </TouchableOpacity>
           </View>
           <SchedulePicker

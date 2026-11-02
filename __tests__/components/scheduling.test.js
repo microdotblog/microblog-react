@@ -6,6 +6,7 @@ import PostingOptionsScreen from '../../src/screens/posts/options'
 import PostButton from '../../src/components/header/post_button'
 import UpdatePostButton from '../../src/components/header/update_post'
 import Auth from '../../src/stores/Auth'
+import App from '../../src/stores/App'
 import { SheetManager } from 'react-native-actions-sheet'
 
 jest.mock('mobx-react', () => ({ observer: component => component }))
@@ -25,7 +26,9 @@ jest.mock('../../src/stores/App', () => ({
   theme_text_color: () => '#000',
   theme_background_color: () => '#fff',
   theme_button_background_color: () => '#eee',
+  theme_button_disabled_background_color: () => '#272d37',
   theme_button_text_color: () => '#000',
+  theme_button_disabled_text_color: () => '#a1a3a5',
   theme_section_background_color: () => '#eee',
   theme_input_background_color: () => '#fff',
   theme_border_color: () => '#ccc',
@@ -92,11 +95,16 @@ test('the options pane and modal use the same picker', () => {
 })
 
 test.each([
-  [true, 'published', 'Schedule', 'Schedule'],
-  [false, 'published', 'Post', 'Update'],
-  [false, 'draft', 'Save', 'Update']
-])('the editor buttons reflect scheduling and draft status', (is_scheduled, post_status, create_title, edit_title) => {
-  Auth.selected_user = { posting: { post_status, is_scheduled: () => is_scheduled } }
+  [true, true, 'published', 'Schedule', 'Schedule'],
+  [true, false, 'published', 'Schedule', 'Update'],
+  [false, false, 'published', 'Post', 'Update'],
+  [false, false, 'draft', 'Save', 'Update']
+])('the editor buttons reflect scheduling, date changes, and draft status', (is_scheduled, date_changed, post_status, create_title, edit_title) => {
+  Auth.selected_user = { posting: {
+    post_status, is_scheduled: () => is_scheduled,
+    post_published: '2099-06-01T14:30:00.000Z',
+    original_post_published: date_changed ? '2099-06-01T13:30:00Z' : '2099-06-01T14:30:00Z'
+  } }
   expect(new PostButton({}).render().props.title).toBe(create_title)
   expect(new UpdatePostButton({}).render().props.title).toBe(edit_title)
 })
@@ -112,4 +120,39 @@ test.each([true, false])('the scheduling modal closes only after a successful sa
   expect(service.schedule_post).toHaveBeenCalledWith(post, sheet.state.published)
   expect(SheetManager.hide).toHaveBeenCalledTimes(success ? 1 : 0)
   expect(sheet.state.is_saving).toBe(false)
+})
+
+test('saving preserves the handle and button layout while disabling repeated scheduling', async () => {
+  jest.spyOn(App, 'is_dark_mode').mockReturnValue(true)
+  let resolve_save
+  const service = { schedule_post: jest.fn(() => new Promise(resolve => { resolve_save = resolve })) }
+  const sheet = new SchedulePostSheet({ sheetId: 'schedule_post_sheet', payload: { service, post: { url: 'https://example.com/draft' } } })
+  sheet.setState = update => { sheet.state = { ...sheet.state, ...update } }
+  sheet.state.published = '2099-06-01T14:30:00.000Z'
+  const before = sheet.render()
+  const before_controls = before.props.children.props.children[0].props.children
+  expect(before_controls[0].props.animating).toBe(false)
+  expect(before_controls[1].props.disabled).toBe(false)
+
+  const saving = sheet.schedulePost()
+  const during = sheet.render()
+  const during_controls = during.props.children.props.children[0].props.children
+  expect(before.props.headerAlwaysVisible).toBe(true)
+  expect(during.props.headerAlwaysVisible).toBe(true)
+  expect(during.props.gestureEnabled).toBe(false)
+  expect(during_controls.map(control => control.type)).toEqual(before_controls.map(control => control.type))
+  expect(during_controls[0].props.animating).toBe(true)
+  expect(during_controls[1].props.disabled).toBe(true)
+  expect(during_controls[1].props.children.props.style.color).toBe('#a1a3a5')
+  await sheet.schedulePost()
+  expect(service.schedule_post).toHaveBeenCalledTimes(1)
+
+  resolve_save(false)
+  await saving
+  const after = sheet.render()
+  const after_controls = after.props.children.props.children[0].props.children
+  expect(after.props.headerAlwaysVisible).toBe(true)
+  expect(after.props.gestureEnabled).toBe(true)
+  expect(after_controls[0].props.animating).toBe(false)
+  expect(after_controls[1].props.disabled).toBe(false)
 })

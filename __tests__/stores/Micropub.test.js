@@ -358,6 +358,7 @@ test('posting an existing scheduled post immediately replaces its future date', 
     uid: 'scheduled', url: post_url, content: 'Scheduled post', post_status: 'published',
     published: '2099-06-01T14:30:00.000Z'
   }))
+  expect(posting.original_post_published).toBe('2099-06-01T14:30:00.000Z')
   expect(posting.is_scheduled()).toBe(true)
   posting.clear_post_published()
   expect(posting.is_scheduled()).toBe(false)
@@ -365,4 +366,5 @@ test('posting an existing scheduled post immediately replaces its future date', 
   expect(Date.parse(published)).toBeLessThanOrEqual(Date.now())
   await posting.send_update_post()
   expect(JSON.parse(fetch.mock.calls[0][1].body).replace.published).toEqual([published])
+  expect(posting.original_post_published).toBeNull()
 })

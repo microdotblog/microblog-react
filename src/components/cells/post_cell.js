@@ -201,6 +201,7 @@ export default class PostCell extends React.Component {
 
   render() {
     const { post } = this.props;
+    const is_scheduled = !post.is_draft() && Date.parse(post.published) > Date.now()
     let menu_items = this.make_context_menu(post);
     return (
       <Swipeable
@@ -280,6 +281,7 @@ export default class PostCell extends React.Component {
                 <Text style={{ color: "gray", fontSize: 12 }}>
                   {post.nice_local_published_date()}
                   {post.is_draft() ? <Text> — draft</Text> : null}
+                  {is_scheduled ? <Text> — scheduled</Text> : null}
                 </Text>
               </TouchableOpacity>
               {Platform.OS === "android" && (
