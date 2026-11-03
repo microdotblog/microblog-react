@@ -147,16 +147,14 @@ const Service = types.model('Service', {
   
   set_active_destination: flow(function* (destination, type = null) { 
     if(destination){
+      self.config.set_selected_posts_destination(destination)
       if(type === "posts"){
-        self.config.set_selected_posts_destination(destination)// TODO: Probably rewrite this too so it's more generic.
         self.check_for_posts_for_destination(destination)
       }
       else if(type === "pages"){
-        self.config.set_selected_posts_destination(destination)
         self.check_for_pages_for_destination(destination)
       }
       else if(type === "uploads"){
-        self.config.set_selected_posts_destination(destination)
         self.check_for_uploads_for_destination(destination)
       }
     }
@@ -242,8 +240,7 @@ const Service = types.model('Service', {
   }),
 
   schedule_post: flow(function* (post, published) {
-    const service = { ...self.service_object(), destination: self.config.posts_destination()?.uid || null }
-    const result = yield MicroPubApi.post_update(service, undefined, post.url, undefined, undefined, 'published', published)
+    const result = yield MicroPubApi.post_update(self.service_object(), undefined, post.url, undefined, undefined, 'published', published)
     if (result !== POST_ERROR) {
       App.show_toast("Post was scheduled.")
       yield self.refresh_post_lists()

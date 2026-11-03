@@ -4,6 +4,7 @@ import Destination from './Destination';
 export default Config = types.model('Config', {
   "media-endpoint": types.maybeNull(types.string),
   destination: types.optional(types.array(Destination), []),
+  // Keep the persisted key, but use this selection throughout the app.
   selected_posts_destination: types.maybeNull(types.string, "")
 })
   .actions(self => ({
@@ -27,7 +28,7 @@ export default Config = types.model('Config', {
     },
     
     set_selected_posts_destination(destination){
-      self.selected_posts_destination = destination.uid
+      self.set_default_destination(destination)
     },
     
     set_previously_selected_posts_destination(uid){
@@ -45,8 +46,10 @@ export default Config = types.model('Config', {
 .views(self => ({
   
   active_destination(){
-    const destination = self.destination?.find(destination => destination['microblog-default'])
-    return self.destination != null && self.destination.length > 0 ? destination ? destination : self.destination[self.destination.length - 1] : null
+    return self.destination.find(destination => destination.uid === self.selected_posts_destination)
+      || self.destination.find(destination => destination['microblog-default'])
+      || self.destination[self.destination.length - 1]
+      || null
   },
   
   has_multiple_destinations(){
@@ -58,11 +61,11 @@ export default Config = types.model('Config', {
   },
 
   temporary_destination() {
-    return self.destination != null && self.destination.length ? self.destination.find(destination => destination.uid === self.selected_posts_destination) : null
+    return self.active_destination()
   },
   
   posts_destination(){
-    return self.destination != null && self.destination.length ? self.destination.find(destination => destination.uid === self.selected_posts_destination) : null
+    return self.active_destination()
   },
   
   posts_for_destination(show_drafts = false){
@@ -75,7 +78,7 @@ export default Config = types.model('Config', {
   },
   
   pages_destination(){
-    return self.destination != null && self.destination.length ? self.destination.find(destination => destination.uid === self.selected_posts_destination) : null
+    return self.active_destination()
   },
   
   pages_for_destination(){
@@ -83,7 +86,7 @@ export default Config = types.model('Config', {
   },
 
   uploads_destination(){
-    return self.destination != null && self.destination.length ? self.destination.find(destination => destination.uid === self.selected_posts_destination) : null
+    return self.active_destination()
   },
 
   uploads_for_destination() {

@@ -137,6 +137,49 @@ test('keeps existing configuration when refresh fails', async () => {
   expect(getSnapshot(service.config)).toEqual(config)
 })
 
+test.each(['posts', 'pages', 'uploads'])('switching blogs in the editor and then %s keeps edits on the current blog', async type => {
+  const posting = createPosting(true)
+  const service = posting.selected_service
+  await service.set_initial_config({
+    destination: [{ uid: 'blog', 'microblog-default': true }, { uid: 'other' }],
+    'syndicate-to': []
+  })
+  const config = service.config
+  const [blog, other] = config.destination
+  blog.set_posts([{ properties: { uid: ['post'], url: [post_url], content: ['Original'] } }])
+
+  config.set_default_destination(other)
+  expect([config.posts_destination(), config.pages_destination(), config.uploads_destination()]).toEqual([other, other, other])
+
+  await service.set_active_destination(blog, type)
+  expect(service.active_destination()).toBe(blog)
+  expect([config.posts_destination(), config.pages_destination(), config.uploads_destination()]).toEqual([blog, blog, blog])
+  expect(service.service_object()).toMatchObject({ destination: 'blog', temporary_destination: 'blog' })
+
+  await posting.hydrate_post_edit(blog.posts[0])
+  await expect(posting.send_update_post()).resolves.toBe(true)
+  expect(JSON.parse(fetch.mock.calls[0][1].body)).toMatchObject({ url: post_url, 'mp-destination': 'blog' })
+})
+
+test('restores one current blog from saved selection and preserves it across configuration refreshes', async () => {
+  const service = createPosting(true).selected_service
+  const server_config = {
+    destination: [{ uid: 'blog', 'microblog-default': true }, { uid: 'other' }],
+    'syndicate-to': []
+  }
+  await service.set_initial_config(server_config)
+  applySnapshot(service.config, { ...getSnapshot(service.config), selected_posts_destination: 'other' })
+  expect(service.active_destination().uid).toBe('other')
+  expect(service.config.posts_destination()).toBe(service.active_destination())
+
+  jest.spyOn(MicroPubApi, 'get_config').mockResolvedValue(server_config)
+  await service.hydrate()
+
+  expect(service.active_destination().uid).toBe('other')
+  expect(service.config.posts_destination()).toBe(service.active_destination())
+  expect(service.service_object()).toMatchObject({ destination: 'other', temporary_destination: 'other' })
+})
+
 test('sends all selected syndication targets and uses the external post URL', async () => {
   const posting = createPosting()
   await expect(posting.send_post()).resolves.toBe(true)
