@@ -43,7 +43,7 @@ export default Auth = types.model('Auth', {
     // so we should also try and clear any tokens we might have
     yield Tokens.destroy_all_token_data()
     yield AsyncStorage.clear()
-    CookieManager.clearAll()
+    yield self.clear_cookies()
     // We most likely do not need the below as it should never hydrate
     // in the first place
     self.users = []
@@ -139,9 +139,12 @@ export default Auth = types.model('Auth', {
   
   clear_cookies: flow(function* () {
     console.log("Auth:clear_cookies")
-    CookieManager.clearAll()
     self.is_selecting_user = true
     self.did_load_one_or_more_webviews = false
+    yield CookieManager.clearAll()
+    if (Platform.OS === 'ios') {
+      yield CookieManager.clearAll(true)
+    }
   }),
 
   invalidate_webview_bootstrap: flow(function* () {
