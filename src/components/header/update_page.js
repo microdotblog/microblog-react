@@ -12,10 +12,10 @@ export default class UpdatePageButton extends React.Component {
       <Button
         title="Update"
         color={App.theme_accent_color()}
+        disabled={Auth.selected_user.posting.is_sending_post}
 				onPress={async() => {
 					const sent = await Auth.selected_user.posting.send_update_post()
           if (sent) {
-            Auth.selected_user.posting.clear_post()
 						Keyboard.dismiss()
 						Auth.selected_user.posting.selected_service.update_pages_for_active_destination()
             App.go_back()

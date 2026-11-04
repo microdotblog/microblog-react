@@ -103,7 +103,7 @@ export default class Posting extends React.Component{
           component={PostingScreen}
           options={{
             headerTitle: "New Post",
-            ...headerLeftElement(() => <CloseModalButton />),
+            ...headerLeftElement(() => <CloseModalButton posting={Auth.selected_user?.posting} />),
             ...headerRightElement(() => <PostButton />, { hidesSharedBackground: true })
           }}
         />

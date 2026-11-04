@@ -217,16 +217,6 @@ export default Posting = types.model('Posting', {
       yield XMLRPCApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status)
       : yield MicroPubApi.send_post(self.selected_service.service_object(), self.post_text, self.post_title, self.post_assets, self.post_categories, self.post_status, syndicate_to, self.summary, self.post_published)
     if(post_success !== POST_ERROR && post_success !== XML_ERROR){
-      self.post_text = ""
-      self.post_title = null
-      self.post_assets = []
-      self.post_categories = []
-      self.new_category_text = ""
-      // self.post_status = "published"
-      self.summary = null
-      self.post_published = null
-      self.reset_post_syndicates()
-      self.is_sending_post = false
       self.is_closing_after_post = true
       if (should_show_progress) {
         App.show_publishing_progress(self.selected_service.is_microblog, post_success.url)
@@ -537,9 +527,7 @@ export default Posting = types.model('Posting', {
     const should_show_progress = should_show_publishing_progress(self.post_status, is_scheduled)
     const post_url = self.post_url
     const post_success = yield MicroPubApi.post_update(self.selected_service.service_object(), self.post_text, post_url, self.post_title, self.post_categories, self.post_status, self.post_published)
-    self.is_sending_post = false
     if(post_success !== POST_ERROR){
-      self.clear_post()
       if (should_show_progress) {
         App.show_publishing_progress(self.selected_service.is_microblog, post_success.url || post_url)
       }
@@ -547,8 +535,10 @@ export default Posting = types.model('Posting', {
         App.show_toast("Post was scheduled.")
       }
       yield self.selected_service.refresh_post_lists()
+      self.is_closing_after_post = true
       return true
     }
+    self.is_sending_post = false
     return false
   }),
   

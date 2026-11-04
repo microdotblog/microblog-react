@@ -38,6 +38,7 @@ export default class PostsScreen extends React.Component{
 
   componentDidUpdate() {
     this._refresh_posts_if_needed()
+    this._update_drafts_button()
   }
 
   componentWillUnmount() {
@@ -254,6 +255,21 @@ export default class PostsScreen extends React.Component{
   _has_any_drafts = (posts) => {
     return posts.some(post => post["post_status"] == "draft");
   }
+
+  _update_drafts_button = () => {
+    const { selected_service, destination } = this._current_posts_context()
+    if (!destination || selected_service.is_loading_posts || App.is_searching_posts) {
+      return
+    }
+
+    const has_drafts = destination.drafts.length > 0 || this._has_any_drafts(destination.posts)
+    if (has_drafts !== this.state.is_showing_drafts_button || (!has_drafts && this.state.is_showing_drafts_posts)) {
+      this.setState({
+        is_showing_drafts_button: has_drafts,
+        is_showing_drafts_posts: has_drafts && this.state.is_showing_drafts_posts
+      })
+    }
+  }
   
   render_post_item = ({ item }) => {
     return (
@@ -267,14 +283,6 @@ export default class PostsScreen extends React.Component{
     const destination = config.posts_destination()
     const posts = config.posts_for_destination(this.state.is_showing_drafts_posts)?.slice() || []
     const list_key = `${selected_service.id}-${destination?.uid || "posts"}-${this.state.is_showing_drafts_posts ? "drafts" : "posts"}`
-    
-    setTimeout(() => {
-      // check if we need drafts button, but if set, never unset
-      if (!this.state.is_showing_drafts_button && posts.length) {
-        const any_drafts = this._has_any_drafts(posts);
-        this.setState({ is_showing_drafts_button: any_drafts });
-      }
-    }, 500);
     
     return(
       <SafeAreaInsetsContext.Consumer>

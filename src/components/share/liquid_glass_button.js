@@ -10,6 +10,15 @@ export default class LiquidGlassButton extends React.Component {
       return null
     }
 
-    return <NativeLiquidGlassButton {...this.props} />
+    const { disabled, style, onPress, ...props } = this.props
+    return (
+      <NativeLiquidGlassButton
+        {...props}
+        pointerEvents={disabled ? 'none' : 'auto'}
+        accessibilityState={{ disabled: !!disabled }}
+        style={[style, disabled ? { opacity: 0.5 } : null]}
+        onPress={disabled ? undefined : onPress}
+      />
+    )
   }
 }

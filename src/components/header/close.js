@@ -10,6 +10,7 @@ import { SvgXml } from 'react-native-svg'
 export default class CloseModalButton extends React.Component {
 
   render() {
+    const is_disabled = this.props.disabled || this.props.posting?.is_sending_post
     let button_style = {
       marginLeft: -15,
       paddingHorizontal: 12,
@@ -55,6 +56,7 @@ export default class CloseModalButton extends React.Component {
     if (Platform.OS === 'ios') {
       return (
         <Pressable
+          disabled={is_disabled}
           onPress={handle_press}
           style={button_style}
           hitSlop={HEADER_BUTTON_HIT_SLOP}
@@ -68,6 +70,7 @@ export default class CloseModalButton extends React.Component {
 
     return (
       <TouchableOpacity
+        disabled={is_disabled}
         onPress={handle_press}
         style={button_style}
         hitSlop={HEADER_BUTTON_HIT_SLOP}

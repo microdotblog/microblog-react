@@ -7,6 +7,7 @@ import App from '../../stores/App';
 import PostToolbar from '../../components/keyboard/post_toolbar';
 import HighlightingText from '../../components/text/highlighting_text';
 import LoadingComponent from '../../components/generic/loading';
+import PostEditorContainer from '../../components/posts/post_editor_container'
 
 @observer
 export default class PostEditScreen extends React.Component{
@@ -14,7 +15,7 @@ export default class PostEditScreen extends React.Component{
   render() {
     const { posting } = Auth.selected_user
     return(
-      <>
+      <PostEditorContainer posting={posting}>
         <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={125} style={{ flex: 1 }}>
           {
             posting.should_show_title() ?
@@ -84,7 +85,7 @@ export default class PostEditScreen extends React.Component{
         <KeyboardStickyView>
           <PostToolbar componentId={this.props.componentId} is_post_edit />
         </KeyboardStickyView>
-      </>
+      </PostEditorContainer>
     )
   }
   

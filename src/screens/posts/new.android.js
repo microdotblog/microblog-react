@@ -9,6 +9,7 @@ import AssetToolbar from '../../components/keyboard/asset_toolbar';
 import UsernameToolbar from '../../components/keyboard/username_toolbar';
 import HighlightingText from '../../components/text/highlighting_text';
 import LoadingComponent from '../../components/generic/loading';
+import PostEditorContainer from '../../components/posts/post_editor_container'
 
 @observer
 export default class PostingScreen extends React.Component{
@@ -21,7 +22,7 @@ export default class PostingScreen extends React.Component{
     const { posting } = Auth.selected_user
     const is_editor_enabled = !posting.is_sending_post && !posting.is_closing_after_post
     return(
-      <>
+      <PostEditorContainer posting={posting}>
         <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={125} style={{ flex: 1 }}>
           {
             posting.should_show_title() ?
@@ -93,7 +94,7 @@ export default class PostingScreen extends React.Component{
           <UsernameToolbar componentId={this.props.componentId} object={posting} />
           <PostToolbar componentId={this.props.componentId} />
         </KeyboardStickyView>
-      </>
+      </PostEditorContainer>
     )
   }
   

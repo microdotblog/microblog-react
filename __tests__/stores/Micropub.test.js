@@ -343,7 +343,7 @@ test('failed scheduling keeps cached drafts and does not report success', async 
   expect(App.show_toast).not.toHaveBeenCalled()
 })
 
-test('new posts send a chosen future date and clear it after scheduling', async () => {
+test('new posts retain their content and date until the scheduled editor closes', async () => {
   const posting = createPosting(true)
   const published = '2099-06-01T14:30:00.000Z'
   await posting.handle_post_status_select('draft')
@@ -358,6 +358,11 @@ test('new posts send a chosen future date and clear it after scheduling', async 
   expect(params.get('post-status')).toBe('published')
   expect(App.show_publishing_progress).not.toHaveBeenCalled()
   expect(App.show_toast).toHaveBeenCalledWith('Post was scheduled.')
+  expect(posting.post_text).toBe('Hello')
+  expect(posting.post_published).toBe(published)
+  expect(posting.is_sending_post).toBe(true)
+  expect(posting.is_closing_after_post).toBe(true)
+  await posting.clear_post()
   expect(posting.post_published).toBeNull()
 })
 
@@ -376,6 +381,11 @@ test('editing a draft can schedule it and refresh both lists', async () => {
   })
   expect(axios.get).toHaveBeenCalledTimes(2)
   expect(App.show_publishing_progress).not.toHaveBeenCalled()
+  expect(posting.post_text).toBe('**Draft**')
+  expect(posting.post_published).toBe(published)
+  expect(posting.is_sending_post).toBe(true)
+  expect(posting.is_closing_after_post).toBe(true)
+  await posting.clear_post()
   expect(posting.post_published).toBeNull()
 })
 
@@ -409,5 +419,44 @@ test('posting an existing scheduled post immediately replaces its future date', 
   expect(Date.parse(published)).toBeLessThanOrEqual(Date.now())
   await posting.send_update_post()
   expect(JSON.parse(fetch.mock.calls[0][1].body).replace.published).toEqual([published])
+  await posting.clear_post()
   expect(posting.original_post_published).toBeNull()
+})
+
+test('publishing a draft keeps its fields locked through the save and list refresh', async () => {
+  const posting = createPosting(true)
+  await posting.hydrate_post_edit(Post.create({
+    uid: 'draft', url: post_url, name: 'Title', content: '**Draft**', post_status: 'draft'
+  }))
+  await posting.handle_post_status_select('published')
+  let resolve_save
+  let resolve_refresh
+  jest.spyOn(MicroPubApi, 'post_update').mockImplementation(() => new Promise(resolve => { resolve_save = resolve }))
+  axios.get.mockImplementation(() => new Promise(resolve => { resolve_refresh = resolve }))
+
+  const saving = posting.send_update_post()
+  expect(posting.is_sending_post).toBe(true)
+  expect(posting.post_text).toBe('**Draft**')
+  expect(posting.post_title).toBe('Title')
+
+  resolve_save({ url: post_url })
+  await Promise.resolve()
+  expect(posting.is_sending_post).toBe(true)
+  expect(posting.is_closing_after_post).toBe(false)
+  expect(posting.post_text).toBe('**Draft**')
+  expect(posting.post_title).toBe('Title')
+
+  // Allow the remaining refresh request to finish without clearing the editor.
+  axios.get.mockResolvedValue({ data: { items: [] } })
+  resolve_refresh({ data: { items: [] } })
+  await expect(saving).resolves.toBe(true)
+  expect(posting.is_sending_post).toBe(true)
+  expect(posting.is_closing_after_post).toBe(true)
+  expect(posting.post_text).toBe('**Draft**')
+  expect(posting.post_title).toBe('Title')
+
+  await posting.clear_post()
+  expect(posting.post_text).toBe('')
+  expect(posting.is_sending_post).toBe(false)
+  expect(posting.is_closing_after_post).toBe(false)
 })

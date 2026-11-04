@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { TouchableOpacity, Platform } from 'react-native';
 import App from './../../stores/App';
+import Auth from '../../stores/Auth'
 import { HEADER_BUTTON_HIT_SLOP, isLiquidGlass } from './../../utils/ui';
 import { SFSymbol } from 'react-native-sfsymbols';
 import { SvgXml } from 'react-native-svg';
@@ -23,6 +24,7 @@ export default class ClosePostClearButton extends React.Component {
 
     return (
       <TouchableOpacity
+        disabled={Auth.selected_user?.posting?.is_sending_post}
         onPress={() => {
           App.go_back_and_clear()
         }}

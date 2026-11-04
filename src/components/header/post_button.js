@@ -9,18 +9,13 @@ import LiquidGlassButton from '../share/liquid_glass_button'
 @observer
 export default class PostButton extends React.Component {
 
-  wait(milliseconds) {
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
-  }
-
   render() {
     const { posting } = Auth.selected_user
     const title = posting.is_scheduled() ? "Schedule" : posting.post_status === "draft" ? "Save" : "Post"
     const handle_press = async () => {
       Keyboard.dismiss()
-      const sent = await Auth.selected_user.posting.send_post()
+      const sent = await posting.send_post()
       if (sent) {
-        await this.wait(500)
         App.go_back()
       }
     }
@@ -34,6 +29,7 @@ export default class PostButton extends React.Component {
           foregroundColor="#fff"
           baseBackgroundColor={App.theme_accent_color()}
           buttonAccessibilityLabel={title}
+          disabled={posting.is_sending_post}
           onPress={handle_press}
         />
       )
@@ -42,6 +38,7 @@ export default class PostButton extends React.Component {
     if (Platform.OS === 'ios') {
       return (
         <Pressable
+          disabled={posting.is_sending_post}
           onPress={handle_press}
           style={{
             minWidth: 44,
@@ -71,7 +68,7 @@ export default class PostButton extends React.Component {
       )
     }
 
-    return <Button title={title} color={App.theme_accent_color()} onPress={handle_press} />
+    return <Button title={title} color={App.theme_accent_color()} disabled={posting.is_sending_post} onPress={handle_press} />
   }
 
 }

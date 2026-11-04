@@ -8,6 +8,7 @@ import Auth from '../../stores/Auth';
 import SharePostScreen from './post'
 import ShareImageOptionsScreen from './image_options'
 import ShareHeaderComponent from '../../components/share/header'
+import PostEditorContainer from '../../components/posts/post_editor_container'
 
 @observer
 export default class ShareScreen extends React.Component {
@@ -27,7 +28,7 @@ export default class ShareScreen extends React.Component {
 							</View>
 							:
 							Share.is_logged_in() ?
-								<View style={{ position: "relative", flex: 1 }}>
+								<PostEditorContainer posting={Auth.selected_user.posting} style={{ position: "relative" }}>
 									<ShareHeaderComponent />
 									{
 										Share.image_options_open ?
@@ -61,7 +62,7 @@ export default class ShareScreen extends React.Component {
 											}
 										</>
 									}
-								</View>
+								</PostEditorContainer>
 								:
 								<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
 									<Text style={{ color: App.theme_text_color(), fontSize: 17, textAlign: "center", marginBottom: 10}}>Using the Micro.blog app, please sign in before using the share extension.</Text>

@@ -14,6 +14,7 @@ export default class UpdatePostButton extends React.Component {
       <Button
         title={posting.is_scheduled() && date_changed ? "Schedule" : "Update"}
         color={App.theme_accent_color()}
+        disabled={posting.is_sending_post}
 				onPress={async() => {
 					const sent = await Auth.selected_user.posting.send_update_post()
           if (sent) {

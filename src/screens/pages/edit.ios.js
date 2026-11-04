@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { TextInput, View } from 'react-native';
+import { TextInput } from 'react-native';
 import { KeyboardStickyView } from "react-native-keyboard-controller";
 import Auth from '../../stores/Auth';
 import App from '../../stores/App'
@@ -8,6 +8,7 @@ import EditorKeyboardAvoidingView from '../../components/keyboard/editor_keyboar
 import PostToolbar from '../../components/keyboard/post_toolbar'
 import HighlightingText from '../../components/text/highlighting_text';
 import LoadingComponent from '../../components/generic/loading';
+import PostEditorContainer from '../../components/posts/post_editor_container'
 
 @observer
 export default class PageEditScreen extends React.Component{
@@ -41,7 +42,7 @@ export default class PageEditScreen extends React.Component{
   render() {
     const { posting } = Auth.selected_user
     return(
-      <View style={{ flex: 1 }}>
+      <PostEditorContainer posting={posting}>
         <EditorKeyboardAvoidingView
           pointerEvents={this.state.editor_is_visible ? 'auto' : 'none'}
           style={[
@@ -114,7 +115,7 @@ export default class PageEditScreen extends React.Component{
         <KeyboardStickyView>
           <PostToolbar componentId={this.props.componentId} is_post_edit hide_count hide_settings />
         </KeyboardStickyView>
-      </View>
+      </PostEditorContainer>
     )
   }
   
