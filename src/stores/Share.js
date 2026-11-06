@@ -6,6 +6,7 @@ import Tokens from "./Tokens";
 import User from './models/User';
 import string_checker from '../utils/string_checker'
 import { share_type_for_mime_type } from '../utils/share_intents'
+import { fetchCallsheetMovieLink } from '../utils/callsheet'
 import { Platform, Keyboard } from 'react-native'
 import App from "./App"
 import Auth from './Auth';
@@ -137,7 +138,11 @@ const Share = types.model('Share', {
 
 			self.share_type = share_type
 			if (self.share_type === "text") {
-				self.share_text = string_checker._validate_url(normalized_data) ? normalized_data : `> ${ normalized_data }`
+				const movie_link = yield fetchCallsheetMovieLink(normalized_data)
+				self.share_text = movie_link || (string_checker._validate_url(normalized_data) ? normalized_data : `> ${ normalized_data }`)
+				if (movie_link) {
+					self.share_url = normalized_data
+				}
 				if (Platform.OS === "ios") {
 					self.users.forEach(user => {
 						user.posting.set_post_text(self.share_text)
@@ -172,7 +177,12 @@ const Share = types.model('Share', {
 				const parsed_data = JSON.parse(normalized_data)
 
 				let share_text = ""
-				if (parsed_data.title && parsed_data.url) {
+				const movie_link = yield fetchCallsheetMovieLink(parsed_data.url)
+				if (movie_link) {
+					share_text = movie_link
+					self.share_url = parsed_data.url
+				}
+				else if (parsed_data.title && parsed_data.url) {
 					share_text += `[${parsed_data.title}](${parsed_data.url})`
 					self.share_url = parsed_data.url
 				}
