@@ -300,6 +300,23 @@ const draft_entry = {
   properties: { uid: ['draft'], url: [post_url], content: ['**Draft**'], 'post-status': ['draft'] }
 }
 
+test('deleting a draft from Posts refreshes both cached lists after confirmation', async () => {
+  const service = createPosting(true).selected_service
+  const destination = service.config.posts_destination()
+  destination.set_posts([draft_entry])
+  destination.set_drafts([draft_entry])
+  fetch.mockResolvedValueOnce({ ok: true, status: 204, headers: { get: () => null } })
+  axios.get.mockResolvedValue({ data: { items: [] } })
+
+  service.trigger_post_delete(destination.posts[0])
+  expect(fetch).not.toHaveBeenCalled()
+  const confirm = Alert.alert.mock.calls[0][2].find(button => button.text === 'Delete')
+  await confirm.onPress()
+
+  expect(destination.posts).toHaveLength(0)
+  expect(destination.drafts).toHaveLength(0)
+})
+
 test('publishing a draft refreshes both cached post lists', async () => {
   const service = createPosting(true).selected_service
   const destination = service.config.posts_destination()

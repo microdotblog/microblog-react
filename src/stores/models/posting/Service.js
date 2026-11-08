@@ -202,11 +202,10 @@ const Service = types.model('Service', {
     
   delete_post: flow(function* (post) {
     console.log("Destination:delete_post", post)
-    const show_drafts = post.is_draft()
     const status = yield MicroPubApi.delete_post(self.service_object(), post.url)
     if(status !== DELETE_ERROR){
       App.show_toast("Post was deleted.")
-      yield self.refresh_posts_for_current_view(show_drafts)
+      yield self.refresh_post_lists()
     }
     else{
       Alert.alert("Whoops", "Could not delete post. Please try again.")
