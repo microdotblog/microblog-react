@@ -13,6 +13,7 @@ import LoadingBanner from './loading_banner'
 import HorizontalSafeAreaView from '../common/horizontal_safe_area_view'
 import {
   build_webview_source_uri,
+  createWebViewHealthCheck,
   get_base_webview_path,
   is_signin_webview_path,
   is_webview_endpoint_url,
@@ -28,6 +29,14 @@ const WebViewModule = observer((props) => {
   const webViewRef = React.useRef(null)
   const hasSetDidLoadRef = React.useRef(false)
   const hasAttemptedRecoveryRef = React.useRef(false)
+  const hasLoadedPageRef = React.useRef(false)
+  const needsHealthCheckRef = React.useRef(false)
+  const app_state = App.app_state
+  const previousAppStateRef = React.useRef(app_state)
+  const is_reply_sheet_open = Reply.is_sheet_open
+  const wasReplySheetOpenRef = React.useRef(is_reply_sheet_open)
+  const [health_check] = React.useState(createWebViewHealthCheck)
+  const [web_view_recovery, set_web_view_recovery] = React.useState(0)
   const [is_focus_settled, set_is_focus_settled] = React.useState(isFocused)
   const [state, setState] = React.useState({
     opacity: 0.0,
@@ -38,7 +47,7 @@ const WebViewModule = observer((props) => {
   })
 
   const web_url = "https://micro.blog"
-  const web_view_key = `${props.endpoint}:${App.web_view_epoch}`
+  const web_view_key = `${props.endpoint}:${App.web_view_epoch}:${web_view_recovery}`
   const source_uri = build_webview_source_uri({
     did_load_one_or_more_webviews: Auth.did_load_one_or_more_webviews,
     endpoint: props.endpoint,
@@ -121,7 +130,7 @@ const WebViewModule = observer((props) => {
     ${web_view_tap_guard_javascript}
   ` : web_view_tap_guard_javascript
   const should_render_direct_webview = Platform.OS === 'ios' && props.profile == null
-  const should_use_native_pull_to_refresh = should_render_direct_webview && isFocused && is_focus_settled && !Reply.is_sheet_open
+  const should_use_native_pull_to_refresh = should_render_direct_webview && isFocused && is_focus_settled && !is_reply_sheet_open
 
   React.useEffect(() => {
     let did_cancel = false
@@ -208,9 +217,42 @@ const WebViewModule = observer((props) => {
     return true
   }
 
-  const onContentProcessDidTerminate = () => {
+  const checkWebViewHealth = React.useCallback(() => {
+    const web_view = webViewRef.current
+    if (web_view == null) {
+      return
+    }
+
+    health_check.schedule(web_view, () => App.app_state === 'active' && webViewRef.current === web_view, is_healthy => {
+      needsHealthCheckRef.current = false
+      if (!is_healthy) {
+        set_web_view_recovery(recovery => recovery + 1)
+      }
+    })
+  }, [health_check])
+
+  React.useEffect(() => {
+    const did_resume = previousAppStateRef.current !== 'active' && app_state === 'active'
+    const did_close_reply = wasReplySheetOpenRef.current && !is_reply_sheet_open
+    previousAppStateRef.current = app_state
+    wasReplySheetOpenRef.current = is_reply_sheet_open
+    const should_check_loaded_page = hasLoadedPageRef.current && (did_resume || did_close_reply)
+    if (Platform.OS === 'ios' && isFocused && app_state === 'active' && (needsHealthCheckRef.current || should_check_loaded_page)) {
+      checkWebViewHealth()
+    }
+    return health_check.cancel
+  }, [app_state, is_reply_sheet_open, isFocused, web_view_key, health_check, checkWebViewHealth])
+
+  const onContentProcessDidTerminate = (event) => {
+    // React Native WebView also emits this event without a URL during teardown.
+    if (!event.nativeEvent.url) {
+      return
+    }
     console.log("WebViewModule:onContentProcessDidTerminate")
-    webViewRef.current?.reload()
+    needsHealthCheckRef.current = true
+    if (isFocused && app_state === 'active') {
+      checkWebViewHealth()
+    }
   }
 
   const _webview = () => {
@@ -227,6 +269,9 @@ const WebViewModule = observer((props) => {
           <View style={{ flex: 1, backgroundColor: App.theme_background_color() }} />
         )}
         onLoadStart={() => {
+          health_check.cancel()
+          needsHealthCheckRef.current = false
+          hasLoadedPageRef.current = false
           setState(prevState => {
             return {
               ...prevState,
@@ -234,6 +279,11 @@ const WebViewModule = observer((props) => {
               loading_progress: 0,
             }
           })
+        }}
+        onLoad={() => {
+          health_check.cancel()
+          needsHealthCheckRef.current = false
+          hasLoadedPageRef.current = true
         }}
         onLoadProgress={(event) => {
           try {
@@ -324,7 +374,9 @@ const WebViewModule = observer((props) => {
           }
         }}
         onMessage={(event) => {
-          App.handle_web_view_message(event.nativeEvent.data)
+          if (!health_check.handleMessage(event.nativeEvent.data)) {
+            App.handle_web_view_message(event.nativeEvent.data)
+          }
         }}
         onError={(event) => {
           console.log("WebViewModule:onError", event?.nativeEvent)
@@ -336,7 +388,10 @@ const WebViewModule = observer((props) => {
         }}
         onRenderProcessGone={(event) => {
           console.log("WebViewModule:onRenderProcessGone", event?.nativeEvent)
-          trigger_webview_recovery(event?.nativeEvent?.url ?? source_uri)
+          if (!hasAttemptedRecoveryRef.current) {
+            hasAttemptedRecoveryRef.current = true
+            set_web_view_recovery(recovery => recovery + 1)
+          }
         }}
         style={{ flex: 1, backgroundColor: App.theme_background_color(), opacity: state.opacity }}
         renderError={(name, code, description) => (

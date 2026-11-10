@@ -2,6 +2,72 @@ import { DEFAULT_THEME, normalise_theme } from './theme'
 
 export { normalise_theme }
 
+const WEBVIEW_HEALTH_PREFIX = '__webview_health_ping__'
+const WEBVIEW_HEALTH_DELAY_MS = 1000
+const WEBVIEW_HEALTH_TIMEOUT_MS = 1500
+let next_health_check_id = 0
+
+export const createWebViewHealthCheck = () => {
+  let timer = null
+  let expected_reply = null
+  let acknowledge = null
+
+  const cancel = () => {
+    clearTimeout(timer)
+    timer = null
+    expected_reply = null
+    acknowledge = null
+  }
+
+  return {
+    cancel,
+    schedule(web_view, can_check, on_result) {
+      if (timer != null) {
+        return
+      }
+
+      const finish = (is_healthy) => {
+        cancel()
+        if (can_check()) {
+          on_result(is_healthy)
+        }
+      }
+
+      timer = setTimeout(() => {
+        if (!can_check()) {
+          cancel()
+          return
+        }
+
+        expected_reply = `${WEBVIEW_HEALTH_PREFIX}${++next_health_check_id}`
+        acknowledge = () => finish(true)
+        timer = setTimeout(() => finish(false), WEBVIEW_HEALTH_TIMEOUT_MS)
+
+        try {
+          web_view.injectJavaScript(`
+            if (document.body && window.location.protocol === 'https:') {
+              window.ReactNativeWebView?.postMessage(${JSON.stringify(expected_reply)})
+            }
+            true
+          `)
+        }
+        catch (error) {
+          console.log('WebView health check could not inject JavaScript', error)
+        }
+      }, WEBVIEW_HEALTH_DELAY_MS)
+    },
+    handleMessage(message) {
+      if (typeof message !== 'string' || !message.startsWith(WEBVIEW_HEALTH_PREFIX)) {
+        return false
+      }
+      if (message === expected_reply) {
+        acknowledge()
+      }
+      return true
+    }
+  }
+}
+
 const decode_query_value = (value = '') => {
   return decodeURIComponent(`${value}`.replace(/\+/g, ' '))
 }
