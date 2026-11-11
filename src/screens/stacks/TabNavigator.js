@@ -12,6 +12,8 @@ import MentionsIcon from './../../assets/icons/tab_bar/mentions.png'
 import DiscoverIcon from './../../assets/icons/tab_bar/discover.png'
 import BookmarksIcon from './../../assets/icons/nav/bookmarks.png'
 import { isLiquidGlass, liquidGlassTintColor } from '../../utils/ui'
+import { SidebarWidthContext } from '../../components/sidebar/sidebar_context'
+import SourceListLayout from '../../components/sidebar/source_list_layout'
 
 const Tab = createNativeBottomTabNavigator()
 
@@ -48,6 +50,9 @@ const TAB_ICONS = {
 
 @observer
 export default class TabNavigator extends React.Component {
+  static contextType = SidebarWidthContext
+
+  renderLayout = (props) => <SourceListLayout {...props} width={this.context} icons={TAB_ICONS} />
 
   tab_icon(route_name, focused) {
     const icon = TAB_ICONS[route_name]
@@ -74,6 +79,10 @@ export default class TabNavigator extends React.Component {
   }
 
   tab_bar_style() {
+    if (this.context > 0) {
+      return { display: 'none' }
+    }
+
     if (isLiquidGlass()) {
       return undefined
     }
@@ -88,9 +97,11 @@ export default class TabNavigator extends React.Component {
     return (
       <Tab.Navigator
         id="tab_navigator"
+        layout={Platform.OS === 'ios' ? this.renderLayout : undefined}
         initialRouteName="TimelineStack"
         screenOptions={({ route }) => ({
           tabBarStyle: this.tab_bar_style(),
+          tabBarControllerMode: this.context > 0 && parseInt(Platform.Version, 10) >= 18 ? 'tabBar' : undefined,
           tabBarIcon: ({ focused }) => {
             return this.tab_icon(route.name, focused)
           },

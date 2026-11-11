@@ -5,6 +5,7 @@ import Auth from './../../stores/Auth';
 import App from './../../stores/App';
 import { SFSymbol } from "react-native-sfsymbols";
 import { SvgXml } from 'react-native-svg';
+import { SidebarWidthContext } from '../sidebar/sidebar_context'
 
 // Nav icons
 import Bookmarks from './../../assets/icons/nav/bookmarks.png';
@@ -16,6 +17,7 @@ import SettingsIcon from './../../assets/icons/toolbar/settings.png';
 
 @observer
 export default class MenuNavigation extends React.Component{
+  static contextType = SidebarWidthContext
 
   constructor(props){
     super(props)
@@ -152,6 +154,8 @@ export default class MenuNavigation extends React.Component{
   render() {
     if(Auth.selected_user != null){
       const { posting } = Auth.selected_user
+      const show_sidebar = this.context > 0
+      const extras = show_sidebar ? ['Settings', 'Help'] : this.extras_menu
       return(
         <View
           style={{
@@ -162,7 +166,7 @@ export default class MenuNavigation extends React.Component{
           }}
         >
           {
-            posting.selected_service?.type !== "xmlrpc" ?
+            !show_sidebar && (posting.selected_service?.type !== "xmlrpc" ?
               this._render_menu_group(this.manage_menu)
             :
             <TouchableOpacity
@@ -180,14 +184,15 @@ export default class MenuNavigation extends React.Component{
               Posting to {posting.selected_service?.description()}. Some menu items have been hidden. Tap here to change.
               </Text>
             </TouchableOpacity>
+            )
           }
           <View style={{
-            marginTop: 20,
+            marginTop: show_sidebar ? 0 : 20,
             width: '100%',
             flexDirection: 'column',
             justifyContent: 'space-between',
           }}>
-            {this._render_menu_group(this.extras_menu)}
+            {this._render_menu_group(extras)}
           </View>
         </View>
       )

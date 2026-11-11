@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MentionsScreen from '../mentions/mentions';
 import ProfileImage from './../../components/header/profile_image';
+import { SidebarWidthContext } from '../../components/sidebar/sidebar_context'
 import NewPostButton from '../../components/header/new_post';
 import BackButton from '../../components/header/back';
 import { getSharedScreens } from './SharedStack'
@@ -13,9 +14,10 @@ const MentionsStack = createNativeStackNavigator();
 
 @observer
 export default class Mentions extends React.Component{
+  static contextType = SidebarWidthContext
 
   render() {
-    const sharedScreens = getSharedScreens(MentionsStack, "Mentions")
+    const sharedScreens = getSharedScreens(MentionsStack, "Mentions", this.context > 0)
     return(
       <MentionsStack.Navigator
         screenOptions={{
@@ -28,7 +30,7 @@ export default class Mentions extends React.Component{
           name="Mentions"
           component={MentionsScreen}
           options={({ route }) => ({
-            ...headerLeftElement(() => <ProfileImage routeKey={route.name} />),
+            ...(this.context > 0 ? {} : headerLeftElement(() => <ProfileImage routeKey={route.name} />)),
             ...headerRightElement(() => <NewPostButton />)
           })}
         />

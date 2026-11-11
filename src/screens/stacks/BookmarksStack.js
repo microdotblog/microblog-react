@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BookmarksScreen from '../bookmarks/bookmarks';
 import ProfileImage from './../../components/header/profile_image';
+import { SidebarWidthContext } from '../../components/sidebar/sidebar_context'
 import AddBookmarkButton from '../../components/header/add_bookmark';
 import BookmarkScreen from '../bookmarks/bookmark';
 import NewPostButton from '../../components/header/new_post';
@@ -17,9 +18,10 @@ const BookmarksStack = createNativeStackNavigator();
 
 @observer
 export default class Bookmarks extends React.Component{
+  static contextType = SidebarWidthContext
 
   render() {
-    const sharedScreens = getSharedScreens(BookmarksStack, "Bookmarks")
+    const sharedScreens = getSharedScreens(BookmarksStack, "Bookmarks", this.context > 0)
     return(
       <BookmarksStack.Navigator
         screenOptions={{
@@ -32,7 +34,7 @@ export default class Bookmarks extends React.Component{
           name="Bookmarks"
           component={BookmarksScreen}
           options={({ route }) => ({
-            ...headerLeftElement(() => <ProfileImage routeKey={route.name} />),
+            ...(this.context > 0 ? {} : headerLeftElement(() => <ProfileImage routeKey={route.name} />)),
             ...headerRightElement(() => (
               <View style={headerItemGroupStyle(15)}>
                 <TagsButton />

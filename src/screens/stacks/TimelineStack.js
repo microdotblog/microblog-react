@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TimelineScreen from '../timeline/timeline';
 import ProfileImage from './../../components/header/profile_image';
+import { SidebarWidthContext } from '../../components/sidebar/sidebar_context'
 import NewPostButton from '../../components/header/new_post';
 import BackButton from '../../components/header/back';
 import { getSharedScreens } from './SharedStack'
@@ -14,9 +15,10 @@ const TimelineStack = createNativeStackNavigator();
 
 @observer
 export default class Timeline extends React.Component{
+  static contextType = SidebarWidthContext
 
   render() {
-    const sharedScreens = getSharedScreens(TimelineStack, "Timeline")
+    const sharedScreens = getSharedScreens(TimelineStack, "Timeline", this.context > 0)
     return(
       <TimelineStack.Navigator
         screenOptions={{
@@ -29,7 +31,7 @@ export default class Timeline extends React.Component{
           name="Timeline"
           component={TimelineScreen}
           options={({ route }) => ({
-            ...headerLeftElement(() => <ProfileImage routeKey={route.name} />),
+            ...(this.context > 0 ? {} : headerLeftElement(() => <ProfileImage routeKey={route.name} />)),
             ...headerRightElement(() => <NewPostButton />),
           })}
         />

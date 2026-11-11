@@ -149,7 +149,15 @@ function uploadsHeaderItems() {
 	return items
 }
 
-export const getSharedScreens = (Stack, tab_name) => {
+export const getSharedScreens = (Stack, tab_name, show_sidebar) => {
+	const sidebar_section_options = show_sidebar ? {
+		headerLeft: undefined,
+		unstable_headerLeftItems: undefined,
+		animation: 'none',
+		// On replace, use the incoming section's animation setting.
+		animationTypeForReplace: 'push'
+	} : {}
+
 	return [
 		<Stack.Screen
 			key={`${tab_name}-Profile`}
@@ -227,6 +235,7 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={UploadsScreen}
 			options={({ route }) => ({
 				headerTitle: `Uploads`,
+				...sidebar_section_options,
 				...(isLiquidGlass() ?
 					{
 						unstable_headerRightItems: uploadsHeaderItems
@@ -249,6 +258,7 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={RepliesScreen}
 			options={({ route }) => ({
 				headerTitle: "Replies",
+				...sidebar_section_options,
 				...refreshHeaderItems("replies")
 			})}
 		/>,
@@ -258,6 +268,7 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={PagesScreen}
 			options={({ route }) => ({
 				headerTitle: "Pages",
+				...sidebar_section_options,
 				...refreshHeaderItems("pages")
 			})}
 		/>,
@@ -267,6 +278,7 @@ export const getSharedScreens = (Stack, tab_name) => {
 			component={PostsScreen}
 			options={({ route }) => ({
 				headerTitle: "Posts",
+				...sidebar_section_options,
 				...refreshHeaderItems("posts")
 			})}
 		/>,

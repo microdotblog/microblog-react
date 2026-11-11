@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DiscoverScreen from '../discover/discover';
 import ProfileImage from './../../components/header/profile_image';
+import { SidebarWidthContext } from '../../components/sidebar/sidebar_context'
 import NewPostButton from '../../components/header/new_post';
 import BackButton from '../../components/header/back';
 import DiscoverTopicScreen from '../../screens/discover/topic';
@@ -39,9 +40,10 @@ function newPostHeaderItems() {
 
 @observer
 export default class Discover extends React.Component{
+  static contextType = SidebarWidthContext
 
   render() {
-    const sharedScreens = getSharedScreens(DiscoverStack, "Discover")
+    const sharedScreens = getSharedScreens(DiscoverStack, "Discover", this.context > 0)
     return(
       <DiscoverStack.Navigator
         screenOptions={{
@@ -54,7 +56,7 @@ export default class Discover extends React.Component{
           name="Discover"
           component={DiscoverScreen}
           options={({ route }) => ({
-            ...headerLeftElement(() => <ProfileImage routeKey={route.name} />),
+            ...(this.context > 0 ? {} : headerLeftElement(() => <ProfileImage routeKey={route.name} />)),
             ...headerRightElement(() => <NewPostButton />)
           })}
         />

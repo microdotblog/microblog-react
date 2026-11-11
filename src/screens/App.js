@@ -42,6 +42,7 @@ import ShareMenu from 'react-native-share-menu'
 import ShareScreen from './share'
 import PublishingProgress from '../components/generic/publishing_progress'
 import ImageModalModule from '../components/images/image_modal'
+import { SidebarLayoutProvider } from '../components/sidebar/sidebar_context'
 import { android_status_bar_options, android_uses_translucent_status_bar, headerLeftElement, headerRightElement } from '../utils/navigation'
 
 const Stack = createNativeStackNavigator();
@@ -49,7 +50,7 @@ const Stack = createNativeStackNavigator();
 const renderBackButton = () => <BackButton />
 
 @observer
-export default class MainApp extends React.Component {
+class MainApp extends React.Component {
   state = { current_route: null }
   overlay_opacity = new Animated.Value(0)
   prev_sheet_open = false
@@ -329,4 +330,12 @@ export default class MainApp extends React.Component {
     )
   }
 
+}
+
+export default function AppWithSidebarLayout() {
+  return (
+    <SidebarLayoutProvider>
+      <MainApp />
+    </SidebarLayoutProvider>
+  )
 }
