@@ -1,7 +1,8 @@
 import * as React from 'react'
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { StackActions } from '@react-navigation/native'
 import { observer } from 'mobx-react'
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import { SafeAreaView } from 'react-native-screens/experimental'
 import { SFSymbol } from 'react-native-sfsymbols'
 import ProfileImage from '../header/profile_image'
@@ -30,6 +31,8 @@ function managementRouteIndex(tab) {
 
 @observer
 export default class SourceListLayout extends React.Component {
+  static contextType = SafeAreaInsetsContext
+
   dispatchToStack(action, tab) {
     this.props.navigation.dispatch({ ...action, target: tab.state.key })
   }
@@ -108,14 +111,16 @@ export default class SourceListLayout extends React.Component {
     const index = managementRouteIndex(tab)
     const selected_section = index >= 0 ? tab.state.routes[index].name : null
     const show_management = Auth.selected_user?.posting?.selected_service?.type !== 'xmlrpc'
+    // Duo's portrait top inset includes the bar to the right of the sidebar.
+    const profile_top_padding = Math.max(34, Platform.isPad ? this.context?.top ?? 0 : 0)
 
     return (
       <View style={[styles.sidebar, { width, backgroundColor: App.theme_loading_banner_background_color(), borderColor: App.theme_border_color() }]}>
-        <SafeAreaView edges={{ top: true, bottom: true, left: true }}>
+        <SafeAreaView edges={{ bottom: true, left: true }}>
+          <View style={[styles.profile, { paddingTop: profile_top_padding }]}>
+            <ProfileImage routeKey="sidebar" />
+          </View>
           <ScrollView contentContainerStyle={styles.list} contentInsetAdjustmentBehavior="never">
-            <View style={styles.profile}>
-              <ProfileImage routeKey="sidebar" />
-            </View>
             {state.routes.map(route => this.renderRow(
               { name: descriptors[route.key].options.tabBarLabel, icon: icons[route.name].ios.default },
               selected_section == null && route.key === tab.key,
@@ -151,7 +156,7 @@ const styles = StyleSheet.create({
   content: { flex: 1 },
   sidebar: { borderRightWidth: StyleSheet.hairlineWidth },
   list: { paddingHorizontal: 10, paddingVertical: 8 },
-  profile: { paddingHorizontal: 12, minHeight: 44, justifyContent: 'center', marginBottom: 8 },
+  profile: { paddingHorizontal: 24, paddingBottom: 10 },
   row: { flexDirection: 'row', alignItems: 'center', minHeight: 44, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8, gap: 10 },
   icon: { width: 22, height: 22 },
   label: { fontSize: 17, flex: 1 },
