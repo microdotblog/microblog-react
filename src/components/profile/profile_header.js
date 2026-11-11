@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { View, Text, ActivityIndicator, Image as RNImage, TouchableOpacity, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-screens/experimental'
 import MicroBlogApi, { API_ERROR } from './../../api/MicroBlogApi';
 import App from './../../stores/App';
 import Hyperlink from 'react-native-hyperlink'
@@ -80,7 +81,7 @@ export default class ProfileHeader extends React.Component{
 
     const show_expand_option = long_bio?.length > short_bio?.length
     return(
-      <View style={{ padding: 12, backgroundColor: App.theme_button_background_color(), width: '100%' }}>
+      <View style={{ padding: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <TouchableOpacity onPress={() => App.set_image_modal_data_and_activate(`${profile.author.avatar}${!this.state.is_mastodon ? `?v=${App.now()}`: ""}`)}>
             <MBImage source={{ uri: `${profile.author.avatar}${!this.state.is_mastodon ? `?v=${App.now()}`: ""}` }} contentFit="cover" style={{ width: 50, height: 50, borderRadius: 50 }} />
@@ -182,11 +183,11 @@ export default class ProfileHeader extends React.Component{
     )
   }
   
-  render() {
+  _render_content() {
     const { loading, profile } = this.state
     if(loading){
       return(
-        <View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+        <View style={{ padding: 8, justifyContent: 'center', alignItems: 'center' }}>
           <ActivityIndicator color={App.theme_accent_color()} />
         </View>
       )
@@ -195,8 +196,18 @@ export default class ProfileHeader extends React.Component{
       return this._render_profile()
     }
     return(
-      <View style={{ padding: 8, backgroundColor: App.theme_button_background_color(), width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ padding: 8, justifyContent: 'center', alignItems: 'center' }}>
         <Text style={{color: App.theme_text_color()}}>An error occured loading the user profile.</Text>
+      </View>
+    )
+  }
+
+  render() {
+    return (
+      <View style={{ backgroundColor: App.theme_button_background_color() }}>
+        <SafeAreaView edges={{ left: true, right: true }} style={{ flex: 0 }}>
+          {this._render_content()}
+        </SafeAreaView>
       </View>
     )
   }

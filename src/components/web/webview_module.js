@@ -129,7 +129,8 @@ const WebViewModule = observer((props) => {
     ${web_view_css_properties_javascript}
     ${web_view_tap_guard_javascript}
   ` : web_view_tap_guard_javascript
-  const should_render_direct_webview = Platform.OS === 'ios' && props.profile == null
+  const has_profile = props.profile != null
+  const should_render_direct_webview = Platform.OS === 'ios' && !has_profile
   const should_use_native_pull_to_refresh = should_render_direct_webview && isFocused && is_focus_settled && !is_reply_sheet_open
 
   React.useEffect(() => {
@@ -410,13 +411,11 @@ const WebViewModule = observer((props) => {
     )
   }
 
-  const [profileHeaderHeight, setProfileHeaderHeight] = React.useState(0)
   const is_conversation = props.endpoint.includes("conversation")
   const loading_banner = !is_conversation ? (
     <LoadingBanner
       visible={state.is_loading}
       loading_text={props.loading_text ?? "Loading posts..."}
-      topOffset={props.profile != null ? profileHeaderHeight + (Platform.OS === "ios" ? 12 : 8) : (Platform.OS === "ios" ? 12 : 8)}
       progress={state.loading_progress}
     />
   ) : null
@@ -430,37 +429,37 @@ const WebViewModule = observer((props) => {
     )
   }
 
+  const scroll_view = (
+    <ScrollView
+      overScrollMode={Platform.OS === 'ios' ? 'auto' : 'always'}
+      style={{ flex: 1, width: '100%', height: '100%', backgroundColor: App.theme_background_color() }}
+      contentContainerStyle={{ flex: 1 }}
+      refreshControl={
+        <RefreshControl
+          onRefresh={on_refresh}
+          refreshing={false}
+          enabled={state.is_pull_to_refresh_enabled}
+        />
+      }
+    >
+      {props.profile}
+      {has_profile ? (
+        <HorizontalSafeAreaView>
+          {loading_banner}
+          {_webview()}
+        </HorizontalSafeAreaView>
+      ) : _webview()}
+    </ScrollView>
+  )
+
+  if (has_profile) {
+    return scroll_view
+  }
+
   return (
     <HorizontalSafeAreaView style={{ backgroundColor: App.theme_background_color() }}>
       {loading_banner}
-      <ScrollView
-        overScrollMode={Platform.OS === 'ios' ? 'auto' : 'always'}
-        style={{ flex: 1, width: '100%', height: '100%', backgroundColor: App.theme_background_color() }}
-        contentContainerStyle={{ flex: 1 }}
-        refreshControl={
-          <RefreshControl
-            onRefresh={on_refresh}
-            refreshing={false}
-            enabled={state.is_pull_to_refresh_enabled}
-          />
-        }
-      >
-        {
-          props.profile != null ?
-            <View
-              onLayout={(event) => {
-                const { height } = event.nativeEvent.layout
-                if (height > 0) {
-                  setProfileHeaderHeight(height)
-                }
-              }}
-            >
-              {props.profile}
-            </View>
-          : null
-        }
-        {_webview()}
-      </ScrollView>
+      {scroll_view}
     </HorizontalSafeAreaView>
   )
 })

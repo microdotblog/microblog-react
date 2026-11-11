@@ -7,6 +7,7 @@ import App from '../../stores/App'
 import Replies from '../../stores/Replies';
 import ReplyCell from '../../components/cells/reply_cell';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
+import { SafeAreaView } from 'react-native-screens/experimental'
 import { tabBarScrollContentBottomPadding } from '../../utils/ui'
 import HorizontalSafeAreaView from '../../components/common/horizontal_safe_area_view'
 
@@ -51,18 +52,12 @@ export default class RepliesScreen extends React.Component{
   
   _return_header = () => {
     return(
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          paddingHorizontal: 15,
-          paddingVertical: 10,
-          width: '100%',
-          minHeight: 50,
-          backgroundColor: App.theme_input_background_color(),
-        }}>
-        <Text style={{color: App.theme_text_color()}}>Replies can be edited in the first 24 hours after posting.</Text>
+      <View style={{ justifyContent: 'center', minHeight: 50, backgroundColor: App.theme_input_background_color() }}>
+        <SafeAreaView edges={{ left: true, right: true }} style={{ flex: 0 }}>
+          <Text style={{ marginHorizontal: 15, marginVertical: 10, color: App.theme_text_color() }}>
+            Replies can be edited in the first 24 hours after posting.
+          </Text>
+        </SafeAreaView>
       </View>
     )
   }
@@ -103,18 +98,15 @@ export default class RepliesScreen extends React.Component{
   }
   
   render() {
+    const show_replies = Auth.is_logged_in() && !Auth.is_selecting_user
+
     return(
-      <HorizontalSafeAreaView style={{ backgroundColor: App.theme_background_color_secondary() }}>
-        {
-          Auth.is_logged_in() && !Auth.is_selecting_user ?
-            <>
-            {this._return_header()}
-            {this._return_replies_list()}
-            </>
-          :
-          <LoginMessage title="Replies" />
-        }
-      </HorizontalSafeAreaView>
+      <View style={{ flex: 1, backgroundColor: App.theme_background_color_secondary() }}>
+        {show_replies && this._return_header()}
+        <HorizontalSafeAreaView>
+          {show_replies ? this._return_replies_list() : <LoginMessage title="Replies" />}
+        </HorizontalSafeAreaView>
+      </View>
     )
   }
   
