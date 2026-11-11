@@ -19,7 +19,7 @@
                BlueprintIdentifier = "0221AB2329D42C1500838597"
                BuildableName = "MicroBlog_Share.appex"
                BlueprintName = "MicroBlog_Share"
-               ReferencedContainer = "container:MicroBlog_RN.xcodeproj">
+               ReferencedContainer = "container:Micro.blog for iOS.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -31,9 +31,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "MicroBlog_RN.app"
-               BlueprintName = "MicroBlog_RN"
-               ReferencedContainer = "container:MicroBlog_RN.xcodeproj">
+               BuildableName = "Micro.blog for iOS.app"
+               BlueprintName = "Micro.blog for iOS"
+               ReferencedContainer = "container:Micro.blog for iOS.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "MicroBlog_RN.app"
-            BlueprintName = "MicroBlog_RN"
-            ReferencedContainer = "container:MicroBlog_RN.xcodeproj">
+            BuildableName = "Micro.blog for iOS.app"
+            BlueprintName = "Micro.blog for iOS"
+            ReferencedContainer = "container:Micro.blog for iOS.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -81,9 +81,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "MicroBlog_RN.app"
-            BlueprintName = "MicroBlog_RN"
-            ReferencedContainer = "container:MicroBlog_RN.xcodeproj">
+            BuildableName = "Micro.blog for iOS.app"
+            BlueprintName = "Micro.blog for iOS"
+            ReferencedContainer = "container:Micro.blog for iOS.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
