@@ -10,7 +10,7 @@ import { CommonActions } from '@react-navigation/native'
 
 jest.mock('../../src/api/MicroBlogApi', () => ({
   __esModule: true,
-  default: { check_publishing_progress: jest.fn() }
+  default: { check_publishing_progress: jest.fn(), send_reply: jest.fn() }
 }))
 
 jest.mock('../../src/stores/Auth', () => ({
@@ -43,6 +43,8 @@ jest.mock('../../src/stores/Push', () => ({
 jest.mock('react-native-simple-toast', () => ({
   show: jest.fn()
 }))
+
+jest.mock('@react-native-clipboard/clipboard', () => ({}))
 
 jest.mock('expo-web-browser', () => ({
   openBrowserAsync: jest.fn()
@@ -176,6 +178,27 @@ describe('App navigation reset', () => {
     await App.handle_url_from_webview('microblog://open/456')
 
     expect(navigation.navigate).toHaveBeenCalledWith('Timeline-Conversation', { conversation_id: '456' })
+  })
+})
+
+describe('Reply refresh', () => {
+  const Reply = jest.requireActual('../../src/stores/Reply').default
+
+  afterEach(async () => {
+    await App.clear_current_web_view_ref()
+    await App.set_conversation_screen_focused(false)
+  })
+
+  test.each([false, true])('sends a reply without reloading the page (conversation focused: %s)', async conversation_focused => {
+    const web_view = { reload: jest.fn(), injectJavaScript: jest.fn() }
+    MicroBlogApi.send_reply.mockResolvedValueOnce(true)
+    await App.set_current_web_view_ref(web_view)
+    await App.set_conversation_screen_focused(conversation_focused)
+    await Reply.set_reply_text('Thanks!')
+
+    await expect(Reply.send_reply()).resolves.toBe(true)
+    expect(web_view.reload).not.toHaveBeenCalled()
+    expect(web_view.injectJavaScript).toHaveBeenCalledTimes(conversation_focused ? 1 : 0)
   })
 })
 

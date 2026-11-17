@@ -742,15 +742,47 @@ export default App = types.model('App', {
       }
     }),
 
-    reload_current_web_view: flow(function*() {
-      if (!CURRENT_WEB_VIEW_REF) {
+    refresh_current_conversation: flow(function*() {
+      if (!self.conversation_screen_focused || !CURRENT_WEB_VIEW_REF) {
         return
       }
 
       try {
-        CURRENT_WEB_VIEW_REF.reload()
+        CURRENT_WEB_VIEW_REF.injectJavaScript(`
+          (async () => {
+            const { pathname, search } = window.location
+            if (!pathname.startsWith('/hybrid/conversation/')) {
+              return
+            }
+
+            const container = document.querySelector('body > .container')
+            if (!container) {
+              return
+            }
+
+            const response = await fetch(pathname + search, { cache: 'no-store' })
+            if (!response.ok || response.redirected) {
+              return
+            }
+
+            const page = new DOMParser().parseFromString(await response.text(), 'text/html')
+            const posts = Array.from(page.querySelectorAll('body > .container > .post[id]'))
+            // Keep the existing rows mounted so refreshing does not move the reader.
+            let next_post = null
+            for (const post of posts.reverse()) {
+              const existing_post = document.getElementById(post.getAttribute('id'))
+              if (existing_post) {
+                next_post = existing_post
+              }
+              else {
+                next_post = container.insertBefore(post, next_post)
+              }
+            }
+          })().catch(error => console.log('Could not refresh conversation', error))
+          true
+        `)
       } catch (error) {
-        console.log("App:reload_current_web_view:error", error)
+        console.log("App:refresh_current_conversation:error", error)
       }
     }),
 

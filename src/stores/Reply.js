@@ -104,7 +104,7 @@ export default Reply = types.model('Reply', {
       if (data !== POST_ERROR || data === DUPLICATE_REPLY) {
         self.reply_text = ""
         self.is_sending_reply = false
-        App.reload_current_web_view()
+        App.refresh_current_conversation()
         return true
       }
       else {
