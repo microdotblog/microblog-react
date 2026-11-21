@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (copy, nonatomic, nullable) NSString* systemImageName;
 @property (copy, nonatomic, nullable) NSString* variant;
 @property (copy, nonatomic, nullable) NSString* buttonAccessibilityLabel;
+@property (assign, nonatomic) BOOL buttonDisabled;
 @property (strong, nonatomic, nullable) UIColor* foregroundColor;
 @property (strong, nonatomic, nullable) UIColor* baseBackgroundColor;
 @property (copy, nonatomic) RCTBubblingEventBlock onPress;

@@ -101,6 +101,7 @@ export default class HighlightingText extends React.Component {
 
     return {
       editable: this.props.editable !== false,
+      accessibilityLabel: this.props.accessibilityLabel,
       colorScheme: this.props.colorScheme || App.theme,
       backgroundColor: style.backgroundColor || App.theme_background_color(),
       textColor: style.color || App.theme_text_color(),
@@ -380,6 +381,7 @@ export default class HighlightingText extends React.Component {
               spellCheck={false}
               showSoftInputOnFocus={true}
               importantForAutofill="no"
+              accessibilityElementsHidden={true}
               importantForAccessibility="no-hide-descendants"
               pointerEvents="none"
             />

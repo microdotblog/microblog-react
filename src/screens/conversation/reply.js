@@ -31,6 +31,7 @@ export default class ReplyScreen extends React.Component{
       <>
         <KeyboardAvoidingView behavior={ Platform.OS === 'ios' ? 'padding' : 'height' } keyboardVerticalOffset={ Platform.OS === 'android' ? 125 : undefined } style={{ flex: 1, backgroundColor: App.theme_background_color() }}>
           <TextInput
+            accessibilityLabel="Reply body"
             placeholderTextColor="lightgrey"
             style={{
               fontSize: 18,

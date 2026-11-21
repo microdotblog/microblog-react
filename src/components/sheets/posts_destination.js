@@ -23,6 +23,9 @@ export default class PostsDestinationMenu extends React.Component{
       return(
         <TouchableOpacity
           key={destination.uid}
+          accessibilityRole="button"
+          accessibilityLabel={destination.name}
+          accessibilityState={{ selected: is_selected_blog }}
           onPress={() => {
             selected_service.set_active_destination(destination, this.props.payload?.type);
             SheetManager.hide(this.sheetId);

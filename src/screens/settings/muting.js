@@ -255,7 +255,9 @@ export default class MutingScreen extends React.Component {
                   {type === "keyword" ? item.keyword : `@${item.username}`}
                 </Text>
               </View>
-              <TouchableOpacity 
+              <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel={type === "keyword" ? `Remove muted keyword ${item.keyword}` : `${item.is_hiding_other_replies ? 'Unblock' : 'Unmute'} @${item.username}`}
                 onPress={() => this._handle_unmute(item.id, type, type === "keyword" ? item.keyword : item.username)}
                 style={{ padding: 5, backgroundColor: App.theme_button_background_color(), borderRadius: 20 }}
               >

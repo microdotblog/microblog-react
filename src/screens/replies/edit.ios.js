@@ -15,6 +15,7 @@ export default class ReplyEditScreen extends React.Component{
       <>
         <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={125} style={{ flex: 1 }}>
           <TextInput
+            accessibilityLabel="Reply body"
             placeholderTextColor="lightgrey"
             style={{
               fontSize: 18,

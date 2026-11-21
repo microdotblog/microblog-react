@@ -16,7 +16,7 @@ export default class HighlightCell extends React.Component{
   }
   
   _right_actions = (progress, item) => (
-    <View style={{ flexDirection: "row" }}>
+    <View accessibilityElementsHidden={true} style={{ flexDirection: "row" }}>
       <View>
         {
           this._return_action(
@@ -89,6 +89,17 @@ export default class HighlightCell extends React.Component{
         renderRightActions={(progress) => this._right_actions(progress, highlight)}
       >
         <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityHint="Compose a post with this highlight"
+          accessibilityActions={[{ name: 'delete', label: 'Delete' }, { name: 'open', label: 'Open Link' }]}
+          onAccessibilityAction={({ nativeEvent }) => {
+            if (nativeEvent.actionName === 'delete') {
+              this._trigger_delete()
+            }
+            else if (nativeEvent.actionName === 'open') {
+              App.handle_url_from_webview(highlight.url)
+            }
+          }}
           style={{
             padding: 15,
             borderColor: App.theme_alt_background_div_color(),

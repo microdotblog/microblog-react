@@ -65,6 +65,12 @@
   self.button.accessibilityLabel = buttonAccessibilityLabel;
 }
 
+- (void) setButtonDisabled:(BOOL)buttonDisabled
+{
+  _buttonDisabled = buttonDisabled;
+  self.button.enabled = !buttonDisabled;
+}
+
 - (void) setForegroundColor:(UIColor *)foregroundColor
 {
   _foregroundColor = foregroundColor;

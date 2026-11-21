@@ -21,7 +21,7 @@ export default class CheckmarkRowCell extends React.Component {
 				<Text style={{ color: App.theme_button_text_color(), paddingRight: 5 }}>{text}</Text>
 				{ 
 				  is_selected && Platform.OS === 'ios' ? 
-						<SFSymbol name={"checkmark.circle.fill"} color={App.theme_button_text_color()} style={{ height: 18, width: 18 }} />
+						<SFSymbol accessible={false} name={"checkmark.circle.fill"} color={App.theme_button_text_color()} style={{ height: 18, width: 18 }} />
 					: is_selected ?
 					<SvgXml
 					  color={App.theme_button_text_color()}

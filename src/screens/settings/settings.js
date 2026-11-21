@@ -137,6 +137,7 @@ export default class SettingsScreen extends React.Component {
               Open links in external browser
             </Text>
             <Switch
+              accessibilityLabel="Open links in external browser"
               value={Settings.open_links_in_external_browser}
               onValueChange={Settings.toggle_open_links_in_external_browser}
               trackColor={{
@@ -165,6 +166,7 @@ export default class SettingsScreen extends React.Component {
                 Reader View
               </Text>
               <Switch
+                accessibilityLabel="Open links in Reader View"
                 disabled={Settings.open_links_in_external_browser}
                 value={
                   Settings.open_links_in_external_browser
@@ -278,6 +280,7 @@ export default class SettingsScreen extends React.Component {
                     />
                   )}
                   <Switch
+                    accessibilityLabel={`Push notifications for @${user.username}`}
                     disabled={user.toggling_push}
                     value={user.is_registered_for_push()}
                     onValueChange={user.toggle_push_notifications}

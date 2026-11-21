@@ -83,7 +83,7 @@ export default class ProfileHeader extends React.Component{
     return(
       <View style={{ padding: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => App.set_image_modal_data_and_activate(`${profile.author.avatar}${!this.state.is_mastodon ? `?v=${App.now()}`: ""}`)}>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="View profile photo" onPress={() => App.set_image_modal_data_and_activate(`${profile.author.avatar}${!this.state.is_mastodon ? `?v=${App.now()}`: ""}`)}>
             <MBImage source={{ uri: `${profile.author.avatar}${!this.state.is_mastodon ? `?v=${App.now()}`: ""}` }} contentFit="cover" style={{ width: 50, height: 50, borderRadius: 50 }} />
           </TouchableOpacity>
           <View style={{ marginLeft: 15 }}>
@@ -103,6 +103,8 @@ export default class ProfileHeader extends React.Component{
           {
             !profile._microblog.is_you ?
               <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel="More profile actions"
                 onPress={this._toggle_more}
                 style={{
                   position: 'absolute',
@@ -139,6 +141,9 @@ export default class ProfileHeader extends React.Component{
         {
           show_expand_option ?
           <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel="More profile information"
+            accessibilityState={{ expanded: this.state.more_expanded }}
             onPress={() => this.setState({ more_expanded: !this.state.more_expanded })}
             style={{ 
               position: 'absolute',

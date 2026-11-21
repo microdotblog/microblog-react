@@ -3,7 +3,7 @@ import { observer } from 'mobx-react'
 import { Button, Keyboard, Platform, Pressable, Text } from 'react-native'
 import App from './../../stores/App'
 import Auth from '../../stores/Auth'
-import { HEADER_BUTTON_HIT_SLOP, isLiquidGlass } from './../../utils/ui'
+import { HEADER_BUTTON_HIT_SLOP, POST_BUTTON_COLOR, isLiquidGlass } from './../../utils/ui'
 import LiquidGlassButton from '../share/liquid_glass_button'
 
 @observer
@@ -23,11 +23,11 @@ export default class PostButton extends React.Component {
     if (isLiquidGlass()) {
       return (
         <LiquidGlassButton
-          style={{ width: title === "Schedule" ? 100 : 72, height: 36 }}
+          style={{ width: title === "Schedule" ? 100 : 72, height: 44 }}
           title={title}
           variant="prominent"
           foregroundColor="#fff"
-          baseBackgroundColor={App.theme_accent_color()}
+          baseBackgroundColor={POST_BUTTON_COLOR}
           buttonAccessibilityLabel={title}
           disabled={posting.is_sending_post}
           onPress={handle_press}
@@ -57,7 +57,7 @@ export default class PostButton extends React.Component {
             minimumFontScale={0.9}
             maxFontSizeMultiplier={1.3}
             style={{
-              color: App.theme_accent_color(),
+              color: App.is_dark_mode() ? App.theme_accent_color() : POST_BUTTON_COLOR,
               fontSize: 17,
               fontWeight: '600'
             }}

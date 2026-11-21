@@ -20,7 +20,7 @@ export default class PostCell extends React.Component {
   }
 
   _right_actions = (progress, item) => (
-    <View style={{ flexDirection: "row" }}>
+    <View accessibilityElementsHidden={true} style={{ flexDirection: "row" }}>
       {this.props.post.is_draft() ? (
         <View>
           {this._return_action(
@@ -199,10 +199,35 @@ export default class PostCell extends React.Component {
     return menu_items;
   };
 
+  _handle_context_menu = (title) => {
+    const { post } = this.props
+    if (title == "Publish") {
+      Auth.selected_user.posting.selected_service?.publish_draft(post)
+    } else if (title === "Schedule…") {
+      App.open_sheet("schedule_post_sheet", {
+        service: Auth.selected_user.posting.selected_service,
+        post: { url: post.url }
+      })
+    } else if (title == "Edit") {
+      App.navigate_to_screen("PostEdit", post)
+    } else if (title == "Copy Link") {
+      Clipboard.setString(post.url)
+      Toast.showWithGravity("URL copied", Toast.SHORT, Toast.CENTER)
+    } else if (title == "Open in Browser") {
+      App.open_url(post.url)
+    } else if (title === 'Show Conversation') {
+      this._show_conversation()
+    } else if (title == "Delete") {
+      Auth.selected_user.posting.selected_service?.trigger_post_delete(
+        post
+      )
+    }
+  }
+
   render() {
     const { post } = this.props;
     const is_scheduled = !post.is_draft() && Date.parse(post.published) > Date.now()
-    let menu_items = this.make_context_menu(post);
+    const menu_items = this.make_context_menu(post)
     return (
       <Swipeable
         ref={this._swipeable}
@@ -213,32 +238,13 @@ export default class PostCell extends React.Component {
       >
         <ContextMenu
           previewBackgroundColor="rgba(0, 0, 0, 0.0)"
-          onPress={({ nativeEvent }) => {
-            if (nativeEvent.name == "Publish") {
-              Auth.selected_user.posting.selected_service?.publish_draft(post);
-            } else if (nativeEvent.name === "Schedule…") {
-              App.open_sheet("schedule_post_sheet", {
-                service: Auth.selected_user.posting.selected_service,
-                post: { url: post.url }
-              })
-            } else if (nativeEvent.name == "Edit") {
-              App.navigate_to_screen("PostEdit", post);
-            } else if (nativeEvent.name == "Copy Link") {
-              Clipboard.setString(post.url);
-              Toast.showWithGravity("URL copied", Toast.SHORT, Toast.CENTER);
-            } else if (nativeEvent.name == "Open in Browser") {
-              App.open_url(post.url);
-            } else if (nativeEvent.name === 'Show Conversation') {
-              this._show_conversation()
-            } else if (nativeEvent.name == "Delete") {
-              Auth.selected_user.posting.selected_service?.trigger_post_delete(
-                post
-              );
-            }
-          }}
+          onPress={({ nativeEvent }) => this._handle_context_menu(nativeEvent.name)}
           actions={menu_items}
         >
           <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityActions={menu_items.map(item => ({ name: item.title, label: item.title }))}
+            onAccessibilityAction={({ nativeEvent }) => this._handle_context_menu(nativeEvent.actionName)}
             activeOpacity={1}
             style={{
               padding: 15,

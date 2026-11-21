@@ -1,5 +1,7 @@
 import { DynamicColorIOS, Platform } from 'react-native'
 
+export const POST_BUTTON_COLOR = '#b45309'
+
 export const STANDARD_SLOP = 16
 export const HEADER_BUTTON_HIT_SLOP = {
   top: STANDARD_SLOP,

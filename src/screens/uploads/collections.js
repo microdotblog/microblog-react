@@ -111,6 +111,15 @@ export default class CollectionsScreen extends React.Component {
 		}
 	];
 
+	_handle_collection_action = (collection, title) => {
+		if (title === 'Copy Shortcode') {
+			this.copy_shortcode(collection)
+		}
+		else if (title === 'Delete') {
+			this.prompt_delete(collection)
+		}
+	}
+
 	_render_collection = ({ item }) => {
 		return (
 			<ContextMenu
@@ -119,17 +128,15 @@ export default class CollectionsScreen extends React.Component {
 					padding: 5,
 					backgroundColor: App.theme_background_color_secondary()
 				}}
-				onPress={({nativeEvent}) => {
-					if (nativeEvent.name == "Copy Shortcode") {
-						this.copy_shortcode(item);
-					}
-					else if (nativeEvent.name == "Delete") {
-						this.prompt_delete(item);
-					}
-				}}
+				onPress={({ nativeEvent }) => this._handle_collection_action(item, nativeEvent.name)}
 				actions={this._collection_context_menu}
 			>
-				<CollectionCell collection={item} manager={this} />
+				<CollectionCell
+					collection={item}
+					manager={this}
+					accessibilityActions={this._collection_context_menu.map(action => ({ name: action.title, label: action.title }))}
+					onAccessibilityAction={({ nativeEvent }) => this._handle_collection_action(item, nativeEvent.actionName)}
+				/>
 			</ContextMenu>
 		)
 	};

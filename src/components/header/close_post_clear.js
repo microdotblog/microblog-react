@@ -24,6 +24,8 @@ export default class ClosePostClearButton extends React.Component {
 
     return (
       <TouchableOpacity
+        accessibilityRole="button"
+        accessibilityLabel="Close post editor"
         disabled={Auth.selected_user?.posting?.is_sending_post}
         onPress={() => {
           App.go_back_and_clear()

@@ -307,7 +307,6 @@ const LoginFooter = observer(function LoginFooter({
       ) : null}
 
       <PrimaryButton
-        accessibilityHint="Long press to sign in with email or an app token."
         accent={accent}
         disabled={Login.is_loading}
         is_dark={is_dark}
@@ -328,6 +327,17 @@ const LoginFooter = observer(function LoginFooter({
           onPress={() => { if (!Login.is_loading) { on_apple_press() } }}
         />
       }
+
+      <Pressable
+        accessibilityRole="button"
+        disabled={Login.is_loading}
+        onPress={on_long_press_sign_in}
+        style={styles.alternativeSignIn}
+      >
+        <Text style={{ color: ink, textDecorationLine: 'underline', textAlign: 'center' }}>
+          Sign in with email or an app token
+        </Text>
+      </Pressable>
 
       <View style={styles.legal}>
         <Text style={[styles.legalText, { color: ink_soft }]}>
@@ -720,6 +730,11 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: '800',
     lineHeight: 32,
+  },
+  alternativeSignIn: {
+    alignSelf: 'center',
+    minHeight: 44,
+    justifyContent: 'center',
   },
   legal: {
     alignItems: 'center',

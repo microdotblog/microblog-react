@@ -31,25 +31,28 @@ export default class ReplySheet extends React.Component {
         overdrawEnabled={true}
         overlayColor={'transparent'}
         snapPoints={[70]}
-        initialSnapIndex={1}
-        backgroundInteractionEnabled={true}
+        closeOnTouchBackdrop={false}
+        backdropProps={{ accessible: false }}
         onOpen={() => Reply.set_sheet_open(true)}
         onClose={() => Reply.set_sheet_open(false)}
         isModal={true}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 12, paddingBottom: 12, borderBottomWidth: 1, borderColor: App.theme_border_color(), backgroundColor: App.theme_modal_background_color() }}>
+        <View onAccessibilityEscape={this.handleClose} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 12, paddingBottom: 12, borderBottomWidth: 1, borderColor: App.theme_border_color(), backgroundColor: App.theme_modal_background_color() }}>
           <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel="Close reply"
             onPress={this.handleClose}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <SFSymbol name={'xmark'} color={App.theme_text_color()} style={{ height: 20, width: 20 }} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.handleSend} disabled={Reply.is_sending_reply || !Reply.replying_enabled()} style={{ opacity: Reply.is_sending_reply || !Reply.replying_enabled() ? 0.5 : 1 }}>
+          <TouchableOpacity accessibilityRole="button" onPress={this.handleSend} disabled={Reply.is_sending_reply || !Reply.replying_enabled()} style={{ opacity: Reply.is_sending_reply || !Reply.replying_enabled() ? 0.5 : 1 }}>
             <Text style={{ color: App.theme_accent_color(), fontWeight: '700', fontSize: 16 }}>Send</Text>
           </TouchableOpacity>
         </View>
-        <View style={{ backgroundColor: App.theme_modal_background_color() }}>
+        <View onAccessibilityEscape={this.handleClose} style={{ backgroundColor: App.theme_modal_background_color() }}>
           <TextInput
+            accessibilityLabel="Reply body"
             placeholderTextColor="lightgrey"
             style={{
               minHeight: 120,

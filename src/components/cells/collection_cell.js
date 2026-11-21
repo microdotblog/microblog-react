@@ -17,7 +17,7 @@ export default class CollectionCell extends React.Component {
   }
 
   _right_actions = (progress, item) => (
-    <View style={{ flexDirection: "row" }}>
+    <View accessibilityElementsHidden={true} style={{ flexDirection: "row" }}>
       <View>
         {this._return_action(
           "Delete",
@@ -94,6 +94,10 @@ export default class CollectionCell extends React.Component {
         }
       >
         <View
+          accessible={true}
+          accessibilityLabel={`${collection.name}, uploads: ${collection.uploads_count}`}
+          accessibilityActions={this.props.accessibilityActions}
+          onAccessibilityAction={this.props.onAccessibilityAction}
           key={collection.id}
           style={{
             paddingHorizontal: 14,

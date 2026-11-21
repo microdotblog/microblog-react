@@ -262,6 +262,7 @@ const WebViewModule = observer((props) => {
         key={web_view_key}
         ref={webViewRef}
         source={{ uri: source_uri }}
+        originWhitelist={['http://*', 'https://*', 'microblog://*']}
         containerStyle={{ flex: 1, width: '100%', height: '100%' }}
         pullToRefreshEnabled={should_use_native_pull_to_refresh}
         decelerationRate={0.998}
@@ -345,6 +346,10 @@ const WebViewModule = observer((props) => {
         nestedScrollEnabled={true}
         onShouldStartLoadWithRequest={(event) => {
           const url = event.url
+          if (url.startsWith('microblog://')) {
+            App.handle_url_from_webview(url)
+            return false
+          }
           const urlBasePath = get_base_webview_path(url)
           const endpointBasePath = get_base_webview_path(props.endpoint)
 

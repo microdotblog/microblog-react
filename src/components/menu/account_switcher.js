@@ -84,7 +84,7 @@ export default class AccountSwitcher extends React.Component {
               onPress={() => Auth.select_user(user)}
               key={user.username}
               accessibilityRole="button"
-              accessibilityLabel={`Show profile for ${user.username}`}
+              accessibilityLabel={`Switch to @${user.username}`}
               style={{
                 flexDirection: "row",
                 alignItems: "center",

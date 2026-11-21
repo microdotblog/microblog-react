@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react"
-import { View, Text, TouchableOpacity, Animated, Platform, ActivityIndicator } from "react-native"
+import { AccessibilityInfo, View, Text, TouchableOpacity, Animated, Platform, ActivityIndicator } from "react-native"
 import { SFSymbol } from "react-native-sfsymbols"
 import App from "../../stores/App"
 
@@ -84,6 +84,16 @@ const PublishingProgress = observer(() => {
     }
   }, [])
 
+  const announcement = App.publishing_progress_visible
+    ? (App.latest_published_url && !App.is_publishing ? 'Finished publishing post.' : 'Publishing latest changes.')
+    : null
+
+  useEffect(() => {
+    if (Platform.OS === 'ios' && announcement) {
+      AccessibilityInfo.announceForAccessibilityWithOptions(announcement, { queue: true })
+    }
+  }, [announcement])
+
   if (!App.publishing_progress_visible) {
     return null
   }
@@ -116,6 +126,8 @@ const PublishingProgress = observer(() => {
           {App.latest_published_url && !App.is_publishing ? "Finished publishing post. 🎉" : "Publishing latest changes..."}
         </Text>
         <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel="Dismiss publishing status"
           onPress={handleClose}
           style={{
             padding: 4,
@@ -146,6 +158,8 @@ const PublishingProgress = observer(() => {
 
       {App.latest_published_url && !App.is_publishing ? (
         <TouchableOpacity
+          accessibilityRole="link"
+          accessibilityLabel="View published post"
           onPress={handleUrlPress}
           style={{
             paddingTop: 4,

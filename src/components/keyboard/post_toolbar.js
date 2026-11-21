@@ -56,7 +56,7 @@ export default class PostToolbar extends React.Component{
 							Share.sorted_users().map((user, index) => {
 								const is_selected_user = Share.selected_user?.username == user.username
 								return (
-									<TouchableOpacity key={index} onPress={() => Share.select_user(user)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 4, paddingHorizontal: 10, borderRadius: 18, backgroundColor: is_selected_user ? App.theme_selected_button_color() : 'transparent', marginRight: 4 }}>
+									<TouchableOpacity key={index} accessibilityRole="button" accessibilityLabel={`@${user.username}`} accessibilityState={{ selected: is_selected_user }} onPress={() => Share.select_user(user)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 4, paddingHorizontal: 10, borderRadius: 18, backgroundColor: is_selected_user ? App.theme_selected_button_color() : 'transparent', marginRight: 4 }}>
 										<MBImage source={{ uri: user.avatar }} contentFit="cover" style={{ width: 20, height: 20, borderRadius: 10, marginRight: 5 }} />
 										<Text style={{ color: App.theme_text_color(), fontWeight: is_selected_user ? 600 : 300 }}>{user.username}</Text>
 									</TouchableOpacity>
@@ -80,7 +80,7 @@ export default class PostToolbar extends React.Component{
 							posting.selected_service?.config?.sorted_destinations().map((destination, index) => {
 								const is_selected_destination = posting.selected_service?.config?.active_destination()?.uid == destination.uid
 								return (
-									<TouchableOpacity key={index} onPress={() => { posting.selected_service?.config?.set_default_destination(destination); posting.reset_post_syndicates(); App.toggle_select_destination() }} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 6, paddingHorizontal: 10, borderRadius: 18, backgroundColor: is_selected_destination ? App.theme_selected_button_color() : 'transparent', marginRight: 4 }}>
+									<TouchableOpacity key={index} accessibilityRole="button" accessibilityState={{ selected: is_selected_destination }} onPress={() => { posting.selected_service?.config?.set_default_destination(destination); posting.reset_post_syndicates(); App.toggle_select_destination() }} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 6, paddingHorizontal: 10, borderRadius: 18, backgroundColor: is_selected_destination ? App.theme_selected_button_color() : 'transparent', marginRight: 4 }}>
 										<Text style={{ color: App.theme_text_color(), fontWeight: is_selected_destination ? 600 : 300 }}>{destination.name}</Text>
 									</TouchableOpacity>
 								)
@@ -105,6 +105,8 @@ export default class PostToolbar extends React.Component{
   						return(
   							<TouchableOpacity
   								key={category}
+								accessibilityRole="checkbox"
+								accessibilityState={{ checked: is_selected }}
   								style={{
   									padding: 4,
   									marginHorizontal: 2.5,
@@ -129,6 +131,10 @@ export default class PostToolbar extends React.Component{
   
 	render() {
 		const { posting } = this.props.posting != null ? this.props : Auth.selected_user
+		const toolbar_button_style = Platform.OS === 'ios'
+			? { minWidth: 44, minHeight: 44, justifyContent: 'center' }
+			: { minWidth: 30 }
+
 		return (
 			<View
 				style={{
@@ -162,7 +168,12 @@ export default class PostToolbar extends React.Component{
 					<ScrollView keyboardShouldPersistTaps={'always'} horizontal={true} style={{ overflow: 'hidden', maxWidth: "100%" }} contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}>
 						{
 							App.is_share_extension && Share.selected_user != null &&
-							<TouchableOpacity onPress={Share.toggle_select_user} style={{marginRight: 4}}>
+							<TouchableOpacity
+								accessibilityRole="button"
+								accessibilityLabel={`Choose account, current account @${Share.selected_user.username}`}
+								onPress={Share.toggle_select_user}
+								style={[Platform.OS === 'ios' && toolbar_button_style, { marginRight: 4 }]}
+							>
 								<MBImage source={{ uri: Share.selected_user?.avatar }} contentFit="cover" style={{ width: 24, height: 24, borderRadius: 50 }} />
 							</TouchableOpacity>
 						}
@@ -170,7 +181,7 @@ export default class PostToolbar extends React.Component{
 							!this.props.is_post_edit && !App.is_share_extension &&
 							<>
 								<TouchableOpacity
-									style={{minWidth: 30, marginLeft: 4, marginRight: 0}}
+									style={[toolbar_button_style, { marginLeft: 4 }]}
 									onPress={() => posting.handle_asset_action(this.props.componentId)}
 									accessibilityRole="button"
 									accessibilityLabel="Add photo"
@@ -193,7 +204,7 @@ export default class PostToolbar extends React.Component{
 							!this.props.is_post_edit && !App.is_share_extension && (Auth.selected_user?.is_premium != null && Auth.selected_user?.is_premium) &&
 							<>
 								<TouchableOpacity
-									style={{minWidth: 30, marginLeft: 4, marginRight: 0}}
+									style={[toolbar_button_style, { marginLeft: 4 }]}
 									onPress={() => App.navigate_to_screen("PostUploads")}
 									accessibilityRole="button"
 									accessibilityLabel="Add file"
@@ -224,14 +235,24 @@ export default class PostToolbar extends React.Component{
 								</TouchableOpacity>
 							</>
 						}
-						<TouchableOpacity style={{minWidth: 30, marginLeft: 4}} onPress={() => App.is_share_extension ? Share.handle_text_action("**") : posting.handle_text_action("**")}>
+						<TouchableOpacity
+							style={[toolbar_button_style, { marginLeft: 4 }]}
+							accessibilityRole="button"
+							accessibilityLabel="Bold"
+							onPress={() => App.is_share_extension ? Share.handle_text_action("**") : posting.handle_text_action("**")}
+						>
 							{ Platform.OS === 'ios' ?
 								<SFSymbol name={'bold'} color={App.theme_text_color()} style={{ height: 18, width: 18 }} />
 								:
 								<SvgXml style={{ height: 18, width: 18 }} color={App.theme_text_color()} xml='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"><path stroke-linejoin="round" d="M6.75 3.744h-.753v8.25h7.125a4.125 4.125 0 0 0 0-8.25H6.75Zm0 0v.38m0 16.122h6.747a4.5 4.5 0 0 0 0-9.001h-7.5v9h.753Zm0 0v-.37m0-15.751h6a3.75 3.75 0 1 1 0 7.5h-6m0-7.5v7.5m0 0v8.25m0-8.25h6.375a4.125 4.125 0 0 1 0 8.25H6.75m.747-15.38h4.875a3.375 3.375 0 0 1 0 6.75H7.497v-6.75Zm0 7.5h5.25a3.75 3.75 0 0 1 0 7.5h-5.25v-7.5Z" /></svg>' />
 							}
 						</TouchableOpacity>
-						<TouchableOpacity style={{minWidth: 30}} onPress={() => App.is_share_extension ? Share.handle_text_action("_") : posting.handle_text_action("_")}>
+						<TouchableOpacity
+							style={toolbar_button_style}
+							accessibilityRole="button"
+							accessibilityLabel="Italic"
+							onPress={() => App.is_share_extension ? Share.handle_text_action("_") : posting.handle_text_action("_")}
+						>
 							{ Platform.OS === 'ios' ?
 								<SFSymbol name={'italic'} color={App.theme_text_color()} style={{ height: 18, width: 18 }} />
 								:
@@ -239,10 +260,10 @@ export default class PostToolbar extends React.Component{
 							}
 						</TouchableOpacity>
 						<TouchableOpacity
-							style={{minWidth: 30, marginLeft: 5}}
+							style={[toolbar_button_style, { marginLeft: 5 }]}
 							onPress={() => App.is_share_extension ? Share.handle_text_action("[]") : posting.handle_text_action("[]")}
 							accessibilityRole="button"
-							accessibilityLabel="Link"
+							accessibilityLabel="Insert link"
 						>
 							{
 								Platform.OS === 'ios' ?
@@ -268,7 +289,12 @@ export default class PostToolbar extends React.Component{
 						</TouchableOpacity>
 						{
 						  App.is_share_extension && posting.selected_service.config?.active_destination()?.categories.length ?
-								<TouchableOpacity style={{minWidth: 30, marginLeft: 4, marginRight: 0}} onPress={() => App.toggle_category_select()}>
+								<TouchableOpacity
+									style={[toolbar_button_style, { marginLeft: 4 }]}
+									accessibilityRole="button"
+									accessibilityLabel="Categories"
+									onPress={() => App.toggle_category_select()}
+								>
 								{
 									Platform.OS === 'ios' ?
 										<SFSymbol
@@ -296,7 +322,7 @@ export default class PostToolbar extends React.Component{
 						}
 						{
 							!this.props.is_post_edit && posting.selected_service?.config?.active_destination() != null && (posting.selected_service?.config?.destination?.length > 1 || (!posting.selected_service?.is_microblog && !App.is_share_extension)) ?
-							<TouchableOpacity style={{marginLeft: 6, marginRight: 4}} onPress={() => {!posting.selected_service?.is_microblog ? App.navigate_to_screen("post_service", App.is_share_extension ? Share.selected_user : Auth.selected_user) : App.toggle_select_destination()}}>
+							<TouchableOpacity accessibilityRole="button" accessibilityHint="Choose which blog to post to" style={{marginLeft: 6, marginRight: 4}} onPress={() => {!posting.selected_service?.is_microblog ? App.navigate_to_screen("post_service", App.is_share_extension ? Share.selected_user : Auth.selected_user) : App.toggle_select_destination()}}>
 								<Text
 									numberOfLines={1}
 									maxFontSizeMultiplier={1.3}
@@ -307,7 +333,7 @@ export default class PostToolbar extends React.Component{
 							</TouchableOpacity>
 							: 
 							!this.props.is_post_edit && posting.selected_service?.config?.active_destination() == null && !posting.selected_service?.is_microblog && !App.is_share_extension ?
-							<TouchableOpacity style={{marginLeft: 6, marginRight: 4}} onPress={() => {!posting.selected_service?.is_microblog ? App.navigate_to_screen("post_service", App.is_share_extension ? Share.selected_user : Auth.selected_user) : App.toggle_select_destination()}}>
+							<TouchableOpacity accessibilityRole="button" accessibilityHint="Choose which blog to post to" style={{marginLeft: 6, marginRight: 4}} onPress={() => {!posting.selected_service?.is_microblog ? App.navigate_to_screen("post_service", App.is_share_extension ? Share.selected_user : Auth.selected_user) : App.toggle_select_destination()}}>
 								<Text
 									numberOfLines={1}
 									maxFontSizeMultiplier={1.3}
@@ -324,7 +350,7 @@ export default class PostToolbar extends React.Component{
 						!App.is_share_extension && !this.props.hide_settings &&
 							<View
 								style={[this._toolbar_container_style(), this._toolbar_shadow_style(), {
-									width: 42,
+									width: Platform.OS === 'ios' ? 44 : 42,
 									minHeight: 42,
 									marginLeft: 5,
 									alignItems: 'center',
@@ -335,6 +361,7 @@ export default class PostToolbar extends React.Component{
 								onPress={() => App.navigate_to_screen(this.props.is_post_edit ? "PostEditOptions" : "PostingOptions")}
 								accessibilityRole="button"
 								accessibilityLabel="Post options"
+								style={Platform.OS === 'ios' ? { width: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' } : undefined}
 							>
 								{
 									Platform.OS === 'ios' ?

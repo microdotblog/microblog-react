@@ -43,6 +43,11 @@ export default class SchedulePostSheet extends React.Component {
         headerAlwaysVisible={true}
         closable={!is_saving}
         closeOnTouchBackdrop={!is_saving}
+        backdropProps={{
+          accessible: !is_saving,
+          accessibilityRole: 'button',
+          accessibilityLabel: 'Dismiss scheduling'
+        }}
         containerStyle={{ backgroundColor: App.theme_background_color(), maxWidth: 420, alignSelf: 'center' }}
       >
         <ScrollView contentContainerStyle={{ padding: 16 }}>

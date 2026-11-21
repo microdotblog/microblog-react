@@ -66,7 +66,9 @@ test('older replies keep Edit disabled and cannot invoke the editor through the 
   reply.can_edit.mockReturnValue(false)
   const cell = new ReplyCell({ reply })
   expect(cell.make_context_menu(reply).find(action => action.title === 'Edit').disabled).toBe(true)
-  cell._handle_context_menu({ nativeEvent: { name: 'Edit' } })
+  const menu = cell.render().props.children
+  menu.props.onPress({ nativeEvent: { name: 'Edit' } })
+  expect(menu.props.children.props.accessibilityActions.map(action => action.name)).not.toContain('Edit')
   expect(reply.trigger_edit).not.toHaveBeenCalled()
 })
 
@@ -75,10 +77,22 @@ test('a reply without a URL cannot copy or open a missing link', () => {
   const cell = new ReplyCell({ reply })
   expect(cell.make_context_menu(reply).find(action => action.title === 'Copy Link').disabled).toBe(true)
   expect(cell.make_context_menu(reply).find(action => action.title === 'Open in Browser').disabled).toBe(true)
-  cell._handle_context_menu({ nativeEvent: { name: 'Copy Link' } })
-  cell._handle_context_menu({ nativeEvent: { name: 'Open in Browser' } })
+  const menu = cell.render().props.children
+  menu.props.onPress({ nativeEvent: { name: 'Copy Link' } })
+  menu.props.onPress({ nativeEvent: { name: 'Open in Browser' } })
+  expect(menu.props.children.props.accessibilityActions.map(action => action.name)).toEqual(['Edit', 'Show Conversation', 'Delete'])
   expect(Clipboard.setString).not.toHaveBeenCalled()
   expect(App.open_url).not.toHaveBeenCalled()
+})
+
+test('VoiceOver can delete a reply from its row without focusing the swipe buttons', () => {
+  const reply = makeReply()
+  const swipeable = new ReplyCell({ reply }).render()
+  expect(swipeable.props.renderRightActions({ interpolate: jest.fn() }).props.accessibilityElementsHidden).toBe(true)
+
+  const row = swipeable.props.children.props.children
+  row.props.onAccessibilityAction({ nativeEvent: { actionName: 'Delete' } })
+  expect(reply.trigger_delete).toHaveBeenCalledTimes(1)
 })
 
 const published_post = { uid: 'blog-post-987', post_status: 'published', published: '2020-01-01T12:00:00Z', url: 'https://alice.example/post.html' }
@@ -93,6 +107,9 @@ test('drafts offer Schedule immediately after Publish and open the scheduling sh
   const menu = new PostCell({ post }).render().props.children
   expect(menu.props.actions.map(action => action.title)).toEqual(['Publish', 'Schedule…', 'Edit', 'Delete'])
   menu.props.onPress({ nativeEvent: { name: 'Schedule…' } })
+  expect(App.open_sheet).toHaveBeenCalledWith('schedule_post_sheet', { service, post: { url: post.url } })
+  App.open_sheet.mockClear()
+  menu.props.children.props.onAccessibilityAction({ nativeEvent: { actionName: 'Schedule…' } })
   expect(App.open_sheet).toHaveBeenCalledWith('schedule_post_sheet', { service, post: { url: post.url } })
   expect(new PostCell({ post: published_post }).make_context_menu(published_post).some(action => action.id === 'schedule')).toBe(false)
 })

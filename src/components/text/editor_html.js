@@ -197,7 +197,7 @@ const editorHtml = String.raw`<!doctype html>
 
   </style>
 </head>
-<body><div class="editor_shell"><div contenteditable="true" class="editor" id="editor" spellcheck="true" autocapitalize="sentences" enterkeyhint="enter" inputmode="text"></div><div class="editor_bottom_scrim" aria-hidden="true"></div></div>
+<body><div class="editor_shell"><div contenteditable="true" class="editor" id="editor" role="textbox" aria-label="Post body" aria-multiline="true" spellcheck="true" autocapitalize="sentences" enterkeyhint="enter" inputmode="text"></div><div class="editor_bottom_scrim" aria-hidden="true"></div></div>
   <script>
     (function () {
       var isIgnoringInput = false;
@@ -1578,6 +1578,7 @@ const editorHtml = String.raw`<!doctype html>
       function setEditable(editable) {
         var root = editor();
         root.setAttribute("contenteditable", editable ? "true" : "false");
+        root.setAttribute("aria-readonly", editable ? "false" : "true");
         if (!editable) {
           root.blur();
         }
@@ -1588,6 +1589,7 @@ const editorHtml = String.raw`<!doctype html>
         var body = document.body;
 
         body.classList.toggle("dark", config.colorScheme === "dark");
+        editor().setAttribute("aria-label", config.accessibilityLabel || "Post body");
 
         if (config.backgroundColor) {
           root.style.setProperty("--editor-background", config.backgroundColor);

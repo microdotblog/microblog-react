@@ -25,7 +25,9 @@ export default class NewCollectionButton extends React.Component{
 			}
 
 		return (
-			<TouchableOpacity 
+			<TouchableOpacity
+				accessibilityRole="button"
+				accessibilityLabel="Add collection"
 				style={button_style}
 				hitSlop={HEADER_BUTTON_HIT_SLOP}
 				onPress={() => {

@@ -51,6 +51,7 @@ export default class PageEditScreen extends React.Component{
           ]}
         >
           <TextInput
+            accessibilityLabel="Page title"
             placeholder="Title"
             placeholderTextColor={App.theme_placeholder_text_color()}
             style={{
@@ -79,6 +80,7 @@ export default class PageEditScreen extends React.Component{
             onChangeText={(text) => !posting.is_sending_post ? posting.set_post_title(text) : null}
           />
           <HighlightingText
+            accessibilityLabel="Page body"
             ref={this.text_editor_ref}
             placeholderTextColor="lightgrey"
             style={{

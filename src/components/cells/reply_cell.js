@@ -18,7 +18,7 @@ export default class ReplyCell extends React.Component{
   }
   
   _right_actions = (progress, item) => (
-    <View>
+    <View accessibilityElementsHidden={true}>
       {
         this._return_action(
           'Delete',
@@ -102,28 +102,29 @@ export default class ReplyCell extends React.Component{
     }
   ]
 
-  _handle_context_menu = ({ nativeEvent }) => {
+  _handle_context_menu = (title) => {
     const { reply } = this.props
-    if (nativeEvent.name === 'Edit' && reply.can_edit()) {
+    if (title === 'Edit' && reply.can_edit()) {
       reply.trigger_edit()
     }
-    else if (nativeEvent.name === 'Copy Link' && reply.url) {
+    else if (title === 'Copy Link' && reply.url) {
       Clipboard.setString(reply.url)
       Toast.showWithGravity('URL copied', Toast.SHORT, Toast.CENTER)
     }
-    else if (nativeEvent.name === 'Open in Browser' && reply.url) {
+    else if (title === 'Open in Browser' && reply.url) {
       App.open_url(reply.url)
     }
-    else if (nativeEvent.name === 'Show Conversation') {
+    else if (title === 'Show Conversation') {
       App.navigate_to_screen('open', reply.id)
     }
-    else if (nativeEvent.name === 'Delete') {
+    else if (title === 'Delete') {
       reply.trigger_delete()
     }
   }
 
   render() {
     const { reply } = this.props
+    const menu_items = this.make_context_menu(reply)
     return(
       <Swipeable
         ref={this._swipeable}
@@ -134,10 +135,13 @@ export default class ReplyCell extends React.Component{
       >
         <ContextMenu
           previewBackgroundColor="rgba(0, 0, 0, 0.0)"
-          actions={this.make_context_menu(reply)}
-          onPress={this._handle_context_menu}
+          actions={menu_items}
+          onPress={({ nativeEvent }) => this._handle_context_menu(nativeEvent.name)}
         >
           <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityActions={menu_items.filter(item => !item.disabled).map(item => ({ name: item.title, label: item.title }))}
+            onAccessibilityAction={({ nativeEvent }) => this._handle_context_menu(nativeEvent.actionName)}
             activeOpacity={1}
             style={{
               padding: 15,

@@ -95,6 +95,8 @@ export default class CollectionsSheet extends React.Component {
 		return (
 			<TouchableOpacity
 				key={item.id}
+				accessibilityRole="checkbox"
+				accessibilityState={{ checked: this.state.selected_ids.includes(item.id) }}
 				style={{
 					padding: 8,
 					marginVertical: 2.5,

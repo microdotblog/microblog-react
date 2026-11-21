@@ -91,6 +91,7 @@ export default class SourceListLayout extends React.Component {
       <Pressable
         key={name}
         accessibilityRole="button"
+        accessibilityLabel={name}
         accessibilityState={{ selected }}
         onPress={onPress}
         style={({ pressed }) => [styles.row, (selected || pressed) && { backgroundColor: App.theme_section_background_color() }]}

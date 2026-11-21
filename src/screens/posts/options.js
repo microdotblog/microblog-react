@@ -114,6 +114,8 @@ export default class PostingOptionsScreen extends React.Component{
 						<View style={{ backgroundColor: App.theme_button_background_color(), padding: 8, borderRadius: 8, marginTop: 8 }}>
 							<TouchableOpacity
 								key={"published"}
+								accessibilityRole="radio"
+								accessibilityState={{ checked: posting.post_status === "published" }}
 								style={{ padding: 8, marginVertical: 2.5, flexDirection: 'row', alignItems: 'center' }}
 								onPress={() => {	
 									posting.handle_post_status_select("published")
@@ -123,6 +125,8 @@ export default class PostingOptionsScreen extends React.Component{
 							</TouchableOpacity>
 							<TouchableOpacity
 								key={"draft"}
+								accessibilityRole="radio"
+								accessibilityState={{ checked: posting.post_status === "draft" }}
 								style={{ padding: 8, marginBottom: 5, flexDirection: 'row', alignItems: 'center' }}
 								onPress={() => {						
 									posting.handle_post_status_select("draft")
@@ -144,6 +148,8 @@ export default class PostingOptionsScreen extends React.Component{
 								return(
 									<TouchableOpacity
 										key={category}
+										accessibilityRole="checkbox"
+										accessibilityState={{ checked: is_selected }}
 										style={{
 											padding: 8,
 											marginVertical: 2.5,
@@ -202,6 +208,8 @@ export default class PostingOptionsScreen extends React.Component{
 								flexDirection: 'row',
 								alignItems: 'center',
 							}}
+							accessibilityRole="checkbox"
+							accessibilityState={{ checked: posting.show_title }}
 							onPress={posting.toggle_title}
 						>
 							<CheckmarkRowCell text="Show title field" is_selected={posting.show_title} />
@@ -247,6 +255,8 @@ export default class PostingOptionsScreen extends React.Component{
 									return(
 										<TouchableOpacity
 											key={syndicate.uid}
+											accessibilityRole="checkbox"
+											accessibilityState={{ checked: is_selected }}
 											style={{
 												padding: 8,
 												marginVertical: 2.5,

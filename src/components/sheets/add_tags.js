@@ -15,6 +15,8 @@ export default class AddTagsMenu extends React.Component{
       return(
         <TouchableOpacity
           key={`tag-${tag}`}
+          accessibilityRole="button"
+          accessibilityLabel={`Add tag ${tag}`}
           onPress={() => {
             Auth.selected_user.set_selected_temp_tag(tag)
           }}
@@ -55,6 +57,8 @@ export default class AddTagsMenu extends React.Component{
       return(
         <TouchableOpacity
           key={`tag-${tag}`}
+          accessibilityRole="button"
+          accessibilityLabel={`Remove tag ${tag}`}
           onPress={() => {
             Auth.selected_user.delete_selected_temp_tag(tag)
           }}

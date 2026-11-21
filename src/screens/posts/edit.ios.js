@@ -53,6 +53,7 @@ export default class PostEditScreen extends React.Component{
           {
             posting.should_show_title() ?
             <TextInput
+              accessibilityLabel="Post title"
               placeholder="Title"
               placeholderTextColor={App.theme_placeholder_text_color()}
               style={{

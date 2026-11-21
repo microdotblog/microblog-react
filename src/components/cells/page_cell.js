@@ -18,7 +18,7 @@ export default class PostCell extends React.Component {
   }
 
   _right_actions = (progress, item) => (
-    <View style={{ flexDirection: "row" }}>
+    <View accessibilityElementsHidden={true} style={{ flexDirection: "row" }}>
       <View>
         {this._return_action(
           "Delete",
@@ -147,9 +147,25 @@ export default class PostCell extends React.Component {
     return menu_items;
   };
 
+  _handle_context_menu = (title) => {
+    const { page } = this.props
+    if (title == "Edit") {
+      App.navigate_to_screen("PageEdit", page)
+    } else if (title == "Copy Link") {
+      Clipboard.setString(page.url)
+      Toast.showWithGravity("URL copied", Toast.SHORT, Toast.CENTER)
+    } else if (title == "Open in Browser") {
+      App.open_url(page.url)
+    } else if (title == "Delete") {
+      Auth.selected_user.posting.selected_service?.trigger_page_delete(
+        page
+      )
+    }
+  }
+
   render() {
     const { page } = this.props;
-    let menu_items = this.make_context_menu(page);
+    const menu_items = this.make_context_menu(page)
     return (
       <Swipeable
         ref={this._swipeable}
@@ -160,34 +176,21 @@ export default class PostCell extends React.Component {
       >
         <ContextMenu
           previewBackgroundColor="rgba(0, 0, 0, 0.0)"
-          onPress={({ nativeEvent }) => {
-            if (nativeEvent.name == "Edit") {
-              App.navigate_to_screen("PageEdit", page);
-            } else if (nativeEvent.name == "Copy Link") {
-              Clipboard.setString(page.url);
-              Toast.showWithGravity("URL copied", Toast.SHORT, Toast.CENTER);
-            } else if (nativeEvent.name == "Open in Browser") {
-              App.open_url(page.url);
-            } else if (nativeEvent.name == "Delete") {
-              Auth.selected_user.posting.selected_service?.trigger_page_delete(
-                page
-              );
-            }
-          }}
+          onPress={({ nativeEvent }) => this._handle_context_menu(nativeEvent.name)}
           actions={menu_items}
         >
           <TouchableOpacity
+            accessibilityRole={page.template ? undefined : "button"}
+            accessibilityActions={menu_items.map(item => ({ name: item.title, label: item.title }))}
+            onAccessibilityAction={({ nativeEvent }) => this._handle_context_menu(nativeEvent.actionName)}
             activeOpacity={1}
             style={{
               padding: 15,
               backgroundColor: App.theme_background_color_secondary(),
               opacity: page.template ? 0.5 : 1,
             }}
-            onPress={() =>
-              page.template ? null : App.navigate_to_screen("PageEdit", page)
-            }
+            onPress={page.template ? undefined : () => App.navigate_to_screen("PageEdit", page)}
             onLongPress={() => {}}
-            disabled={page.template}
           >
             {page.name && (
               <Text

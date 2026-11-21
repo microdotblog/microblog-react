@@ -23,6 +23,8 @@ export default class ReplyButton extends React.Component {
 
     return (
       <TouchableOpacity
+        accessibilityRole="button"
+        accessibilityLabel="Reply"
 				onPress={() => {
 					if(this.props.conversation_id != null){
 						App.open_sheet("reply_sheet", { conversation_id: this.props.conversation_id })
